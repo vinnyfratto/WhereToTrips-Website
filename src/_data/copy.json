@@ -1,4 +1,18 @@
 {
+  "together": {
+    "eyebrow": "Wander Together",
+    "title": {
+      "pre": "Plan as one.\nTravel ",
+      "accent": "together",
+      "post": "."
+    },
+    "lede": "Group travel starts with chaos. Competing schedules, endless group chats, someone who never books. Where To fixes that.",
+    "body": "Create a trip, invite your crew, and let everyone weigh in on destinations, dates, and budgets. All in one place. When you're ready, book as a group with a single flow. No spreadsheets. No 47-message threads.",
+    "image": {
+      "src": "https://images.pexels.com/photos/1371360/pexels-photo-1371360.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "alt": "Group of friends laughing together at an outdoor table"
+    }
+  },
   "hero": {
     "eyebrow": "Free on iOS & Android",
     "title": {
