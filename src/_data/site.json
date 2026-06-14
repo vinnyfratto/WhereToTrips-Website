@@ -1,18 +1,40 @@
 {
-  "name": "WhereToTrips",
-  "tagline": "Your next trip is waiting.",
-  "description": "Discover flight deals to destinations you'll love — by vibe, budget, or spontaneous wandering.",
+  "brandName": "Where To",
+  "monogram": "W",
+  "metaTitle": "Where To — Discover trips you'll actually love",
+  "metaDescription": "Where To matches you to flights and destinations built around your vibe — not just the algorithm. Powered by a 150+ vibe curation engine. Free on iOS and Android.",
   "url": "https://wheretotrips.com",
+  "contactEmail": "hello@wheretotrips.com",
+  "navCtaLabel": "Download Free",
   "nav": [
-    { "label": "Features", "href": "#features" },
+    { "label": "Vibes", "href": "#vibes" },
+    { "label": "Together", "href": "#together" },
+    { "label": "Ask Where To", "href": "#chat" },
     { "label": "Download", "href": "#download" }
   ],
-  "footer": {
-    "links": [
-      { "label": "Privacy Policy", "href": "/privacy" },
-      { "label": "Terms of Service", "href": "/terms" },
-      { "label": "Contact", "href": "mailto:hello@wheretotrips.com" }
-    ],
-    "copyright": "© 2026 WhereToTrips. All rights reserved."
-  }
+  "footerCols": [
+    {
+      "heading": "App",
+      "links": [
+        { "label": "Vibes Engine", "href": "#vibes" },
+        { "label": "Wander Together", "href": "#together" },
+        { "label": "Conversational Search", "href": "#chat" },
+        { "label": "Download", "href": "#download" }
+      ]
+    },
+    {
+      "heading": "Company",
+      "links": [
+        { "label": "VC Innovations Group", "href": "https://vcinnovationsgroup.com" },
+        { "label": "Privacy Policy", "href": "/privacy" },
+        { "label": "Terms of Service", "href": "/terms" }
+      ]
+    },
+    {
+      "heading": "Get in touch",
+      "links": [
+        { "label": "hello@wheretotrips.com", "href": "mailto:hello@wheretotrips.com" }
+      ]
+    }
+  ]
 }

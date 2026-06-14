@@ -1,12 +1,12 @@
 {
-  "cream":   "#F0EBE0",
-  "card":    "#FDFAF6",
-  "navy":    "#1C3649",
-  "rust":    "#B85C38",
-  "warmGray200": "#E4DDD3",
-  "warmGray500": "#9E9690",
-  "warmGray600": "#5C5449",
-  "maxWidth": "1080px",
-  "headingFont": "DM Serif Display",
-  "bodyFont": "Nunito Sans"
+  "colors": {
+    "cream": "#F0EBE0",
+    "card": "#FDFAF6",
+    "navy": "#1C3649",
+    "navyLight": "#2A4D65",
+    "rust": "#B85C38"
+  },
+  "maxWidth": 1080,
+  "headingFont": "dm-serif",
+  "bodyFont": "nunito-sans"
 }

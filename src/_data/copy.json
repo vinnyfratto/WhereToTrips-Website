@@ -1,41 +1,88 @@
 {
   "hero": {
-    "eyebrow": "Now Available",
-    "headline": "Wander",
-    "headlineAccent": "somewhere",
-    "headlineEnd": "new.",
-    "subheadline": "Discover flight deals to destinations that match your vibe — not just your schedule.",
-    "ctaLabel": "Download the App",
-    "ctaHref": "#download"
+    "eyebrow": "Free on iOS & Android",
+    "title": {
+      "pre": "Discover where\nyou ",
+      "accent": "belong",
+      "post": "."
+    },
+    "lede": "Where To matches you to flights and destinations built around how you want to feel — not just where the algorithm tells you to go. Powered by 150+ curated vibes.",
+    "primaryBtn": { "label": "Download Free", "href": "#download" },
+    "ghostBtn": { "label": "See how it works", "href": "#vibes" },
+    "image": {
+      "src": "https://images.pexels.com/photos/2356045/pexels-photo-2356045.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "alt": "Whitewashed steps winding up a sun-drenched hillside village"
+    },
+    "badge": { "title": "150+ Vibes curated", "subtitle": "Real flights · Live pricing" }
   },
-  "features": {
-    "eyebrow": "Why WhereToTrips",
-    "headline": "Travel on your terms.",
-    "items": [
-      {
-        "icon": "✦",
-        "title": "Discover by Vibe",
-        "body": "Beach escapes, mountain retreats, city adventures — find flights to places that match how you want to feel, not just where the map says to go."
-      },
-      {
-        "icon": "◈",
-        "title": "Real-Time Prices",
-        "body": "Live flight pricing from hundreds of airlines. Set your budget and dates — or stay open and let deals surprise you."
-      },
-      {
-        "icon": "❖",
-        "title": "Travel Together",
-        "body": "Plan trips with friends in one place. Share ideas, vote on destinations, and book as a group without the group-chat chaos."
-      }
-    ]
+  "vibes": {
+    "eyebrow": "The Vibes Engine",
+    "title": {
+      "pre": "Your mood.\nYour ",
+      "accent": "trip",
+      "post": "."
+    },
+    "lede": "We built a two-tier destination engine unlike anything in travel — 150+ moods mapped to real places, real flights, and real prices. Pick a vibe. See where it takes you.",
+    "body": "Whether you're craving sun-bleached cobblestones, midnight city energy, or a mountain hut with zero WiFi — Where To knows the difference. Our Vibes Engine layers destination character, seasonal context, and price intelligence to surface flights you'd never have thought to search.",
+    "chips": [
+      "Beach & Sun", "Mountain Escape", "City Break", "Cultural Deep Dive",
+      "Romantic Getaway", "Adventure", "Hidden Gems", "Foodie Haven",
+      "Party Scene", "Slow Travel", "Architecture", "Island Hopping"
+    ],
+    "stat1": { "value": "150+", "label": "destination vibes" },
+    "stat2": { "value": "550+", "label": "cities worldwide" },
+    "image": {
+      "src": "https://images.pexels.com/photos/1591373/pexels-photo-1591373.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "alt": "Aerial view of a turquoise lagoon surrounded by white sand"
+    }
+  },
+  "together": {
+    "eyebrow": "Wander Together",
+    "title": {
+      "pre": "Plan as one.\nTravel ",
+      "accent": "together",
+      "post": "."
+    },
+    "lede": "Group travel starts with chaos. Competing schedules, endless group chats, someone who never books. Where To fixes that.",
+    "body": "Create a trip, invite your crew, and let everyone weigh in on destinations, dates, and budgets — all in one place. When you're ready, book as a group with a single flow. No spreadsheets. No 47-message threads.",
+    "features": [
+      { "icon": "✦", "label": "Create a group trip in seconds" },
+      { "icon": "◈", "label": "Invite friends — they vote on destinations" },
+      { "icon": "❖", "label": "Sync availability without the back-and-forth" },
+      { "icon": "▲", "label": "Book together with one coordinated flow" }
+    ],
+    "image": {
+      "src": "https://images.pexels.com/photos/1371360/pexels-photo-1371360.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "alt": "Group of friends laughing together at an outdoor table"
+    }
+  },
+  "chat": {
+    "eyebrow": "Conversational Search",
+    "title": {
+      "pre": "Stop filtering.\nJust ",
+      "accent": "ask",
+      "post": "."
+    },
+    "lede": "Tell Where To what you're thinking — in plain words — and get real flights back instantly. No forms. No date grids. Just a conversation.",
+    "examples": [
+      "\"A beach week under $2k in April\"",
+      "\"Somewhere in Europe with great food, any time in June\"",
+      "\"Warm, not too far, leaving this weekend\""
+    ],
+    "image": {
+      "src": "https://images.pexels.com/photos/4050347/pexels-photo-4050347.jpeg?auto=compress&cs=tinysrgb&w=1200",
+      "alt": "Person relaxing on a terrace with a phone and a view"
+    }
   },
   "download": {
-    "eyebrow": "Get the App",
-    "headline": "Your next trip starts here.",
-    "subheadline": "Free to download. No subscription. Just better travel.",
-    "appleLabel": "App Store",
+    "eyebrow": "Ready to wander?",
+    "title": {
+      "pre": "Your next trip is ",
+      "accent": "waiting",
+      "post": "."
+    },
+    "body": "Free to download. No subscription. Just better travel.",
     "appleHref": "#",
-    "googleLabel": "Google Play",
     "googleHref": "#"
   }
 }

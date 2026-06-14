@@ -1,0 +1,231 @@
+media:
+  input: src/media
+  output: /media
+
+content:
+
+  # ── Page copy (all sections) ────────────────────────────────
+  - name: copy
+    label: Page Content
+    path: src/_data/copy.json
+    type: file
+    fields:
+
+      - name: hero
+        label: "Section: Hero"
+        type: object
+        fields:
+          - { name: eyebrow,    label: Eyebrow tag,   type: string }
+          - name: title
+            label: Headline
+            type: object
+            fields:
+              - { name: pre,    label: "Text before italic", type: string }
+              - { name: accent, label: "Italic word(s)",     type: string }
+              - { name: post,   label: "Text after italic",  type: string }
+          - { name: lede,       label: Sub-headline,  type: text }
+          - name: primaryBtn
+            label: Primary CTA button
+            type: object
+            fields:
+              - { name: label, label: Button label, type: string }
+              - { name: href,  label: Button link,  type: string }
+          - name: ghostBtn
+            label: Ghost CTA button
+            type: object
+            fields:
+              - { name: label, label: Button label, type: string }
+              - { name: href,  label: Button link,  type: string }
+          - name: image
+            label: Hero image
+            type: object
+            fields:
+              - { name: src, label: Image URL, type: string }
+              - { name: alt, label: Alt text,  type: string }
+          - name: badge
+            label: Floating badge
+            type: object
+            fields:
+              - { name: title,    label: Badge title,    type: string }
+              - { name: subtitle, label: Badge subtitle, type: string }
+
+      - name: vibes
+        label: "Section: Vibes Engine"
+        type: object
+        fields:
+          - { name: eyebrow, label: Eyebrow tag, type: string }
+          - name: title
+            label: Headline
+            type: object
+            fields:
+              - { name: pre,    label: "Text before italic", type: string }
+              - { name: accent, label: "Italic word(s)",     type: string }
+              - { name: post,   label: "Text after italic",  type: string }
+          - { name: lede, label: Lead paragraph, type: text }
+          - { name: body, label: Body paragraph, type: text }
+          - name: chips
+            label: Vibe chips
+            type: list
+            item:
+              type: string
+          - name: stat1
+            label: Stat badge (top)
+            type: object
+            fields:
+              - { name: value, label: Value, type: string }
+              - { name: label, label: Label, type: string }
+          - name: stat2
+            label: Stat badge (bottom)
+            type: object
+            fields:
+              - { name: value, label: Value, type: string }
+              - { name: label, label: Label, type: string }
+          - name: image
+            label: Section image
+            type: object
+            fields:
+              - { name: src, label: Image URL, type: string }
+              - { name: alt, label: Alt text,  type: string }
+
+      - name: together
+        label: "Section: Wander Together"
+        type: object
+        fields:
+          - { name: eyebrow, label: Eyebrow tag, type: string }
+          - name: title
+            label: Headline
+            type: object
+            fields:
+              - { name: pre,    label: "Text before italic", type: string }
+              - { name: accent, label: "Italic word(s)",     type: string }
+              - { name: post,   label: "Text after italic",  type: string }
+          - { name: lede, label: Lead paragraph, type: text }
+          - { name: body, label: Body paragraph, type: text }
+          - name: features
+            label: Feature list items
+            type: list
+            item:
+              type: object
+              fields:
+                - { name: icon,  label: Icon glyph, type: string }
+                - { name: label, label: Label,      type: string }
+          - name: image
+            label: Section image
+            type: object
+            fields:
+              - { name: src, label: Image URL, type: string }
+              - { name: alt, label: Alt text,  type: string }
+
+      - name: chat
+        label: "Section: Conversational Search"
+        type: object
+        fields:
+          - { name: eyebrow, label: Eyebrow tag, type: string }
+          - name: title
+            label: Headline
+            type: object
+            fields:
+              - { name: pre,    label: "Text before italic", type: string }
+              - { name: accent, label: "Italic word(s)",     type: string }
+              - { name: post,   label: "Text after italic",  type: string }
+          - { name: lede, label: Lead paragraph, type: text }
+          - name: examples
+            label: Example chat bubbles
+            type: list
+            item:
+              type: string
+          - name: image
+            label: Section image
+            type: object
+            fields:
+              - { name: src, label: Image URL, type: string }
+              - { name: alt, label: Alt text,  type: string }
+
+      - name: download
+        label: "Section: Download CTA"
+        type: object
+        fields:
+          - { name: eyebrow, label: Eyebrow tag, type: string }
+          - name: title
+            label: Headline
+            type: object
+            fields:
+              - { name: pre,    label: "Text before italic", type: string }
+              - { name: accent, label: "Italic word(s)",     type: string }
+              - { name: post,   label: "Text after italic",  type: string }
+          - { name: body,       label: Sub-copy,             type: string }
+          - { name: appleHref,  label: App Store link,       type: string }
+          - { name: googleHref, label: Google Play link,     type: string }
+
+  # ── Site settings ────────────────────────────────────────────
+  - name: site
+    label: Site Settings
+    path: src/_data/site.json
+    type: file
+    fields:
+      - { name: brandName,      label: Brand name,         type: string }
+      - { name: monogram,       label: Nav monogram letter, type: string }
+      - { name: metaTitle,      label: Page title (SEO),   type: string }
+      - { name: metaDescription, label: Meta description,  type: text }
+      - { name: url,            label: Site URL,           type: string }
+      - { name: contactEmail,   label: Contact email,      type: string }
+      - { name: navCtaLabel,    label: Nav CTA label,      type: string }
+      - name: nav
+        label: Navigation links
+        type: list
+        item:
+          type: object
+          fields:
+            - { name: label, label: Label, type: string }
+            - { name: href,  label: Href,  type: string }
+      - name: footerCols
+        label: Footer columns
+        type: list
+        item:
+          type: object
+          fields:
+            - { name: heading, label: Column heading, type: string }
+            - name: links
+              label: Links
+              type: list
+              item:
+                type: object
+                fields:
+                  - { name: label, label: Label, type: string }
+                  - { name: href,  label: Href,  type: string }
+
+  # ── Theme ────────────────────────────────────────────────────
+  - name: theme
+    label: Theme & Fonts
+    path: src/_data/theme.json
+    type: file
+    fields:
+      - name: colors
+        label: Brand colors
+        type: object
+        fields:
+          - { name: cream,      label: Background cream,    type: string }
+          - { name: card,       label: Card surface,        type: string }
+          - { name: navy,       label: Primary navy,        type: string }
+          - { name: navyLight,  label: Navy hover,          type: string }
+          - { name: rust,       label: Accent rust,         type: string }
+      - { name: maxWidth,   label: "Max content width (px, number)", type: number }
+      - name: headingFont
+        label: Heading font
+        type: select
+        options:
+          - { label: "DM Serif Display",   value: dm-serif }
+          - { label: "Playfair Display",   value: playfair }
+          - { label: "Fraunces",           value: fraunces }
+          - { label: "Cormorant Garamond", value: cormorant }
+          - { label: "Lora",               value: lora }
+      - name: bodyFont
+        label: Body font
+        type: select
+        options:
+          - { label: "Nunito Sans",      value: nunito-sans }
+          - { label: "Inter",            value: inter }
+          - { label: "Work Sans",        value: work-sans }
+          - { label: "DM Sans",          value: dm-sans }
+          - { label: "Plus Jakarta Sans", value: plus-jakarta }
+          - { label: "Figtree",          value: figtree }
