@@ -2,11 +2,11 @@
   "hero": {
     "eyebrow": "Free on iOS & Android",
     "title": {
-      "pre": "A New Way to Discover ",
-      "accent": "                       Your Next Destination",
+      "pre": "Discover Your Next",
+      "accent": "Destination",
       "post": "."
     },
-    "lede": "Most travel platforms ask a simple question: \"Where do you want to go?\" WhereTo asks a better one: \"What kind of experience do you want to have?\" \n\n\nBy combining your interests, travel vibe, budget, and timing, WhereTo uncovers destinations uniquely matched to you. The result is a completely new approach to travel discovery—one that reveals hidden gems, unexpected opportunities, and dream vacations you may have never considered possible. Instead of searching for destinations, travelers discover possibilities, unlocking experiences that perfectly fit both their aspirations and their budget.",
+    "lede": "Most travel platforms ask a simple question: \"Where do you want to go?\" WhereTo asks a better one: \"What kind of experience do you want to have?\" \n",
     "primaryBtn": {
       "label": "Download Free",
       "href": "#download"
