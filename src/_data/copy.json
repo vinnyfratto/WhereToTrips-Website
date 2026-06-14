@@ -6,7 +6,7 @@
       "accent": "belong",
       "post": "."
     },
-    "lede": "Where To matches you to flights and destinations built around how you want to feel — not just where the algorithm tells you to go. Powered by 150+ curated vibes.",
+    "lede": "Where To matches you to flights and destinations built around how you want to feel, not just where the algorithm tells you to go. Powered by 150+ curated vibes.",
     "primaryBtn": { "label": "Download Free", "href": "#download" },
     "ghostBtn": { "label": "See how it works", "href": "#vibes" },
     "image": {
@@ -18,12 +18,12 @@
   "vibes": {
     "eyebrow": "The Vibes Engine",
     "title": {
-      "pre": "Your mood.\nYour ",
+      "pre": "Your vibe.\nYour ",
       "accent": "trip",
       "post": "."
     },
-    "lede": "We built a two-tier destination engine unlike anything in travel — 150+ moods mapped to real places, real flights, and real prices. Pick a vibe. See where it takes you.",
-    "body": "Whether you're craving sun-bleached cobblestones, midnight city energy, or a mountain hut with zero WiFi — Where To knows the difference. Our Vibes Engine layers destination character, seasonal context, and price intelligence to surface flights you'd never have thought to search.",
+    "lede": "We built a two-tier destination engine unlike anything in travel. 150+ vibes mapped to real places, real flights, and real prices. Pick a vibe. See where it takes you.",
+    "body": "Whether you're craving sun-bleached cobblestones, midnight city energy, or a mountain hut with zero WiFi, Where To knows the difference. Our Vibes Engine layers destination character, seasonal context, and price intelligence to surface flights you'd never have thought to search.",
     "chips": [
       { "label": "Beach & Sun",       "img": "https://images.pexels.com/photos/1591373/pexels-photo-1591373.jpeg?auto=compress&cs=tinysrgb&w=1200",  "alt": "Aerial view of turquoise water and white sand beach" },
       { "label": "Mountain Escape",   "img": "https://images.pexels.com/photos/1366919/pexels-photo-1366919.jpeg?auto=compress&cs=tinysrgb&w=1200",  "alt": "Mountain lake surrounded by pine forests and peaks" },
@@ -53,10 +53,10 @@
       "post": "."
     },
     "lede": "Group travel starts with chaos. Competing schedules, endless group chats, someone who never books. Where To fixes that.",
-    "body": "Create a trip, invite your crew, and let everyone weigh in on destinations, dates, and budgets — all in one place. When you're ready, book as a group with a single flow. No spreadsheets. No 47-message threads.",
+    "body": "Create a trip, invite your crew, and let everyone weigh in on destinations, dates, and budgets. All in one place. When you're ready, book as a group with a single flow. No spreadsheets. No 47-message threads.",
     "features": [
       { "icon": "✦", "label": "Create a group trip in seconds" },
-      { "icon": "◈", "label": "Invite friends — they vote on destinations" },
+      { "icon": "◈", "label": "Invite friends and let them vote on destinations" },
       { "icon": "❖", "label": "Sync availability without the back-and-forth" },
       { "icon": "▲", "label": "Book together with one coordinated flow" }
     ],
@@ -72,7 +72,7 @@
       "accent": "ask",
       "post": "."
     },
-    "lede": "Tell Where To what you're thinking — in plain words — and get real flights back instantly. No forms. No date grids. Just a conversation.",
+    "lede": "Tell Where To what you're thinking, in plain words, and get real flights back instantly. No forms. No date grids. Just a conversation.",
     "examples": [
       "\"A beach week under $2k in April\"",
       "\"Somewhere in Europe with great food, any time in June\"",
