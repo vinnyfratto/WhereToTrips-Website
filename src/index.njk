@@ -51,7 +51,7 @@ layout: base.njk
   <div class="wrap">
     <div class="feature-split">
       <div class="feature-img-wrap reveal">
-        <img class="feature-img" src="{{ copy.vibes.image.src }}" alt="{{ copy.vibes.image.alt }}" loading="lazy" />
+        <img id="vibes-img" class="feature-img" src="{{ copy.vibes.image.src }}" alt="{{ copy.vibes.image.alt }}" loading="lazy" />
         <div class="feature-stat" style="top: 28px; right: -20px;">
           <div class="sv">{{ copy.vibes.stat1.value }}</div>
           <div class="sl">{{ copy.vibes.stat1.label }}</div>
@@ -68,7 +68,8 @@ layout: base.njk
         <p class="body-copy" style="margin-top: 16px;">{{ copy.vibes.body }}</p>
         <div class="chip-cloud">
           {%- for chip in copy.vibes.chips %}
-          <span class="chip{% if loop.index0 % 4 == 0 %} accent{% endif %}">{{ chip }}</span>
+          <span class="chip{% if loop.index0 % 4 == 0 %} accent{% endif %}{% if loop.first %} active{% endif %}"
+                data-img="{{ chip.img }}" data-alt="{{ chip.alt }}">{{ chip.label }}</span>
           {%- endfor %}
         </div>
       </div>

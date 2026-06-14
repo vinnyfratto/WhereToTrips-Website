@@ -64,10 +64,14 @@ content:
           - { name: lede, label: Lead paragraph, type: text }
           - { name: body, label: Body paragraph, type: text }
           - name: chips
-            label: Vibe chips
+            label: Vibe chips (each links to an image)
             type: list
             item:
-              type: string
+              type: object
+              fields:
+                - { name: label, label: Chip label,  type: string }
+                - { name: img,   label: Image URL,   type: string }
+                - { name: alt,   label: Image alt text, type: string }
           - name: stat1
             label: Stat badge (top)
             type: object

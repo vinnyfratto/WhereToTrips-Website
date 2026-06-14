@@ -190,7 +190,9 @@
     .feature-img {
       width: 100%; height: clamp(400px, 48vw, 580px); object-fit: cover;
       border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
+      transition: opacity 0.3s ease;
     }
+    .feature-img.fading { opacity: 0; }
     .feature-stat {
       position: absolute; border-radius: var(--radius-md);
       background: rgba(253,250,246,0.96); border: 1px solid var(--wg200);
@@ -223,6 +225,11 @@
     }
     .chip.accent { background: rgba(184,92,56,0.08); border-color: rgba(184,92,56,0.25); color: var(--rust); }
     .chip.accent:hover { background: var(--rust); color: var(--cream); border-color: var(--rust); }
+    .chip.active, .chip.accent.active {
+      background: var(--navy); color: var(--cream);
+      border-color: var(--navy); box-shadow: var(--shadow-sm);
+    }
+    .chip[data-img] { cursor: pointer; }
 
     /* ── Together feature list ─────────────────────────────── */
     .feature-list { list-style: none; margin-top: 28px; display: flex; flex-direction: column; gap: 16px; }
@@ -354,10 +361,42 @@
 
 <script>
   document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Scroll reveal
   const io = new IntersectionObserver((entries) => {
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
   }, { threshold: 0.1, rootMargin: '0px 0px -32px 0px' });
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // Vibes chip → image swap
+  const vibesImg = document.getElementById('vibes-img');
+  const vibeChips = document.querySelectorAll('.chip[data-img]');
+  if (vibesImg && vibeChips.length) {
+    vibeChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        if (chip.classList.contains('active')) return;
+        vibeChips.forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        vibesImg.classList.add('fading');
+        // Preload image before swap so there's no flash
+        const next = new Image();
+        next.src = chip.dataset.img;
+        next.onload = () => {
+          vibesImg.src = chip.dataset.img;
+          vibesImg.alt = chip.dataset.alt || chip.textContent.trim();
+          vibesImg.classList.remove('fading');
+        };
+        // Fallback: swap even if preload is slow
+        setTimeout(() => {
+          if (vibesImg.classList.contains('fading')) {
+            vibesImg.src = chip.dataset.img;
+            vibesImg.alt = chip.dataset.alt || chip.textContent.trim();
+            vibesImg.classList.remove('fading');
+          }
+        }, 800);
+      });
+    });
+  }
 </script>
 </body>
 </html>

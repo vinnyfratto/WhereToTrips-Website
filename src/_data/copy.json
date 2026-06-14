@@ -25,9 +25,18 @@
     "lede": "We built a two-tier destination engine unlike anything in travel — 150+ moods mapped to real places, real flights, and real prices. Pick a vibe. See where it takes you.",
     "body": "Whether you're craving sun-bleached cobblestones, midnight city energy, or a mountain hut with zero WiFi — Where To knows the difference. Our Vibes Engine layers destination character, seasonal context, and price intelligence to surface flights you'd never have thought to search.",
     "chips": [
-      "Beach & Sun", "Mountain Escape", "City Break", "Cultural Deep Dive",
-      "Romantic Getaway", "Adventure", "Hidden Gems", "Foodie Haven",
-      "Party Scene", "Slow Travel", "Architecture", "Island Hopping"
+      { "label": "Beach & Sun",       "img": "https://images.pexels.com/photos/1591373/pexels-photo-1591373.jpeg?auto=compress&cs=tinysrgb&w=1200",  "alt": "Aerial view of turquoise water and white sand beach" },
+      { "label": "Mountain Escape",   "img": "https://images.pexels.com/photos/1366919/pexels-photo-1366919.jpeg?auto=compress&cs=tinysrgb&w=1200",  "alt": "Mountain lake surrounded by pine forests and peaks" },
+      { "label": "City Break",        "img": "https://images.pexels.com/photos/466685/pexels-photo-466685.jpeg?auto=compress&cs=tinysrgb&w=1200",    "alt": "City skyline glowing at night" },
+      { "label": "Cultural Deep Dive","img": "https://images.pexels.com/photos/726484/pexels-photo-726484.jpeg?auto=compress&cs=tinysrgb&w=1200",    "alt": "Ancient temple at sunrise surrounded by mist" },
+      { "label": "Romantic Getaway",  "img": "https://images.pexels.com/photos/33851769/pexels-photo-33851769.jpeg?auto=compress&cs=tinysrgb&w=1200","alt": "Whitewashed village with blue domes overlooking the sea" },
+      { "label": "Adventure",         "img": "https://images.pexels.com/photos/618833/pexels-photo-618833.jpeg?auto=compress&cs=tinysrgb&w=1200",    "alt": "Hiker standing on a rocky summit above the clouds" },
+      { "label": "Hidden Gems",       "img": "https://images.pexels.com/photos/1450353/pexels-photo-1450353.jpeg?auto=compress&cs=tinysrgb&w=1200",  "alt": "Secluded cove with emerald water tucked between cliffs" },
+      { "label": "Foodie Haven",      "img": "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=1200",  "alt": "Vibrant spread of colourful dishes at a street market" },
+      { "label": "Party Scene",       "img": "https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&w=1200",  "alt": "Concert crowd lit by colourful stage lights at night" },
+      { "label": "Slow Travel",       "img": "https://images.pexels.com/photos/3571551/pexels-photo-3571551.jpeg?auto=compress&cs=tinysrgb&w=1200",  "alt": "Rolling Tuscan hills under a golden afternoon sky" },
+      { "label": "Architecture",      "img": "https://images.pexels.com/photos/3375697/pexels-photo-3375697.jpeg?auto=compress&cs=tinysrgb&w=1200",  "alt": "Grand historic building with ornate facade detail" },
+      { "label": "Island Hopping",    "img": "https://images.pexels.com/photos/1320684/pexels-photo-1320684.jpeg?auto=compress&cs=tinysrgb&w=1200",  "alt": "Aerial view of a tropical archipelago with crystal water" }
     ],
     "stat1": { "value": "150+", "label": "destination vibes" },
     "stat2": { "value": "550+", "label": "cities worldwide" },
