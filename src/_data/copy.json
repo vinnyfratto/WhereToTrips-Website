@@ -1,8 +1,8 @@
 {
-  "together": {
-    "eyebrow": "Wander Together",
+  "whereto": {
+    "eyebrow": "WhereTo",
     "title": {
-      "pre": "Plan as one.\nTravel ",
+      "pre": "New Section.\nTravel ",
       "accent": "together",
       "post": "."
     },
