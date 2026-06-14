@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ title or site.name }} — {{ site.tagline }}</title>
+  <meta name="description" content="{{ site.description }}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Nunito+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:   {{ theme.cream }};
+      --card:    {{ theme.card }};
+      --navy:    {{ theme.navy }};
+      --rust:    {{ theme.rust }};
+      --gray200: {{ theme.warmGray200 }};
+      --gray500: {{ theme.warmGray500 }};
+      --gray600: {{ theme.warmGray600 }};
+      --max:     {{ theme.maxWidth }};
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Nunito Sans', sans-serif;
+      background: var(--cream);
+      color: var(--navy);
+      line-height: 1.6;
+    }
+
+    /* ── Nav ─────────────────────────────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(240, 235, 224, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--gray200);
+    }
+    .nav-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 22px;
+      color: var(--navy);
+      text-decoration: none;
+      letter-spacing: -0.3px;
+    }
+    .nav-logo em {
+      font-style: italic;
+      color: var(--rust);
+    }
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-family: 'Nunito Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--navy);
+      text-decoration: none;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+    .nav-links a:hover { opacity: 1; }
+
+    /* ── Sections ────────────────────────────────────────────────────── */
+    section { padding: 96px 24px; }
+    .inner {
+      max-width: var(--max);
+      margin: 0 auto;
+    }
+    .eyebrow {
+      font-family: 'Nunito Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--rust);
+      margin-bottom: 16px;
+    }
+
+    /* ── Hero ────────────────────────────────────────────────────────── */
+    #hero {
+      min-height: calc(100vh - 64px);
+      display: flex;
+      align-items: center;
+      padding: 80px 24px 96px;
+    }
+    .hero-content { max-width: 680px; }
+    .hero-headline {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(52px, 8vw, 88px);
+      line-height: 1.05;
+      color: var(--navy);
+      margin-bottom: 24px;
+    }
+    .hero-headline em {
+      font-style: italic;
+      color: var(--rust);
+    }
+    .hero-sub {
+      font-size: 18px;
+      font-weight: 300;
+      color: var(--gray600);
+      line-height: 1.7;
+      max-width: 480px;
+      margin-bottom: 40px;
+    }
+    .btn-primary {
+      display: inline-block;
+      background: var(--navy);
+      color: var(--cream);
+      font-family: 'Nunito Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 16px 36px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+    .btn-primary:hover { background: var(--rust); }
+
+    /* ── Features ────────────────────────────────────────────────────── */
+    #features { background: var(--card); }
+    .features-header { margin-bottom: 64px; }
+    .features-headline {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(32px, 4vw, 48px);
+      line-height: 1.15;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 40px;
+    }
+    .feature-card {
+      background: var(--cream);
+      border-radius: 12px;
+      padding: 40px 32px;
+    }
+    .feature-icon {
+      font-size: 28px;
+      color: var(--rust);
+      margin-bottom: 20px;
+    }
+    .feature-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 22px;
+      margin-bottom: 12px;
+    }
+    .feature-body {
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--gray600);
+      line-height: 1.7;
+    }
+
+    /* ── Download ────────────────────────────────────────────────────── */
+    #download { text-align: center; }
+    .download-headline {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(36px, 5vw, 60px);
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .download-sub {
+      font-size: 16px;
+      font-weight: 300;
+      color: var(--gray600);
+      margin-bottom: 48px;
+    }
+    .store-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn-store {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--navy);
+      color: var(--cream);
+      text-decoration: none;
+      padding: 14px 28px;
+      border-radius: 10px;
+      transition: background 0.2s;
+    }
+    .btn-store:hover { background: var(--rust); }
+    .btn-store-label {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+    }
+    .btn-store-sub {
+      font-size: 10px;
+      font-weight: 300;
+      letter-spacing: 0.8px;
+      opacity: 0.75;
+      text-transform: uppercase;
+    }
+    .btn-store-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: 18px;
+      line-height: 1.2;
+    }
+
+    /* ── Footer ──────────────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--gray200);
+      padding: 40px 24px;
+    }
+    .footer-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-copy {
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--gray500);
+    }
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
+    .footer-links a {
+      font-size: 12px;
+      font-weight: 400;
+      color: var(--gray600);
+      text-decoration: none;
+    }
+    .footer-links a:hover { color: var(--rust); }
+
+    @media (max-width: 600px) {
+      .nav-links { display: none; }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">Where<em>To</em>Trips</a>
+      <ul class="nav-links">
+        {% for link in site.nav %}
+          <li><a href="{{ link.href }}">{{ link.label }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </nav>
+
+  {{ content | safe }}
+
+  <footer>
+    <div class="footer-inner">
+      <p class="footer-copy">{{ site.footer.copyright }}</p>
+      <ul class="footer-links">
+        {% for link in site.footer.links %}
+          <li><a href="{{ link.href }}">{{ link.label }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </footer>
+
+</body>
+</html>

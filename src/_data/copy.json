@@ -1,0 +1,41 @@
+{
+  "hero": {
+    "eyebrow": "Now Available",
+    "headline": "Wander",
+    "headlineAccent": "somewhere",
+    "headlineEnd": "new.",
+    "subheadline": "Discover flight deals to destinations that match your vibe — not just your schedule.",
+    "ctaLabel": "Download the App",
+    "ctaHref": "#download"
+  },
+  "features": {
+    "eyebrow": "Why WhereToTrips",
+    "headline": "Travel on your terms.",
+    "items": [
+      {
+        "icon": "✦",
+        "title": "Discover by Vibe",
+        "body": "Beach escapes, mountain retreats, city adventures — find flights to places that match how you want to feel, not just where the map says to go."
+      },
+      {
+        "icon": "◈",
+        "title": "Real-Time Prices",
+        "body": "Live flight pricing from hundreds of airlines. Set your budget and dates — or stay open and let deals surprise you."
+      },
+      {
+        "icon": "❖",
+        "title": "Travel Together",
+        "body": "Plan trips with friends in one place. Share ideas, vote on destinations, and book as a group without the group-chat chaos."
+      }
+    ]
+  },
+  "download": {
+    "eyebrow": "Get the App",
+    "headline": "Your next trip starts here.",
+    "subheadline": "Free to download. No subscription. Just better travel.",
+    "appleLabel": "App Store",
+    "appleHref": "#",
+    "googleLabel": "Google Play",
+    "googleHref": "#"
+  }
+}
