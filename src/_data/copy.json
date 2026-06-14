@@ -2,18 +2,27 @@
   "hero": {
     "eyebrow": "Free on iOS & Android",
     "title": {
-      "pre": "Discover where\nyou ",
-      "accent": "belong",
+      "pre": "A New Way to Discover ",
+      "accent": "Your Next Destination",
       "post": "."
     },
-    "lede": "Where To matches you to flights and destinations built around how you want to feel, not just where the algorithm tells you to go. Powered by 150+ curated vibes.",
-    "primaryBtn": { "label": "Download Free", "href": "#download" },
-    "ghostBtn": { "label": "See how it works", "href": "#vibes" },
+    "lede": "Most travel platforms ask a simple question: \"Where do you want to go?\" WhereTo asks a better one: \"What kind of experience do you want to have?\"\n\nBy combining your interests, travel vibe, budget, and timing, WhereTo uncovers destinations uniquely matched to you. The result is a completely new approach to travel discovery—one that reveals hidden gems, unexpected opportunities, and dream vacations you may have never considered possible. Instead of searching for destinations, travelers discover possibilities, unlocking experiences that perfectly fit both their aspirations and their budget.",
+    "primaryBtn": {
+      "label": "Download Free",
+      "href": "#download"
+    },
+    "ghostBtn": {
+      "label": "See how it works",
+      "href": "#vibes"
+    },
     "image": {
       "src": "https://images.pexels.com/photos/2356045/pexels-photo-2356045.jpeg?auto=compress&cs=tinysrgb&w=1200",
       "alt": "Whitewashed steps winding up a sun-drenched hillside village"
     },
-    "badge": { "title": "150+ Vibes curated", "subtitle": "Real flights · Live pricing" }
+    "badge": {
+      "title": "150+ Vibes curated",
+      "subtitle": "Real flights · Live pricing"
+    }
   },
   "vibes": {
     "eyebrow": "The Vibes Engine",
@@ -24,22 +33,14 @@
     },
     "lede": "We built a two-tier destination engine unlike anything in travel. 150+ vibes mapped to real places, real flights, and real prices. Pick a vibe. See where it takes you.",
     "body": "Whether you're craving sun-bleached cobblestones, midnight city energy, or a mountain hut with zero WiFi, Where To knows the difference. Our Vibes Engine layers destination character, seasonal context, and price intelligence to surface flights you'd never have thought to search.",
-    "chips": [
-      { "label": "Beach & Sun",       "img": "https://images.pexels.com/photos/1591373/pexels-photo-1591373.jpeg?auto=compress&cs=tinysrgb&w=1200",  "alt": "Aerial view of turquoise water and white sand beach" },
-      { "label": "Mountain Escape",   "img": "https://images.pexels.com/photos/1366919/pexels-photo-1366919.jpeg?auto=compress&cs=tinysrgb&w=1200",  "alt": "Mountain lake surrounded by pine forests and peaks" },
-      { "label": "City Break",        "img": "https://images.pexels.com/photos/466685/pexels-photo-466685.jpeg?auto=compress&cs=tinysrgb&w=1200",    "alt": "City skyline glowing at night" },
-      { "label": "Cultural Deep Dive","img": "https://images.pexels.com/photos/726484/pexels-photo-726484.jpeg?auto=compress&cs=tinysrgb&w=1200",    "alt": "Ancient temple at sunrise surrounded by mist" },
-      { "label": "Romantic Getaway",  "img": "https://images.pexels.com/photos/33851769/pexels-photo-33851769.jpeg?auto=compress&cs=tinysrgb&w=1200","alt": "Whitewashed village with blue domes overlooking the sea" },
-      { "label": "Adventure",         "img": "https://images.pexels.com/photos/618833/pexels-photo-618833.jpeg?auto=compress&cs=tinysrgb&w=1200",    "alt": "Hiker standing on a rocky summit above the clouds" },
-      { "label": "Hidden Gems",       "img": "https://images.pexels.com/photos/1450353/pexels-photo-1450353.jpeg?auto=compress&cs=tinysrgb&w=1200",  "alt": "Secluded cove with emerald water tucked between cliffs" },
-      { "label": "Foodie Haven",      "img": "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=1200",  "alt": "Vibrant spread of colourful dishes at a street market" },
-      { "label": "Party Scene",       "img": "https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&w=1200",  "alt": "Concert crowd lit by colourful stage lights at night" },
-      { "label": "Slow Travel",       "img": "https://images.pexels.com/photos/3571551/pexels-photo-3571551.jpeg?auto=compress&cs=tinysrgb&w=1200",  "alt": "Rolling Tuscan hills under a golden afternoon sky" },
-      { "label": "Architecture",      "img": "https://images.pexels.com/photos/3375697/pexels-photo-3375697.jpeg?auto=compress&cs=tinysrgb&w=1200",  "alt": "Grand historic building with ornate facade detail" },
-      { "label": "Island Hopping",    "img": "https://images.pexels.com/photos/1320684/pexels-photo-1320684.jpeg?auto=compress&cs=tinysrgb&w=1200",  "alt": "Aerial view of a tropical archipelago with crystal water" }
-    ],
-    "stat1": { "value": "150+", "label": "destination vibes" },
-    "stat2": { "value": "550+", "label": "cities worldwide" },
+    "stat1": {
+      "value": "150+",
+      "label": "destination vibes"
+    },
+    "stat2": {
+      "value": "550+",
+      "label": "cities worldwide"
+    },
     "image": {
       "src": "https://images.pexels.com/photos/1591373/pexels-photo-1591373.jpeg?auto=compress&cs=tinysrgb&w=1200",
       "alt": "Aerial view of a turquoise lagoon surrounded by white sand"
@@ -54,12 +55,6 @@
     },
     "lede": "Group travel starts with chaos. Competing schedules, endless group chats, someone who never books. Where To fixes that.",
     "body": "Create a trip, invite your crew, and let everyone weigh in on destinations, dates, and budgets. All in one place. When you're ready, book as a group with a single flow. No spreadsheets. No 47-message threads.",
-    "features": [
-      { "icon": "✦", "label": "Create a group trip in seconds" },
-      { "icon": "◈", "label": "Invite friends and let them vote on destinations" },
-      { "icon": "❖", "label": "Sync availability without the back-and-forth" },
-      { "icon": "▲", "label": "Book together with one coordinated flow" }
-    ],
     "image": {
       "src": "https://images.pexels.com/photos/1371360/pexels-photo-1371360.jpeg?auto=compress&cs=tinysrgb&w=1200",
       "alt": "Group of friends laughing together at an outdoor table"
@@ -73,11 +68,7 @@
       "post": "."
     },
     "lede": "Tell Where To what you're thinking, in plain words, and get real flights back instantly. No forms. No date grids. Just a conversation.",
-    "examples": [
-      "\"A beach week under $2k in April\"",
-      "\"Somewhere in Europe with great food, any time in June\"",
-      "\"Warm, not too far, leaving this weekend\""
-    ],
+    "examples": "\"A beach week under $2k in April\" ,\"Somewhere in Europe with great food, any time in June\" ,\"Warm, not too far, leaving this weekend\"",
     "image": {
       "src": "https://images.pexels.com/photos/4050347/pexels-photo-4050347.jpeg?auto=compress&cs=tinysrgb&w=1200",
       "alt": "Person relaxing on a terrace with a phone and a view"
