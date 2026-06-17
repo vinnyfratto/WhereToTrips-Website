@@ -31,18 +31,22 @@
   .hdr-sub   { font-family: var(--serif); font-style: italic; font-size: 17px; color: var(--rust); }
   .hdr-badge { font-size: 10px; font-weight: 600; letter-spacing: 1.8px; text-transform: uppercase; color: var(--rust); border: 1.5px solid var(--rust); padding: 3px 9px; border-radius: 4px; }
 
-  /* Sub-region selector bar */
-  .sr-bar { background: var(--card); border-bottom: 1px solid var(--wg200); padding: 0 24px; display: flex; align-items: center; gap: 6px; overflow-x: auto; }
-  .sr-btn {
-    flex-shrink: 0; white-space: nowrap;
-    font-family: var(--sans); font-size: 12px; font-weight: 600; letter-spacing: .8px;
-    padding: 14px 18px; border: none; border-bottom: 3px solid transparent;
-    background: none; color: var(--wg500); cursor: pointer;
-    transition: color .15s, border-color .15s;
+  /* Region / Sub-region selector bar */
+  .sr-bar { background: var(--card); border-bottom: 1px solid var(--wg200); padding: 0 24px; display: flex; align-items: center; gap: 14px; height: 52px; }
+  .sr-label { font-size: 10px; font-weight: 600; letter-spacing: 1.6px; text-transform: uppercase; color: var(--wg500); white-space: nowrap; }
+  .sr-select {
+    font-family: var(--sans); font-size: 13px; font-weight: 600; color: var(--navy);
+    background: var(--wg100); border: 1.5px solid var(--wg300); border-radius: var(--r-sm);
+    padding: 6px 32px 6px 12px; cursor: pointer; outline: none;
+    appearance: none; -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235C5449' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 10px center;
+    transition: border-color .15s, box-shadow .15s;
+    min-width: 160px;
   }
-  .sr-btn:hover { color: var(--navy); }
-  .sr-btn.active { color: var(--rust); border-bottom-color: var(--rust); }
-  .sr-divider { width: 1px; height: 20px; background: var(--wg200); flex-shrink: 0; }
+  .sr-select:hover { border-color: var(--wg400); }
+  .sr-select:focus { border-color: var(--rust); box-shadow: 0 0 0 3px rgba(184,92,56,.12); }
+  .sr-arrow { color: var(--wg400); font-size: 16px; line-height: 1; }
 
   /* Breadcrumb */
   .breadcrumb { background: var(--wg100); border-bottom: 1px solid var(--wg200); padding: 10px 24px; display: flex; align-items: center; gap: 7px; font-size: 11px; font-weight: 600; letter-spacing: 1.4px; text-transform: uppercase; color: var(--wg500); }
@@ -165,8 +169,13 @@
   <span class="hdr-badge">Internal Review</span>
 </header>
 
-<!-- Sub-region selector -->
-<div class="sr-bar" id="sr-bar"></div>
+<!-- Region / Sub-region selector -->
+<div class="sr-bar">
+  <span class="sr-label">Region</span>
+  <select class="sr-select" id="region-select" onchange="onRegionChange()"></select>
+  <span class="sr-arrow">›</span>
+  <select class="sr-select" id="subregion-select" onchange="onSubRegionChange()"></select>
+</div>
 
 <!-- Breadcrumb (updates on selection) -->
 <div class="breadcrumb">
@@ -247,24 +256,48 @@ function tierColor(t) {
 }
 
 /* ── Selector ────────────────────────────────────────────────────── */
+
+// Build { region -> [subregion objects] } map
+const REGION_MAP = {};
+for (const sr of SUBREGIONS) {
+  if (!REGION_MAP[sr.region]) REGION_MAP[sr.region] = [];
+  REGION_MAP[sr.region].push(sr);
+}
+const REGIONS = Object.keys(REGION_MAP).sort();
+
 function renderSelector() {
-  const bar = document.getElementById('sr-bar');
-  bar.innerHTML = SUBREGIONS.map((sr, i) => `
-    ${i > 0 ? '<div class="sr-divider"></div>' : ''}
-    <button class="sr-btn" id="sr-btn-${esc(sr.key)}" onclick="selectSubRegion('${esc(sr.key)}')">
-      ${esc(sr.region)} &rsaquo; ${esc(sr.subregion)}
-    </button>
-  `).join('');
+  const rSel = document.getElementById('region-select');
+  rSel.innerHTML = REGIONS.map(r => `<option value="${esc(r)}">${esc(r)}</option>`).join('');
+  populateSubRegions(REGIONS[0]);
+}
+
+function populateSubRegions(region) {
+  const srSel = document.getElementById('subregion-select');
+  const subs  = REGION_MAP[region] || [];
+  srSel.innerHTML = subs.map(sr => `<option value="${esc(sr.key)}">${esc(sr.subregion)}</option>`).join('');
+}
+
+function onRegionChange() {
+  const region = document.getElementById('region-select').value;
+  populateSubRegions(region);
+  // auto-select first sub-region in new region
+  const first = (REGION_MAP[region] || [])[0];
+  if (first) selectSubRegion(first.key);
+}
+
+function onSubRegionChange() {
+  const key = document.getElementById('subregion-select').value;
+  selectSubRegion(key);
 }
 
 function selectSubRegion(key) {
   currentSR = SUBREGIONS.find(sr => sr.key === key);
   if (!currentSR) return;
 
-  // Update selector active state
-  document.querySelectorAll('.sr-btn').forEach(b => b.classList.remove('active'));
-  const btn = document.getElementById('sr-btn-' + key);
-  if (btn) btn.classList.add('active');
+  // Sync dropdowns to match
+  document.getElementById('region-select').value    = currentSR.region;
+  populateSubRegions(currentSR.region);
+  document.getElementById('subregion-select').value = key;
 
   // Update breadcrumb
   document.getElementById('bc-region').textContent    = currentSR.region.toUpperCase();
@@ -418,7 +451,15 @@ window.addEventListener('popstate', e => {
   const st = e.state || {};
   if (st.sr) {
     const sr = SUBREGIONS.find(x => x.key === st.sr);
-    if (sr) { currentSR = sr; document.querySelectorAll('.sr-btn').forEach(b => b.classList.remove('active')); const btn = document.getElementById('sr-btn-' + st.sr); if (btn) btn.classList.add('active'); document.getElementById('bc-region').textContent = currentSR.region.toUpperCase(); document.getElementById('bc-subregion').textContent = currentSR.subregion.toUpperCase(); document.getElementById('bc-aside').innerHTML = '<b>' + currentSR.vibes.length + ' vibes</b> &nbsp;&middot;&nbsp; <b>' + currentSR.destinations.length + ' destinations</b>'; }
+    if (sr) {
+      currentSR = sr;
+      document.getElementById('region-select').value = currentSR.region;
+      populateSubRegions(currentSR.region);
+      document.getElementById('subregion-select').value = st.sr;
+      document.getElementById('bc-region').textContent    = currentSR.region.toUpperCase();
+      document.getElementById('bc-subregion').textContent = currentSR.subregion.toUpperCase();
+      document.getElementById('bc-aside').innerHTML = '<b>' + currentSR.vibes.length + ' vibes</b> &nbsp;&middot;&nbsp; <b>' + currentSR.destinations.length + ' destinations</b>';
+    }
   }
   if (st.key) showDetail(st.key);
   else showGrid();
