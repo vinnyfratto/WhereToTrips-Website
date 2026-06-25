@@ -1,0 +1,25 @@
+{%- set navCta = site.cta.post if site.launchMode == "post" else site.cta.pre -%}
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="/">
+      <span class="mark">{{ site.monogram }}</span>
+      <span class="name">{{ site.brandName }}</span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      {%- for link in site.nav %}
+      <a href="{{ link.href }}">{{ link.label }}</a>
+      {%- endfor %}
+      <div class="nav-dropdown">
+        <button type="button" aria-haspopup="true">Partner With Us <span class="caret">▾</span></button>
+        <div class="nav-dropdown-menu">
+          {%- for link in site.partnerNav %}
+          <a href="{{ link.href }}">{{ link.label }}</a>
+          {%- endfor %}
+        </div>
+      </div>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn btn-primary" href="{{ navCta.href }}">{{ navCta.label }}</a>
+    </div>
+  </div>
+</header>

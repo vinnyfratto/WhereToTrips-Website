@@ -10,7 +10,7 @@
 | **Source spec** | `C:\Users\vfrat\Downloads\WhereTo_Sitemap_Content_Architecture.docx` — "Site Map & Content Architecture" |
 | **Stack** | Eleventy v3 (Nunjucks) → `_site/` → GitHub Actions deploy on push to `main` |
 | **CMS** | Sveltia CMS (self-hosted `/admin`) — **decided** |
-| **Overall status** | 🟡 Planning complete → ready to start Phase 0 |
+| **Overall status** | 🟢 Phase 0 built & verified locally (branch `rebuild/phase-0`) — pending: real Web3Forms key, auth-worker hand-off, push-to-deploy approval |
 | **Last updated** | 2026-06-24 |
 
 ---
@@ -176,7 +176,7 @@ wheretotrips.com
 
 | Page | Route | Model | CTA | Status |
 |---|---|---|---|---|
-| Home | `/` | page+sections | Get the App | ☐ |
+| Home | `/` | page+sections | Get the App | ◐ on section system (current content; full §6.1 rebuild = P1) |
 | Get the App | `/app` | page | install / email | ☐ |
 | How It Works | `/how-it-works` | page+sections | Get the App | ☐ |
 | Wander Together | `/wander-together` | page+sections | Start a Group Trip | ☐ |
@@ -380,17 +380,19 @@ Sitemap: https://wheretotrips.com/sitemap.xml
 
 ## 8. Build phases & task checklists
 
-### Phase 0 — Foundation  `☐ Not started`
-- [ ] Refactor `index.njk`/`base.njk` → layouts + section partials; extract CSS
-- [ ] Build `page.njk` that renders a `sections[]` block list
-- [ ] Fix corrupted `nav`/`footerCols` in `site.json`; build primary nav (+ Partner dropdown) & footer
-- [ ] Add `launchMode` flag + wire CTA/badge branching
-- [ ] Localize Pexels images → `src/media`
-- [ ] Add `robots.txt` + `sitemap.xml`
-- [ ] Stand up Sveltia: `src/admin/index.html` + `config.yml` (collections + section palette + media)
+### Phase 0 — Foundation  `◐ In progress (build done, hand-off pending)`
+- [x] Refactor `index.njk`/`base.njk` → layouts + section partials; extract CSS → `src/assets/styles.css`
+- [x] Build `page.njk` that renders a `sections[]` block list (dynamic `{% include %}` by `type`)
+- [x] Fix corrupted `nav`/`footerCols` in `site.json`; build primary nav (+ Partner dropdown) & footer
+- [x] Add `launchMode` flag + wire CTA/badge branching (header CTA + `cta_band` switch pre/post)
+- [x] Localize Pexels images → `src/media` (hero/vibes/together/chat)
+- [x] Add `robots.txt` + `sitemap.xml` (vibes-engine excluded from sitemap; served verbatim)
+- [x] Stand up Sveltia: `src/admin/index.html` + `config.yml` (collections + 9-type section palette + media)
+- [x] Home page converted to section system; build verified green locally (`npm run build`, 0 errors, 0 template leaks)
+- [x] Bump `package.json` version → **1.1.0**
+- [~] Wire form provider in `site.json` — Web3Forms wired into forms; **needs real `accessKey`** (placeholder now)
 - [ ] **(LAST task — stakeholder hand-off, ~10 min)** Deploy `sveltia-cms-auth` Cloudflare Worker; register GitHub OAuth app; set `base_url`; verify `/admin` login — see Q4
-- [ ] Wire form provider + endpoints in `site.json`
-- [ ] Bump `package.json` version; verify Actions deploy is green
+- [ ] Push `rebuild/phase-0` → `main` to trigger the GitHub Pages deploy (awaiting approval)
 
 ### Phase 1 — Traveler pages  `☐ Not started`
 - [ ] Home (rebuilt as sections)
@@ -447,10 +449,12 @@ Sitemap: https://wheretotrips.com/sitemap.xml
 
 ## 11. Known issues / tech debt
 
-- **`site.json` nav/footerCols corrupted** — currently `"[object Object],..."` strings instead of arrays; nav/footer effectively broken. Fix in Phase 0.
-- **Images hot-linked from Pexels** — bad for SEO/AI-crawlers/reliability. Localize to `src/media`.
-- **Spec uses `whereto.com`** — placeholder; real domain is wheretotrips.com.
-- **Inline CSS in `base.njk`** — fine now, but extract during the Phase 0 refactor for reuse across templates.
+- ✅ **FIXED (P0)** — `site.json` nav/footerCols corruption (`"[object Object]"`); now proper arrays, 0 leaks in build.
+- ✅ **FIXED (P0)** — Pexels images localized into `src/media`.
+- ✅ **FIXED (P0)** — inline CSS extracted to `src/assets/styles.css`; only color/font tokens remain templated in `<head>`.
+- **Spec uses `whereto.com`** — placeholder; real domain is wheretotrips.com (using real everywhere).
+- **`.pages.yml` (old Pages CMS) and `src/_data/copy.json` removed** — superseded by Sveltia config + front-matter sections.
+- **Legal pages** still at `/privacy/` `/terms/` (old HTML); move to `/legal/*` in P2.
 
 ---
 
@@ -466,6 +470,7 @@ Sitemap: https://wheretotrips.com/sitemap.xml
 
 - **2026-06-24** — Reviewed spec docx; audited current repo; locked D1–D6; chose Sveltia after CMS deep-dive. Created this tracker. Status: planning complete, ready for Phase 0. No site code changed yet.
 - **2026-06-24** — Resolved Q4 (auth worker = last task of Phase 0, stakeholder hand-off; I prep all) + Q5 (Web3Forms). Ready to commit tracker and begin Phase 0.
+- **2026-06-24** — **Phase 0 built on branch `rebuild/phase-0`.** New architecture: `layouts/base.njk` + `layouts/page.njk` (section renderer) + `partials/` (header w/ partner dropdown, footer, meta, store-buttons, app-disclaimer) + `sections/` (hero, feature_split, chat, cta_band, tile_grid, steps, rich_text, email_capture, faq_accordion). CSS extracted → `assets/styles.css`. `site.json` rebuilt (nav/footer/launchMode/store/forms). Home migrated to `index.md` front-matter sections. Added `robots.txt` + `sitemap.xml`. Sveltia CMS scaffolded (`admin/index.html` + `config.yml`). Removed `index.njk`, `.pages.yml`, `copy.json`. `package.json` → 1.1.0. `npm run build` green: 0 errors, 0 template leaks, 0 `[object Object]`. Not pushed — `main` untouched, nothing deployed.
 
 ---
 

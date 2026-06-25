@@ -1,0 +1,21 @@
+<section class="block" id="{{ s.id or 'download' }}" style="padding-top: 0;">
+  <div class="wrap">
+    <div class="download-band reveal">
+      {% if s.eyebrow %}<span class="eyebrow">{{ s.eyebrow }}</span>{% endif %}
+      <h2>{{ s.title.pre }}<span class="italic">{{ s.title.accent }}</span>{{ s.title.post }}</h2>
+      {% if s.body %}<p>{{ s.body }}</p>{% endif %}
+      {% if site.launchMode == "post" %}
+        {% include "partials/store-buttons.njk" %}
+      {% else %}
+        <form class="email-capture center" action="https://api.web3forms.com/submit" method="POST">
+          <input type="hidden" name="access_key" value="{{ site.forms.accessKey }}" />
+          <input type="hidden" name="subject" value="Early Access signup — WhereTo" />
+          <input type="hidden" name="intent" value="early_access" />
+          <input type="email" name="email" placeholder="you@email.com" aria-label="Email address" required />
+          <button type="submit" class="btn btn-light">{{ s.formLabel or 'Join Early Access' }}</button>
+        </form>
+      {% endif %}
+      {% include "partials/app-disclaimer.njk" %}
+    </div>
+  </div>
+</section>

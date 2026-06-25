@@ -1,0 +1,24 @@
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <a class="brand" href="/">
+        <span class="mark">{{ site.monogram }}</span>
+        <span class="name">{{ site.brandName }}</span>
+      </a>
+      <div class="foot-links">
+        {%- for col in site.footerCols %}
+        <div class="foot-col">
+          <h4>{{ col.heading }}</h4>
+          {%- for link in col.links %}
+          <a href="{{ link.href }}">{{ link.label }}</a>
+          {%- endfor %}
+        </div>
+        {%- endfor %}
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© <span id="year"></span> {{ site.brandName }}. All rights reserved. WhereTo is a mobile app for iOS &amp; Android; this website is informational only.</span>
+      <span>Photography via <a href="https://www.pexels.com" target="_blank" rel="noopener">Pexels</a></span>
+    </div>
+  </div>
+</footer>

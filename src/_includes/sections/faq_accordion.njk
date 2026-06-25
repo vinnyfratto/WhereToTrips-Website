@@ -1,0 +1,18 @@
+<section class="block{% if s.background %} tint{% endif %}"{% if s.id %} id="{{ s.id }}"{% endif %}>
+  <div class="wrap">
+    {% if s.eyebrow or s.title %}
+    <div class="sec-head center reveal">
+      {% if s.eyebrow %}<span class="eyebrow">{{ s.eyebrow }}</span>{% endif %}
+      {% if s.title %}<h2>{{ s.title.pre }}<span class="italic">{{ s.title.accent }}</span>{{ s.title.post }}</h2>{% endif %}
+    </div>
+    {% endif %}
+    <div class="faq-list reveal reveal-delay-1">
+      {% for item in s.items %}
+      <details class="faq-item">
+        <summary>{{ item.q }}</summary>
+        <div class="faq-body">{{ item.a | safe }}</div>
+      </details>
+      {% endfor %}
+    </div>
+  </div>
+</section>

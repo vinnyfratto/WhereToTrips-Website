@@ -1,0 +1,17 @@
+<section class="block{% if s.background %} tint{% endif %}"{% if s.id %} id="{{ s.id }}"{% endif %}>
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      {% if s.eyebrow %}<span class="eyebrow">{{ s.eyebrow }}</span>{% endif %}
+      {% if s.title %}<h2>{{ s.title.pre }}<span class="italic">{{ s.title.accent }}</span>{{ s.title.post }}</h2>{% endif %}
+      {% if s.body %}<p class="lede">{{ s.body }}</p>{% endif %}
+    </div>
+    <form class="email-capture center reveal reveal-delay-1" action="https://api.web3forms.com/submit" method="POST">
+      <input type="hidden" name="access_key" value="{{ site.forms.accessKey }}" />
+      <input type="hidden" name="subject" value="{{ s.subject or 'WhereTo signup' }}" />
+      <input type="hidden" name="intent" value="{{ s.intent or 'app_link' }}" />
+      <input type="email" name="email" placeholder="you@email.com" aria-label="Email address" required />
+      <button type="submit" class="btn btn-primary">{{ s.buttonLabel or 'Send Me the Link' }}</button>
+    </form>
+    {% if s.note %}<p class="email-note" style="text-align: center;">{{ s.note }}</p>{% endif %}
+  </div>
+</section>

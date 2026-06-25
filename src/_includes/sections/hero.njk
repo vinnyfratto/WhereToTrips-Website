@@ -1,0 +1,27 @@
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div class="reveal">
+      {% if s.eyebrow %}<span class="eyebrow">{{ s.eyebrow }}</span>{% endif %}
+      <h1>{{ s.title.pre }}<span class="italic">{{ s.title.accent }}</span>{{ s.title.post }}</h1>
+      {% if s.lede %}<p class="lede">{{ s.lede }}</p>{% endif %}
+      {% if s.primaryBtn or s.ghostBtn %}
+      <div class="cta">
+        {% if s.primaryBtn %}<a class="btn btn-primary" href="{{ s.primaryBtn.href }}">{{ s.primaryBtn.label }}</a>{% endif %}
+        {% if s.ghostBtn %}<a class="btn btn-ghost" href="{{ s.ghostBtn.href }}">{{ s.ghostBtn.label }}</a>{% endif %}
+      </div>
+      {% endif %}
+    </div>
+    <div class="hero-media reveal reveal-delay-1">
+      <img class="hero-img" src="{{ s.image.src }}" alt="{{ s.image.alt }}" loading="eager" />
+      {% if s.badge %}
+      <div class="hero-badge">
+        <span class="pulse"></span>
+        <div>
+          <div class="bt">{{ s.badge.title }}</div>
+          <div class="bs">{{ s.badge.subtitle }}</div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</section>

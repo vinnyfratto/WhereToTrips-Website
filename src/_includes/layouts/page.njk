@@ -1,0 +1,7 @@
+---
+layout: layouts/base.njk
+---
+{% for section in sections -%}
+{%- set s = section -%}
+{% include "sections/" + section.type + ".njk" %}
+{%- endfor %}

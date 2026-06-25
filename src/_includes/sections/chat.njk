@@ -1,0 +1,17 @@
+<section class="block tint"{% if s.id %} id="{{ s.id }}"{% endif %}>
+  <div class="wrap">
+    <div class="chat-grid">
+      <div class="chat-text reveal">
+        {% if s.eyebrow %}<span class="eyebrow">{{ s.eyebrow }}</span>{% endif %}
+        <h2>{{ s.title.pre }}<span class="italic">{{ s.title.accent }}</span>{{ s.title.post }}</h2>
+        {% if s.lede %}<p class="lede">{{ s.lede }}</p>{% endif %}
+        <div class="chat-bubbles">
+          {% for ex in s.examples %}<div class="bubble">{{ ex }}</div>{% endfor %}
+        </div>
+      </div>
+      <div class="chat-img-wrap reveal reveal-delay-1">
+        <img class="chat-img" src="{{ s.image.src }}" alt="{{ s.image.alt }}" loading="lazy" />
+      </div>
+    </div>
+  </div>
+</section>

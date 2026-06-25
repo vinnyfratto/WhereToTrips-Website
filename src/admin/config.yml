@@ -1,0 +1,337 @@
+# ============================================================
+# Sveltia CMS configuration (Decap-compatible)
+# Editor lives at  https://wheretotrips.com/admin
+# Auth: deploy sveltia-cms-auth (Cloudflare Worker), then set
+#       base_url below to the worker URL. Until then the GitHub
+#       login will not complete. See WhereToTrips_Website_Build.md §10 Q4.
+# ============================================================
+
+backend:
+  name: github
+  repo: vinnyfratto/WhereToTrips-Website
+  branch: main
+  base_url: https://REPLACE_WITH_CLOUDFLARE_WORKER_URL
+
+media_folder: src/media
+public_folder: /media
+
+# Reusable note: section "types" below must match the partial filenames
+# in src/_includes/sections/ (the type key is the default `type`).
+
+collections:
+  # ── Marketing pages (block-composed) ───────────────────────
+  - name: pages
+    label: Pages
+    icon: home
+    files:
+      - name: home
+        label: Home Page
+        file: src/index.md
+        fields:
+          - { name: title, label: "SEO title", widget: string }
+          - { name: description, label: "SEO description", widget: text }
+          - { name: layout, label: Layout, widget: hidden, default: layouts/page.njk }
+          - name: sections
+            label: Page Sections
+            label_singular: Section
+            widget: list
+            types:
+              - name: hero
+                label: Hero
+                fields:
+                  - { name: eyebrow, widget: string, required: false }
+                  - name: title
+                    widget: object
+                    fields:
+                      - { name: pre, widget: string }
+                      - { name: accent, widget: string }
+                      - { name: post, widget: string, required: false }
+                  - { name: lede, widget: text, required: false }
+                  - name: primaryBtn
+                    widget: object
+                    required: false
+                    fields:
+                      - { name: label, widget: string }
+                      - { name: href, widget: string }
+                  - name: ghostBtn
+                    widget: object
+                    required: false
+                    fields:
+                      - { name: label, widget: string }
+                      - { name: href, widget: string }
+                  - name: image
+                    widget: object
+                    fields:
+                      - { name: src, widget: image }
+                      - { name: alt, widget: string }
+                  - name: badge
+                    widget: object
+                    required: false
+                    fields:
+                      - { name: title, widget: string }
+                      - { name: subtitle, widget: string }
+
+              - name: feature_split
+                label: Feature Split
+                fields:
+                  - { name: id, widget: string, required: false }
+                  - { name: flip, widget: boolean, default: false, required: false }
+                  - { name: background, widget: boolean, default: false, required: false }
+                  - { name: eyebrow, widget: string, required: false }
+                  - name: title
+                    widget: object
+                    fields:
+                      - { name: pre, widget: string }
+                      - { name: accent, widget: string }
+                      - { name: post, widget: string, required: false }
+                  - { name: lede, widget: text, required: false }
+                  - { name: body, widget: text, required: false }
+                  - name: image
+                    widget: object
+                    fields:
+                      - { name: src, widget: image }
+                      - { name: alt, widget: string }
+                  - name: stats
+                    widget: list
+                    required: false
+                    fields:
+                      - { name: value, widget: string }
+                      - { name: label, widget: string }
+                  - name: features
+                    widget: list
+                    required: false
+                    fields:
+                      - { name: icon, widget: string }
+                      - { name: label, widget: string }
+
+              - name: chat
+                label: Conversational Search
+                fields:
+                  - { name: id, widget: string, required: false }
+                  - { name: eyebrow, widget: string, required: false }
+                  - name: title
+                    widget: object
+                    fields:
+                      - { name: pre, widget: string }
+                      - { name: accent, widget: string }
+                      - { name: post, widget: string, required: false }
+                  - { name: lede, widget: text, required: false }
+                  - name: examples
+                    widget: list
+                    field: { name: example, widget: string }
+                  - name: image
+                    widget: object
+                    fields:
+                      - { name: src, widget: image }
+                      - { name: alt, widget: string }
+
+              - name: steps
+                label: Steps
+                fields:
+                  - { name: id, widget: string, required: false }
+                  - { name: eyebrow, widget: string, required: false }
+                  - name: title
+                    widget: object
+                    required: false
+                    fields:
+                      - { name: pre, widget: string }
+                      - { name: accent, widget: string }
+                      - { name: post, widget: string, required: false }
+                  - { name: lede, widget: text, required: false }
+                  - name: steps
+                    widget: list
+                    fields:
+                      - { name: title, widget: string }
+                      - { name: body, widget: text }
+
+              - name: tile_grid
+                label: Tile Grid
+                fields:
+                  - { name: id, widget: string, required: false }
+                  - { name: background, widget: boolean, default: false, required: false }
+                  - { name: center, widget: boolean, default: false, required: false }
+                  - { name: eyebrow, widget: string, required: false }
+                  - name: title
+                    widget: object
+                    required: false
+                    fields:
+                      - { name: pre, widget: string }
+                      - { name: accent, widget: string }
+                      - { name: post, widget: string, required: false }
+                  - { name: intro, widget: text, required: false }
+                  - { name: columns, widget: number, default: 3, required: false }
+                  - name: tiles
+                    widget: list
+                    fields:
+                      - { name: label, widget: string }
+                      - { name: blurb, widget: text, required: false }
+                      - { name: icon, widget: string, required: false }
+                      - { name: image, widget: image, required: false }
+                      - { name: href, widget: string, required: false }
+
+              - name: faq_accordion
+                label: FAQ Accordion
+                fields:
+                  - { name: id, widget: string, required: false }
+                  - { name: eyebrow, widget: string, required: false }
+                  - name: title
+                    widget: object
+                    required: false
+                    fields:
+                      - { name: pre, widget: string }
+                      - { name: accent, widget: string }
+                      - { name: post, widget: string, required: false }
+                  - name: items
+                    widget: list
+                    fields:
+                      - { name: q, widget: string }
+                      - { name: a, widget: markdown }
+
+              - name: email_capture
+                label: Email Capture
+                fields:
+                  - { name: id, widget: string, required: false }
+                  - { name: background, widget: boolean, default: false, required: false }
+                  - { name: eyebrow, widget: string, required: false }
+                  - name: title
+                    widget: object
+                    required: false
+                    fields:
+                      - { name: pre, widget: string }
+                      - { name: accent, widget: string }
+                      - { name: post, widget: string, required: false }
+                  - { name: body, widget: text, required: false }
+                  - { name: subject, widget: string, required: false }
+                  - { name: intent, widget: string, required: false, hint: "Tag for the email flow, e.g. app_link / early_access" }
+                  - { name: buttonLabel, widget: string, required: false }
+                  - { name: note, widget: string, required: false }
+
+              - name: rich_text
+                label: Rich Text
+                fields:
+                  - { name: id, widget: string, required: false }
+                  - { name: background, widget: boolean, default: false, required: false }
+                  - name: title
+                    widget: object
+                    required: false
+                    fields:
+                      - { name: pre, widget: string }
+                      - { name: accent, widget: string }
+                      - { name: post, widget: string, required: false }
+                  - { name: body, widget: markdown }
+
+              - name: cta_band
+                label: Download / CTA Band
+                fields:
+                  - { name: id, widget: string, required: false }
+                  - { name: eyebrow, widget: string, required: false }
+                  - name: title
+                    widget: object
+                    fields:
+                      - { name: pre, widget: string }
+                      - { name: accent, widget: string }
+                      - { name: post, widget: string, required: false }
+                  - { name: body, widget: text, required: false }
+                  - { name: formLabel, widget: string, required: false }
+
+  # ── Site settings & navigation ─────────────────────────────
+  - name: settings
+    label: Settings
+    icon: settings
+    files:
+      - name: site
+        label: Site & Navigation
+        file: src/_data/site.json
+        fields:
+          - { name: brandName, widget: string }
+          - { name: monogram, label: "Nav monogram letter", widget: string }
+          - { name: metaTitle, label: "Default SEO title", widget: string }
+          - { name: metaDescription, label: "Default SEO description", widget: text }
+          - { name: url, widget: string }
+          - { name: contactEmail, widget: string }
+          - name: launchMode
+            label: "Launch mode"
+            widget: select
+            default: pre
+            options:
+              - { label: "Pre-launch (Join Early Access)", value: pre }
+              - { label: "Post-launch (Get the App + store badges)", value: post }
+          - name: cta
+            label: "Nav CTA (pre / post launch)"
+            widget: object
+            fields:
+              - name: pre
+                widget: object
+                fields:
+                  - { name: label, widget: string }
+                  - { name: href, widget: string }
+              - name: post
+                widget: object
+                fields:
+                  - { name: label, widget: string }
+                  - { name: href, widget: string }
+          - name: store
+            label: "App store links"
+            widget: object
+            fields:
+              - { name: appleHref, widget: string }
+              - { name: googleHref, widget: string }
+          - name: forms
+            label: "Form handler (Web3Forms)"
+            widget: object
+            fields:
+              - { name: provider, widget: string }
+              - { name: accessKey, widget: string }
+          - name: nav
+            label: "Primary navigation"
+            widget: list
+            fields:
+              - { name: label, widget: string }
+              - { name: href, widget: string }
+          - name: partnerNav
+            label: "Partner dropdown links"
+            widget: list
+            fields:
+              - { name: label, widget: string }
+              - { name: href, widget: string }
+          - name: footerCols
+            label: "Footer columns"
+            widget: list
+            fields:
+              - { name: heading, widget: string }
+              - name: links
+                widget: list
+                fields:
+                  - { name: label, widget: string }
+                  - { name: href, widget: string }
+
+      - name: theme
+        label: Theme & Fonts
+        file: src/_data/theme.json
+        fields:
+          - name: colors
+            widget: object
+            fields:
+              - { name: cream, widget: string }
+              - { name: card, widget: string }
+              - { name: navy, widget: string }
+              - { name: navyLight, widget: string }
+              - { name: rust, widget: string }
+          - { name: maxWidth, label: "Max content width (px)", widget: number }
+          - name: headingFont
+            widget: select
+            options:
+              - { label: "DM Serif Display", value: dm-serif }
+              - { label: "Playfair Display", value: playfair }
+              - { label: "Fraunces", value: fraunces }
+              - { label: "Cormorant Garamond", value: cormorant }
+              - { label: "Lora", value: lora }
+          - name: bodyFont
+            widget: select
+            options:
+              - { label: "Nunito Sans", value: nunito-sans }
+              - { label: "Inter", value: inter }
+              - { label: "Work Sans", value: work-sans }
+              - { label: "DM Sans", value: dm-sans }
+              - { label: "Plus Jakarta Sans", value: plus-jakarta }
+              - { label: "Figtree", value: figtree }

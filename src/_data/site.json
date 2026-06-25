@@ -1,11 +1,66 @@
 {
   "brandName": "WhereTo",
   "monogram": "W",
-  "metaTitle": "Where To: Discover Your Next Destination.",
-  "metaDescription": "Most travel platforms ask a simple question: \"Where do you want to go?\" WhereTo asks a better one: \"What kind of experience do you want to have?\"",
+  "metaTitle": "WhereTo — Discover Your Next Destination",
+  "metaDescription": "WhereTo is a travel discovery app for iOS and Android. Tell it your budget and your vibe, and it finds the destination. The website is for discovery only — planning and booking happen in the app.",
   "url": "https://wheretotrips.com",
   "contactEmail": "ccupero@vcinnovationsgroup.com",
-  "navCtaLabel": "Download Free",
-  "nav": "[object Object],[object Object],[object Object],[object Object]",
-  "footerCols": "[object Object],[object Object],[object Object]"
+  "launchMode": "pre",
+  "cta": {
+    "pre": { "label": "Join Early Access", "href": "/app/" },
+    "post": { "label": "Get the App", "href": "/app/" }
+  },
+  "store": {
+    "appleHref": "#",
+    "googleHref": "#"
+  },
+  "forms": {
+    "provider": "web3forms",
+    "accessKey": "REPLACE_WITH_WEB3FORMS_ACCESS_KEY"
+  },
+  "nav": [
+    { "label": "How It Works", "href": "/how-it-works/" },
+    { "label": "Travel Vibes", "href": "/travel-vibes/" },
+    { "label": "Destinations", "href": "/destinations/" },
+    { "label": "Wander Together", "href": "/wander-together/" },
+    { "label": "Insights", "href": "/insights/" }
+  ],
+  "partnerNav": [
+    { "label": "For Creators & Influencers", "href": "/partners/creators/" },
+    { "label": "For Travel Industry Partners", "href": "/partners/industry/" }
+  ],
+  "footerCols": [
+    {
+      "heading": "Get the App",
+      "links": [
+        { "label": "Download", "href": "/app/" },
+        { "label": "How It Works", "href": "/how-it-works/" }
+      ]
+    },
+    {
+      "heading": "Explore",
+      "links": [
+        { "label": "Travel Vibes", "href": "/travel-vibes/" },
+        { "label": "Destinations", "href": "/destinations/" },
+        { "label": "Wander Together", "href": "/wander-together/" },
+        { "label": "Insights", "href": "/insights/" }
+      ]
+    },
+    {
+      "heading": "Company",
+      "links": [
+        { "label": "About Us", "href": "/about/" },
+        { "label": "Press & Media", "href": "/press/" },
+        { "label": "Contact", "href": "/contact/" },
+        { "label": "FAQ", "href": "/faq/" }
+      ]
+    },
+    {
+      "heading": "Legal",
+      "links": [
+        { "label": "Privacy Policy", "href": "/legal/privacy/" },
+        { "label": "Terms of Service", "href": "/legal/terms/" }
+      ]
+    }
+  ]
 }

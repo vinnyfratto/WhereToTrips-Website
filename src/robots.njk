@@ -1,0 +1,33 @@
+---
+permalink: /robots.txt
+eleventyExcludeFromCollections: true
+---
+# WhereTo — AI crawler policy
+# Review GPTBot (training) as a deliberate decision — left allowed below.
+# Block it explicitly if you do not want content used in model training.
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+# Keep admin/account/api areas out of all crawlers
+User-agent: *
+Disallow: /admin/
+Disallow: /account/
+Disallow: /api/
+
+Sitemap: {{ site.url }}/sitemap.xml

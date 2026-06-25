@@ -1,0 +1,38 @@
+<section class="block{% if s.background %} tint{% endif %}"{% if s.id %} id="{{ s.id }}"{% endif %}>
+  <div class="wrap">
+    <div class="feature-split{% if s.flip %} flip{% endif %}">
+      <div class="feature-img-wrap reveal{% if s.flip %} reveal-delay-1{% endif %}">
+        <img class="feature-img"{% if s.chips %} data-chip-target{% endif %} src="{{ s.image.src }}" alt="{{ s.image.alt }}" loading="lazy" />
+        {% if s.stats %}
+        {% for st in s.stats %}
+        <div class="feature-stat" style="{% if loop.first %}top: 28px; right: -20px;{% else %}bottom: 40px; right: -20px;{% endif %}">
+          <div class="sv">{{ st.value }}</div>
+          <div class="sl">{{ st.label }}</div>
+        </div>
+        {% endfor %}
+        {% endif %}
+      </div>
+      <div class="feature-text reveal{% if not s.flip %} reveal-delay-1{% endif %}">
+        {% if s.eyebrow %}<span class="eyebrow">{{ s.eyebrow }}</span>{% endif %}
+        <h2>{{ s.title.pre }}<span class="italic">{{ s.title.accent }}</span>{{ s.title.post }}</h2>
+        {% if s.lede %}<p class="lede">{{ s.lede }}</p>{% endif %}
+        {% if s.body %}<p class="body-copy" style="margin-top: 16px;">{{ s.body }}</p>{% endif %}
+        {% if s.chips %}
+        <div class="chip-cloud">
+          {% for chip in s.chips %}
+          <span class="chip{% if loop.index0 % 4 == 0 %} accent{% endif %}{% if loop.first %} active{% endif %}" data-img="{{ chip.img }}" data-alt="{{ chip.alt }}">{{ chip.label }}</span>
+          {% endfor %}
+        </div>
+        {% endif %}
+        {% if s.features %}
+        <ul class="feature-list">
+          {% for item in s.features %}
+          <li><span class="fi">{{ item.icon }}</span><span>{{ item.label }}</span></li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+        {% if s.cta %}<div class="cta" style="margin-top: 32px;"><a class="btn btn-primary" href="{{ s.cta.href }}">{{ s.cta.label }}</a></div>{% endif %}
+      </div>
+    </div>
+  </div>
+</section>

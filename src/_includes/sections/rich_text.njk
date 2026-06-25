@@ -1,0 +1,11 @@
+<section class="block{% if s.background %} tint{% endif %}"{% if s.id %} id="{{ s.id }}"{% endif %}>
+  <div class="wrap">
+    {% if s.title %}
+    <div class="sec-head center reveal">
+      {% if s.eyebrow %}<span class="eyebrow">{{ s.eyebrow }}</span>{% endif %}
+      <h2>{{ s.title.pre }}<span class="italic">{{ s.title.accent }}</span>{{ s.title.post }}</h2>
+    </div>
+    {% endif %}
+    <div class="rich-text reveal">{{ s.body | safe }}</div>
+  </div>
+</section>

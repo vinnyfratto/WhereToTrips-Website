@@ -1,0 +1,102 @@
+{#- ── Font catalog ── -#}
+{%- set headingFonts = {
+  "dm-serif":     { "stack": "'DM Serif Display', Georgia, serif",   "param": "DM+Serif+Display:ital@0;1" },
+  "playfair":     { "stack": "'Playfair Display', Georgia, serif",   "param": "Playfair+Display:ital,wght@0,500;0,700;1,500" },
+  "fraunces":     { "stack": "'Fraunces', Georgia, serif",           "param": "Fraunces:ital,wght@0,400;0,600;1,400;1,600" },
+  "cormorant":    { "stack": "'Cormorant Garamond', Georgia, serif", "param": "Cormorant+Garamond:ital,wght@0,500;0,700;1,500" },
+  "lora":         { "stack": "'Lora', Georgia, serif",               "param": "Lora:ital,wght@0,500;0,600;1,500;1,600" }
+} -%}
+{%- set bodyFonts = {
+  "inter":        { "stack": "'Inter', system-ui, sans-serif",             "param": "Inter:wght@300;400;500;600" },
+  "nunito-sans":  { "stack": "'Nunito Sans', system-ui, sans-serif",       "param": "Nunito+Sans:wght@300;400;500;600" },
+  "work-sans":    { "stack": "'Work Sans', system-ui, sans-serif",         "param": "Work+Sans:wght@300;400;500;600" },
+  "dm-sans":      { "stack": "'DM Sans', system-ui, sans-serif",           "param": "DM+Sans:wght@300;400;500;600" },
+  "plus-jakarta": { "stack": "'Plus Jakarta Sans', system-ui, sans-serif", "param": "Plus+Jakarta+Sans:wght@300;400;500;600" },
+  "figtree":      { "stack": "'Figtree', system-ui, sans-serif",           "param": "Figtree:wght@300;400;500;600" }
+} -%}
+{%- set hf = headingFonts[theme.headingFont] or headingFonts["dm-serif"] -%}
+{%- set bf = bodyFonts[theme.bodyFont] or bodyFonts["nunito-sans"] -%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% include "partials/meta.njk" %}
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family={{ hf.param }}&family={{ bf.param }}&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --cream:      {{ theme.colors.cream }};
+      --card:       {{ theme.colors.card }};
+      --navy:       {{ theme.colors.navy }};
+      --navy-light: {{ theme.colors.navyLight }};
+      --rust:       {{ theme.colors.rust }};
+      --wg100: #F5F0E8;
+      --wg200: #E4DDD3;
+      --wg300: #D4CCC2;
+      --wg400: #B8B0A6;
+      --wg500: #9E9690;
+      --wg600: #5C5449;
+      --serif: {{ hf.stack | safe }};
+      --sans:  {{ bf.stack | safe }};
+      --max: {{ theme.maxWidth }}px;
+      --radius-lg: 28px;
+      --radius-md: 18px;
+      --radius-sm: 10px;
+      --shadow-sm: 0 2px 10px rgba(28,54,73,0.07);
+      --shadow-md: 0 12px 36px rgba(28,54,73,0.12);
+      --shadow-lg: 0 28px 70px rgba(28,54,73,0.18);
+      --shadow-xl: 0 40px 100px rgba(28,54,73,0.22);
+    }
+  </style>
+  <link rel="stylesheet" href="/assets/styles.css" />
+</head>
+<body>
+{% include "partials/header.njk" %}
+
+<a id="top"></a>
+{{ content | safe }}
+
+{% include "partials/footer.njk" %}
+
+<script>
+  var yearEl = document.getElementById('year');
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+  // Scroll reveal
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.1, rootMargin: '0px 0px -32px 0px' });
+  document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+
+  // Vibe chip → image swap (used by feature_split sections with chips)
+  document.querySelectorAll('[data-chip-target]').forEach(function (img) {
+    var group = img.closest('section');
+    if (!group) return;
+    var chips = group.querySelectorAll('.chip[data-img]');
+    chips.forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        if (chip.classList.contains('active')) return;
+        chips.forEach(function (c) { c.classList.remove('active'); });
+        chip.classList.add('active');
+        img.classList.add('fading');
+        var next = new Image();
+        next.src = chip.dataset.img;
+        next.onload = function () {
+          img.src = chip.dataset.img;
+          img.alt = chip.dataset.alt || chip.textContent.trim();
+          img.classList.remove('fading');
+        };
+        setTimeout(function () {
+          if (img.classList.contains('fading')) {
+            img.src = chip.dataset.img;
+            img.classList.remove('fading');
+          }
+        }, 800);
+      });
+    });
+  });
+</script>
+</body>
+</html>
