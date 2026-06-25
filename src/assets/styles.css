@@ -99,6 +99,37 @@ footer .brand-logo { height: 30px; }
 .nav-dropdown-menu a:hover { background: rgba(184,92,56,0.08); color: var(--rust); }
 .nav-cta .btn { padding: 11px 22px; font-size: 11px; }
 
+/* Hamburger (mobile only) */
+.nav-toggle {
+  display: none; flex-direction: column; justify-content: center; gap: 5px;
+  width: 42px; height: 42px; padding: 0; border: 0; background: none; cursor: pointer;
+}
+.nav-toggle span {
+  display: block; width: 22px; height: 2px; margin: 0 auto;
+  background: var(--navy); border-radius: 2px;
+  transition: transform .2s ease, opacity .2s ease;
+}
+header.menu-open .nav-toggle span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+header.menu-open .nav-toggle span:nth-child(2) { opacity: 0; }
+header.menu-open .nav-toggle span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* Mobile menu panel */
+.mobile-menu { display: none; }
+.mobile-menu a {
+  font-family: var(--sans); font-size: 16px; font-weight: 500; color: var(--navy);
+  padding: 15px 0; border-bottom: 1px solid var(--wg200);
+}
+.mobile-menu a:hover, .mobile-menu a:active { color: var(--rust); }
+.mobile-menu .mobile-menu-label {
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--wg500); padding: 18px 0 4px;
+}
+.mobile-menu .mobile-sub { color: var(--wg600); font-weight: 400; }
+.mobile-menu .mobile-cta {
+  margin-top: 20px; padding: 15px 30px; border-bottom: 0;
+  color: var(--cream); justify-content: center;
+}
+
 /* ── Hero ─────────────────────────────── */
 .hero {
   padding: clamp(72px, 10vw, 120px) 0 clamp(64px, 8vw, 104px);
@@ -402,6 +433,13 @@ footer { border-top: 1px solid var(--wg200); padding: 56px 0 40px; }
 }
 @media (max-width: 720px) {
   .nav-links { display: none; }
+  .nav-cta { display: none; }
+  .nav-toggle { display: flex; }
+  header.menu-open .mobile-menu {
+    display: flex; flex-direction: column;
+    padding: 4px 24px 26px; background: var(--cream);
+    border-top: 1px solid var(--wg200);
+  }
   .foot-links { gap: 28px; }
 }
 @media (max-width: 480px) {
