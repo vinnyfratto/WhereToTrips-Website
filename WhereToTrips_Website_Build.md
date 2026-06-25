@@ -10,10 +10,19 @@
 | **Source spec** | `C:\Users\vfrat\Downloads\WhereTo_Sitemap_Content_Architecture.docx` — "Site Map & Content Architecture" |
 | **Stack** | Eleventy v3 (Nunjucks) → `_site/` → GitHub Actions deploy on push to `main` |
 | **CMS** | Sveltia CMS (self-hosted `/admin`) — **decided** |
-| **Overall status** | 🚀 **LIVE** — Phases 0–2 deployed to wheretotrips.com (`main` @ 89af2ce, 38 pages). CMS ready at `/admin` (PAT sign-in). Pending: CMS first login, legal-copy review, Phase 3 polish |
+| **Overall status** | 🚀 **LIVE & CMS working** — wheretotrips.com serving the full 38-page site (`main`). Sveltia `/admin` verified: PAT login + all 14 pages / 3 collections / legal / settings, icons fixed. Next: Phase 3 polish, legal review, Q3 founders, optional OAuth worker |
 | **Last updated** | 2026-06-24 |
 
 ---
+
+> **▶ Resume here (next session).** Site is live and the CMS works end-to-end. Open items, rough priority:
+> 1. **Phase 3 polish** — real per-page photography (vibe/destination/insight leaves currently reuse 4 stock images); the proprietary "by the numbers" stat page; more destination lists; submit to **Google Search Console + Bing Webmaster Tools** (the AI-crawler step).
+> 2. **Legal review** — have counsel check `/legal/privacy` + `/legal/terms` (drafts).
+> 3. **Q3** — decide whether founder names appear on `/about` (currently omitted).
+> 4. **Optional** — deploy `sveltia-cms-auth` Cloudflare Worker + GitHub OAuth for multi-user CMS login (Chris); currently single-user PAT. Then uncomment `base_url` in `src/admin/config.yml`.
+> 5. **At launch** — flip `launchMode` `pre → post` in Settings + add real App Store / Google Play URLs; add `favicon.ico` + `apple-touch-icon.png`.
+>
+> Workflow: CMS edits (or local commits) to `main` auto-deploy in ~1 min via GitHub Actions. Bump `package.json` version on code changes.
 
 ## 0. How to use this doc
 
@@ -482,6 +491,7 @@ Sitemap: https://wheretotrips.com/sitemap.xml
 - **2026-06-24** — Reviewed spec docx; audited current repo; locked D1–D6; chose Sveltia after CMS deep-dive. Created this tracker. Status: planning complete, ready for Phase 0. No site code changed yet.
 - **2026-06-24** — Resolved Q4 (auth worker = last task of Phase 0, stakeholder hand-off; I prep all) + Q5 (Web3Forms). Ready to commit tracker and begin Phase 0.
 - **2026-06-24** — Web3Forms live access key added to `site.json` (form "WhereToTrips", domain wheretotrips.com); one key serves all forms, differentiated by hidden `intent`. Build re-verified.
+- **2026-06-25** — CMS verified working end-to-end: PAT ("Sign In with Token") login OK; user confirmed all collections show in `/admin`. Fixed broken sidebar icons (invalid names rendered as raw text → valid Material Symbols: `description / explore / place / article / gavel / settings`). **Paused for the night — site live, CMS functional.**
 - **2026-06-25** — **CMS config caught up to the full site.** The Phase-0 scaffold only registered Home; expanded `config.yml` to 14 editable pages (shared anchored section palette incl. `collection_grid` + `contact_form`) + Travel Vibes / Destinations / Insights folder collections (add-remove) + Legal + Settings. Validated YAML via js-yaml. Deployed (f326157). Editors now see the whole site at `/admin`, not just Home.
 - **2026-06-25** — **WENT LIVE.** Synced lockfile to 1.1.0, set CMS auth to PAT-first, fast-forwarded `main` → `89af2ce`, pushed → GitHub Pages deploy (run 28148964130). The full Phases 0–2 site replaces the old single-page site at wheretotrips.com. App policies at `/privacy/` `/terms/` and `/vibes-engine/` preserved.
 - **2026-06-25** — **Phase 2 built on `rebuild/phase-0`.** Added For Creators, Creator Directory (empty-state), For Industry, About, Press, Contact, Insights hub + 3 posts, and `/legal/privacy` + `/legal/terms` (website-scoped, linking to the untouched app policies at `/privacy/` `/terms/`). New infra: `contact_form` section, `insight.njk` + `legal.njk` layouts, `insight` collection. Fixed a build break (reserved `date` field → renamed to `published`). Build green: **38 HTML pages, 0 leaks, and a full internal-link crawl found 0 broken links** → site is nav-coherent and deployable. Legal copy is a draft pending counsel.
