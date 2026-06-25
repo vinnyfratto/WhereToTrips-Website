@@ -4,11 +4,12 @@
 #
 # Auth options:
 #  - Single editor (simplest): at /admin choose "Sign In with Token" and
-#    paste a GitHub fine-grained PAT with read/write on this repo. No extra
-#    setup, no base_url needed.
-#  - Multiple / non-technical editors (OAuth login): deploy sveltia-cms-auth
-#    (Cloudflare Worker), then uncomment base_url below and point it at the
-#    worker URL. See WhereToTrips_Website_Build.md §10 Q4.
+#    paste a GitHub PAT with read/write on this repo. No base_url needed.
+#  - Multiple editors (OAuth login): deploy sveltia-cms-auth (Cloudflare
+#    Worker) and uncomment base_url below. See the build tracker §10 Q4.
+#
+# The section "types" palette (anchored as &section_types) must match the
+# partial filenames in src/_includes/sections/. The type key is `type`.
 # ============================================================
 
 backend:
@@ -20,56 +21,58 @@ backend:
 media_folder: src/media
 public_folder: /media
 
-# Reusable note: section "types" below must match the partial filenames
-# in src/_includes/sections/ (the type key is the default `type`).
-
 collections:
   # ── Marketing pages (block-composed) ───────────────────────
   - name: pages
     label: Pages
-    icon: home
+    icon: file
     files:
       - name: home
-        label: Home Page
+        label: "Home"
         file: src/index.md
-        fields:
-          - { name: title, label: "SEO title", widget: string }
-          - { name: description, label: "SEO description", widget: text }
-          - { name: layout, label: Layout, widget: hidden, default: layouts/page.njk }
-          - name: sections
-            label: Page Sections
+        fields: &page_fields
+          - { label: "SEO title", name: title, widget: string }
+          - { label: "SEO description", name: description, widget: text }
+          - { label: Layout, name: layout, widget: hidden, default: layouts/page.njk }
+          - label: Page sections
             label_singular: Section
+            name: sections
             widget: list
-            types:
+            types: &section_types
               - name: hero
                 label: Hero
                 fields:
                   - { name: eyebrow, widget: string, required: false }
-                  - name: title
+                  - label: Title
+                    name: title
                     widget: object
                     fields:
                       - { name: pre, widget: string }
                       - { name: accent, widget: string }
                       - { name: post, widget: string, required: false }
                   - { name: lede, widget: text, required: false }
-                  - name: primaryBtn
+                  - label: Primary button
+                    name: primaryBtn
                     widget: object
                     required: false
                     fields:
                       - { name: label, widget: string }
                       - { name: href, widget: string }
-                  - name: ghostBtn
+                  - label: Secondary button
+                    name: ghostBtn
                     widget: object
                     required: false
                     fields:
                       - { name: label, widget: string }
                       - { name: href, widget: string }
-                  - name: image
+                  - label: Image
+                    name: image
                     widget: object
                     fields:
                       - { name: src, widget: image }
                       - { name: alt, widget: string }
-                  - name: badge
+                  - label: Floating badge
+                    name: badge
                     widget: object
                     required: false
                     fields:
@@ -77,13 +80,14 @@ collections:
                       - { name: subtitle, widget: string }
 
               - name: feature_split
-                label: Feature Split
+                label: Feature split
                 fields:
                   - { name: id, widget: string, required: false }
-                  - { name: flip, widget: boolean, default: false, required: false }
-                  - { name: background, widget: boolean, default: false, required: false }
+                  - { label: "Flip image to right", name: flip, widget: boolean, default: false, required: false }
+                  - { label: "Tinted background", name: background, widget: boolean, default: false, required: false }
                   - { name: eyebrow, widget: string, required: false }
-                  - name: title
+                  - label: Title
+                    name: title
                     widget: object
                     fields:
                       - { name: pre, widget: string }
@@ -91,40 +95,50 @@ collections:
                       - { name: post, widget: string, required: false }
                   - { name: lede, widget: text, required: false }
                   - { name: body, widget: text, required: false }
-                  - name: image
+                  - label: Image
+                    name: image
                     widget: object
                     fields:
                       - { name: src, widget: image }
                       - { name: alt, widget: string }
-                  - name: stats
+                  - label: Stat badges
+                    name: stats
                     widget: list
                     required: false
                     fields:
                       - { name: value, widget: string }
                       - { name: label, widget: string }
-                  - name: features
+                  - label: Feature checklist
+                    name: features
                     widget: list
                     required: false
                     fields:
                       - { name: icon, widget: string }
                       - { name: label, widget: string }
+                  - label: Inline button
+                    name: cta
+                    widget: object
+                    required: false
+                    fields:
+                      - { name: label, widget: string }
+                      - { name: href, widget: string }
 
               - name: chat
-                label: Conversational Search
+                label: Conversational search
                 fields:
                   - { name: id, widget: string, required: false }
                   - { name: eyebrow, widget: string, required: false }
-                  - name: title
+                  - label: Title
+                    name: title
                     widget: object
                     fields:
                       - { name: pre, widget: string }
                       - { name: accent, widget: string }
                       - { name: post, widget: string, required: false }
                   - { name: lede, widget: text, required: false }
-                  - name: examples
-                    widget: list
-                    field: { name: example, widget: string }
-                  - name: image
+                  - { label: Example messages, name: examples, widget: list, field: { name: example, widget: string } }
+                  - label: Image
+                    name: image
                     widget: object
                     fields:
                       - { name: src, widget: image }
@@ -135,7 +149,8 @@ collections:
                 fields:
                   - { name: id, widget: string, required: false }
                   - { name: eyebrow, widget: string, required: false }
-                  - name: title
+                  - label: Title
+                    name: title
                     widget: object
                     required: false
                     fields:
@@ -143,20 +158,22 @@ collections:
                       - { name: accent, widget: string }
                       - { name: post, widget: string, required: false }
                   - { name: lede, widget: text, required: false }
-                  - name: steps
+                  - label: Steps
+                    name: steps
                     widget: list
                     fields:
                       - { name: title, widget: string }
                       - { name: body, widget: text }
 
               - name: tile_grid
-                label: Tile Grid
+                label: Tile grid
                 fields:
                   - { name: id, widget: string, required: false }
-                  - { name: background, widget: boolean, default: false, required: false }
-                  - { name: center, widget: boolean, default: false, required: false }
+                  - { label: "Tinted background", name: background, widget: boolean, default: false, required: false }
+                  - { label: "Center heading", name: center, widget: boolean, default: false, required: false }
                   - { name: eyebrow, widget: string, required: false }
-                  - name: title
+                  - label: Title
+                    name: title
                     widget: object
                     required: false
                     fields:
@@ -165,40 +182,65 @@ collections:
                       - { name: post, widget: string, required: false }
                   - { name: intro, widget: text, required: false }
                   - { name: columns, widget: number, default: 3, required: false }
-                  - name: tiles
+                  - label: Tiles
+                    name: tiles
                     widget: list
                     fields:
                       - { name: label, widget: string }
                       - { name: blurb, widget: text, required: false }
-                      - { name: icon, widget: string, required: false }
+                      - { label: "Icon (emoji)", name: icon, widget: string, required: false }
                       - { name: image, widget: image, required: false }
                       - { name: href, widget: string, required: false }
 
-              - name: faq_accordion
-                label: FAQ Accordion
+              - name: collection_grid
+                label: Collection grid (auto-lists vibes/destinations/insights)
                 fields:
                   - { name: id, widget: string, required: false }
+                  - { label: "Tinted background", name: background, widget: boolean, default: false, required: false }
                   - { name: eyebrow, widget: string, required: false }
-                  - name: title
+                  - label: Title
+                    name: title
                     widget: object
                     required: false
                     fields:
                       - { name: pre, widget: string }
                       - { name: accent, widget: string }
                       - { name: post, widget: string, required: false }
-                  - name: items
-                    widget: list
-                    fields:
-                      - { name: q, widget: string }
-                      - { name: a, widget: markdown }
+                  - { name: intro, widget: text, required: false }
+                  - label: Which collection
+                    name: collection
+                    widget: select
+                    options: [vibe, destination, insight]
+                  - { name: columns, widget: number, default: 3, required: false }
 
-              - name: email_capture
-                label: Email Capture
+              - name: faq_accordion
+                label: FAQ accordion
                 fields:
                   - { name: id, widget: string, required: false }
-                  - { name: background, widget: boolean, default: false, required: false }
                   - { name: eyebrow, widget: string, required: false }
-                  - name: title
+                  - label: Title
+                    name: title
+                    widget: object
+                    required: false
+                    fields:
+                      - { name: pre, widget: string }
+                      - { name: accent, widget: string }
+                      - { name: post, widget: string, required: false }
+                  - label: Questions
+                    name: items
+                    widget: list
+                    fields:
+                      - { label: Question, name: q, widget: string }
+                      - { label: Answer, name: a, widget: markdown }
+
+              - name: email_capture
+                label: Email capture
+                fields:
+                  - { name: id, widget: string, required: false }
+                  - { label: "Tinted background", name: background, widget: boolean, default: false, required: false }
+                  - { name: eyebrow, widget: string, required: false }
+                  - label: Title
+                    name: title
                     widget: object
                     required: false
                     fields:
@@ -207,16 +249,38 @@ collections:
                       - { name: post, widget: string, required: false }
                   - { name: body, widget: text, required: false }
                   - { name: subject, widget: string, required: false }
-                  - { name: intent, widget: string, required: false, hint: "Tag for the email flow, e.g. app_link / early_access" }
+                  - { label: "Intent tag (e.g. app_link)", name: intent, widget: string, required: false }
                   - { name: buttonLabel, widget: string, required: false }
                   - { name: note, widget: string, required: false }
 
-              - name: rich_text
-                label: Rich Text
+              - name: contact_form
+                label: Contact form
                 fields:
                   - { name: id, widget: string, required: false }
-                  - { name: background, widget: boolean, default: false, required: false }
-                  - name: title
+                  - { label: "Tinted background", name: background, widget: boolean, default: false, required: false }
+                  - { name: eyebrow, widget: string, required: false }
+                  - label: Title
+                    name: title
+                    widget: object
+                    required: false
+                    fields:
+                      - { name: pre, widget: string }
+                      - { name: accent, widget: string }
+                      - { name: post, widget: string, required: false }
+                  - { name: body, widget: text, required: false }
+                  - { label: "Show company field", name: company, widget: boolean, default: false, required: false }
+                  - { label: "Intent tag", name: intent, widget: string, required: false }
+                  - { name: subject, widget: string, required: false }
+                  - { name: placeholder, widget: string, required: false }
+                  - { name: buttonLabel, widget: string, required: false }
+
+              - name: rich_text
+                label: Rich text
+                fields:
+                  - { name: id, widget: string, required: false }
+                  - { label: "Tinted background", name: background, widget: boolean, default: false, required: false }
+                  - label: Title
+                    name: title
                     widget: object
                     required: false
                     fields:
@@ -226,11 +290,12 @@ collections:
                   - { name: body, widget: markdown }
 
               - name: cta_band
-                label: Download / CTA Band
+                label: Download / CTA band
                 fields:
                   - { name: id, widget: string, required: false }
                   - { name: eyebrow, widget: string, required: false }
-                  - name: title
+                  - label: Title
+                    name: title
                     widget: object
                     fields:
                       - { name: pre, widget: string }
@@ -239,82 +304,192 @@ collections:
                   - { name: body, widget: text, required: false }
                   - { name: formLabel, widget: string, required: false }
 
+      - { name: how_it_works, label: "How It Works", file: src/how-it-works.md, fields: *page_fields }
+      - { name: wander_together, label: "Wander Together", file: src/wander-together.md, fields: *page_fields }
+      - { name: get_the_app, label: "Get the App", file: src/app.md, fields: *page_fields }
+      - { name: travel_vibes_hub, label: "Travel Vibes (hub)", file: src/travel-vibes.md, fields: *page_fields }
+      - { name: destinations_hub, label: "Destinations (hub)", file: src/destinations.md, fields: *page_fields }
+      - { name: insights_hub, label: "Insights (hub)", file: src/insights.md, fields: *page_fields }
+      - { name: faq, label: "FAQ", file: src/faq.md, fields: *page_fields }
+      - { name: creators, label: "For Creators", file: src/partners/creators.md, fields: *page_fields }
+      - { name: creator_directory, label: "Creator Directory", file: src/partners/creators/directory.md, fields: *page_fields }
+      - { name: industry, label: "For Industry Partners", file: src/partners/industry.md, fields: *page_fields }
+      - { name: about, label: "About", file: src/about.md, fields: *page_fields }
+      - { name: press, label: "Press & Media", file: src/press.md, fields: *page_fields }
+      - { name: contact, label: "Contact", file: src/contact.md, fields: *page_fields }
+
+  # ── Travel Vibes (add / remove leaf pages) ─────────────────
+  - name: vibes
+    label: Travel Vibes
+    label_singular: Vibe
+    icon: compass
+    folder: src/travel-vibes
+    extension: md
+    format: yaml-frontmatter
+    create: true
+    slug: "{{title | slugify}}"
+    summary: "{{title}}"
+    sortable_fields: [order, title]
+    fields:
+      - { name: title, widget: string }
+      - { label: "Sort order", name: order, widget: number, default: 99 }
+      - { label: "Icon (emoji)", name: icon, widget: string }
+      - { label: "Hub card summary", name: summary, widget: text }
+      - { name: tagline, widget: text }
+      - { name: heroImage, widget: image }
+      - { name: heroAlt, widget: string, required: false }
+      - { label: "What makes this trip", name: characteristics, widget: list, field: { name: point, widget: string } }
+      - label: "Sample destinations"
+        name: destinations
+        widget: list
+        fields:
+          - { name: name, widget: string }
+          - { name: blurb, widget: text, required: false }
+          - { name: href, widget: string, required: false }
+      - { name: budget, widget: string, required: false }
+
+  # ── Destinations (curated lists) ───────────────────────────
+  - name: destinations
+    label: Destinations
+    label_singular: List
+    icon: map-pin
+    folder: src/destinations
+    extension: md
+    format: yaml-frontmatter
+    create: true
+    slug: "{{title | slugify}}"
+    summary: "{{title}}"
+    sortable_fields: [order, title]
+    fields:
+      - { name: title, widget: string }
+      - { label: "Sort order", name: order, widget: number, default: 99 }
+      - { label: "Icon (emoji)", name: icon, widget: string }
+      - { label: "Hub card summary", name: summary, widget: text }
+      - { name: tagline, widget: text }
+      - { name: heroImage, widget: image }
+      - { name: heroAlt, widget: string, required: false }
+      - { name: listHeading, widget: string, required: false }
+      - { name: intro, widget: text, required: false }
+      - label: "Picks"
+        name: picks
+        widget: list
+        fields:
+          - { name: name, widget: string }
+          - { name: blurb, widget: text, required: false }
+          - { label: "Price note", name: priceNote, widget: string, required: false }
+      - label: "Related vibe"
+        name: relatedVibe
+        widget: object
+        required: false
+        fields:
+          - { name: label, widget: string }
+          - { name: href, widget: string }
+
+  # ── Insights (blog posts) ──────────────────────────────────
+  - name: insights
+    label: Insights
+    label_singular: Post
+    icon: pencil
+    folder: src/insights
+    extension: md
+    format: yaml-frontmatter
+    create: true
+    slug: "{{title | slugify}}"
+    summary: "{{title}}"
+    sortable_fields: [order, title]
+    fields:
+      - { name: title, widget: string }
+      - label: Category
+        name: category
+        widget: select
+        options: ["Travel Inspiration", "Budget Travel", "Group Travel", "Hidden Gems", "Travel Trends", "AI & Travel"]
+      - { name: author, widget: string, default: "The WhereTo Team" }
+      - { name: authorTitle, widget: string, required: false }
+      - { label: "Published (display text)", name: published, widget: string, required: false }
+      - { label: "Last updated (display text)", name: updated, widget: string, required: false }
+      - { label: "Sort order", name: order, widget: number, default: 99 }
+      - { label: "Icon (emoji)", name: icon, widget: string, required: false }
+      - { label: "Hub card summary", name: summary, widget: text }
+      - { name: heroImage, widget: image, required: false }
+      - { name: heroAlt, widget: string, required: false }
+      - { label: "Post body", name: body, widget: markdown }
+
+  # ── Legal ──────────────────────────────────────────────────
+  - name: legal
+    label: Legal
+    icon: scale
+    files:
+      - name: privacy
+        label: "Website Privacy Policy"
+        file: src/legal/privacy.md
+        fields: &legal_fields
+          - { name: title, widget: string }
+          - { label: "Last updated", name: updated, widget: string }
+          - { label: "SEO description", name: description, widget: text, required: false }
+          - { label: "Body", name: body, widget: markdown }
+      - { name: terms, label: "Website Terms of Service", file: src/legal/terms.md, fields: *legal_fields }
+
   # ── Site settings & navigation ─────────────────────────────
   - name: settings
     label: Settings
     icon: settings
     files:
       - name: site
-        label: Site & Navigation
+        label: "Site & Navigation"
         file: src/_data/site.json
         fields:
           - { name: brandName, widget: string }
-          - { name: monogram, label: "Nav monogram letter", widget: string }
-          - { name: metaTitle, label: "Default SEO title", widget: string }
-          - { name: metaDescription, label: "Default SEO description", widget: text }
+          - { label: "Nav monogram letter", name: monogram, widget: string }
+          - { label: "Default SEO title", name: metaTitle, widget: string }
+          - { label: "Default SEO description", name: metaDescription, widget: text }
           - { name: url, widget: string }
           - { name: contactEmail, widget: string }
-          - name: launchMode
-            label: "Launch mode"
+          - label: "Launch mode"
+            name: launchMode
             widget: select
             default: pre
             options:
               - { label: "Pre-launch (Join Early Access)", value: pre }
               - { label: "Post-launch (Get the App + store badges)", value: post }
-          - name: cta
-            label: "Nav CTA (pre / post launch)"
+          - label: "Nav CTA (pre / post launch)"
+            name: cta
             widget: object
             fields:
-              - name: pre
-                widget: object
-                fields:
-                  - { name: label, widget: string }
-                  - { name: href, widget: string }
-              - name: post
-                widget: object
-                fields:
-                  - { name: label, widget: string }
-                  - { name: href, widget: string }
-          - name: store
-            label: "App store links"
+              - { label: "Pre-launch", name: pre, widget: object, fields: [ { name: label, widget: string }, { name: href, widget: string } ] }
+              - { label: "Post-launch", name: post, widget: object, fields: [ { name: label, widget: string }, { name: href, widget: string } ] }
+          - label: "App store links"
+            name: store
             widget: object
             fields:
               - { name: appleHref, widget: string }
               - { name: googleHref, widget: string }
-          - name: forms
-            label: "Form handler (Web3Forms)"
+          - label: "Form handler (Web3Forms)"
+            name: forms
             widget: object
             fields:
               - { name: provider, widget: string }
               - { name: accessKey, widget: string }
-          - name: nav
-            label: "Primary navigation"
+          - label: "Primary navigation"
+            name: nav
             widget: list
-            fields:
-              - { name: label, widget: string }
-              - { name: href, widget: string }
-          - name: partnerNav
-            label: "Partner dropdown links"
+            fields: [ { name: label, widget: string }, { name: href, widget: string } ]
+          - label: "Partner dropdown links"
+            name: partnerNav
             widget: list
-            fields:
-              - { name: label, widget: string }
-              - { name: href, widget: string }
-          - name: footerCols
-            label: "Footer columns"
+            fields: [ { name: label, widget: string }, { name: href, widget: string } ]
+          - label: "Footer columns"
+            name: footerCols
             widget: list
             fields:
               - { name: heading, widget: string }
-              - name: links
-                widget: list
-                fields:
-                  - { name: label, widget: string }
-                  - { name: href, widget: string }
+              - { label: Links, name: links, widget: list, fields: [ { name: label, widget: string }, { name: href, widget: string } ] }
 
       - name: theme
-        label: Theme & Fonts
+        label: "Theme & Fonts"
         file: src/_data/theme.json
         fields:
-          - name: colors
+          - label: Colors
+            name: colors
             widget: object
             fields:
               - { name: cream, widget: string }
@@ -322,8 +497,9 @@ collections:
               - { name: navy, widget: string }
               - { name: navyLight, widget: string }
               - { name: rust, widget: string }
-          - { name: maxWidth, label: "Max content width (px)", widget: number }
-          - name: headingFont
+          - { label: "Max content width (px)", name: maxWidth, widget: number }
+          - label: "Heading font"
+            name: headingFont
             widget: select
             options:
               - { label: "DM Serif Display", value: dm-serif }
@@ -331,7 +507,8 @@ collections:
               - { label: "Fraunces", value: fraunces }
               - { label: "Cormorant Garamond", value: cormorant }
               - { label: "Lora", value: lora }
-          - name: bodyFont
+          - label: "Body font"
+            name: bodyFont
             widget: select
             options:
               - { label: "Nunito Sans", value: nunito-sans }
