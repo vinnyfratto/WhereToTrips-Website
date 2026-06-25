@@ -1,16 +1,21 @@
 # ============================================================
 # Sveltia CMS configuration (Decap-compatible)
 # Editor lives at  https://wheretotrips.com/admin
-# Auth: deploy sveltia-cms-auth (Cloudflare Worker), then set
-#       base_url below to the worker URL. Until then the GitHub
-#       login will not complete. See WhereToTrips_Website_Build.md §10 Q4.
+#
+# Auth options:
+#  - Single editor (simplest): at /admin choose "Sign In with Token" and
+#    paste a GitHub fine-grained PAT with read/write on this repo. No extra
+#    setup, no base_url needed.
+#  - Multiple / non-technical editors (OAuth login): deploy sveltia-cms-auth
+#    (Cloudflare Worker), then uncomment base_url below and point it at the
+#    worker URL. See WhereToTrips_Website_Build.md §10 Q4.
 # ============================================================
 
 backend:
   name: github
   repo: vinnyfratto/WhereToTrips-Website
   branch: main
-  base_url: https://REPLACE_WITH_CLOUDFLARE_WORKER_URL
+  # base_url: https://YOUR-WORKER.workers.dev   # only for OAuth login
 
 media_folder: src/media
 public_folder: /media
