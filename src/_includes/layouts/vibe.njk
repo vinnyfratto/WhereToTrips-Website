@@ -1,0 +1,59 @@
+---
+layout: layouts/base.njk
+---
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div class="reveal">
+      <span class="eyebrow">Travel Vibe</span>
+      <h1>{{ title }}</h1>
+      {% if tagline %}<p class="lede">{{ tagline }}</p>{% endif %}
+      <div class="cta">
+        <a class="btn btn-primary" href="#download">{{ ctaLabel or ("Find My " + title + " Trip") }}</a>
+        <a class="btn btn-ghost" href="/travel-vibes/">All vibes</a>
+      </div>
+    </div>
+    <div class="hero-media reveal reveal-delay-1">
+      <img class="hero-img" src="{{ heroImage }}" alt="{{ heroAlt or title }}" loading="eager" />
+    </div>
+  </div>
+</section>
+
+{% if characteristics %}
+<section class="block tint">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">What to expect</span>
+      <h2>What makes this a <span class="italic">{{ title }}</span> trip</h2>
+    </div>
+    <ul class="feature-list reveal reveal-delay-1" style="max-width: 780px;">
+      {% for c in characteristics %}
+      <li><span class="fi">✦</span><span>{{ c }}</span></li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}
+
+{% if destinations %}
+<section class="block">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Where it takes you</span>
+      <h2>Destinations with this vibe</h2>
+    </div>
+    <div class="tile-grid reveal reveal-delay-1" style="--cols: 3;">
+      {% for d in destinations %}
+      {% if d.href %}<a class="tile" href="{{ d.href }}">{% else %}<div class="tile">{% endif %}
+        <h3>{{ d.name }}</h3>
+        {% if d.blurb %}<p>{{ d.blurb }}</p>{% endif %}
+      {% if d.href %}</a>{% else %}</div>{% endif %}
+      {% endfor %}
+    </div>
+    {% if budget %}<p class="lede reveal" style="margin-top: 32px;"><strong>Typical budget:</strong> {{ budget }}</p>{% endif %}
+    <p class="app-disclaimer reveal">Live matches, current pricing, and booking happen in the WhereTo app.</p>
+  </div>
+</section>
+{% endif %}
+
+{% set s = { id: "download", eyebrow: "Ready to wander?", title: { pre: "Find your ", accent: title, post: " trip." }, body: "See real destinations and live pricing matched to your budget — all in the WhereTo app." } %}
+{% include "sections/cta_band.njk" %}

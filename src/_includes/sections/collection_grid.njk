@@ -1,0 +1,20 @@
+<section class="block{% if s.background %} tint{% endif %}"{% if s.id %} id="{{ s.id }}"{% endif %}>
+  <div class="wrap">
+    {% if s.eyebrow or s.title or s.intro %}
+    <div class="sec-head{% if s.center %} center{% endif %} reveal">
+      {% if s.eyebrow %}<span class="eyebrow">{{ s.eyebrow }}</span>{% endif %}
+      {% if s.title %}<h2>{{ s.title.pre }}<span class="italic">{{ s.title.accent }}</span>{{ s.title.post }}</h2>{% endif %}
+      {% if s.intro %}<p class="lede">{{ s.intro }}</p>{% endif %}
+    </div>
+    {% endif %}
+    <div class="tile-grid reveal reveal-delay-1" style="--cols: {{ s.columns or 3 }};">
+      {% for item in collections[s.collection] %}
+      <a class="tile" href="{{ item.url }}">
+        {% if item.data.thumb %}<img class="tile-img" src="{{ item.data.thumb }}" alt="{{ item.data.title }}" loading="lazy" />{% elif item.data.icon %}<div class="tile-icon">{{ item.data.icon }}</div>{% endif %}
+        <h3>{{ item.data.tileLabel or item.data.title }}</h3>
+        {% if item.data.summary %}<p>{{ item.data.summary }}</p>{% endif %}
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>

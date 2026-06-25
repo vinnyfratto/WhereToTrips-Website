@@ -13,6 +13,11 @@ module.exports = function (eleventyConfig) {
   // collections/sitemap so it isn't advertised to search/AI crawlers.
   eleventyConfig.ignores.add("src/vibes-engine/**");
 
+  // Hub collections, sorted by an `order` front-matter field.
+  const byOrder = (a, b) => (a.data.order || 0) - (b.data.order || 0);
+  eleventyConfig.addCollection("vibe", (c) => c.getFilteredByTag("vibe").sort(byOrder));
+  eleventyConfig.addCollection("destination", (c) => c.getFilteredByTag("destination").sort(byOrder));
+
   return {
     dir: {
       input: "src",

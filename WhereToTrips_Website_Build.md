@@ -10,7 +10,7 @@
 | **Source spec** | `C:\Users\vfrat\Downloads\WhereTo_Sitemap_Content_Architecture.docx` — "Site Map & Content Architecture" |
 | **Stack** | Eleventy v3 (Nunjucks) → `_site/` → GitHub Actions deploy on push to `main` |
 | **CMS** | Sveltia CMS (self-hosted `/admin`) — **decided** |
-| **Overall status** | 🟢 Phase 0 built & verified locally (branch `rebuild/phase-0`) — pending: real Web3Forms key, auth-worker hand-off, push-to-deploy approval |
+| **Overall status** | 🟢 Phases 0–1 built & verified locally (branch `rebuild/phase-0`) — 24 pages, 0 template leaks. Pending: Phase 2 pages, auth-worker hand-off, push-to-deploy |
 | **Last updated** | 2026-06-24 |
 
 ---
@@ -176,27 +176,27 @@ wheretotrips.com
 
 | Page | Route | Model | CTA | Status |
 |---|---|---|---|---|
-| Home | `/` | page+sections | Get the App | ◐ on section system (current content; full §6.1 rebuild = P1) |
-| Get the App | `/app` | page | install / email | ☐ |
-| How It Works | `/how-it-works` | page+sections | Get the App | ☐ |
-| Wander Together | `/wander-together` | page+sections | Start a Group Trip | ☐ |
-| Travel Vibes hub | `/travel-vibes` | hub | Explore a Vibe | ☐ |
-| Travel Vibes leaves ×10 | `/travel-vibes/*` | collection | Find My [Vibe] Trip | ☐ |
-| Destinations hub | `/destinations` | hub | See My Matches | ☐ |
-| Destinations leaves | `/destinations/*` | collection | See My Matches | ☐ |
+| Home | `/` | page+sections | Get the App | ☑ |
+| Get the App | `/app` | page | install / email | ☑ |
+| How It Works | `/how-it-works` | page+sections | Get the App | ☑ |
+| Wander Together | `/wander-together` | page+sections | Start a Group Trip | ☑ |
+| Travel Vibes hub | `/travel-vibes` | hub | Explore a Vibe | ☑ |
+| Travel Vibes leaves ×10 | `/travel-vibes/*` | collection | Find My [Vibe] Trip | ☑ (10) |
+| Destinations hub | `/destinations` | hub | See My Matches | ☑ |
+| Destinations leaves | `/destinations/*` | collection | See My Matches | ◐ (4 sample lists; add more in P3) |
 | Insights hub | `/insights` | hub | — | ☐ |
 | Insights posts | `/insights/*` | collection | — | ☐ |
 | For Creators | `/partners/creators` | page | Apply | ☐ |
 | Creator Directory | `/partners/creators/directory` | collection | — | ☐ |
 | For Industry | `/partners/industry` | page+form | Become a Partner | ☐ |
-| FAQ | `/faq` | collection | — | ☐ |
+| FAQ | `/faq` | page+accordion | — | ☑ |
 | About | `/about` | page | — | ☐ |
 | Press & Media | `/press` | page+collection | — | ☐ |
 | Contact | `/contact` | page+form | — | ☐ |
 | Privacy | `/legal/privacy` | markdown | — | ☐ |
 | Terms | `/legal/terms` | markdown | — | ☐ |
-| robots.txt | `/robots.txt` | generated | — | ☐ |
-| sitemap.xml | `/sitemap.xml` | generated | — | ☐ |
+| robots.txt | `/robots.txt` | generated | — | ☑ |
+| sitemap.xml | `/sitemap.xml` | generated | — | ☑ |
 
 ---
 
@@ -390,19 +390,21 @@ Sitemap: https://wheretotrips.com/sitemap.xml
 - [x] Stand up Sveltia: `src/admin/index.html` + `config.yml` (collections + 9-type section palette + media)
 - [x] Home page converted to section system; build verified green locally (`npm run build`, 0 errors, 0 template leaks)
 - [x] Bump `package.json` version → **1.1.0**
-- [~] Wire form provider in `site.json` — Web3Forms wired into forms; **needs real `accessKey`** (placeholder now)
+- [x] Wire form provider in `site.json` — Web3Forms **live key in place** (`a7729135…`); verified rendered into form HTML
 - [ ] **(LAST task — stakeholder hand-off, ~10 min)** Deploy `sveltia-cms-auth` Cloudflare Worker; register GitHub OAuth app; set `base_url`; verify `/admin` login — see Q4
 - [ ] Push `rebuild/phase-0` → `main` to trigger the GitHub Pages deploy (awaiting approval)
 
-### Phase 1 — Traveler pages  `☐ Not started`
-- [ ] Home (rebuilt as sections)
-- [ ] How It Works
-- [ ] Wander Together™
-- [ ] Get the App `/app` (badges + QR + email fallback)
-- [ ] Travel Vibes hub + 10 leaf pages (collection + fixed template)
-- [ ] Destinations hub + initial curated-list leaves (collection)
-- [ ] FAQ (collection + accordion)
-- [ ] Cross-link vibes ↔ destinations
+### Phase 1 — Traveler pages  `☑ Built & verified locally`
+- [x] Home — rebuilt to full §6.1 (hero, how-it-works steps, vibes, benefit cards, featured-vibes grid, Together, chat, CTA)
+- [x] How It Works (`/how-it-works/`) — steps + Smart Recommendations split + "where booking happens"
+- [x] Wander Together™ (`/wander-together/`) — problem framing, steps, 6 use-case tiles
+- [x] Get the App (`/app/`) — launch-aware install band, "what you can do", QR for desktop, "email me the link" fallback
+- [x] Travel Vibes hub + **10 leaf pages** (collection `vibe`, fixed `vibe.njk` template, sorted by `order`)
+- [x] Destinations hub + **4 curated-list leaves** (collection `destination`, `destination.njk`) — more lists added as needed
+- [x] FAQ (`/faq/`) — accordion with 8 Q&As (recs, booking-in-app, cost, early access, cancellation, group privacy, accuracy, devices)
+- [x] Cross-link vibes ↔ destinations (destination leaves link back to a related vibe)
+- New infra: `collection_grid` section + `vibe.njk`/`destination.njk` layouts + `vibe`/`destination` collections in `.eleventy.js`
+- ⚠ Per-vibe/destination **photography reused from the 4 Phase-0 images** — real per-page curation deferred to Phase 3 (or drop via CMS)
 
 ### Phase 2 — Partner / Company / Legal  `☐ Not started`
 - [ ] For Creators + Creator Directory (collection)
@@ -455,6 +457,9 @@ Sitemap: https://wheretotrips.com/sitemap.xml
 - **Spec uses `whereto.com`** — placeholder; real domain is wheretotrips.com (using real everywhere).
 - **`.pages.yml` (old Pages CMS) and `src/_data/copy.json` removed** — superseded by Sveltia config + front-matter sections.
 - **Legal pages** still at `/privacy/` `/terms/` (old HTML); move to `/legal/*` in P2.
+- **Per-page photography (P1)** reuses the 4 Phase-0 Pexels images across vibe/destination leaves — curate real per-page images in P3 (or via CMS).
+- **`/app` QR code** uses an external generator (`api.qrserver.com`) at runtime — fine for now; consider a build-time/static QR before launch.
+- **Deploy blocker:** primary nav still links to `/insights/` and the Partner dropdown + footer link to `/partners/*`, `/about`, `/press`, `/contact`, `/legal/*` — all **Phase 2**. Don't push to `main` until those exist (or temporarily trim nav), or the live nav 404s.
 
 ---
 
@@ -470,6 +475,8 @@ Sitemap: https://wheretotrips.com/sitemap.xml
 
 - **2026-06-24** — Reviewed spec docx; audited current repo; locked D1–D6; chose Sveltia after CMS deep-dive. Created this tracker. Status: planning complete, ready for Phase 0. No site code changed yet.
 - **2026-06-24** — Resolved Q4 (auth worker = last task of Phase 0, stakeholder hand-off; I prep all) + Q5 (Web3Forms). Ready to commit tracker and begin Phase 0.
+- **2026-06-24** — Web3Forms live access key added to `site.json` (form "WhereToTrips", domain wheretotrips.com); one key serves all forms, differentiated by hidden `intent`. Build re-verified.
+- **2026-06-24** — **Phase 1 built on `rebuild/phase-0`.** Added Home (full §6.1), How It Works, Wander Together, Get the App (QR + email fallback), Travel Vibes hub + 10 leaves, Destinations hub + 4 lists, FAQ. New infra: `collection_grid` section, `vibe.njk`/`destination.njk` layouts, `vibe`/`destination` Eleventy collections (sorted by `order`). Build green: **26 outputs / 24 HTML pages, 0 template leaks**; hubs + home pull collections correctly. Photography reused from 4 P0 images (curation = P3). Still local — not pushed.
 - **2026-06-24** — **Phase 0 built on branch `rebuild/phase-0`.** New architecture: `layouts/base.njk` + `layouts/page.njk` (section renderer) + `partials/` (header w/ partner dropdown, footer, meta, store-buttons, app-disclaimer) + `sections/` (hero, feature_split, chat, cta_band, tile_grid, steps, rich_text, email_capture, faq_accordion). CSS extracted → `assets/styles.css`. `site.json` rebuilt (nav/footer/launchMode/store/forms). Home migrated to `index.md` front-matter sections. Added `robots.txt` + `sitemap.xml`. Sveltia CMS scaffolded (`admin/index.html` + `config.yml`). Removed `index.njk`, `.pages.yml`, `copy.json`. `package.json` → 1.1.0. `npm run build` green: 0 errors, 0 template leaks, 0 `[object Object]`. Not pushed — `main` untouched, nothing deployed.
 
 ---

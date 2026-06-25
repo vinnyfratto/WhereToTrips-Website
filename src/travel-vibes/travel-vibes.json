@@ -1,0 +1,4 @@
+{
+  "layout": "layouts/vibe.njk",
+  "tags": "vibe"
+}
