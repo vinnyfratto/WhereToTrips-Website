@@ -1,9 +1,8 @@
 {%- set navCta = site.cta.post if site.launchMode == "post" else site.cta.pre -%}
 <header>
   <div class="wrap nav">
-    <a class="brand" href="/">
-      <span class="mark">{{ site.monogram }}</span>
-      <span class="name">{{ site.brandName }}</span>
+    <a class="brand" href="/" aria-label="{{ site.brandName }} home">
+      <img class="brand-logo" src="/assets/whereto-logo.svg" alt="{{ site.brandName }}" width="156" height="31" />
     </a>
     <nav class="nav-links" aria-label="Primary">
       {%- for link in site.nav %}

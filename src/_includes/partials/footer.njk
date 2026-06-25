@@ -1,9 +1,8 @@
 <footer>
   <div class="wrap">
     <div class="foot-grid">
-      <a class="brand" href="/">
-        <span class="mark">{{ site.monogram }}</span>
-        <span class="name">{{ site.brandName }}</span>
+      <a class="brand" href="/" aria-label="{{ site.brandName }} home">
+        <img class="brand-logo" src="/assets/whereto-logo.svg" alt="{{ site.brandName }}" width="156" height="31" />
       </a>
       <div class="foot-links">
         {%- for col in site.footerCols %}
