@@ -1,0 +1,13 @@
+---
+layout: layouts/base.njk
+---
+<section class="block">
+  <div class="wrap">
+    <div class="rich-text reveal">
+      <span class="eyebrow">Legal</span>
+      <h1 style="font-size: clamp(30px, 4vw, 44px); line-height: 1.1; margin: 12px 0 10px;">{{ title }}</h1>
+      {% if updated %}<p class="email-note" style="margin-bottom: 28px;">Last updated: {{ updated }}</p>{% endif %}
+      {{ content | safe }}
+    </div>
+  </div>
+</section>

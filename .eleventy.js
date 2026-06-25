@@ -18,6 +18,7 @@ module.exports = function (eleventyConfig) {
   const byOrder = (a, b) => (a.data.order || 0) - (b.data.order || 0);
   eleventyConfig.addCollection("vibe", (c) => c.getFilteredByTag("vibe").sort(byOrder));
   eleventyConfig.addCollection("destination", (c) => c.getFilteredByTag("destination").sort(byOrder));
+  eleventyConfig.addCollection("insight", (c) => c.getFilteredByTag("insight").sort(byOrder));
 
   return {
     dir: {

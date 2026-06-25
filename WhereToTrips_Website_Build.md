@@ -10,7 +10,7 @@
 | **Source spec** | `C:\Users\vfrat\Downloads\WhereTo_Sitemap_Content_Architecture.docx` — "Site Map & Content Architecture" |
 | **Stack** | Eleventy v3 (Nunjucks) → `_site/` → GitHub Actions deploy on push to `main` |
 | **CMS** | Sveltia CMS (self-hosted `/admin`) — **decided** |
-| **Overall status** | 🟢 Phases 0–1 built & verified locally (branch `rebuild/phase-0`) — 24 pages, 0 template leaks. Pending: Phase 2 pages, auth-worker hand-off, push-to-deploy |
+| **Overall status** | 🟢 Phases 0–2 built & verified locally (branch `rebuild/phase-0`) — **38 pages, 0 template leaks, all internal links resolve → DEPLOYABLE**. Pending: auth-worker hand-off, push-to-deploy approval, legal-copy review |
 | **Last updated** | 2026-06-24 |
 
 ---
@@ -184,17 +184,17 @@ wheretotrips.com
 | Travel Vibes leaves ×10 | `/travel-vibes/*` | collection | Find My [Vibe] Trip | ☑ (10) |
 | Destinations hub | `/destinations` | hub | See My Matches | ☑ |
 | Destinations leaves | `/destinations/*` | collection | See My Matches | ◐ (4 sample lists; add more in P3) |
-| Insights hub | `/insights` | hub | — | ☐ |
-| Insights posts | `/insights/*` | collection | — | ☐ |
-| For Creators | `/partners/creators` | page | Apply | ☐ |
-| Creator Directory | `/partners/creators/directory` | collection | — | ☐ |
-| For Industry | `/partners/industry` | page+form | Become a Partner | ☐ |
+| Insights hub | `/insights` | hub | — | ☑ |
+| Insights posts | `/insights/*` | collection | — | ☑ (3) |
+| For Creators | `/partners/creators` | page | Apply | ☑ |
+| Creator Directory | `/partners/creators/directory` | collection | — | ◐ (empty-state pre-launch) |
+| For Industry | `/partners/industry` | page+form | Become a Partner | ☑ |
 | FAQ | `/faq` | page+accordion | — | ☑ |
-| About | `/about` | page | — | ☐ |
-| Press & Media | `/press` | page+collection | — | ☐ |
-| Contact | `/contact` | page+form | — | ☐ |
-| Privacy | `/legal/privacy` | markdown | — | ☐ |
-| Terms | `/legal/terms` | markdown | — | ☐ |
+| About | `/about` | page | — | ☑ (founder names TBD, Q3) |
+| Press & Media | `/press` | page | — | ☑ (no coverage yet) |
+| Contact | `/contact` | page+form | — | ☑ |
+| Privacy | `/legal/privacy` | markdown | — | ☑ (draft — needs counsel) |
+| Terms | `/legal/terms` | markdown | — | ☑ (draft — needs counsel) |
 | robots.txt | `/robots.txt` | generated | — | ☑ |
 | sitemap.xml | `/sitemap.xml` | generated | — | ☑ |
 
@@ -406,12 +406,16 @@ Sitemap: https://wheretotrips.com/sitemap.xml
 - New infra: `collection_grid` section + `vibe.njk`/`destination.njk` layouts + `vibe`/`destination` collections in `.eleventy.js`
 - ⚠ Per-vibe/destination **photography reused from the 4 Phase-0 images** — real per-page curation deferred to Phase 3 (or drop via CMS)
 
-### Phase 2 — Partner / Company / Legal  `☐ Not started`
-- [ ] For Creators + Creator Directory (collection)
-- [ ] For Industry Partners (+ inquiry form)
-- [ ] About · Press & Media · Contact (segmented + form)
-- [ ] Insights hub + posts (collection)
-- [ ] Privacy · Terms (migrate/expand existing HTML → `/legal/*`)
+### Phase 2 — Partner / Company / Legal  `☑ Built & verified locally`
+- [x] For Creators (`/partners/creators/`) + Creator Directory (`/partners/creators/directory/`, honest pre-launch empty-state)
+- [x] For Industry Partners (`/partners/industry/`) — problem, platform, why, 7 partner types, inquiry form
+- [x] About (`/about/`) — story, principles, vision (founder names omitted pending Q3)
+- [x] Press & Media (`/press/`) — boilerplate, brand assets (logo link), media-inquiry form
+- [x] Contact (`/contact/`) — segmented audience cards + traveler support form
+- [x] Insights hub (`/insights/`) + **3 posts** (collection `insight`, byline + "Last updated", `insight.njk`)
+- [x] Privacy & Terms at `/legal/privacy/` + `/legal/terms/` (website-scoped, link to the app policies at `/privacy/` `/terms/` which stay untouched)
+- New infra: `contact_form` section (Web3Forms, configurable intent), `insight.njk` + `legal.njk` layouts, `insight` collection
+- ⚠ **Legal copy is a first draft — have counsel review before launch.** ⚠ Founder names omitted (Q3 open).
 
 ### Phase 3 — Content + GEO polish  `☐ Not started`
 - [ ] Seed real content into all collections
@@ -441,7 +445,7 @@ Sitemap: https://wheretotrips.com/sitemap.xml
 
 - **Q1 — CMS approach?** ✅ *Sveltia CMS* (self-hosted). User initially leaned toward Decap/Sveltia; after comparison, chose Sveltia (Decap is neglected/insecure; Pages CMS weaker on section-blocks + third-party-hosted). — 2026-06-24
 - **Q2 — Launch state?** ✅ *Build switchable, default pre-launch.* One flag flips the whole site. — 2026-06-24
-- **Q3 — Founders' names public on About page?** ⏳ Open. Spec says "unsure." Default: omit / use company voice until confirmed.
+- **Q3 — Founders' names public on About page?** ⏳ Open. About page built with names **omitted** (company voice); flip when decided.
 - **Q4 — Cloudflare account / auth-worker ownership?** ✅ *I handle all prep; stakeholder does the account-gated steps via a hand-off checklist.* **Sequencing decided: the worker is the LAST task of Phase 0**, not first — nothing depends on it and the CMS config is validated locally (Sveltia no-auth local mode) beforehand. Stakeholder's ~10-min part: (1) Cloudflare deploy of `sveltia-cms-auth` → worker URL; (2) create GitHub OAuth App (exact field values supplied) → Client ID + Secret; (3) paste secrets + domain into worker env; (4) send worker URL → I set `base_url`. I cannot create their accounts or read their secrets. — 2026-06-24
 - **Q5 — Form provider?** ✅ *Web3Forms* (free tier). — 2026-06-24
 - **Q6 — Keep contact email `ccupero@vcinnovationsgroup.com`, or use a wheretotrips.com address?** ⏳ Open.
@@ -459,6 +463,8 @@ Sitemap: https://wheretotrips.com/sitemap.xml
 - **Legal pages** still at `/privacy/` `/terms/` (old HTML); move to `/legal/*` in P2.
 - **Per-page photography (P1)** reuses the 4 Phase-0 Pexels images across vibe/destination leaves — curate real per-page images in P3 (or via CMS).
 - **`/app` QR code** uses an external generator (`api.qrserver.com`) at runtime — fine for now; consider a build-time/static QR before launch.
+- ⚖️ **Legal copy is a first draft.** `/legal/privacy` + `/legal/terms` are reasonable starting language but **must be reviewed by counsel before launch** (and reconciled with the app policies at `/privacy/` `/terms/`).
+- **Favicon is SVG-only** — modern browsers fine. Add `favicon.ico` (legacy) + `apple-touch-icon.png` 180×180 (iOS home-screen) before launch; needs a rasterizer (online converter or `sharp`/ImageMagick) since none is installed locally.
 - **Deploy blocker:** primary nav still links to `/insights/` and the Partner dropdown + footer link to `/partners/*`, `/about`, `/press`, `/contact`, `/legal/*` — all **Phase 2**. Don't push to `main` until those exist (or temporarily trim nav), or the live nav 404s.
 
 ---
@@ -476,6 +482,8 @@ Sitemap: https://wheretotrips.com/sitemap.xml
 - **2026-06-24** — Reviewed spec docx; audited current repo; locked D1–D6; chose Sveltia after CMS deep-dive. Created this tracker. Status: planning complete, ready for Phase 0. No site code changed yet.
 - **2026-06-24** — Resolved Q4 (auth worker = last task of Phase 0, stakeholder hand-off; I prep all) + Q5 (Web3Forms). Ready to commit tracker and begin Phase 0.
 - **2026-06-24** — Web3Forms live access key added to `site.json` (form "WhereToTrips", domain wheretotrips.com); one key serves all forms, differentiated by hidden `intent`. Build re-verified.
+- **2026-06-25** — **Phase 2 built on `rebuild/phase-0`.** Added For Creators, Creator Directory (empty-state), For Industry, About, Press, Contact, Insights hub + 3 posts, and `/legal/privacy` + `/legal/terms` (website-scoped, linking to the untouched app policies at `/privacy/` `/terms/`). New infra: `contact_form` section, `insight.njk` + `legal.njk` layouts, `insight` collection. Fixed a build break (reserved `date` field → renamed to `published`). Build green: **38 HTML pages, 0 leaks, and a full internal-link crawl found 0 broken links** → site is nav-coherent and deployable. Legal copy is a draft pending counsel.
+- **2026-06-25** — Brand: added `src/favicon.svg` (white globe icon on navy #1F3A4D, from `WhereTo_Logo.svg`), wired `<link rel=icon>` + `theme-color`; replaced header/footer "W" monogram with the full `whereto-logo.svg` wordmark. No local rasterizer (Win `convert` ≠ ImageMagick) → SVG-only favicon; PNG/ICO + apple-touch are a pre-launch follow-up.
 - **2026-06-24** — **Phase 1 built on `rebuild/phase-0`.** Added Home (full §6.1), How It Works, Wander Together, Get the App (QR + email fallback), Travel Vibes hub + 10 leaves, Destinations hub + 4 lists, FAQ. New infra: `collection_grid` section, `vibe.njk`/`destination.njk` layouts, `vibe`/`destination` Eleventy collections (sorted by `order`). Build green: **26 outputs / 24 HTML pages, 0 template leaks**; hubs + home pull collections correctly. Photography reused from 4 P0 images (curation = P3). Still local — not pushed.
 - **2026-06-24** — **Phase 0 built on branch `rebuild/phase-0`.** New architecture: `layouts/base.njk` + `layouts/page.njk` (section renderer) + `partials/` (header w/ partner dropdown, footer, meta, store-buttons, app-disclaimer) + `sections/` (hero, feature_split, chat, cta_band, tile_grid, steps, rich_text, email_capture, faq_accordion). CSS extracted → `assets/styles.css`. `site.json` rebuilt (nav/footer/launchMode/store/forms). Home migrated to `index.md` front-matter sections. Added `robots.txt` + `sitemap.xml`. Sveltia CMS scaffolded (`admin/index.html` + `config.yml`). Removed `index.njk`, `.pages.yml`, `copy.json`. `package.json` → 1.1.0. `npm run build` green: 0 errors, 0 template leaks, 0 `[object Object]`. Not pushed — `main` untouched, nothing deployed.
 

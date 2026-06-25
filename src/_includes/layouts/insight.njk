@@ -1,0 +1,24 @@
+---
+layout: layouts/base.njk
+---
+<article class="block" style="padding-bottom: clamp(48px, 6vw, 72px);">
+  <div class="wrap">
+    <div class="rich-text reveal">
+      <span class="eyebrow">{{ category }}</span>
+      <h1 style="font-size: clamp(32px, 4.5vw, 50px); line-height: 1.1; margin: 12px 0 16px;">{{ title }}</h1>
+      <p class="email-note" style="margin-bottom: 0;">
+        By {{ author }}{% if authorTitle %}, {{ authorTitle }}{% endif %}{% if published %} &nbsp;·&nbsp; {{ published }}{% endif %}{% if updated %} &nbsp;·&nbsp; Last updated {{ updated }}{% endif %}
+      </p>
+    </div>
+    {% if heroImage %}
+    <img src="{{ heroImage }}" alt="{{ heroAlt or title }}" loading="eager"
+         style="width: 100%; height: clamp(280px, 40vw, 440px); object-fit: cover; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); margin: 28px 0;" />
+    {% endif %}
+    <div class="rich-text reveal">
+      {{ content | safe }}
+      <p class="app-disclaimer">WhereTo is a mobile app for iOS &amp; Android — discovery and booking happen in the app.</p>
+    </div>
+  </div>
+</article>
+{% set s = { id: "download", eyebrow: "Ready to wander?", title: { pre: "Put it to work in the ", accent: "app", post: "." }, body: "Get matched to real destinations for your budget and your vibe — in the WhereTo app." } %}
+{% include "sections/cta_band.njk" %}
