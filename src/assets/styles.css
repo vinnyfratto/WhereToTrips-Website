@@ -52,7 +52,7 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 400; color: var(--navy); le
 /* ── Header ─────────────────────────────── */
 header {
   position: sticky; top: 0; z-index: 100;
-  background: rgba(240,235,224,0.85);
+  background: rgba(255,255,255,0.92);
   backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--wg200);
 }
@@ -397,22 +397,22 @@ a.tile:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border
 .store-btn-name { font-family: var(--serif); font-size: 19px; line-height: 1.2; }
 
 /* ── Footer ─────────────────────────────── */
-footer { border-top: 1px solid var(--wg200); padding: 56px 0 40px; }
+footer { background: var(--navy); padding: 56px 0 40px; }
 .foot-grid { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 28px; align-items: flex-start; }
 .foot-links { display: flex; gap: 48px; flex-wrap: wrap; }
 .foot-col h4 {
   font-family: var(--sans); font-weight: 500; font-size: 10px;
-  letter-spacing: 2px; text-transform: uppercase; color: var(--wg500); margin-bottom: 14px;
+  letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-bottom: 14px;
 }
-.foot-col a, .foot-col span { display: block; font-size: 13px; color: var(--wg600); margin-bottom: 9px; }
-.foot-col a:hover { color: var(--rust); }
+.foot-col a, .foot-col span { display: block; font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 9px; }
+.foot-col a:hover { color: #fff; }
 .foot-bottom {
   display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
-  margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--wg200);
+  margin-top: 48px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.12);
 }
-.foot-bottom span { font-size: 11px; color: var(--wg500); letter-spacing: 0.5px; }
-.foot-bottom a { color: var(--wg500); }
-.foot-bottom a:hover { color: var(--rust); }
+.foot-bottom span { font-size: 11px; color: rgba(255,255,255,0.38); letter-spacing: 0.5px; }
+.foot-bottom a { color: rgba(255,255,255,0.38); }
+.foot-bottom a:hover { color: rgba(255,255,255,0.75); }
 
 /* ── Reveal ─────────────────────────────── */
 .reveal { opacity: 0; transform: translateY(22px); transition: opacity .75s ease, transform .75s ease; }
