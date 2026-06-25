@@ -422,14 +422,14 @@ footer { background: var(--navy); padding: 56px 0 40px; }
 
 /* ── Responsive ─────────────────────────────── */
 @media (max-width: 960px) {
-  .hero-grid { display: flex; flex-direction: column; }
+  .hero-grid { display: flex; flex-direction: column; gap: 0; }
   .hero-copy { display: contents; }
-  .hero-copy > .eyebrow { order: 1; }
-  .hero-copy > h1 { order: 2; }
-  .hero-media { order: 3; margin: 4px 0 28px; }
+  .hero-copy > .eyebrow { order: 1; align-self: flex-start; }
+  .hero-copy > h1 { order: 2; margin-top: 10px; margin-bottom: 14px; }
+  .hero-media { order: 3; margin: 0 0 16px; }
   .hero-copy > .lede { order: 4; }
-  .hero-copy > .cta { order: 5; }
-  .hero-img { height: clamp(300px, 60vw, 440px); }
+  .hero-copy > .cta { order: 5; margin-top: 22px; }
+  .hero-img { height: clamp(260px, 58vw, 400px); }
   .feature-split, .feature-split.flip, .chat-grid { grid-template-columns: 1fr; }
   .feature-split.flip .feature-text { order: 0; }
   .feature-img, .chat-img { height: clamp(280px, 60vw, 420px); }
