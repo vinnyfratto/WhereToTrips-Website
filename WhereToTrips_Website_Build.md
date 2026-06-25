@@ -10,7 +10,7 @@
 | **Source spec** | `C:\Users\vfrat\Downloads\WhereTo_Sitemap_Content_Architecture.docx` — "Site Map & Content Architecture" |
 | **Stack** | Eleventy v3 (Nunjucks) → `_site/` → GitHub Actions deploy on push to `main` |
 | **CMS** | Sveltia CMS (self-hosted `/admin`) — **decided** |
-| **Overall status** | 🟢 Phases 0–2 built & verified locally (branch `rebuild/phase-0`) — **38 pages, 0 template leaks, all internal links resolve → DEPLOYABLE**. Pending: auth-worker hand-off, push-to-deploy approval, legal-copy review |
+| **Overall status** | 🚀 **LIVE** — Phases 0–2 deployed to wheretotrips.com (`main` @ 89af2ce, 38 pages). CMS ready at `/admin` (PAT sign-in). Pending: CMS first login, legal-copy review, Phase 3 polish |
 | **Last updated** | 2026-06-24 |
 
 ---
@@ -391,8 +391,8 @@ Sitemap: https://wheretotrips.com/sitemap.xml
 - [x] Home page converted to section system; build verified green locally (`npm run build`, 0 errors, 0 template leaks)
 - [x] Bump `package.json` version → **1.1.0**
 - [x] Wire form provider in `site.json` — Web3Forms **live key in place** (`a7729135…`); verified rendered into form HTML
-- [ ] **(LAST task — stakeholder hand-off, ~10 min)** Deploy `sveltia-cms-auth` Cloudflare Worker; register GitHub OAuth app; set `base_url`; verify `/admin` login — see Q4
-- [ ] Push `rebuild/phase-0` → `main` to trigger the GitHub Pages deploy (awaiting approval)
+- [x] **Pushed `rebuild/phase-0` → `main`** (fast-forward, 89af2ce) → GitHub Pages deploy triggered (run 28148964130). **Site is live.**
+- [~] CMS auth — config now PAT-first (no worker needed for single editor). OAuth `sveltia-cms-auth` Cloudflare Worker is the optional multi-user upgrade (see Q4).
 
 ### Phase 1 — Traveler pages  `☑ Built & verified locally`
 - [x] Home — rebuilt to full §6.1 (hero, how-it-works steps, vibes, benefit cards, featured-vibes grid, Together, chat, CTA)
@@ -482,6 +482,7 @@ Sitemap: https://wheretotrips.com/sitemap.xml
 - **2026-06-24** — Reviewed spec docx; audited current repo; locked D1–D6; chose Sveltia after CMS deep-dive. Created this tracker. Status: planning complete, ready for Phase 0. No site code changed yet.
 - **2026-06-24** — Resolved Q4 (auth worker = last task of Phase 0, stakeholder hand-off; I prep all) + Q5 (Web3Forms). Ready to commit tracker and begin Phase 0.
 - **2026-06-24** — Web3Forms live access key added to `site.json` (form "WhereToTrips", domain wheretotrips.com); one key serves all forms, differentiated by hidden `intent`. Build re-verified.
+- **2026-06-25** — **WENT LIVE.** Synced lockfile to 1.1.0, set CMS auth to PAT-first, fast-forwarded `main` → `89af2ce`, pushed → GitHub Pages deploy (run 28148964130). The full Phases 0–2 site replaces the old single-page site at wheretotrips.com. App policies at `/privacy/` `/terms/` and `/vibes-engine/` preserved.
 - **2026-06-25** — **Phase 2 built on `rebuild/phase-0`.** Added For Creators, Creator Directory (empty-state), For Industry, About, Press, Contact, Insights hub + 3 posts, and `/legal/privacy` + `/legal/terms` (website-scoped, linking to the untouched app policies at `/privacy/` `/terms/`). New infra: `contact_form` section, `insight.njk` + `legal.njk` layouts, `insight` collection. Fixed a build break (reserved `date` field → renamed to `published`). Build green: **38 HTML pages, 0 leaks, and a full internal-link crawl found 0 broken links** → site is nav-coherent and deployable. Legal copy is a draft pending counsel.
 - **2026-06-25** — Brand: added `src/favicon.svg` (white globe icon on navy #1F3A4D, from `WhereTo_Logo.svg`), wired `<link rel=icon>` + `theme-color`; replaced header/footer "W" monogram with the full `whereto-logo.svg` wordmark. No local rasterizer (Win `convert` ≠ ImageMagick) → SVG-only favicon; PNG/ICO + apple-touch are a pre-launch follow-up.
 - **2026-06-24** — **Phase 1 built on `rebuild/phase-0`.** Added Home (full §6.1), How It Works, Wander Together, Get the App (QR + email fallback), Travel Vibes hub + 10 leaves, Destinations hub + 4 lists, FAQ. New infra: `collection_grid` section, `vibe.njk`/`destination.njk` layouts, `vibe`/`destination` Eleventy collections (sorted by `order`). Build green: **26 outputs / 24 HTML pages, 0 template leaks**; hubs + home pull collections correctly. Photography reused from 4 P0 images (curation = P3). Still local — not pushed.
