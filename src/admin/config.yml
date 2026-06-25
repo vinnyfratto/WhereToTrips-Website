@@ -25,7 +25,7 @@ collections:
   # ── Marketing pages (block-composed) ───────────────────────
   - name: pages
     label: Pages
-    icon: file
+    icon: description
     files:
       - name: home
         label: "Home"
@@ -322,7 +322,7 @@ collections:
   - name: vibes
     label: Travel Vibes
     label_singular: Vibe
-    icon: compass
+    icon: explore
     folder: src/travel-vibes
     extension: md
     format: yaml-frontmatter
@@ -352,7 +352,7 @@ collections:
   - name: destinations
     label: Destinations
     label_singular: List
-    icon: map-pin
+    icon: place
     folder: src/destinations
     extension: md
     format: yaml-frontmatter
@@ -389,7 +389,7 @@ collections:
   - name: insights
     label: Insights
     label_singular: Post
-    icon: pencil
+    icon: article
     folder: src/insights
     extension: md
     format: yaml-frontmatter
@@ -417,7 +417,7 @@ collections:
   # ── Legal ──────────────────────────────────────────────────
   - name: legal
     label: Legal
-    icon: scale
+    icon: gavel
     files:
       - name: privacy
         label: "Website Privacy Policy"
