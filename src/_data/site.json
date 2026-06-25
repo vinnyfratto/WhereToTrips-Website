@@ -16,7 +16,7 @@
   },
   "forms": {
     "provider": "web3forms",
-    "accessKey": "REPLACE_WITH_WEB3FORMS_ACCESS_KEY"
+    "accessKey": "a7729135-d5f2-4fb2-a4cd-9a99f3801393"
   },
   "nav": [
     { "label": "How It Works", "href": "/how-it-works/" },
