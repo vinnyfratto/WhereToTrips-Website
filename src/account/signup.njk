@@ -1,0 +1,49 @@
+---
+layout: layouts/account.njk
+title: "Create your WhereTo account"
+description: "Create a free WhereTo account."
+eleventyExcludeFromCollections: true
+---
+<div class="acct-card" data-wt-page="signup">
+  <p class="eyebrow">Get started</p>
+  <h1>Create your account</h1>
+  <p class="acct-sub">One free account works across the WhereTo app and website.</p>
+
+  <div id="wt-alert" class="alert" role="status" aria-live="polite"></div>
+
+  <form id="wt-signup-form" novalidate>
+    <div class="field-row">
+      <div class="field">
+        <label for="su-first">First name</label>
+        <input id="su-first" name="first_name" type="text" autocomplete="given-name" required />
+      </div>
+      <div class="field">
+        <label for="su-last">Last name</label>
+        <input id="su-last" name="last_name" type="text" autocomplete="family-name" required />
+      </div>
+    </div>
+    <div class="field">
+      <label for="su-email">Email</label>
+      <input id="su-email" name="email" type="email" autocomplete="email" required />
+    </div>
+    <div class="field">
+      <label for="su-password">Password <span class="hint">(min. 8 characters)</span></label>
+      <input id="su-password" name="password" type="password" autocomplete="new-password" minlength="8" required />
+    </div>
+
+    <label class="check">
+      <input type="checkbox" name="marketing_opt_in" />
+      <span>Send me travel ideas and product updates by email. (optional)</span>
+    </label>
+    <label class="check">
+      <input type="checkbox" name="terms" required />
+      <span>I agree to the <a href="/legal/terms/">Terms of Service</a> and <a href="/legal/privacy/">Privacy Policy</a>.</span>
+    </label>
+
+    <button type="submit" class="btn btn-primary">Create account</button>
+  </form>
+
+  <p class="acct-links">
+    Already have an account? <a href="/account/login/">Log in</a>
+  </p>
+</div>

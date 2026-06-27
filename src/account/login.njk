@@ -1,0 +1,31 @@
+---
+layout: layouts/account.njk
+title: "Log in to WhereTo"
+description: "Log in to your WhereTo account."
+eleventyExcludeFromCollections: true
+---
+<div class="acct-card" data-wt-page="login">
+  <p class="eyebrow">Welcome back</p>
+  <h1>Log in</h1>
+  <p class="acct-sub">Use the same login as the WhereTo app.</p>
+
+  <div id="wt-alert" class="alert" role="status" aria-live="polite"></div>
+
+  <form id="wt-login-form" novalidate>
+    <div class="field">
+      <label for="li-email">Email</label>
+      <input id="li-email" name="email" type="email" autocomplete="email" required />
+    </div>
+    <div class="field">
+      <label for="li-password">Password</label>
+      <input id="li-password" name="password" type="password" autocomplete="current-password" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Log in</button>
+  </form>
+
+  <p class="acct-links">
+    <a href="/account/reset/">Forgot password?</a>
+    <span class="sep">·</span>
+    New here? <a href="/account/signup/">Create an account</a>
+  </p>
+</div>

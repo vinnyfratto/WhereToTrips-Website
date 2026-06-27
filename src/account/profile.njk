@@ -1,0 +1,110 @@
+---
+layout: layouts/account.njk
+title: "Your WhereTo profile"
+description: "Manage your WhereTo account and travel preferences."
+eleventyExcludeFromCollections: true
+acctWide: true
+---
+<div id="wt-gate" class="gate-msg">Loading your profile…</div>
+
+<div id="wt-profile" class="acct-card" data-wt-page="profile" style="display:none;">
+  <div class="acct-toprow">
+    <div>
+      <p class="eyebrow">Your account</p>
+      <h1>Profile</h1>
+    </div>
+    <button id="wt-logout" type="button" class="btn btn-ghost">Log out</button>
+  </div>
+
+  <div id="wt-alert" class="alert" role="status" aria-live="polite"></div>
+
+  <form id="wt-profile-form" novalidate>
+    <h2 class="acct-section-title">Account details</h2>
+    <div class="field-row">
+      <div class="field">
+        <label for="wt-first">First name</label>
+        <input id="wt-first" type="text" autocomplete="given-name" />
+      </div>
+      <div class="field">
+        <label for="wt-last">Last name</label>
+        <input id="wt-last" type="text" autocomplete="family-name" />
+      </div>
+    </div>
+    <div class="field">
+      <label for="wt-email">Email <span class="hint">(managed by your login)</span></label>
+      <input id="wt-email" type="email" disabled />
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="wt-phone">Phone <span class="hint">(optional)</span></label>
+        <input id="wt-phone" type="tel" autocomplete="tel" />
+      </div>
+      <div class="field">
+        <label for="wt-photo">Profile photo URL <span class="hint">(optional)</span></label>
+        <input id="wt-photo" type="url" placeholder="https://…" />
+      </div>
+    </div>
+    <label class="check">
+      <input id="wt-marketing" type="checkbox" />
+      <span>Send me travel ideas and product updates by email.</span>
+    </label>
+
+    <h2 class="acct-section-title">Flight preferences</h2>
+    <p class="acct-sub">These sync with the WhereTo app to personalize your recommendations.</p>
+    <div class="field">
+      <label for="wt-airport">Nearest airport <span class="hint">(name or IATA code, e.g. JFK)</span></label>
+      <input id="wt-airport" type="text" placeholder="e.g. JFK" />
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="wt-seat">Seat class</label>
+        <select id="wt-seat">
+          <option value="">No preference</option>
+          <option value="economy">Economy</option>
+          <option value="economy_plus">Economy Plus</option>
+          <option value="premium_economy">Premium Economy</option>
+          <option value="business">Business</option>
+          <option value="first">First</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="wt-stops">Stops</label>
+        <select id="wt-stops">
+          <option value="">No preference</option>
+          <option value="nonstop">Nonstop only</option>
+          <option value="1_layover">Up to 1 layover</option>
+          <option value="2_layovers">Up to 2 layovers</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label for="wt-airlines">Preferred airlines <span class="hint">(IATA codes, comma-separated, e.g. AA, DL)</span></label>
+      <input id="wt-airlines" type="text" placeholder="e.g. AA, DL, B6" />
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="wt-budgetflex">Budget flexibility</label>
+        <select id="wt-budgetflex">
+          <option value="">No preference</option>
+          <option value="none">None — strict budget</option>
+          <option value="2pct">Up to 2% over</option>
+          <option value="5pct">Up to 5% over</option>
+          <option value="10pct">Up to 10% over</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="wt-dateflex">Date flexibility</label>
+        <select id="wt-dateflex">
+          <option value="">No preference</option>
+          <option value="none">Exact dates</option>
+          <option value="1day">± 1 day</option>
+          <option value="2days">± 2 days</option>
+          <option value="3days">± 3 days</option>
+          <option value="1week">± 1 week</option>
+        </select>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save changes</button>
+  </form>
+</div>

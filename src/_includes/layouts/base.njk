@@ -51,6 +51,8 @@
     }
   </style>
   <link rel="stylesheet" href="/assets/styles.css?v={{ buildTime }}" />
+  {#- Public Supabase config (anon key — RLS-gated, safe to expose). Consumed by /assets/js/wt-*.js -#}
+  <script>window.WT_SUPABASE = { url: "{{ supabase.url }}", anonKey: "{{ supabase.anonKey }}" };</script>
 </head>
 <body>
 {% include "partials/header.njk" %}
@@ -63,6 +65,26 @@
 <script>
   var yearEl = document.getElementById('year');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+  // Account links: "Log In" → "My Account" when a Supabase session exists.
+  // Lightweight read of the persisted session (no supabase-js needed here).
+  (function () {
+    try {
+      var cfg = window.WT_SUPABASE || {};
+      var host = (cfg.url || '').split('//')[1] || '';
+      var ref = host.split('.')[0];
+      if (!ref) return;
+      var raw = localStorage.getItem('sb-' + ref + '-auth-token');
+      if (!raw) return;
+      var sess = JSON.parse(raw);
+      var exp = sess && (sess.expires_at || (sess.currentSession && sess.currentSession.expires_at));
+      if (!exp || (exp * 1000) < Date.now()) return; // no valid session
+      document.querySelectorAll('[data-wt-account]').forEach(function (a) {
+        a.textContent = 'My Account';
+        a.setAttribute('href', '/account/profile/');
+      });
+    } catch (e) { /* treat as logged out */ }
+  })();
 
   // Mobile hamburger menu
   var navToggle = document.querySelector('.nav-toggle');

@@ -9,7 +9,7 @@
         <div class="foot-col">
           <h4>{{ col.heading }}</h4>
           {%- for link in col.links %}
-          <a href="{{ link.href }}">{{ link.label }}</a>
+          <a href="{{ link.href }}"{% if "/account/" in link.href %} data-wt-account{% endif %}>{{ link.label }}</a>
           {%- endfor %}
         </div>
         {%- endfor %}

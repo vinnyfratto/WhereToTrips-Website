@@ -1,0 +1,5 @@
+{
+  "_comment": "PUBLIC Supabase config for the static site. The anon key is public by design (it already ships in the WhereTo app bundle) and is safe to commit — all access is gated by Row Level Security. The SERVICE-ROLE key must NEVER appear here or anywhere in this repo; it lives only in Supabase Edge Function secrets. These values are injected into window.WT_SUPABASE by layouts/base.njk.",
+  "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co",
+  "anonKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2cXd4cGhybWN2bXp0bGt6aHNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzIxMjIsImV4cCI6MjA5NTMwODEyMn0.uz1WFZqymop5mhIUx6bxW8qofMQuGo-ltyRA8f0P1lk"
+}

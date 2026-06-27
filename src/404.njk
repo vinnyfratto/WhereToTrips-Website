@@ -1,0 +1,33 @@
+---
+layout: layouts/base.njk
+permalink: /404.html
+title: "Page not found"
+description: "Page not found."
+eleventyExcludeFromCollections: true
+---
+<link rel="stylesheet" href="/assets/account.css?v={{ buildTime }}" />
+
+{# Affiliate catch-all: GitHub Pages serves this 404 for unmatched paths, so
+   /affiliate/<code> lands here. If that's the case, run the capture flow and
+   redirect; otherwise show a normal not-found page. #}
+<main id="nf" class="acct" style="display:none; text-align:center;">
+  <p class="eyebrow">404</p>
+  <h1>We couldn't find that page</h1>
+  <p class="acct-sub">The link may be broken or the page may have moved.</p>
+  <p><a class="btn btn-primary" href="/">Back to home</a></p>
+</main>
+
+<main id="affil" class="affil-bounce" style="display:none;">
+  <div class="spinner" aria-hidden="true"></div>
+  <p>Taking you to WhereTo…</p>
+</main>
+
+<script type="module">
+  import { extractCode, run } from '/assets/js/wt-affiliate.js?v={{ buildTime }}';
+  if (/^\/affiliate\//i.test(location.pathname) && extractCode()) {
+    document.getElementById('affil').style.display = 'block';
+    run();
+  } else {
+    document.getElementById('nf').style.display = 'block';
+  }
+</script>

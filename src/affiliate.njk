@@ -1,0 +1,16 @@
+---
+layout: layouts/base.njk
+title: "Redirecting…"
+description: "WhereTo affiliate link."
+eleventyExcludeFromCollections: true
+---
+<link rel="stylesheet" href="/assets/account.css?v={{ buildTime }}" />
+<main class="affil-bounce">
+  <div class="spinner" aria-hidden="true"></div>
+  <p>Taking you to WhereTo…</p>
+  <noscript><p>Please <a href="/account/signup/">continue to sign up</a>.</p></noscript>
+</main>
+<script type="module">
+  import { run } from '/assets/js/wt-affiliate.js?v={{ buildTime }}';
+  run();
+</script>

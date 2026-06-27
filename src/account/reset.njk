@@ -1,0 +1,35 @@
+---
+layout: layouts/account.njk
+title: "Reset your WhereTo password"
+description: "Reset your WhereTo account password."
+eleventyExcludeFromCollections: true
+---
+<div class="acct-card" data-wt-page="reset">
+  <p class="eyebrow">Account</p>
+  <h1>Reset password</h1>
+
+  <div id="wt-alert" class="alert" role="status" aria-live="polite"></div>
+
+  {# Request a reset link #}
+  <form id="wt-reset-request-form" novalidate>
+    <p class="acct-sub">Enter your email and we'll send you a reset link.</p>
+    <div class="field">
+      <label for="rs-email">Email</label>
+      <input id="rs-email" name="email" type="email" autocomplete="email" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Send reset link</button>
+  </form>
+
+  {# Set a new password (shown after arriving from the recovery email) #}
+  <form id="wt-reset-set-form" novalidate style="display:none;">
+    <div class="field">
+      <label for="rs-password">New password <span class="hint">(min. 8 characters)</span></label>
+      <input id="rs-password" name="password" type="password" autocomplete="new-password" minlength="8" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Update password</button>
+  </form>
+
+  <p class="acct-links">
+    <a href="/account/login/">Back to log in</a>
+  </p>
+</div>
