@@ -222,6 +222,10 @@
   border: 1px solid var(--wg300); border-radius: var(--radius-sm); background: #fff; max-width: 130px;
 }
 .adm-wrap-scroll { overflow-x: auto; }
+.adm-table th.sortable { cursor: pointer; user-select: none; white-space: nowrap; }
+.adm-table th.sortable:hover { color: var(--rust); }
+.adm-table tr.adm-detail td { background: var(--wg100); color: var(--wg600); font-size: 0.82rem; }
+.adm-table td a[data-book] { color: var(--rust); font-weight: 600; cursor: pointer; }
 
 .adm-pill { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 0.74rem; font-weight: 600; }
 .adm-pill.active, .adm-pill.approved, .adm-pill.paid { background: #eaf6ee; color: #1f5b34; }

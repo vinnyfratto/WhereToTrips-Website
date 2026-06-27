@@ -220,63 +220,132 @@ async function loadAffiliates() {
 }
 
 // ── Commissions ─────────────────────────────────────────────────────
+const COMMISSION_STATUSES = ['none', 'pending', 'approved', 'paid', 'reversed', 'rejected'];
+const COM_COLS = [
+  { key: 'booking',    label: 'Booking',        val: (c) => (c.booking_reference || c.id || '').toLowerCase() },
+  { key: 'affiliate',  label: 'Affiliate',      val: (c) => (affName(c) || '~~~').toLowerCase() },
+  { key: 'amount',     label: 'Booking amount', num: true, val: (c) => Number(c.total_amount || 0) },
+  { key: 'commission', label: 'Commission',     num: true, val: (c) => Number(c.commission_amount || 0) },
+  { key: 'status',     label: 'Status',         val: (c) => c.commission_status || '' },
+  { key: 'date',       label: 'Date',           val: (c) => c.created_at || '' },
+];
+let comData = [];
+let comSort = { key: 'date', dir: 'desc' };
+const comExpanded = new Set();
+
+function affName(c) { return c.affiliates ? (c.affiliates.display_name || c.affiliates.affiliate_code) : null; }
+
 async function loadCommissions() {
+  if (!affiliateCache.length) { const ra = await callAdmin('list_affiliates'); affiliateCache = ra.affiliates || []; }
   panel('commissions').innerHTML = `
     <div class="adm-card">
       <h3>Commissions</h3>
       <div class="adm-form-row">
-        <div class="field"><label>Filter status</label>
+        <div class="field"><label>Commission status</label>
           <select id="com-filter">
-            <option value="">All</option><option value="pending">Pending</option>
-            <option value="approved">Approved</option><option value="paid">Paid</option>
-            <option value="rejected">Rejected</option><option value="reversed">Reversed</option>
+            <option value="">All</option><option value="none">None</option>
+            <option value="pending">Pending</option><option value="approved">Approved</option>
+            <option value="paid">Paid</option><option value="rejected">Rejected</option>
+            <option value="reversed">Reversed</option>
+          </select>
+        </div>
+        <div class="field"><label>Affiliate</label>
+          <select id="com-assigned">
+            <option value="">All</option>
+            <option value="assigned">Affiliate assigned</option>
+            <option value="none">No affiliate</option>
           </select>
         </div>
       </div>
       <div id="com-list" class="adm-wrap-scroll">Loading…</div>
     </div>`;
-  $('#com-filter').addEventListener('change', (e) => renderCommissions(e.target.value));
-  renderCommissions('');
+  $('#com-filter').addEventListener('change', fetchCommissions);
+  $('#com-assigned').addEventListener('change', fetchCommissions);
+  fetchCommissions();
 }
 
-const COMMISSION_STATUSES = ['none', 'pending', 'approved', 'paid', 'reversed', 'rejected'];
+async function fetchCommissions() {
+  const r = await callAdmin('list_commissions', { status: $('#com-filter').value, assigned: $('#com-assigned').value });
+  comData = r.commissions || [];
+  renderCommissionsTable();
+}
 
-async function renderCommissions(status) {
-  // Need the affiliate list to populate the "assign" dropdowns.
-  if (!affiliateCache.length) { const ra = await callAdmin('list_affiliates'); affiliateCache = ra.affiliates || []; }
-  const affOpts = affiliateCache.map((a) => `<option value="${a.id}">${esc(a.code)}</option>`).join('');
+function renderCommissionsTable() {
+  const affOpts = affiliateCache.map((a) => `<option value="${a.id}">${esc(a.display_name || a.code)} (${esc(a.code)})</option>`).join('');
 
-  const r = await callAdmin('list_commissions', { status });
-  const rows = (r.commissions || []).map((c) => {
-    const hasAff = c.affiliates && c.affiliates.affiliate_code;
-    const affCell = hasAff
-      ? `<strong>${esc(c.affiliates.affiliate_code)}</strong>`
+  const col = COM_COLS.find((c) => c.key === comSort.key) || COM_COLS[5];
+  const sorted = [...comData].sort((a, b) => {
+    const av = col.val(a), bv = col.val(b);
+    const r = col.num ? (av - bv) : (av < bv ? -1 : av > bv ? 1 : 0);
+    return comSort.dir === 'asc' ? r : -r;
+  });
+
+  const head = COM_COLS.map((c) => {
+    const arrow = comSort.key === c.key ? (comSort.dir === 'asc' ? ' ▲' : ' ▼') : '';
+    return `<th class="sortable${c.num ? ' num' : ''}" data-sort="${c.key}">${c.label}${arrow}</th>`;
+  }).join('');
+
+  const body = sorted.map((c) => {
+    const affCell = affName(c)
+      ? `<strong>${esc(affName(c))}</strong>`
       : `<select data-assign-sel="${c.id}"><option value="">— select —</option>${affOpts}</select>
          <button class="btn btn-ghost btn-xs" data-assign="${c.id}">Assign</button>`;
-    const statusCell = `<select data-status="${c.id}">
-      ${COMMISSION_STATUSES.map((s) => `<option value="${s}" ${s === c.commission_status ? 'selected' : ''}>${s}</option>`).join('')}
-    </select>`;
-    return `<tr>
-      <td>${esc(c.booking_reference || c.id.slice(0, 8))}</td>
+    const statusCell = `<select data-status="${c.id}">${COMMISSION_STATUSES.map((s) => `<option value="${s}" ${s === c.commission_status ? 'selected' : ''}>${s}</option>`).join('')}</select>`;
+    const main = `<tr>
+      <td><a href="#" data-book="${c.id}">${esc(c.booking_reference || c.id.slice(0, 8))}</a></td>
       <td>${affCell}</td>
+      <td class="num">${c.total_amount != null ? money(c.total_amount, c.total_currency) : '—'}</td>
       <td class="num">${c.commission_amount != null ? money(c.commission_amount, c.commission_currency) : '—'}</td>
       <td>${statusCell}</td>
       <td>${date(c.created_at)}</td></tr>`;
+    let detail = '';
+    if (comExpanded.has(c.id)) {
+      detail = `<tr class="adm-detail"><td colspan="6">
+        <strong>${esc(c.origin || '?')} → ${esc(c.destination || '?')}</strong>
+        &nbsp;·&nbsp; Depart ${c.departing_at ? date(c.departing_at) : '—'}
+        &nbsp;·&nbsp; ${c.passenger_count || 1} pax
+        &nbsp;·&nbsp; Order status: ${esc(c.status || '—')}
+        &nbsp;·&nbsp; Ref: ${esc(c.booking_reference || '—')}
+        &nbsp;·&nbsp; Total: ${money(c.total_amount, c.total_currency)}
+        &nbsp;·&nbsp; Order ID: ${esc(c.id)}
+      </td></tr>`;
+    }
+    return main + detail;
   }).join('');
-  $('#com-list').innerHTML = `<table class="adm-table">
-    <thead><tr><th>Booking</th><th>Affiliate</th><th class="num">Commission</th><th>Status</th><th>Date</th></tr></thead>
-    <tbody>${rows || '<tr><td colspan="5">No orders.</td></tr>'}</tbody></table>`;
 
-  // Assign an affiliate to an order (computes commission from the affiliate's rate).
+  $('#com-list').innerHTML = `<table class="adm-table">
+    <thead><tr>${head}</tr></thead>
+    <tbody>${body || '<tr><td colspan="6">No orders.</td></tr>'}</tbody></table>`;
+
+  // Sort by column header.
+  $('#com-list').querySelectorAll('th[data-sort]').forEach((th) => {
+    th.addEventListener('click', () => {
+      const k = th.dataset.sort;
+      if (comSort.key === k) comSort.dir = comSort.dir === 'asc' ? 'desc' : 'asc';
+      else comSort = { key: k, dir: (['amount', 'commission', 'date'].includes(k) ? 'desc' : 'asc') };
+      renderCommissionsTable();
+    });
+  });
+
+  // Click booking id → toggle a detail row.
+  $('#com-list').querySelectorAll('[data-book]').forEach((a) => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      const id = a.dataset.book;
+      comExpanded.has(id) ? comExpanded.delete(id) : comExpanded.add(id);
+      renderCommissionsTable();
+    });
+  });
+
+  // Assign an affiliate (computes commission from the affiliate's rate).
   $('#com-list').querySelectorAll('[data-assign]').forEach((b) => {
     b.addEventListener('click', async () => {
-      const id = b.dataset.assign;
-      const sel = $(`[data-assign-sel="${id}"]`);
+      const sel = $(`[data-assign-sel="${b.dataset.assign}"]`);
       if (!sel || !sel.value) { msg('error', 'Pick an affiliate first.'); return; }
-      const r2 = await callAdmin('assign_affiliate', { order_id: id, affiliate_id: sel.value });
+      const r2 = await callAdmin('assign_affiliate', { order_id: b.dataset.assign, affiliate_id: sel.value });
       if (!r2.ok) { msg('error', 'Assign failed: ' + r2.error); return; }
       msg('success', 'Affiliate assigned + commission calculated.');
-      renderCommissions($('#com-filter').value);
+      fetchCommissions();
     });
   });
 
@@ -284,7 +353,10 @@ async function renderCommissions(status) {
   $('#com-list').querySelectorAll('[data-status]').forEach((sel) => {
     sel.addEventListener('change', async () => {
       const r2 = await callAdmin('set_commission_status', { order_id: sel.dataset.status, status: sel.value });
-      if (!r2.ok) { msg('error', 'Failed: ' + r2.error); renderCommissions($('#com-filter').value); return; }
+      if (!r2.ok) { msg('error', 'Failed: ' + r2.error); fetchCommissions(); return; }
+      // keep the local row in sync so re-sorts/re-renders reflect it
+      const row = comData.find((c) => c.id === sel.dataset.status);
+      if (row) row.commission_status = sel.value;
       msg('success', 'Status set to ' + sel.value + '.');
     });
   });
