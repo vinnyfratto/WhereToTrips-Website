@@ -1,0 +1,48 @@
+---
+layout: layouts/base.njk
+permalink: /admin-affiliates/index.html
+title: "Affiliate Admin — WhereTo"
+description: "Internal affiliate program administration."
+eleventyExcludeFromCollections: true
+---
+<link rel="stylesheet" href="/assets/account.css?v={{ buildTime }}" />
+<main id="wt-admin-page">
+
+  <div id="adm-gate" class="gate-msg">Checking access…</div>
+
+  <div id="adm-denied" class="acct" style="display:none;">
+    <div class="acct-card" style="text-align:center;">
+      <p class="eyebrow">Restricted</p>
+      <h1>Access denied</h1>
+      <p class="acct-sub">This area is for WhereTo program administrators only.</p>
+      <p><a class="btn btn-primary" href="/">Back to home</a></p>
+    </div>
+  </div>
+
+  <div id="adm-root" class="dash" style="display:none;">
+    <div class="dash-head">
+      <div>
+        <p class="eyebrow">Internal · admin</p>
+        <h1>Affiliate program admin</h1>
+      </div>
+      <button id="adm-logout" type="button" class="btn btn-ghost">Log out</button>
+    </div>
+
+    <div class="adm-tabs" role="tablist">
+      <button class="adm-tab is-active" data-tab="overview">Overview</button>
+      <button class="adm-tab" data-tab="invites">Invites</button>
+      <button class="adm-tab" data-tab="affiliates">Affiliates</button>
+      <button class="adm-tab" data-tab="commissions">Commissions</button>
+      <button class="adm-tab" data-tab="payouts">Payouts</button>
+    </div>
+
+    <div id="adm-msg" class="alert" role="status" aria-live="polite"></div>
+
+    <section class="adm-panel" data-panel="overview"></section>
+    <section class="adm-panel" data-panel="invites" hidden></section>
+    <section class="adm-panel" data-panel="affiliates" hidden></section>
+    <section class="adm-panel" data-panel="commissions" hidden></section>
+    <section class="adm-panel" data-panel="payouts" hidden></section>
+  </div>
+</main>
+<script type="module" src="/assets/js/wt-admin.js?v={{ buildTime }}"></script>
