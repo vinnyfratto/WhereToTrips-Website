@@ -1,0 +1,96 @@
+---
+layout: layouts/base.njk
+permalink: /AffiliateSignUp/index.html
+title: "Affiliate Sign Up — WhereTo"
+description: "Invitation-only affiliate onboarding for WhereTo."
+eleventyExcludeFromCollections: true
+---
+<link rel="stylesheet" href="/assets/account.css?v={{ buildTime }}" />
+<main class="acct acct--wide" id="wt-affsignup">
+
+  {# 1. Validating state #}
+  <div id="aff-loading" class="gate-msg">Checking your invitation…</div>
+
+  {# 2. Invalid / expired / used invite #}
+  <div id="aff-invalid" class="acct-card alert-error" style="display:none; padding:28px 30px;"></div>
+
+  {# 3. The signup form (revealed only for a valid invite) #}
+  <div id="aff-form-wrap" class="acct-card" style="display:none;">
+    <p class="eyebrow">Affiliate program</p>
+    <h1>Become a WhereTo affiliate</h1>
+    <p class="acct-sub">
+      You've been invited to the WhereTo affiliate program. Your commission rate is
+      <strong id="aff-rate">5%</strong>. Create your account below to get your personal
+      affiliate link.
+    </p>
+
+    <div id="wt-alert" class="alert" role="status" aria-live="polite"></div>
+
+    <form id="aff-form" novalidate>
+      {# Account fields — hidden if already logged in #}
+      <div id="aff-account-fields">
+        <div class="field-row">
+          <div class="field">
+            <label for="aff-first">First name</label>
+            <input id="aff-first" name="first_name" type="text" autocomplete="given-name" />
+          </div>
+          <div class="field">
+            <label for="aff-last">Last name</label>
+            <input id="aff-last" name="last_name" type="text" autocomplete="family-name" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="aff-email">Email</label>
+          <input id="aff-email" name="email" type="email" autocomplete="email" />
+        </div>
+        <div class="field">
+          <label for="aff-password">Password <span class="hint">(min. 8 characters)</span></label>
+          <input id="aff-password" name="password" type="password" autocomplete="new-password" minlength="8" />
+        </div>
+      </div>
+
+      {# Shown instead, when claiming with an existing logged-in account #}
+      <div id="aff-logged-note" class="alert show alert-info" style="display:none;">
+        Claiming this invitation as <strong id="aff-logged-email"></strong>.
+      </div>
+
+      <h2 class="acct-section-title">Your affiliate link</h2>
+      <div class="field">
+        <label for="aff-vanity">Custom link <span class="hint">(optional — letters, numbers, hyphens)</span></label>
+        <input id="aff-vanity" name="vanity_slug" type="text" placeholder="e.g. janetravels" />
+        <span class="hint">Becomes wheretotrips.com/affiliate/<em>your-name</em>. Leave blank for an auto-generated code.</span>
+      </div>
+
+      <label class="check">
+        <input type="checkbox" name="terms" required />
+        <span>I agree to the <a href="/legal/terms/">Affiliate Terms</a> and <a href="/legal/privacy/">Privacy Policy</a>.</span>
+      </label>
+
+      <button type="submit" class="btn btn-primary">Create affiliate account</button>
+    </form>
+  </div>
+
+  {# 4. Success #}
+  <div id="aff-success" class="acct-card" style="display:none;">
+    <p class="eyebrow">You're in 🎉</p>
+    <h1>Welcome to the program</h1>
+    <p class="acct-sub">Your commission rate is <strong id="su-rate">5%</strong>. Share your link to start earning.</p>
+
+    <h2 class="acct-section-title">Your affiliate code</h2>
+    <p style="font-family:var(--serif); font-size:1.8rem; color:var(--rust); margin:0 0 18px;" id="su-code">--------</p>
+
+    <h2 class="acct-section-title">Your share link</h2>
+    <p class="acct-sub" style="margin-bottom:6px;">Click to copy:</p>
+    <p><a href="#" data-copy id="su-link" style="color:var(--rust); font-weight:600; word-break:break-all;"></a></p>
+    <div id="su-vanity-row" style="display:none;">
+      <p class="acct-sub" style="margin:14px 0 6px;">Your custom link:</p>
+      <p><a href="#" data-copy id="su-vanity" style="color:var(--rust); font-weight:600; word-break:break-all;"></a></p>
+    </div>
+
+    <p style="margin-top:28px;">
+      <a class="btn btn-primary" href="/account/profile/">Go to my account</a>
+    </p>
+  </div>
+
+</main>
+<script type="module" src="/assets/js/wt-affiliate-signup.js?v={{ buildTime }}"></script>
