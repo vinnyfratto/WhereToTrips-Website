@@ -7,6 +7,7 @@
 //  reset|profile|account". Affiliate-link capture lives in wt-affiliate.js.
 // ───────────────────────────────────────────────────────────────────
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { initProfileForm } from './wt-profile.js';
 
 const cfg = window.WT_SUPABASE || {};
 export const supabase = createClient(cfg.url, cfg.anonKey, {
@@ -195,7 +196,6 @@ async function initProfile() {
   const root = document.getElementById('wt-profile');
   if (!root) return;
   const gate = document.getElementById('wt-gate');
-  const alertEl = document.getElementById('wt-alert');
 
   const { data: sess } = await supabase.auth.getSession();
   if (!sess.session) {
@@ -204,84 +204,21 @@ async function initProfile() {
   }
   const user = sess.session.user;
 
-  // Email comes live from auth.users (not mirrored into profiles).
-  const emailEl = document.getElementById('wt-email');
-  if (emailEl) emailEl.value = user.email || '';
-
-  const { data: profile, error } = await supabase
-    .from('profiles')
-    .select('first_name,last_name,phone,profile_photo,marketing_opt_in,flight_prefs')
-    .eq('id', user.id)
-    .single();
-
-  if (error) { show(alertEl, 'error', 'Could not load your profile. ' + error.message); }
-
-  const fp = (profile && profile.flight_prefs) || {};
-  const setVal = (id, v) => { const el = document.getElementById(id); if (el != null && v != null) el.value = v; };
-  setVal('wt-first', profile?.first_name);
-  setVal('wt-last', profile?.last_name);
-  setVal('wt-phone', profile?.phone);
-  setVal('wt-photo', profile?.profile_photo);
-  const mk = document.getElementById('wt-marketing');
-  if (mk) mk.checked = !!profile?.marketing_opt_in;
-  setVal('wt-airport', fp.nearestAirport);
-  setVal('wt-seat', fp.seatClass);
-  setVal('wt-airlines', Array.isArray(fp.preferredAirlines) ? fp.preferredAirlines.join(', ') : '');
-  setVal('wt-stops', fp.stopCount);
-  setVal('wt-budgetflex', fp.budgetFlexibility);
-  setVal('wt-dateflex', fp.dateFlex);
+  // Shared editor (same one the affiliate dashboard embeds).
+  await initProfileForm(supabase, user);
 
   if (gate) gate.style.display = 'none';
   root.style.display = 'block';
 
-  // Save
-  const form = document.getElementById('wt-profile-form');
-  const btn = form.querySelector('button[type="submit"]');
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    hide(alertEl);
-
-    const val = (id) => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
-    const airlines = val('wt-airlines')
-      ? val('wt-airlines').split(',').map((s) => s.trim().toUpperCase()).filter(Boolean)
-      : [];
-
-    const flight_prefs = {
-      nearestAirport: val('wt-airport') || undefined,
-      seatClass: val('wt-seat') || undefined,
-      preferredAirlines: airlines.length ? airlines : undefined,
-      stopCount: val('wt-stops') || undefined,
-      budgetFlexibility: val('wt-budgetflex') || undefined,
-      dateFlex: val('wt-dateflex') || undefined,
-    };
-
-    busy(btn, true, 'Saving…');
-    const { error: upErr } = await supabase
-      .from('profiles')
-      .update({
-        first_name: val('wt-first'),
-        last_name: val('wt-last'),
-        phone: val('wt-phone') || null,
-        profile_photo: val('wt-photo') || null,
-        marketing_opt_in: document.getElementById('wt-marketing').checked,
-        flight_prefs,
-      })
-      .eq('id', user.id);
-    busy(btn, false);
-
-    if (upErr) { show(alertEl, 'error', 'Save failed: ' + upErr.message); return; }
-    show(alertEl, 'success', 'Profile saved.');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
-
-  // Logout
-  const out = document.getElementById('wt-logout');
-  if (out) {
-    out.addEventListener('click', async () => {
-      await supabase.auth.signOut();
-      window.location.href = '/account/login/';
-    });
-  }
+  // Reveal the affiliate dashboard link if this user is an affiliate.
+  try {
+    const { data: aff } = await supabase
+      .from('affiliates').select('id').eq('user_id', user.id).maybeSingle();
+    if (aff) {
+      const link = document.getElementById('wt-aff-dash-link');
+      if (link) link.style.display = 'inline-block';
+    }
+  } catch (_e) { /* not an affiliate */ }
 }
 
 // ── ACCOUNT index: route to profile or login ────────────────────────
