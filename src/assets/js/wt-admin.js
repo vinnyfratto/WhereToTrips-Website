@@ -239,33 +239,55 @@ async function loadCommissions() {
   renderCommissions('');
 }
 
+const COMMISSION_STATUSES = ['none', 'pending', 'approved', 'paid', 'reversed', 'rejected'];
+
 async function renderCommissions(status) {
+  // Need the affiliate list to populate the "assign" dropdowns.
+  if (!affiliateCache.length) { const ra = await callAdmin('list_affiliates'); affiliateCache = ra.affiliates || []; }
+  const affOpts = affiliateCache.map((a) => `<option value="${a.id}">${esc(a.code)}</option>`).join('');
+
   const r = await callAdmin('list_commissions', { status });
   const rows = (r.commissions || []).map((c) => {
-    const code = c.affiliates ? c.affiliates.affiliate_code : '—';
-    const act = c.commission_status === 'pending'
-      ? `<button class="btn btn-primary btn-xs" data-approve="${c.id}">Approve</button>
-         <button class="btn btn-ghost btn-xs" data-reject="${c.id}">Reject</button>` : '';
+    const hasAff = c.affiliates && c.affiliates.affiliate_code;
+    const affCell = hasAff
+      ? `<strong>${esc(c.affiliates.affiliate_code)}</strong>`
+      : `<select data-assign-sel="${c.id}"><option value="">— select —</option>${affOpts}</select>
+         <button class="btn btn-ghost btn-xs" data-assign="${c.id}">Assign</button>`;
+    const statusCell = `<select data-status="${c.id}">
+      ${COMMISSION_STATUSES.map((s) => `<option value="${s}" ${s === c.commission_status ? 'selected' : ''}>${s}</option>`).join('')}
+    </select>`;
     return `<tr>
       <td>${esc(c.booking_reference || c.id.slice(0, 8))}</td>
-      <td>${esc(code)}</td>
-      <td class="num">${money(c.commission_amount, c.commission_currency)}</td>
-      <td><span class="adm-pill ${c.commission_status}">${c.commission_status}</span></td>
-      <td>${date(c.created_at)}</td>
-      <td>${act}</td></tr>`;
+      <td>${affCell}</td>
+      <td class="num">${c.commission_amount != null ? money(c.commission_amount, c.commission_currency) : '—'}</td>
+      <td>${statusCell}</td>
+      <td>${date(c.created_at)}</td></tr>`;
   }).join('');
   $('#com-list').innerHTML = `<table class="adm-table">
-    <thead><tr><th>Booking</th><th>Affiliate</th><th class="num">Commission</th><th>Status</th><th>Date</th><th></th></tr></thead>
-    <tbody>${rows || '<tr><td colspan="6">No commissions.</td></tr>'}</tbody></table>`;
-  const wire = (attr, action) => $('#com-list').querySelectorAll(`[${attr}]`).forEach((b) => {
+    <thead><tr><th>Booking</th><th>Affiliate</th><th class="num">Commission</th><th>Status</th><th>Date</th></tr></thead>
+    <tbody>${rows || '<tr><td colspan="5">No orders.</td></tr>'}</tbody></table>`;
+
+  // Assign an affiliate to an order (computes commission from the affiliate's rate).
+  $('#com-list').querySelectorAll('[data-assign]').forEach((b) => {
     b.addEventListener('click', async () => {
-      const r2 = await callAdmin(action, { order_id: b.getAttribute(attr) });
-      if (!r2.ok) { msg('error', 'Failed: ' + r2.error); return; }
-      msg('success', 'Updated.'); renderCommissions($('#com-filter').value);
+      const id = b.dataset.assign;
+      const sel = $(`[data-assign-sel="${id}"]`);
+      if (!sel || !sel.value) { msg('error', 'Pick an affiliate first.'); return; }
+      const r2 = await callAdmin('assign_affiliate', { order_id: id, affiliate_id: sel.value });
+      if (!r2.ok) { msg('error', 'Assign failed: ' + r2.error); return; }
+      msg('success', 'Affiliate assigned + commission calculated.');
+      renderCommissions($('#com-filter').value);
     });
   });
-  wire('data-approve', 'approve_commission');
-  wire('data-reject', 'reject_commission');
+
+  // Status dropdown — set directly (admin override / testing).
+  $('#com-list').querySelectorAll('[data-status]').forEach((sel) => {
+    sel.addEventListener('change', async () => {
+      const r2 = await callAdmin('set_commission_status', { order_id: sel.dataset.status, status: sel.value });
+      if (!r2.ok) { msg('error', 'Failed: ' + r2.error); renderCommissions($('#com-filter').value); return; }
+      msg('success', 'Status set to ' + sel.value + '.');
+    });
+  });
 }
 
 // ── Payouts ─────────────────────────────────────────────────────────
