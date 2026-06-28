@@ -248,6 +248,21 @@
 }
 .adm-token-box a { color: var(--rust); font-weight: 600; cursor: pointer; }
 
+/* Commission structure list (dashboard) */
+.comm-structure { display: flex; flex-direction: column; }
+.comm-row {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
+  padding: 11px 0; border-bottom: 1px solid var(--wg200);
+  font-size: 0.92rem; color: var(--wg600);
+}
+.comm-row:last-child { border-bottom: 0; }
+.comm-row strong { color: var(--navy); white-space: nowrap; }
+
+/* Admin: invite commission rows */
+.adm-subhead { font-family: var(--sans); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--wg500); margin: 18px 0 8px; }
+.adm-comm-row .comm-label { flex: 1 1 180px; }
+.adm-comm-row .comm-label label { font-weight: 600; color: var(--navy); }
+
 /* Affiliate landing bounce */
 .affil-bounce { text-align: center; padding: 100px 24px; }
 .affil-bounce .spinner {

@@ -7,8 +7,8 @@ eleventyExcludeFromCollections: true
 ---
 <link rel="stylesheet" href="/assets/account.css?v={{ buildTime }}" />
 
-{# Affiliate catch-all: GitHub Pages serves this 404 for unmatched paths, so
-   /affiliate/<code> lands here. If that's the case, run the capture flow and
+{# Promo catch-all: GitHub Pages serves this 404 for unmatched paths, so
+   /promo/<code> lands here. If that's the case, run the capture flow and
    redirect; otherwise show a normal not-found page. #}
 <main id="nf" class="acct" style="display:none; text-align:center;">
   <p class="eyebrow">404</p>
@@ -24,7 +24,7 @@ eleventyExcludeFromCollections: true
 
 <script type="module">
   import { extractCode, run } from '/assets/js/wt-affiliate.js?v={{ buildTime }}';
-  if (/^\/affiliate\//i.test(location.pathname) && extractCode()) {
+  if (/^\/(?:promo|affiliate)\//i.test(location.pathname) && extractCode()) {
     document.getElementById('affil').style.display = 'block';
     run();
   } else {

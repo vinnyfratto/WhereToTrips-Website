@@ -192,12 +192,12 @@ function renderSuccess(r) {
   $('su-code').textContent = r.affiliate_code;
   $('su-rate').textContent = pct(r.commission_rate);
 
-  const codeLink = SITE + '/affiliate/' + r.affiliate_code;
+  const codeLink = SITE + '/promo/' + r.affiliate_code;
   $('su-link').textContent = codeLink;
   $('su-link').setAttribute('data-copy', codeLink);
 
   if (r.vanity_slug) {
-    const vanityLink = SITE + '/affiliate/' + r.vanity_slug;
+    const vanityLink = SITE + '/promo/' + r.vanity_slug;
     $('su-vanity-row').style.display = 'block';
     $('su-vanity').textContent = vanityLink;
     $('su-vanity').setAttribute('data-copy', vanityLink);

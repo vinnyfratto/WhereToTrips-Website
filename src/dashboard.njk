@@ -46,7 +46,7 @@ eleventyExcludeFromCollections: true
         <p class="share-label">Custom link</p>
         <a href="#" data-copy id="dash-vanity">…</a>
       </div>
-      <p class="meta">Commission rate: <strong id="dash-rate">5%</strong> &nbsp;·&nbsp; Status: <strong id="dash-status">active</strong></p>
+      <p class="meta">Status: <strong id="dash-status">active</strong> &nbsp;·&nbsp; Source: <strong id="dash-source">—</strong></p>
     </div>
 
     {# Stat cards #}
@@ -71,9 +71,13 @@ eleventyExcludeFromCollections: true
         <h3>Bookings &amp; commission (last 90 days)</h3>
         <div class="canvas-wrap"><canvas id="chart-bookings"></canvas></div>
       </div>
-      <div class="chart-card full">
+      <div class="chart-card">
         <h3>Conversion funnel</h3>
         <div class="canvas-wrap"><canvas id="chart-funnel"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h3>Your commission</h3>
+        <div id="commission-structure" class="comm-structure"></div>
       </div>
     </div>
 

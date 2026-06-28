@@ -31,6 +31,16 @@ function money(n, c) {
   catch { return '$' + Number(n || 0).toFixed(2); }
 }
 function pct(r) { const v = (r == null ? 0 : Number(r)) * 100; return v.toFixed(v % 1 === 0 ? 0 : 1) + '%'; }
+const COMMISSION_CATS = [
+  ['flight', 'Flight Commission'], ['hotel', 'Hotel Commission'],
+  ['car', 'Car Rental Commission'], ['insurance', 'Trip Insurance Commission'],
+];
+function rateLabel(cat) {
+  if (!cat) return '—';
+  if (cat.type === 'flat') return money(cat.rate);
+  const v = Number(cat.rate) * 100;
+  return (v % 1 === 0 ? v.toFixed(0) : v.toFixed(1)) + '%';
+}
 function date(s) { return s ? new Date(s).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'; }
 function msg(type, text) { const m = $('#adm-msg'); m.className = 'alert show alert-' + type; m.textContent = text; setTimeout(() => { if (m.textContent === text) m.className = 'alert'; }, 5000); }
 
@@ -114,6 +124,12 @@ function renderOverview(d) {
 
 // ── Invites ─────────────────────────────────────────────────────────
 async function loadInvites() {
+  const commissionRow = (k, label, def) => `
+    <div class="adm-form-row adm-comm-row">
+      <div class="field comm-label"><label>${label}</label></div>
+      <div class="field"><label class="hint">Rate</label><input name="${k}_rate" type="number" step="0.01" min="0" value="${def}" /></div>
+      <div class="field"><label class="hint">Type</label><select name="${k}_type"><option value="percent">percent</option><option value="flat">flat</option></select></div>
+    </div>`;
   panel('invites').innerHTML = `
     <div class="adm-card">
       <h3>Create invite</h3>
@@ -121,8 +137,21 @@ async function loadInvites() {
         <div class="adm-form-row">
           <div class="field"><label>Email</label><input name="email" type="email" placeholder="creator@example.com" /></div>
           <div class="field"><label>Name</label><input name="intended_name" type="text" placeholder="Jane Traveler" /></div>
-          <div class="field"><label>Commission rate</label><input name="commission_rate" type="number" step="0.01" min="0" max="1" placeholder="0.05" /></div>
-          <div class="field"><label>Type</label><select name="commission_type"><option value="percent">percent</option><option value="flat">flat</option></select></div>
+          <div class="field"><label>Affiliate Source</label>
+            <select name="source">
+              <option value="Direct">Direct</option>
+              <option value="ABC Affiliate Program">ABC Affiliate Program</option>
+              <option value="XYZ Affiliate Program">XYZ Affiliate Program</option>
+            </select>
+          </div>
+        </div>
+        <p class="adm-subhead">Commissions</p>
+        ${commissionRow('flight', 'Flight Commission', 0.02)}
+        ${commissionRow('hotel', 'Hotel Commission', 0.08)}
+        ${commissionRow('car', 'Car Rental Commission', 0.05)}
+        ${commissionRow('insurance', 'Trip Insurance Commission', 0.08)}
+        <div class="adm-form-row" style="margin-top:10px;">
+          <div class="field"><label>Commission Duration (months)</label><input name="commission_duration_months" type="number" value="36" min="1" /></div>
           <div class="field"><label>Expires (days)</label><input name="expires_days" type="number" value="30" min="1" /></div>
           <button type="submit" class="btn btn-primary btn-xs">Create invite</button>
         </div>
@@ -138,9 +167,12 @@ async function loadInvites() {
     e.preventDefault();
     const fd = new FormData(e.target);
     const r = await callAdmin('create_invite', {
-      email: fd.get('email'), intended_name: fd.get('intended_name'),
-      commission_rate: fd.get('commission_rate'), commission_type: fd.get('commission_type'),
-      expires_days: fd.get('expires_days'),
+      email: fd.get('email'), intended_name: fd.get('intended_name'), source: fd.get('source'),
+      commission_duration_months: fd.get('commission_duration_months'), expires_days: fd.get('expires_days'),
+      flight_rate: fd.get('flight_rate'), flight_type: fd.get('flight_type'),
+      hotel_rate: fd.get('hotel_rate'), hotel_type: fd.get('hotel_type'),
+      car_rate: fd.get('car_rate'), car_type: fd.get('car_type'),
+      insurance_rate: fd.get('insurance_rate'), insurance_type: fd.get('insurance_type'),
     });
     if (!r.ok) { msg('error', 'Create failed: ' + r.error); return; }
     const link = SITE + '/AffiliateSignUp/?invite=' + r.token;
@@ -300,6 +332,10 @@ function renderCommissionsTable() {
       <td>${date(c.created_at)}</td></tr>`;
     let detail = '';
     if (comExpanded.has(c.id)) {
+      const aff = c.affiliates;
+      const commLine = (aff && aff.commissions)
+        ? `<br><span style="display:inline-block;margin-top:8px;">Affiliate commission — ${COMMISSION_CATS.map(([k, l]) => `${l}: <strong>${rateLabel(aff.commissions[k])}</strong>`).join(' &nbsp;·&nbsp; ')} &nbsp;·&nbsp; Duration: <strong>${aff.commission_duration_months || 36} months</strong>${aff.source ? ` &nbsp;·&nbsp; Source: <strong>${esc(aff.source)}</strong>` : ''}</span>`
+        : '';
       detail = `<tr class="adm-detail"><td colspan="6">
         <strong>${esc(c.origin || '?')} → ${esc(c.destination || '?')}</strong>
         &nbsp;·&nbsp; Depart ${c.departing_at ? date(c.departing_at) : '—'}
@@ -308,6 +344,7 @@ function renderCommissionsTable() {
         &nbsp;·&nbsp; Ref: ${esc(c.booking_reference || '—')}
         &nbsp;·&nbsp; Total: ${money(c.total_amount, c.total_currency)}
         &nbsp;·&nbsp; Order ID: ${esc(c.id)}
+        ${commLine}
       </td></tr>`;
     }
     return main + detail;

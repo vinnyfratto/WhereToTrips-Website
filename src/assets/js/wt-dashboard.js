@@ -88,17 +88,43 @@ async function init() {
   await initProfileForm(supabase, user, { alertId: 'wt-prof-alert' });
 }
 
+const COMMISSION_CATS = [
+  ['flight', 'Flight Commission'],
+  ['hotel', 'Hotel Commission'],
+  ['car', 'Car Rental Commission'],
+  ['insurance', 'Trip Insurance Commission'],
+];
+const DEFAULT_COMMISSIONS = {
+  flight: { rate: 0.02, type: 'percent' }, hotel: { rate: 0.08, type: 'percent' },
+  car: { rate: 0.05, type: 'percent' }, insurance: { rate: 0.08, type: 'percent' },
+};
+function rateLabel(cat) {
+  if (!cat) return '—';
+  if (cat.type === 'flat') return money(cat.rate);
+  const v = Number(cat.rate) * 100;
+  return (v % 1 === 0 ? v.toFixed(0) : v.toFixed(1)) + '%';
+}
+
 function renderIdentity(a) {
   $('dash-code').textContent = a.code;
-  $('dash-rate').textContent = ((a.commission_rate ?? 0.05) * 100).toFixed(
-    ((a.commission_rate ?? 0.05) * 100) % 1 === 0 ? 0 : 1) + '%';
   $('dash-status').textContent = a.status;
+  const src = $('dash-source'); if (src) src.textContent = a.source || 'Direct';
 
-  wireCopy($('dash-link'), SITE + '/affiliate/' + a.code);
+  wireCopy($('dash-link'), SITE + '/promo/' + a.code);
   if (a.vanity_slug) {
     $('dash-vanity-row').style.display = 'block';
-    wireCopy($('dash-vanity'), SITE + '/affiliate/' + a.vanity_slug);
+    wireCopy($('dash-vanity'), SITE + '/promo/' + a.vanity_slug);
   }
+  renderCommissionStructure(a);
+}
+
+function renderCommissionStructure(a) {
+  const el = $('commission-structure'); if (!el) return;
+  const c = a.commissions || DEFAULT_COMMISSIONS;
+  const months = a.commission_duration_months || 36;
+  el.innerHTML = COMMISSION_CATS.map(([k, label]) =>
+    `<div class="comm-row"><span>${label}</span><strong>${rateLabel(c[k])} for ${months} months</strong></div>`
+  ).join('');
 }
 
 function renderCards(t) {

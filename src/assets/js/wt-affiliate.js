@@ -1,10 +1,10 @@
 // ───────────────────────────────────────────────────────────────────
-//  wt-affiliate.js — affiliate-link capture (Step 2).
-//  Handles WhereToTrips.com/affiliate/<code-or-vanity-slug>.
+//  wt-affiliate.js — promo-link capture (Step 2).
+//  Handles WhereToTrips.com/promo/<code-or-vanity-slug>.
 //
 //  Static-host strategy (DECISION): GitHub Pages can't serve a dynamic
-//  /affiliate/:code, so the pretty path is caught by 404.html (the Pages
-//  catch-all). Both 404.html and the real /affiliate/ index call run():
+//  /promo/:code, so the pretty path is caught by 404.html (the Pages
+//  catch-all). Both 404.html and the real /promo/ index call run():
 //   1. resolve the code from the path (or ?ref= / ?code= query),
 //   2. POST it to the track-click edge function (logs an affiliate_clicks row),
 //   3. set a first-party last-click cookie wt_ref (60-day) [+ wt_ref_click],
@@ -22,9 +22,10 @@ function setCookie(name, value, days) {
     (location.protocol === 'https:' ? '; Secure' : '');
 }
 
-// Pull the code from /affiliate/<code> (preferred) or ?ref=/?code= fallback.
+// Pull the code from /promo/<code> (also accepts the legacy /affiliate/<code>)
+// or ?ref=/?code= fallback.
 export function extractCode() {
-  const m = location.pathname.match(/\/affiliate\/([^/?#]+)/i);
+  const m = location.pathname.match(/\/(?:promo|affiliate)\/([^/?#]+)/i);
   if (m && m[1]) return decodeURIComponent(m[1]);
   const q = new URLSearchParams(location.search);
   return q.get('ref') || q.get('code') || null;
