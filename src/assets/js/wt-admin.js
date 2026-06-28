@@ -214,41 +214,107 @@ async function renderInviteList() {
 }
 
 // ── Affiliates ──────────────────────────────────────────────────────
+const DEFAULT_COMMISSIONS = {
+  flight: { rate: 0.02, type: 'percent' }, hotel: { rate: 0.08, type: 'percent' },
+  car: { rate: 0.05, type: 'percent' }, insurance: { rate: 0.08, type: 'percent' },
+};
+const affExpanded = new Set();
+
 async function loadAffiliates() {
   panel('affiliates').innerHTML = `<div class="adm-card"><h3>Affiliates</h3><div id="aff-list" class="adm-wrap-scroll">Loading…</div></div>`;
   const r = await callAdmin('list_affiliates');
   affiliateCache = r.affiliates || [];
-  const opt = (v, sel) => `<option value="${v}" ${v === sel ? 'selected' : ''}>${v}</option>`;
-  const rows = affiliateCache.map((a) => `
-    <tr data-id="${a.id}">
-      <td><strong>${esc(a.code)}</strong></td>
-      <td><input data-f="vanity_slug" value="${esc(a.vanity_slug || '')}" placeholder="(none)" /></td>
-      <td><input class="num" data-f="commission_rate" type="number" step="0.01" min="0" max="1" value="${a.commission_rate}" /></td>
-      <td><select data-f="commission_type">${opt('percent', a.commission_type)}${opt('flat', a.commission_type)}</select></td>
-      <td><select data-f="status">${['active', 'pending', 'suspended', 'terminated'].map((s) => opt(s, a.status)).join('')}</select></td>
-      <td class="num">${a.referrals}</td><td class="num">${a.bookings}</td>
-      <td class="num">${money(a.pending + a.approved + a.paid)}</td>
-      <td><button class="btn btn-primary btn-xs" data-save="${a.id}">Save</button></td>
-    </tr>`).join('');
-  $('#aff-list').innerHTML = `<table class="adm-table">
-    <thead><tr><th>Code</th><th>Vanity</th><th>Rate</th><th>Type</th><th>Status</th><th class="num">Signups</th><th class="num">Bookings</th><th class="num">Commission</th><th></th></tr></thead>
-    <tbody>${rows || '<tr><td colspan="9">No affiliates yet.</td></tr>'}</tbody></table>`;
+  renderAffiliatesTable();
+}
 
-  $('#aff-list').querySelectorAll('[data-save]').forEach((b) => {
-    b.addEventListener('click', async () => {
-      const tr = b.closest('tr');
-      const get = (f) => tr.querySelector(`[data-f="${f}"]`).value;
-      const r2 = await callAdmin('update_affiliate', {
-        id: b.dataset.save,
-        vanity_slug: get('vanity_slug') || null,
-        commission_rate: get('commission_rate'),
-        commission_type: get('commission_type'),
-        status: get('status'),
-      });
-      if (!r2.ok) { msg('error', 'Save failed: ' + r2.error); return; }
-      msg('success', 'Affiliate updated.');
+function renderAffiliatesTable() {
+  const rows = affiliateCache.map((a) => {
+    const main = `<tr>
+      <td><strong>${esc(a.code)}</strong></td>
+      <td>${esc(a.display_name || '—')}</td>
+      <td><span class="adm-pill ${a.status}">${a.status}</span></td>
+      <td class="num">${a.referrals}</td>
+      <td class="num">${a.bookings}</td>
+      <td class="num">${money(a.pending + a.approved + a.paid)}</td>
+      <td><button class="btn btn-ghost btn-xs" data-edit="${a.id}">${affExpanded.has(a.id) ? 'Close' : 'Edit'}</button></td>
+    </tr>`;
+    const editor = affExpanded.has(a.id)
+      ? `<tr class="adm-detail"><td colspan="7">${affEditorHtml(a)}</td></tr>` : '';
+    return main + editor;
+  }).join('');
+  $('#aff-list').innerHTML = `<table class="adm-table">
+    <thead><tr><th>Code</th><th>Name</th><th>Status</th><th class="num">Signups</th><th class="num">Bookings</th><th class="num">Commission</th><th></th></tr></thead>
+    <tbody>${rows || '<tr><td colspan="7">No affiliates yet.</td></tr>'}</tbody></table>`;
+
+  $('#aff-list').querySelectorAll('[data-edit]').forEach((b) => {
+    b.addEventListener('click', () => {
+      const id = b.dataset.edit;
+      affExpanded.has(id) ? affExpanded.delete(id) : affExpanded.add(id);
+      renderAffiliatesTable();
     });
   });
+  $('#aff-list').querySelectorAll('[data-save-aff]').forEach((b) => {
+    b.addEventListener('click', () => saveAffiliate(b.dataset.saveAff));
+  });
+}
+
+function affEditorHtml(a) {
+  const c = a.commissions || DEFAULT_COMMISSIONS;
+  const months = a.commission_duration_months || 36;
+  const opt = (v, sel) => `<option value="${v}" ${v === sel ? 'selected' : ''}>${v}</option>`;
+  const srcCurrent = a.source || 'Direct';
+  const sources = ['Direct', 'ABC Affiliate Program', 'XYZ Affiliate Program'];
+  const srcList = sources.includes(srcCurrent) ? sources : [srcCurrent, ...sources];
+  const commRow = (k, label) => {
+    const cat = c[k] || {};
+    return `<div class="adm-form-row adm-comm-row">
+      <div class="field comm-label"><label>${label}</label></div>
+      <div class="field"><label class="hint">Rate</label><input data-f="${k}_rate" type="number" step="0.01" min="0" value="${cat.rate ?? ''}" /></div>
+      <div class="field"><label class="hint">Type</label><select data-f="${k}_type">${opt('percent', cat.type)}${opt('flat', cat.type)}</select></div>
+    </div>`;
+  };
+  return `<div class="aff-editor" data-aff="${a.id}">
+    <div class="adm-form-row">
+      <div class="field"><label>Custom link (vanity)</label><input data-f="vanity_slug" value="${esc(a.vanity_slug || '')}" placeholder="(none)" /></div>
+      <div class="field"><label>Status</label><select data-f="status">${['active', 'pending', 'suspended', 'terminated'].map((s) => opt(s, a.status)).join('')}</select></div>
+      <div class="field"><label>Affiliate Source</label><select data-f="source">${srcList.map((s) => opt(s, srcCurrent)).join('')}</select></div>
+    </div>
+    <p class="adm-subhead">Commissions</p>
+    ${commRow('flight', 'Flight Commission')}
+    ${commRow('hotel', 'Hotel Commission')}
+    ${commRow('car', 'Car Rental Commission')}
+    ${commRow('insurance', 'Trip Insurance Commission')}
+    <div class="adm-form-row" style="margin-top:10px;">
+      <div class="field"><label>Commission Duration (months)</label><input data-f="commission_duration_months" type="number" min="1" value="${months}" /></div>
+      <button class="btn btn-primary btn-xs" data-save-aff="${a.id}">Save changes</button>
+    </div>
+  </div>`;
+}
+
+async function saveAffiliate(id) {
+  const root = $(`.aff-editor[data-aff="${id}"]`);
+  if (!root) return;
+  const get = (f) => { const el = root.querySelector(`[data-f="${f}"]`); return el ? el.value.trim() : ''; };
+  const cat = (k) => ({ rate: parseFloat(get(`${k}_rate`)), type: get(`${k}_type`) || 'percent' });
+  const r = await callAdmin('update_affiliate', {
+    id,
+    vanity_slug: get('vanity_slug') || null,
+    status: get('status'),
+    source: get('source'),
+    commission_duration_months: get('commission_duration_months'),
+    commissions: { flight: cat('flight'), hotel: cat('hotel'), car: cat('car'), insurance: cat('insurance') },
+  });
+  if (!r.ok) { msg('error', 'Save failed: ' + r.error); return; }
+  msg('success', 'Affiliate updated.');
+  const idx = affiliateCache.findIndex((x) => x.id === id);
+  if (idx >= 0 && r.affiliate) {
+    affiliateCache[idx] = {
+      ...affiliateCache[idx],
+      vanity_slug: r.affiliate.vanity_slug, status: r.affiliate.status, source: r.affiliate.source,
+      commission_duration_months: r.affiliate.commission_duration_months, commissions: r.affiliate.commissions,
+    };
+  }
+  renderAffiliatesTable();
 }
 
 // ── Commissions ─────────────────────────────────────────────────────
