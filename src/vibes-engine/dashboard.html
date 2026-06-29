@@ -474,21 +474,24 @@ async function runSearch() {
 
   const hdr = { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY };
 
-  const destResults = await Promise.all(targets.map(async ([iata, info]) => {
-    const [flightRes, hotelRes] = await Promise.all([
-      s.services.has('flights')
-        ? fetch(SUPABASE_URL + '/functions/v1/duffel-search', {
-            method: 'POST', headers: hdr,
-            body: JSON.stringify({ origCode, destCode: iata, departDate: depart, returnDate: ret, adults: travelers, maxResults: 5 })
-          }).then(r => r.json()).catch(e => ({ error: e.message }))
-        : Promise.resolve(null),
-      s.services.has('hotels')
-        ? fetch(SUPABASE_URL + '/functions/v1/liteapi-stays', {
+  const destResults = await Promise.all(targets.map(async ([iata, info], idx) => {
+    // Flights fire in parallel — Duffel handles concurrency fine.
+    // Hotels are staggered 400ms apart to stay under LiteAPI sandbox rate limit (5 req/s).
+    const flightPromise = s.services.has('flights')
+      ? fetch(SUPABASE_URL + '/functions/v1/duffel-search', {
+          method: 'POST', headers: hdr,
+          body: JSON.stringify({ origCode, destCode: iata, departDate: depart, returnDate: ret, adults: travelers, maxResults: 5 })
+        }).then(r => r.json()).catch(e => ({ error: e.message }))
+      : Promise.resolve(null);
+    const hotelPromise = s.services.has('hotels')
+      ? new Promise(function(go) { setTimeout(go, idx * 400); }).then(function() {
+          return fetch(SUPABASE_URL + '/functions/v1/liteapi-stays', {
             method: 'POST', headers: hdr,
             body: JSON.stringify({ cityName: info.dest, countryName: info.country, checkIn: depart, checkOut: ret, guests: travelers, rooms: 1 })
-          }).then(r => r.json()).catch(e => ({ error: e.message }))
-        : Promise.resolve(null)
-    ]);
+          }).then(r => r.json()).catch(e => ({ error: e.message }));
+        })
+      : Promise.resolve(null);
+    const [flightRes, hotelRes] = await Promise.all([flightPromise, hotelPromise]);
     return { iata, info, flights: flightRes, hotels: hotelRes };
   }));
 
