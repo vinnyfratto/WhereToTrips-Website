@@ -154,6 +154,7 @@ main{max-width:1100px;margin:0 auto;padding:36px 24px 80px}
 .inner-table td{padding:9px 12px;vertical-align:middle;white-space:nowrap}
 .f-price{font-family:var(--serif);font-size:15px;font-weight:600;color:var(--navy)}
 .f-price.over{color:var(--wg400)}
+.f-price-pp{font-size:11px;color:var(--wg500)}
 .f-airline{font-size:13px;color:var(--navy);font-weight:500}
 .f-route{font-size:11px;color:var(--wg600)}
 .f-stops-0{color:var(--green);font-weight:600;font-size:11px}
@@ -501,10 +502,10 @@ async function runSearch() {
   }));
 
   btn.disabled = false; btn.textContent = 'Search Destinations →';
-  renderCards(destResults, budget, calcNights(depart, ret));
+  renderCards(destResults, budget, calcNights(depart, ret), travelers);
 }
 
-function renderCards(results, budget, nights) {
+function renderCards(results, budget, nights, travelers) {
   Object.keys(CARD_REGISTRY).forEach(function(k) { delete CARD_REGISTRY[k]; });
   results.forEach(function(r) { CARD_REGISTRY[r.iata] = r.info; });
 
@@ -546,14 +547,14 @@ function renderCards(results, budget, nights) {
   }
 
   var metaStats = '<div class="meta-stats">' + results.length + ' destinations &nbsp;·&nbsp; ' + withF.length + ' with flights &nbsp;·&nbsp; <strong>' + inBudget + '</strong> within budget</div>';
-  const cards = results.map(function(r, i) { return buildCard(r, budget, nights, i === 0); }).join('');
+  const cards = results.map(function(r, i) { return buildCard(r, budget, nights, i === 0, travelers); }).join('');
   document.getElementById('results-box').innerHTML = '<div class="results-meta">' + metaStats + metaPriceHtml + '</div>' + cards;
   document.querySelectorAll('.score-num[data-iata]').forEach(function(el) {
     el.addEventListener('click', function(e) { e.stopPropagation(); showVibeModal(el.dataset.iata); });
   });
 }
 
-function buildCard(r, budget, nights, autoOpen) {
+function buildCard(r, budget, nights, autoOpen, travelers) {
   const iata    = r.iata;
   const info    = r.info;
   const flights = r.flights;
@@ -599,45 +600,45 @@ function buildCard(r, budget, nights, autoOpen) {
       '</div>' +
       '<div class="dest-card-body' + bodyHide + '" id="body-' + iata + '">' +
         '<div class="tab-bar">' + flightBtn + hotelBtn + '</div>' +
-        '<div class="tab-pane" id="fpane-' + iata + '">' + buildFlightPane(iata, flights, budget) + '</div>' +
+        '<div class="tab-pane" id="fpane-' + iata + '">' + buildFlightPane(iata, flights, budget, travelers) + '</div>' +
         '<div class="tab-pane' + hPaneHide + '" id="hpane-' + iata + '">' + buildHotelPane(iata, hotels, nights) + '</div>' +
       '</div>' +
     '</div>'
   );
 }
 
-function buildFlightPane(iata, flights, budget) {
+function buildFlightPane(iata, flights, budget, travelers) {
   if (!flights) return '<div class="tab-not-searched">Flights not included in this search.</div>';
   if (flights.error) return '<div class="tab-error">Error: ' + flights.error + '</div>';
   const itins = flights.data && flights.data.itineraries;
   if (!itins || !itins.length) return '<div class="tab-empty">No flights found from your origin to ' + iata + '.</div>';
+  const pax = Math.max(parseInt(travelers) || 1, 1);
   const rows = itins.map(function(it) {
-    const leg0   = (it.legs && it.legs[0]) || {};
-    const leg1   = (it.legs && it.legs[1]) || {};
-    const over   = it.price.raw > budget;
-    const stops  = leg0.stopCount != null ? leg0.stopCount : '—';
+    const leg0    = (it.legs && it.legs[0]) || {};
+    const leg1    = (it.legs && it.legs[1]) || {};
+    const over    = it.price.raw > budget;
+    const stops   = leg0.stopCount != null ? leg0.stopCount : '—';
     const stopLbl = stops === 0 ? 'Nonstop' : stops + ' stop' + (stops !== 1 ? 's' : '');
     const stopCls = stops === 0 ? 'f-stops-0' : 'f-stops-x';
-    const route  = (it.route || []).join(' › ');
+    const route   = (it.route || []).join(' › ');
     const airline = (leg0.carriers && leg0.carriers.marketing && leg0.carriers.marketing[0] && leg0.carriers.marketing[0].name) || '—';
-    const co2    = it.co2Kg ? Math.round(it.co2Kg) + 'kg' : '—';
     const budgBadge = over ? '<span class="in-budget-no">Over</span>' : '<span class="in-budget-yes">✓</span>';
+    const perPerson = pax > 1 ? '$' + Math.round(it.price.raw / pax).toLocaleString() : '—';
     return (
       '<tr>' +
       '<td><span class="f-price' + (over ? ' over' : '') + '">' + it.price.formatted + '</span>&nbsp;' + budgBadge + '</td>' +
+      '<td><span class="f-price-pp">' + perPerson + '</span></td>' +
       '<td><span class="f-airline">' + airline + '</span></td>' +
       '<td><span class="f-route">' + (route || iata) + '</span></td>' +
       '<td><span class="' + stopCls + '">' + stopLbl + '</span></td>' +
       '<td><span class="f-dur">' + fmtDur(leg0.durationInMinutes) + '</span></td>' +
       '<td><span class="f-dur">' + fmtDur(leg1.durationInMinutes) + '</span></td>' +
-      '<td><span class="f-co2">' + co2 + '</span></td>' +
-      '<td><a class="book-link" href="' + it.deeplink + '" target="_blank" rel="noopener">Book →</a></td>' +
       '</tr>'
     );
   }).join('');
   return (
     '<div class="inner-wrap"><table class="inner-table">' +
-    '<thead><tr><th>Price RT</th><th>Airline</th><th>Route</th><th>Stops</th><th>Out</th><th>Return</th><th>CO₂</th><th></th></tr></thead>' +
+    '<thead><tr><th>Flight Total</th><th>Per Person</th><th>Airline</th><th>Route</th><th>Stops</th><th>Out</th><th>Return</th></tr></thead>' +
     '<tbody>' + rows + '</tbody></table></div>'
   );
 }
