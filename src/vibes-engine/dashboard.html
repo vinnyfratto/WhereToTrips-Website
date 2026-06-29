@@ -496,7 +496,7 @@ async function runSearch() {
       ? new Promise(function(go) { setTimeout(go, idx * 400); }).then(function() {
           return fetch(SUPABASE_URL + '/functions/v1/liteapi-stays', {
             method: 'POST', headers: hdr,
-            body: JSON.stringify({ cityName: info.dest, countryName: info.country, checkIn: depart, checkOut: ret, guests: travelers, rooms: 1 })
+            body: JSON.stringify({ iataCode: iata, cityName: info.dest, countryName: info.country, checkIn: depart, checkOut: ret, guests: travelers, rooms: 1 })
           }).then(r => r.json()).catch(e => ({ error: e.message }));
         })
       : Promise.resolve(null);
