@@ -483,8 +483,8 @@ function buildCard(r, budget, nights, autoOpen) {
   const ftabActive  = firstTab === 'flights' ? ' tab-active' : '';
   const htabActive  = (!showFlights) ? ' tab-active' : '';
   const priceNote   = itin ? ' · ' + priceFmt : '';
-  const flightBtn   = showFlights ? '<button class="tab-btn' + ftabActive + '" onclick="switchTab('' + iata + '','flights')">✈️ Flights' + priceNote + '</button>' : '';
-  const hotelBtn    = showHotels  ? '<button class="tab-btn' + htabActive  + '" onclick="switchTab('' + iata + '','hotels')">🏨 Hotels</button>' : '';
+  const flightBtn   = showFlights ? '<button class="tab-btn' + ftabActive + '" onclick="switchTab(\'' + iata + '\',\'flights\')">✈️ Flights' + priceNote + '</button>' : '';
+  const hotelBtn    = showHotels  ? '<button class="tab-btn' + htabActive  + '" onclick="switchTab(\'' + iata + '\',\'hotels\')">🏨 Hotels</button>' : '';
   const tierCls     = 'tier-' + (info.tier || 'B');
   const openCls     = autoOpen ? ' open' : '';
   const bodyHide    = autoOpen ? '' : ' hidden';
@@ -492,7 +492,7 @@ function buildCard(r, budget, nights, autoOpen) {
 
   return (
     '<div class="dest-card' + openCls + '" id="card-' + iata + '">' +
-      '<div class="dest-card-hdr" onclick="toggleCard('' + iata + '')">' +
+      '<div class="dest-card-hdr" onclick="toggleCard(\'' + iata + '\')">' +
         '<div class="dch-dest">' +
           '<div class="dch-name">' + info.dest + '</div>' +
           '<div class="dch-country">' + info.country + '</div>' +
