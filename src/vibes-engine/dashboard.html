@@ -607,7 +607,13 @@ function buildFlightPane(iata, flights, budget) {
 
 function buildHotelPane(iata, hotels, nights) {
   if (!hotels) return '<div class="tab-not-searched">Hotels not included in this search.</div>';
-  if (hotels.error) return '<div class="tab-error">Error: ' + hotels.error + '</div>';
+  if (hotels.error || hotels.errors) {
+    const e = hotels.error || hotels.errors;
+    const msg = typeof e === 'string' ? e
+      : Array.isArray(e) ? e.map(function(x) { return x.message || x.code || JSON.stringify(x); }).join('; ')
+      : (e.message || e.code || JSON.stringify(e));
+    return '<div class="tab-error">Hotels unavailable: ' + msg + '</div>';
+  }
   const items = hotels.data;
   if (!items || !items.length) return '<div class="tab-empty">No hotels found for this destination.</div>';
   const rows = items.map(function(h) {
