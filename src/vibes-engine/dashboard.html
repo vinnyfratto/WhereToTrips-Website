@@ -129,9 +129,12 @@ main{max-width:1100px;margin:0 auto;padding:36px 24px 80px}
 .dch-vibe-pill{font-size:10px;background:rgba(184,92,56,.07);border:1px solid rgba(184,92,56,.18);border-radius:10px;padding:2px 8px;color:var(--rust);white-space:nowrap}
 .dest-card.open .dch-vibe-pill{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.8)}
 .dch-right{display:flex;align-items:center;gap:10px;margin-left:auto;flex-shrink:0}
+.dch-price-col{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
 .dch-price{font-family:var(--serif);font-size:16px;color:var(--navy)}
 .dest-card.open .dch-price{color:var(--cream)}
 .dch-price.over{color:var(--wg500)}
+.dch-price-breakdown{font-size:10px;color:var(--wg400);white-space:nowrap;letter-spacing:.1px}
+.dest-card.open .dch-price-breakdown{color:rgba(255,255,255,.45)}
 .budget-yes{font-size:10px;font-weight:600;color:var(--green);background:var(--green-lt);border:1px solid rgba(42,122,75,.2);border-radius:10px;padding:2px 8px}
 .budget-no{font-size:10px;font-weight:600;color:var(--wg500);background:var(--wg100);border:1px solid var(--wg300);border-radius:10px;padding:2px 8px}
 .in-budget-yes{color:var(--green);font-weight:600;font-size:10px;background:var(--green-lt);border:1px solid rgba(42,122,75,.2);border-radius:8px;padding:2px 7px}
@@ -559,15 +562,21 @@ function buildCard(r, budget, nights, autoOpen, travelers) {
   const info    = r.info;
   const flights = r.flights;
   const hotels  = r.hotels;
-  const itin     = flights && flights.data && flights.data.itineraries && flights.data.itineraries[0];
-  const priceRaw = itin ? itin.price.raw : null;
-  const priceFmt = itin ? itin.price.formatted : '—';
-  const inBudget = priceRaw !== null && priceRaw <= budget;
-  const budgetBadge = priceRaw !== null
+  const itin      = flights && flights.data && flights.data.itineraries && flights.data.itineraries[0];
+  const flightRaw = itin ? itin.price.raw : null;
+  const priceFmt  = itin ? itin.price.formatted : null;
+  const hotelRaw  = hotels && hotels.data && hotels.data.length ? hotels.data[0].total : null;
+  const combinedRaw = (flightRaw !== null || hotelRaw !== null) ? (flightRaw || 0) + (hotelRaw || 0) : null;
+  const combinedFmt = combinedRaw !== null ? '$' + Math.round(combinedRaw).toLocaleString() : null;
+  const inBudget = combinedRaw !== null && combinedRaw <= budget;
+  const budgetBadge = combinedRaw !== null
     ? (inBudget ? '<span class="budget-yes">✓ Budget</span>' : '<span class="budget-no">Over budget</span>')
     : '';
-  const priceHtml = priceRaw !== null
-    ? '<span class="dch-price' + (inBudget ? '' : ' over') + '">' + priceFmt + '</span>'
+  const breakdownHtml = (flightRaw !== null && hotelRaw !== null)
+    ? '<div class="dch-price-breakdown">✈️ $' + Math.round(flightRaw).toLocaleString() + ' + 🏨 $' + Math.round(hotelRaw).toLocaleString() + '</div>'
+    : '';
+  const priceHtml = combinedFmt !== null
+    ? '<span class="dch-price' + (inBudget ? '' : ' over') + '">' + combinedFmt + '</span>'
     : '';
   const vibePills = info.vibes.map(v => '<span class="dch-vibe-pill">' + v.label + ' ' + v.score + '</span>').join('');
   const showFlights = flights !== null;
@@ -596,7 +605,7 @@ function buildCard(r, budget, nights, autoOpen, travelers) {
           '<span class="tier-badge ' + tierCls + '">' + (info.tier || '—') + '</span>' +
         '</div>' +
         '<div class="dch-vibes">' + vibePills + '</div>' +
-        '<div class="dch-right">' + priceHtml + budgetBadge + '<span class="expand-icon">▼</span></div>' +
+        '<div class="dch-right"><div class="dch-price-col">' + priceHtml + breakdownHtml + '</div>' + budgetBadge + '<span class="expand-icon">▼</span></div>' +
       '</div>' +
       '<div class="dest-card-body' + bodyHide + '" id="body-' + iata + '">' +
         '<div class="tab-bar">' + flightBtn + hotelBtn + '</div>' +
