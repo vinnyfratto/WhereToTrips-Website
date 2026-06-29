@@ -434,9 +434,9 @@ async function runSearch() {
           }).then(r => r.json()).catch(e => ({ error: e.message }))
         : Promise.resolve(null),
       s.services.has('hotels')
-        ? fetch(SUPABASE_URL + '/functions/v1/duffel-stays', {
+        ? fetch(SUPABASE_URL + '/functions/v1/liteapi-stays', {
             method: 'POST', headers: hdr,
-            body: JSON.stringify({ query: info.dest, checkIn: depart, checkOut: ret, rooms: 1, guests: 1 })
+            body: JSON.stringify({ cityName: info.dest, countryName: info.country, checkIn: depart, checkOut: ret, guests: 1, rooms: 1 })
           }).then(r => r.json()).catch(e => ({ error: e.message }))
         : Promise.resolve(null)
     ]);
@@ -555,23 +555,20 @@ function buildHotelPane(iata, hotels, nights) {
   if (hotels.error) return '<div class="tab-error">Error: ' + hotels.error + '</div>';
   const items = hotels.data;
   if (!items || !items.length) return '<div class="tab-empty">No hotels found for this destination.</div>';
-  const rows = items.slice(0, 8).map(function(h) {
-    const acc     = h.accommodation || h;
-    const name    = acc.name || h.name || '—';
-    const starVal = (acc.rating && acc.rating.value) || acc.star_rating || null;
-    const stars   = starVal ? '★'.repeat(Math.min(5, Math.round(starVal))) + '☆'.repeat(Math.max(0, 5 - Math.round(starVal))) : '—';
-    const total   = h.cheapest_rate_total_amount || (h.cheapest_rate && h.cheapest_rate.total_amount) || (h.rates && h.rates[0] && h.rates[0].total_amount) || null;
-    const cur     = h.cheapest_rate_currency || (h.cheapest_rate && h.cheapest_rate.currency) || 'USD';
-    const totalNum  = total ? parseFloat(total) : null;
-    const totalFmt  = totalNum ? cur + ' $' + totalNum.toLocaleString() : '—';
-    const perNight  = (totalNum && nights > 0) ? '$' + Math.round(totalNum / nights).toLocaleString() + '/night' : '—';
+  const rows = items.map(function(h) {
+    const starStr  = h.stars ? '★'.repeat(h.stars) + '☆'.repeat(Math.max(0, 5 - h.stars)) : '—';
+    const ratingStr = h.rating ? '<br><span style="font-size:10px;color:var(--wg500)">' + h.rating.toFixed(1) + '/10</span>' : '';
+    const nameStr  = h.name + (h.roomName ? '<br><span style="font-size:10px;color:var(--wg500)">' + h.roomName + '</span>' : '');
+    const totalFmt = h.total ? '$' + Math.round(h.total).toLocaleString() : '—';
+    const pnFmt    = h.perNight ? '$' + h.perNight.toLocaleString() + '/night' : '—';
+    const refund   = h.refundable ? '&nbsp;<span class="in-budget-yes">Refundable</span>' : '';
     return (
       '<tr>' +
-      '<td><span class="h-name">' + name + '</span></td>' +
-      '<td><span class="h-stars">' + stars + '</span></td>' +
+      '<td><span class="h-name">' + nameStr + '</span></td>' +
+      '<td><span class="h-stars">' + starStr + '</span>' + ratingStr + '</td>' +
       '<td><span style="font-size:12px;color:var(--wg600)">' + nights + ' night' + (nights !== 1 ? 's' : '') + '</span></td>' +
-      '<td><span class="h-pn">' + perNight + '</span></td>' +
-      '<td><span class="h-price">' + totalFmt + '</span></td>' +
+      '<td><span class="h-pn">' + pnFmt + '</span></td>' +
+      '<td><span class="h-price">' + totalFmt + '</span>' + refund + '</td>' +
       '</tr>'
     );
   }).join('');
