@@ -313,6 +313,21 @@ const REGION_EMOJI = {
 
 const s = { region:null, subregion:null, vibes:new Set(), services:new Set(['flights','hotels']) };
 const CARD_REGISTRY = {};
+let CFG = { max_cities: 8, max_flights: 5 };
+
+(async function loadConfig() {
+  try {
+    const hdr = { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY };
+    const res = await fetch(SUPABASE_URL + '/rest/v1/app_config?select=max_cities,max_flights&limit=1', { headers: hdr });
+    if (res.ok) {
+      const rows = await res.json();
+      if (rows && rows.length) {
+        if (rows[0].max_cities != null) CFG.max_cities = parseInt(rows[0].max_cities) || 8;
+        if (rows[0].max_flights != null) CFG.max_flights = parseInt(rows[0].max_flights) || 5;
+      }
+    }
+  } catch (e) { /* keep defaults */ }
+})();
 
 // ===== Personalized Match Scoring model (v1.1) — see Scoring_Model_Methodology_v1.md =====
 // Dashboard runs a NEUTRAL lens (equal per-vibe weights). flex = 0 (no profile flex here).
@@ -541,7 +556,7 @@ async function runSearch() {
     info.trust     = computeTrust(info);
   });
 
-  const targets = Object.entries(iataMap).sort((a, b) => b[1].vibeMatch - a[1].vibeMatch).slice(0, 8);
+  const targets = Object.entries(iataMap).sort((a, b) => b[1].vibeMatch - a[1].vibeMatch).slice(0, CFG.max_cities);
   if (!targets.length) {
     document.getElementById('results-box').innerHTML = '<div style="padding:20px;font-size:13px;color:var(--wg500)">No ranked destinations found for these vibes.</div>';
     return;
@@ -565,7 +580,7 @@ async function runSearch() {
     const flightPromise = s.services.has('flights')
       ? fetch(SUPABASE_URL + '/functions/v1/duffel-search', {
           method: 'POST', headers: hdr,
-          body: JSON.stringify({ origCode, destCode: iata, departDate: depart, returnDate: ret, adults: travelers, maxResults: 5 })
+          body: JSON.stringify({ origCode, destCode: iata, departDate: depart, returnDate: ret, adults: travelers, maxResults: CFG.max_flights })
         }).then(r => r.json()).catch(e => ({ error: e.message }))
       : Promise.resolve(null);
     const hotelPromise = s.services.has('hotels')
