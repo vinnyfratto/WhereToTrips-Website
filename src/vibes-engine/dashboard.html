@@ -202,7 +202,19 @@ main{max-width:1100px;margin:0 auto;padding:36px 24px 80px}
 .comp-w{font-size:10px;color:var(--wg400);font-weight:400}
 .comp-pts{display:block;font-size:9px;color:var(--wg400);font-weight:400;font-family:var(--sans);text-align:right}
 .comp-sub{font-size:10px;color:var(--wg500);margin-top:4px;letter-spacing:.1px}
-.modal-section-lbl{font-size:10px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--wg500);margin-bottom:8px}</style>
+.modal-section-lbl{font-size:10px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--wg500);margin-bottom:8px}
+.dch-vibe-pill.unmatched{background:transparent;border-color:var(--wg300);color:var(--wg400);opacity:.55}
+.dest-card.open .dch-vibe-pill.unmatched{background:transparent;border-color:rgba(255,255,255,.16);color:rgba(255,255,255,.4);opacity:.7}
+.results-summary{font-size:13px;line-height:1.55;color:var(--wg600);background:var(--card);border:1.5px solid var(--wg200);border-left:3px solid var(--rust);border-radius:var(--r-sm);padding:11px 16px;margin:0 0 14px}
+.results-summary strong{color:var(--navy);font-weight:600}
+.dch-pricewrap{display:flex;align-items:center;gap:10px}
+.price-pending{display:inline-flex;align-items:center;justify-content:flex-end;min-width:64px}
+.mini-spin{width:16px;height:16px;border:2px solid var(--wg200);border-top-color:var(--rust);border-radius:50%;animation:spin .7s linear infinite}
+.meta-price-slot{display:flex;gap:16px;align-items:center}
+.meta-finding{display:flex;align-items:center;gap:8px;font-size:11px;color:rgba(255,255,255,.6);font-style:italic}
+.spinner-sm{width:13px;height:13px;border:2px solid rgba(255,255,255,.2);border-top-color:var(--cream);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;flex-shrink:0}
+.inner-table tr.selected-row td{background:rgba(184,92,56,.06)}
+.row-sel-badge{font-size:9px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--rust);background:rgba(184,92,56,.12);border:1px solid rgba(184,92,56,.3);border-radius:6px;padding:1px 6px;margin-left:6px;white-space:nowrap}</style>
 </head>
 <body>
 <header class="hdr">
@@ -402,6 +414,47 @@ function computeObvious(iata, hotels) {
     if (maxRev > 0) { const rv = clampx(Math.log(maxRev+1)/Math.log(10000), 0, 1); ob = 0.65*ob + 0.35*rv; }
   }
   return clampx(ob, 0, 1);
+}
+
+// ── Results helpers: hotel pick within budget, vibe coverage, plain-English summary ──
+let SEL_VIBES = [];          // [{key,label}] the user selected (set in runSearch)
+const REVEAL = {};           // iata -> final price-slot HTML, filled during the staggered reveal
+let META_REVEAL = '';        // From/Avg meta HTML, revealed after the cards
+function pickHotel(hotels, remaining) {
+  const items = (hotels && hotels.data) || [];
+  if (!items.length) return -1;
+  let bestIdx = -1, bestTotal = -1;                 // priciest stay that still fits the remaining budget
+  for (let i = 0; i < items.length; i++) {
+    const t = items[i].total || 0;
+    if (t > 0 && t <= remaining && t > bestTotal) { bestTotal = t; bestIdx = i; }
+  }
+  if (bestIdx === -1) {                              // nothing fits — fall back to the cheapest
+    let minT = Infinity;
+    for (let i = 0; i < items.length; i++) { const t = items[i].total || 0; if (t > 0 && t < minT) { minT = t; bestIdx = i; } }
+    if (bestIdx === -1) bestIdx = 0;
+  }
+  return bestIdx;
+}
+function joinNice(a) { a = a.filter(Boolean); if (a.length <= 1) return a[0] || ''; if (a.length === 2) return a[0] + ' and ' + a[1]; return a.slice(0, -1).join(', ') + ', and ' + a[a.length - 1]; }
+function uniqArr(a) { return a.filter(function (x, i) { return a.indexOf(x) === i; }); }
+function buildSummary(results) {
+  const N = SEL_VIBES.length;
+  if (!results.length || N < 2) return '';
+  const top = results[0];
+  const subLabel = (DATA[s.region] && DATA[s.region].subregions[s.subregion] && DATA[s.region].subregions[s.subregion].label) || s.subregion || 'destination';
+  const topKeys = top.info.vibes.map(function (v) { return v.key; });
+  const covLabels = top.info.vibes.slice().sort(function (a, b) { return b.score - a.score; }).map(function (v) { return v.label; });
+  const missing = SEL_VIBES.filter(function (sv) { return topKeys.indexOf(sv.key) < 0; });
+  if (!missing.length) {
+    return '<div class="results-summary"><strong>' + top.info.dest + '</strong> covers all ' + N + ' of your vibes here — from this point it comes down to price and timing.</div>';
+  }
+  const leaders = uniqArr(missing.map(function (mv) {
+    let best = null, bestScore = -1;
+    results.forEach(function (r) { const hit = r.info.vibes.find(function (v) { return v.key === mv.key; }); if (hit && hit.score > bestScore) { bestScore = hit.score; best = r.info.dest; } });
+    return best;
+  }).filter(Boolean));
+  const missLabels = missing.map(function (mv) { return mv.label; });
+  return '<div class="results-summary">No single ' + subLabel + ' spot covers all ' + N + ' of your vibes, so these are the closest. <strong>' + top.info.dest + '</strong> leads for ' + joinNice(covLabels) + (leaders.length ? '; for ' + joinNice(missLabels) + ', look to ' + joinNice(leaders) : '') + '.</div>';
 }
 
 function toggleSvc(svc) {
@@ -612,34 +665,41 @@ async function runSearch() {
   }));
 
   btn.disabled = false; btn.textContent = 'Search Destinations →';
+  SEL_VIBES = [...s.vibes].map(function(k){ return { key:k, label:(SR.vibes.find(function(v){return v.key===k;})||{}).label||k }; });
   renderCards(destResults, budget, calcNights(depart, ret), travelers);
 }
 
 function renderCards(results, budget, nights, travelers) {
   Object.keys(CARD_REGISTRY).forEach(function(k) { delete CARD_REGISTRY[k]; });
+  Object.keys(REVEAL).forEach(function(k) { delete REVEAL[k]; });
+  const optimizing = s.services.has('hotels');
+  function firstItin(r) { return r.flights && r.flights.data && r.flights.data.itineraries && r.flights.data.itineraries.length ? r.flights.data.itineraries[0] : null; }
 
-  // ── Compute the full Match score now that live flight/hotel data is in ──
-  function firstItin(r)  { return r.flights && r.flights.data && r.flights.data.itineraries && r.flights.data.itineraries.length ? r.flights.data.itineraries[0] : null; }
-  function firstHotel(r) { return r.hotels  && r.hotels.data  && r.hotels.data.length  ? r.hotels.data[0].total : null; }
+  // ── Choose cheapest flight + best stay that fits the remaining budget, then score ──
   results.forEach(function(r) {
     const itin = firstItin(r);
-    const acc  = r.flights && r.flights.data && r.flights.data.access;
+    const flightRaw = itin ? itin.price.raw : null;
+    const remaining = budget - (flightRaw || 0);
+    const hIdx = optimizing ? pickHotel(r.hotels, remaining) : -1;
+    const hotelRaw = (hIdx >= 0 && r.hotels && r.hotels.data && r.hotels.data[hIdx]) ? r.hotels.data[hIdx].total : null;
+    const combinedRaw = (flightRaw !== null || hotelRaw !== null) ? (flightRaw || 0) + (hotelRaw || 0) : null;
+    r.pick = { flightRaw: flightRaw, hotelRaw: hotelRaw, hotelIdx: hIdx, combinedRaw: combinedRaw, inBudget: combinedRaw !== null && combinedRaw <= budget };
+
+    const acc = r.flights && r.flights.data && r.flights.data.access;
     const bestStops = acc && acc.minStops != null ? acc.minStops
                     : (itin && itin.legs && itin.legs[0] && itin.legs[0].stopCount != null ? itin.legs[0].stopCount : null);
     r.info.bestAccess = acc || null;
     r.m = {
-      vibe:    r.info.vibeMatch,
-      season:  r.info.season,
-      trust:   r.info.trust,
-      afford:  computeAfford(itin ? itin.price.raw : null, firstHotel(r), budget),
-      access:  computeAccess(r.flights),
+      vibe: r.info.vibeMatch, season: r.info.season, trust: r.info.trust,
+      afford: computeAfford(flightRaw, hotelRaw, budget),
+      access: computeAccess(r.flights),
       obvious: computeObvious(r.iata, r.hotels),
       context: 0.80 + (bestStops === 0 ? 0.05 : 0)
     };
   });
   const vms = results.map(function(r) { return r.m.vibe; });
   results.forEach(function(r) {
-    const pct  = vms.filter(function(v) { return v <= r.m.vibe; }).length / (vms.length || 1);
+    const pct = vms.filter(function(v) { return v <= r.m.vibe; }).length / (vms.length || 1);
     const gate = clampx((pct - GATE_P0) / (1 - GATE_P0), 0, 1);   // relative discovery gate
     r.m.discover = (1 - r.m.obvious) * gate;
     r.match = 100 * (MW.vibe*r.m.vibe + MW.afford*r.m.afford + MW.season*r.m.season + MW.access*r.m.access + MW.discover*r.m.discover + MW.trust*r.m.trust + MW.context*r.m.context);
@@ -647,64 +707,60 @@ function renderCards(results, budget, nights, travelers) {
     r.info.match = r.match; r.info.comp = r.m; r.info.display = r.display;
     CARD_REGISTRY[r.iata] = r.info;
   });
-
-  results.sort(function(a, b) {                                    // rank by Match, tie-break cheaper
+  results.sort(function(a, b) {                                    // rank by Match, tie-break cheaper combined
     if (Math.abs(b.match - a.match) > 0.05) return b.match - a.match;
-    const aP = firstItin(a) ? firstItin(a).price.raw : Infinity;
-    const bP = firstItin(b) ? firstItin(b).price.raw : Infinity;
-    return aP - bP;
+    return (a.pick.combinedRaw != null ? a.pick.combinedRaw : Infinity) - (b.pick.combinedRaw != null ? b.pick.combinedRaw : Infinity);
   });
-  const withF    = results.filter(r => r.flights && r.flights.data && r.flights.data.itineraries && r.flights.data.itineraries.length);
-  const inBudget = withF.filter(r => r.flights.data.itineraries[0].price.raw <= budget).length;
 
-  // ── From / Avg price blocks ─────────────────────────────────────
-  var metaPriceHtml = '';
+  const withF = results.filter(function(r){ return r.flights && r.flights.data && r.flights.data.itineraries && r.flights.data.itineraries.length; });
+  const inBudgetCount = results.filter(function(r){ return r.pick.inBudget; }).length;
+
+  // ── From / Avg (chosen flight + chosen stay) ──
+  META_REVEAL = '';
   if (withF.length) {
-    var combos = withF.map(function(r) {
-      var fp = r.flights.data.itineraries[0].price.raw;
-      var hp = (r.hotels && r.hotels.data && r.hotels.data.length) ? r.hotels.data[0].total : null;
-      return { fp: fp, hp: hp, total: hp !== null ? fp + hp : fp };
-    });
-    var withBoth = combos.filter(function(c) { return c.hp !== null; });
+    var combos = withF.map(function(r){ return { fp:r.pick.flightRaw, hp:r.pick.hotelRaw, total:(r.pick.hotelRaw!=null)?(r.pick.flightRaw+r.pick.hotelRaw):r.pick.flightRaw }; });
+    var withBoth = combos.filter(function(c){ return c.hp != null; });
     var src = withBoth.length ? withBoth : combos;
-
-    var fromC    = src.reduce(function(b, c) { return c.total < b.total ? c : b; }, src[0]);
-    var avgFp    = Math.round(src.reduce(function(s, c) { return s + c.fp; }, 0) / src.length);
-    var avgHp    = withBoth.length ? Math.round(withBoth.reduce(function(s, c) { return s + c.hp; }, 0) / withBoth.length) : null;
-    var avgTotal = avgFp + (avgHp || 0);
-
-    var fromSub = withBoth.length
-      ? '✈️ $' + Math.round(fromC.fp).toLocaleString() + ' + 🏨 $' + Math.round(fromC.hp).toLocaleString()
-      : '✈️ flights only';
-    var avgSub = withBoth.length
-      ? '✈️ $' + avgFp.toLocaleString() + ' + 🏨 $' + avgHp.toLocaleString()
-      : '✈️ flights only';
-
-    metaPriceHtml =
-      '<div class="meta-price-block"><div class="mpb-label">From</div><div class="mpb-val">$' + Math.round(fromC.total).toLocaleString() + '</div><div class="mpb-sub">' + fromSub + '</div></div>' +
-      '<div class="meta-price-block"><div class="mpb-label">Avg</div><div class="mpb-val">$' + avgTotal.toLocaleString() + '</div><div class="mpb-sub">' + avgSub + '</div></div>';
+    var fromC = src.reduce(function(b,c){ return c.total < b.total ? c : b; }, src[0]);
+    var avgFp = Math.round(src.reduce(function(sum,c){ return sum+c.fp; },0)/src.length);
+    var avgHp = withBoth.length ? Math.round(withBoth.reduce(function(sum,c){ return sum+c.hp; },0)/withBoth.length) : null;
+    var avgTotal = avgFp + (avgHp||0);
+    var fromSub = withBoth.length ? '✈️ $'+Math.round(fromC.fp).toLocaleString()+' + 🏨 $'+Math.round(fromC.hp).toLocaleString() : '✈️ flights only';
+    var avgSub  = withBoth.length ? '✈️ $'+avgFp.toLocaleString()+' + 🏨 $'+avgHp.toLocaleString() : '✈️ flights only';
+    META_REVEAL =
+      '<div class="meta-price-block"><div class="mpb-label">From</div><div class="mpb-val">$'+Math.round(fromC.total).toLocaleString()+'</div><div class="mpb-sub">'+fromSub+'</div></div>' +
+      '<div class="meta-price-block"><div class="mpb-label">Avg</div><div class="mpb-val">$'+avgTotal.toLocaleString()+'</div><div class="mpb-sub">'+avgSub+'</div></div>';
   }
+  var metaSlot  = '<div class="meta-price-slot" id="meta-price-slot">' + (optimizing ? '<span class="meta-finding"><span class="spinner-sm"></span> Finding the stays that make the most of your budget…</span>' : META_REVEAL) + '</div>';
+  var metaStats = '<div class="meta-stats">' + results.length + ' destinations &nbsp;·&nbsp; ' + withF.length + ' with flights &nbsp;·&nbsp; <strong>' + inBudgetCount + '</strong> within budget</div>';
 
-  var metaStats = '<div class="meta-stats">' + results.length + ' destinations &nbsp;·&nbsp; ' + withF.length + ' with flights &nbsp;·&nbsp; <strong>' + inBudget + '</strong> within budget</div>';
-  const cards = results.map(function(r, i) { return buildCard(r, budget, nights, i === 0, travelers); }).join('');
-  document.getElementById('results-box').innerHTML = '<div class="results-meta">' + metaStats + metaPriceHtml + '</div>' + cards;
+  const cards = results.map(function(r, i) { return buildCard(r, budget, nights, i === 0, travelers, optimizing); }).join('');
+  document.getElementById('results-box').innerHTML = '<div class="results-meta">' + metaStats + metaSlot + '</div>' + buildSummary(results) + cards;
   document.querySelectorAll('.score-num[data-iata]').forEach(function(el) {
     el.addEventListener('click', function(e) { e.stopPropagation(); showVibeModal(el.dataset.iata); });
   });
+
+  if (optimizing) {                                               // staggered reveal of the chosen prices
+    const order = results.map(function(r){ return r.iata; });
+    order.forEach(function(iata, i) {
+      setTimeout(function(){ const el = document.getElementById('pw-' + iata); if (el && REVEAL[iata] != null) el.innerHTML = REVEAL[iata]; }, 140 + i * 150);
+    });
+    setTimeout(function(){ const m = document.getElementById('meta-price-slot'); if (m) m.innerHTML = META_REVEAL; }, 240 + order.length * 150);
+  }
 }
 
-function buildCard(r, budget, nights, autoOpen, travelers) {
+function buildCard(r, budget, nights, autoOpen, travelers, optimizing) {
   const iata    = r.iata;
   const info    = r.info;
   const flights = r.flights;
   const hotels  = r.hotels;
   const itin      = flights && flights.data && flights.data.itineraries && flights.data.itineraries[0];
-  const flightRaw = itin ? itin.price.raw : null;
   const priceFmt  = itin ? itin.price.formatted : null;
-  const hotelRaw  = hotels && hotels.data && hotels.data.length ? hotels.data[0].total : null;
-  const combinedRaw = (flightRaw !== null || hotelRaw !== null) ? (flightRaw || 0) + (hotelRaw || 0) : null;
+  const flightRaw = r.pick.flightRaw;
+  const hotelRaw  = r.pick.hotelRaw;
+  const combinedRaw = r.pick.combinedRaw;
   const combinedFmt = combinedRaw !== null ? '$' + Math.round(combinedRaw).toLocaleString() : null;
-  const inBudget = combinedRaw !== null && combinedRaw <= budget;
+  const inBudget  = r.pick.inBudget;
   const budgetBadge = combinedRaw !== null
     ? (inBudget ? '<span class="budget-yes">✓ Budget</span>' : '<span class="budget-no">Over budget</span>')
     : '';
@@ -714,11 +770,23 @@ function buildCard(r, budget, nights, autoOpen, travelers) {
   const priceHtml = combinedFmt !== null
     ? '<span class="dch-price' + (inBudget ? '' : ' over') + '">' + combinedFmt + '</span>'
     : '';
-  const vibePills = info.vibes.map(v => '<span class="dch-vibe-pill">' + v.label + ' ' + v.score + '</span>').join('');
+  const finalPw = '<div class="dch-price-col">' + priceHtml + breakdownHtml + '</div>' + budgetBadge;
+  REVEAL[iata] = finalPw;
+  const initPw = optimizing ? '<span class="price-pending"><span class="mini-spin"></span></span>' : finalPw;
+
+  // Vibe pills: every SELECTED vibe — matched ones show the score, unmatched ones are grayed.
+  const matched = {};
+  info.vibes.forEach(function(v){ matched[v.key] = v.score; });
+  const sel = SEL_VIBES.length ? SEL_VIBES : info.vibes.map(function(v){ return { key:v.key, label:v.label }; });
+  const vibePills = sel.map(function(sv){
+    return matched[sv.key] != null
+      ? '<span class="dch-vibe-pill">' + sv.label + ' ' + matched[sv.key] + '</span>'
+      : '<span class="dch-vibe-pill unmatched">' + sv.label + '</span>';
+  }).join('');
+
   const showFlights = flights !== null;
   const showHotels  = hotels  !== null;
-  const firstTab    = showFlights ? 'flights' : 'hotels';
-  const ftabActive  = firstTab === 'flights' ? ' tab-active' : '';
+  const ftabActive  = showFlights ? ' tab-active' : '';
   const htabActive  = (!showFlights) ? ' tab-active' : '';
   const priceNote   = itin ? ' · ' + priceFmt : '';
   const flightBtn   = showFlights ? '<button class="tab-btn' + ftabActive + '" onclick="switchTab(\'' + iata + '\',\'flights\')">✈️ Flights' + priceNote + '</button>' : '';
@@ -742,12 +810,12 @@ function buildCard(r, budget, nights, autoOpen, travelers) {
           '<span class="tier-badge ' + tierCls + '">' + (info.tier || '—') + '</span>' +
         '</div>' +
         '<div class="dch-vibes">' + vibePills + '</div>' +
-        '<div class="dch-right"><div class="dch-price-col">' + priceHtml + breakdownHtml + '</div>' + budgetBadge + '<span class="expand-icon">▼</span></div>' +
+        '<div class="dch-right"><div class="dch-pricewrap" id="pw-' + iata + '">' + initPw + '</div><span class="expand-icon">▼</span></div>' +
       '</div>' +
       '<div class="dest-card-body' + bodyHide + '" id="body-' + iata + '">' +
         '<div class="tab-bar">' + flightBtn + hotelBtn + '</div>' +
         '<div class="tab-pane" id="fpane-' + iata + '">' + buildFlightPane(iata, flights, budget, travelers) + '</div>' +
-        '<div class="tab-pane' + hPaneHide + '" id="hpane-' + iata + '">' + buildHotelPane(iata, hotels, nights) + '</div>' +
+        '<div class="tab-pane' + hPaneHide + '" id="hpane-' + iata + '">' + buildHotelPane(iata, hotels, nights, r.pick.hotelIdx) + '</div>' +
       '</div>' +
     '</div>'
   );
@@ -759,7 +827,8 @@ function buildFlightPane(iata, flights, budget, travelers) {
   const itins = flights.data && flights.data.itineraries;
   if (!itins || !itins.length) return '<div class="tab-empty">No flights found from your origin to ' + iata + '.</div>';
   const pax = Math.max(parseInt(travelers) || 1, 1);
-  const rows = itins.map(function(it) {
+  const rows = itins.map(function(it, ix) {
+    const sel     = ix === 0;                          // cheapest itinerary = the one we picked
     const leg0    = (it.legs && it.legs[0]) || {};
     const leg1    = (it.legs && it.legs[1]) || {};
     const over    = it.price.raw > budget;
@@ -771,8 +840,8 @@ function buildFlightPane(iata, flights, budget, travelers) {
     const budgBadge = over ? '<span class="in-budget-no">Over</span>' : '<span class="in-budget-yes">✓</span>';
     const perPerson = pax > 1 ? '$' + Math.round(it.price.raw / pax).toLocaleString() : '—';
     return (
-      '<tr>' +
-      '<td><span class="f-price' + (over ? ' over' : '') + '">' + it.price.formatted + '</span>&nbsp;' + budgBadge + '</td>' +
+      '<tr' + (sel ? ' class="selected-row"' : '') + '>' +
+      '<td><span class="f-price' + (over ? ' over' : '') + '">' + it.price.formatted + '</span>&nbsp;' + budgBadge + (sel ? ' <span class="row-sel-badge">Picked</span>' : '') + '</td>' +
       '<td><span class="f-price-pp">' + perPerson + '</span></td>' +
       '<td><span class="f-airline">' + airline + '</span></td>' +
       '<td><span class="f-route">' + (route || iata) + '</span></td>' +
@@ -789,7 +858,7 @@ function buildFlightPane(iata, flights, budget, travelers) {
   );
 }
 
-function buildHotelPane(iata, hotels, nights) {
+function buildHotelPane(iata, hotels, nights, chosenIdx) {
   if (!hotels) return '<div class="tab-not-searched">Hotels not included in this search.</div>';
   if (hotels.error || hotels.errors) {
     const e = hotels.error || hotels.errors;
@@ -800,7 +869,12 @@ function buildHotelPane(iata, hotels, nights) {
   }
   const items = hotels.data;
   if (!items || !items.length) return '<div class="tab-empty">No hotels found for this destination.</div>';
-  const rows = items.map(function(h) {
+  let order = items.map(function(_, i) { return i; });            // float the chosen stay to the top
+  if (chosenIdx != null && chosenIdx >= 0 && chosenIdx < items.length)
+    order = [chosenIdx].concat(order.filter(function(i) { return i !== chosenIdx; }));
+  const rows = order.map(function(idx) {
+    const h = items[idx];
+    const sel = idx === chosenIdx;
     const starStr  = h.stars ? '★'.repeat(h.stars) + '☆'.repeat(Math.max(0, 5 - h.stars)) : '—';
     const ratingStr = h.rating ? '<br><span style="font-size:10px;color:var(--wg500)">' + h.rating.toFixed(1) + '/10</span>' : '';
     const nameStr  = h.name + (h.roomName ? '<br><span style="font-size:10px;color:var(--wg500)">' + h.roomName + '</span>' : '');
@@ -808,8 +882,8 @@ function buildHotelPane(iata, hotels, nights) {
     const pnFmt    = h.perNight ? '$' + h.perNight.toLocaleString() + '/night' : '—';
     const refund   = h.refundable ? '&nbsp;<span class="in-budget-yes">Refundable</span>' : '';
     return (
-      '<tr>' +
-      '<td><span class="h-name">' + nameStr + '</span></td>' +
+      '<tr' + (sel ? ' class="selected-row"' : '') + '>' +
+      '<td><span class="h-name">' + nameStr + '</span>' + (sel ? ' <span class="row-sel-badge">Best for your budget</span>' : '') + '</td>' +
       '<td><span class="h-stars">' + starStr + '</span>' + ratingStr + '</td>' +
       '<td><span style="font-size:12px;color:var(--wg600)">' + nights + ' night' + (nights !== 1 ? 's' : '') + '</span></td>' +
       '<td><span class="h-pn">' + pnFmt + '</span></td>' +
