@@ -313,17 +313,22 @@ const REGION_EMOJI = {
 
 const s = { region:null, subregion:null, vibes:new Set(), services:new Set(['flights','hotels']) };
 const CARD_REGISTRY = {};
-let CFG = { max_cities: 8, max_flights: 5 };
+let CFG = { max_cities: 8, max_flights: 5, match_display_slope: 1.15, match_display_offset: -1 };
 
 (async function loadConfig() {
   try {
     const hdr = { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY };
-    const res = await fetch(SUPABASE_URL + '/rest/v1/app_config?select=max_cities,max_flights&limit=1', { headers: hdr });
+    // select=* so newly-added config columns are picked up without changing this fetch, and
+    // missing columns degrade gracefully to the CFG fallbacks above.
+    const res = await fetch(SUPABASE_URL + '/rest/v1/app_config?select=*&limit=1', { headers: hdr });
     if (res.ok) {
       const rows = await res.json();
       if (rows && rows.length) {
-        if (rows[0].max_cities != null) CFG.max_cities = parseInt(rows[0].max_cities) || 8;
-        if (rows[0].max_flights != null) CFG.max_flights = parseInt(rows[0].max_flights) || 5;
+        const c = rows[0];
+        if (c.max_cities  != null) CFG.max_cities  = parseInt(c.max_cities)  || 8;
+        if (c.max_flights != null) CFG.max_flights = parseInt(c.max_flights) || 5;
+        if (c.match_display_slope  != null && !isNaN(parseFloat(c.match_display_slope)))  CFG.match_display_slope  = parseFloat(c.match_display_slope);
+        if (c.match_display_offset != null && !isNaN(parseFloat(c.match_display_offset))) CFG.match_display_offset = parseFloat(c.match_display_offset);
       }
     }
   } catch (e) { /* keep defaults */ }
@@ -625,7 +630,8 @@ function renderCards(results, budget, nights, travelers) {
     const gate = clampx((pct - GATE_P0) / (1 - GATE_P0), 0, 1);   // relative discovery gate
     r.m.discover = (1 - r.m.obvious) * gate;
     r.match = 100 * (MW.vibe*r.m.vibe + MW.afford*r.m.afford + MW.season*r.m.season + MW.access*r.m.access + MW.discover*r.m.discover + MW.trust*r.m.trust + MW.context*r.m.context);
-    r.info.match = r.match; r.info.comp = r.m;
+    r.display = Math.max(0, Math.min(99, Math.round(r.match * CFG.match_display_slope + CFG.match_display_offset)));  // presentation only — monotonic, ranking unchanged
+    r.info.match = r.match; r.info.comp = r.m; r.info.display = r.display;
     CARD_REGISTRY[r.iata] = r.info;
   });
 
@@ -718,7 +724,7 @@ function buildCard(r, budget, nights, autoOpen, travelers) {
         '</div>' +
         '<span class="dch-iata">' + iata + '</span>' +
         '<div class="dch-score">' +
-          '<span class="score-num" data-iata="' + iata + '" title="Click for match breakdown">' + Math.round(r.match) + '</span>' +
+          '<span class="score-num" data-iata="' + iata + '" title="Click for match breakdown">' + (r.display != null ? r.display : Math.round(r.match)) + '</span>' +
           '<span class="match-lbl">match</span>' +
           '<span class="tier-badge ' + tierCls + '">' + (info.tier || '—') + '</span>' +
         '</div>' +
@@ -840,7 +846,7 @@ function showVibeModal(iata) {
   if (!d) return;
   document.getElementById('vdm-name').textContent    = d.dest;
   document.getElementById('vdm-country').textContent = d.country + ' · ' + iata + ' · vibe composite ' + d.bestScore + ' (tier ' + (d.tier || '—') + ')';
-  document.getElementById('vdm-score').textContent   = (d.match != null ? Math.round(d.match) : d.bestScore);
+  document.getElementById('vdm-score').textContent   = (d.display != null ? d.display : (d.match != null ? Math.round(d.match) : d.bestScore));
   const tierEl = document.getElementById('vdm-tier');
   tierEl.className = '';
   tierEl.textContent = d.vibes.length + ' of the selected vibes matched';
@@ -875,7 +881,7 @@ function showVibeModal(iata) {
   }).join('');
 
   document.getElementById('vdm-vibes').innerHTML =
-    '<div class="modal-section-lbl">Match components (weighted → ' + (d.match != null ? Math.round(d.match) : '—') + ')</div>' + compHtml +
+    '<div class="modal-section-lbl">Match components (internal raw → ' + (d.match != null ? Math.round(d.match) : '—') + ', shown as ' + (d.display != null ? d.display : '—') + ')</div>' + compHtml +
     '<div class="modal-section-lbl" style="margin-top:18px">Vibe scores</div>' + vibeHtml;
   document.getElementById('vibe-modal').classList.remove('hidden');
 }
