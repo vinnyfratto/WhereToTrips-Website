@@ -376,11 +376,22 @@ function computeAfford(flightRaw, hotelRaw, budget) {
   const r = cost / (budget || 1);                                  // dashboard flex = 0
   return r <= 1 ? 1.0 : Math.max(0, 1 - (r-1)*1.5);
 }
-function computeAccess(itin) {
-  if (!itin) return 0.6;
-  const leg0 = (itin.legs && itin.legs[0]) || {};
-  const stops = leg0.stopCount != null ? leg0.stopCount : 1;
-  const hours = (leg0.durationInMinutes || 360) / 60;
+// Honest reachability: score off the BEST available connection across all fetched offers
+// (edge fn returns data.access = {minStops, bestDurationMin}), not just the cheapest fare's
+// stops — a route that HAS a nonstop is highly accessible even if the cheapest ticket connects.
+function computeAccess(flights) {
+  const data = flights && flights.data;
+  if (!data) return 0.6;
+  let stops, hours;
+  if (data.access && data.access.minStops != null) {
+    stops = data.access.minStops;
+    hours = (data.access.bestDurationMin || 360) / 60;
+  } else {                                            // fallback: cheapest itinerary's outbound leg
+    const itin = data.itineraries && data.itineraries[0];
+    const leg0 = (itin && itin.legs && itin.legs[0]) || {};
+    stops = leg0.stopCount != null ? leg0.stopCount : 1;
+    hours = (leg0.durationInMinutes || 360) / 60;
+  }
   const stopScore = stops===0 ? 1.0 : stops===1 ? 0.8 : 0.6;
   return stopScore * (1 - clampx((hours-3)/30, 0, 0.4));
 }
@@ -611,17 +622,19 @@ function renderCards(results, budget, nights, travelers) {
   function firstItin(r)  { return r.flights && r.flights.data && r.flights.data.itineraries && r.flights.data.itineraries.length ? r.flights.data.itineraries[0] : null; }
   function firstHotel(r) { return r.hotels  && r.hotels.data  && r.hotels.data.length  ? r.hotels.data[0].total : null; }
   results.forEach(function(r) {
-    const itin  = firstItin(r);
-    const leg0  = itin && itin.legs ? (itin.legs[0] || {}) : {};
-    const stops = leg0.stopCount != null ? leg0.stopCount : null;
+    const itin = firstItin(r);
+    const acc  = r.flights && r.flights.data && r.flights.data.access;
+    const bestStops = acc && acc.minStops != null ? acc.minStops
+                    : (itin && itin.legs && itin.legs[0] && itin.legs[0].stopCount != null ? itin.legs[0].stopCount : null);
+    r.info.bestAccess = acc || null;
     r.m = {
       vibe:    r.info.vibeMatch,
       season:  r.info.season,
       trust:   r.info.trust,
       afford:  computeAfford(itin ? itin.price.raw : null, firstHotel(r), budget),
-      access:  computeAccess(itin),
+      access:  computeAccess(r.flights),
       obvious: computeObvious(r.iata, r.hotels),
-      context: 0.80 + (stops === 0 ? 0.05 : 0)
+      context: 0.80 + (bestStops === 0 ? 0.05 : 0)
     };
   });
   const vms = results.map(function(r) { return r.m.vibe; });
@@ -880,8 +893,12 @@ function showVibeModal(iata) {
     '</div>';
   }).join('');
 
+  const ba = d.bestAccess;
+  const accNote = ba && ba.minStops != null
+    ? '<div class="comp-sub" style="margin:-2px 0 8px">✈️ best connection from origin: <strong>' + (ba.minStops===0 ? 'nonstop' : ba.minStops + '-stop') + '</strong>' + (ba.bestDurationMin ? ' · ' + fmtDur(ba.bestDurationMin) : '') + ' — accessibility scores off this, not the cheapest fare</div>'
+    : '';
   document.getElementById('vdm-vibes').innerHTML =
-    '<div class="modal-section-lbl">Match components (internal raw → ' + (d.match != null ? Math.round(d.match) : '—') + ', shown as ' + (d.display != null ? d.display : '—') + ')</div>' + compHtml +
+    '<div class="modal-section-lbl">Match components (internal raw → ' + (d.match != null ? Math.round(d.match) : '—') + ', shown as ' + (d.display != null ? d.display : '—') + ')</div>' + compHtml + accNote +
     '<div class="modal-section-lbl" style="margin-top:18px">Vibe scores</div>' + vibeHtml;
   document.getElementById('vibe-modal').classList.remove('hidden');
 }
