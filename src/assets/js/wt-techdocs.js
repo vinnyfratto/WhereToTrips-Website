@@ -16,6 +16,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 const ALLOW = [
   'vinnyfratto@gmail.com',
   'cctx01@gmail.com',
+  'vinnytemp1@yahoo.com',
 ];
 
 const cfg = window.WT_SUPABASE || {};
