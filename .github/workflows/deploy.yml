@@ -4,6 +4,12 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # Let the app repo's weekly agent trigger a rebuild after it updates the docs.
+  repository_dispatch:
+    types: [docs-updated]
+  # Nightly rebuild so TechDocs stays current even without a site change.
+  schedule:
+    - cron: '17 7 * * *'
 
 permissions:
   contents: read
@@ -31,6 +37,9 @@ jobs:
 
       - name: Build with Eleventy
         run: npm run build
+        env:
+          # Raises the GitHub API rate limit for the TechDocs doc fetch.
+          GITHUB_TOKEN: ${{ github.token }}
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

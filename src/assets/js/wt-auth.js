@@ -47,6 +47,14 @@ function friendly(error) {
   if (/email not confirmed/i.test(m)) return 'Please confirm your email first — check your inbox.';
   return m;
 }
+// Safe same-site redirect target from a ?next= param (relative paths only).
+function nextTarget(fallback) {
+  try {
+    const n = new URLSearchParams(window.location.search).get('next');
+    if (n && n.charAt(0) === '/' && n.charAt(1) !== '/') return n;
+  } catch (_e) { /* ignore */ }
+  return fallback;
+}
 
 // ── SIGNUP ──────────────────────────────────────────────────────────
 function initSignup() {
@@ -122,7 +130,7 @@ function initLogin() {
 
   // If already signed in, skip straight to profile.
   supabase.auth.getSession().then(({ data }) => {
-    if (data.session) window.location.href = '/account/profile/';
+    if (data.session) window.location.href = nextTarget('/account/profile/');
   });
 
   form.addEventListener('submit', async (e) => {
@@ -136,7 +144,7 @@ function initLogin() {
     });
     busy(btn, false);
     if (error) { show(alertEl, 'error', friendly(error)); return; }
-    window.location.href = '/account/profile/';
+    window.location.href = nextTarget('/account/profile/');
   });
 }
 

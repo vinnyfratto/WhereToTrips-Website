@@ -1,0 +1,229 @@
+---
+layout: layouts/base.njk
+permalink: /techdocs/index.html
+title: "TechDocs — WhereTo Engineering Record"
+description: "Internal, unlisted engineering documentation for WhereTo."
+noindex: true
+eleventyExcludeFromCollections: true
+---
+<main class="td">
+  <div id="td-gate" class="td-gatebox">Checking access…</div>
+  <div id="td-denied" class="td-gatebox" style="display:none;">
+    <p class="eyebrow">Restricted</p>
+    <h1>Access restricted</h1>
+    <p>TechDocs is limited to authorized WhereTo accounts. You are signed in as <strong id="td-who"></strong>, which is not on the access list.</p>
+    <button type="button" id="td-logout" class="td-btn">Log out and switch account</button>
+  </div>
+  <div id="td-content" style="display:none;">
+  <header class="td-hero">
+    <p class="eyebrow">Internal · unlisted</p>
+    <h1>TechDocs</h1>
+    <p class="td-sub">The live engineering record for WhereTo, pulled from the app repository. Grouped by section and filterable by date.</p>
+    <p class="td-status">
+      {% if techdocs.ok %}
+        {{ techdocs.count }} documents · source <code>{{ techdocs.repo }}@{{ techdocs.branch }}</code> · built {{ techdocs.generatedAt }}
+      {% else %}
+        Could not load documents at build time{% if techdocs.error %} (<code>{{ techdocs.error }}</code>){% endif %}.
+      {% endif %}
+    </p>
+    <div class="td-warn" role="note">
+      Confidential. This page is unlisted and blocked from search engines. It includes internal risk, security, and gap notes. Do not share the link publicly.
+    </div>
+  </header>
+
+  {% if techdocs.count %}
+  <div class="td-controls">
+    <div class="td-field">
+      <label for="td-from">From</label>
+      <input type="date" id="td-from" />
+    </div>
+    <div class="td-field">
+      <label for="td-to">To</label>
+      <input type="date" id="td-to" />
+    </div>
+    <div class="td-field td-grow">
+      <label for="td-search">Search titles</label>
+      <input type="search" id="td-search" placeholder="e.g. security, ADR, week" />
+    </div>
+    <button type="button" id="td-clear" class="td-btn">Clear</button>
+  </div>
+
+  <div class="td-chips" id="td-chips">
+    <button type="button" class="td-chip active" data-sec="all">All sections</button>
+    {%- for section in techdocs.sections %}
+    <button type="button" class="td-chip active" data-sec="{{ section.key }}">{{ section.title }}</button>
+    {%- endfor %}
+  </div>
+
+  <p class="td-resultcount" id="td-resultcount"></p>
+
+  <div class="td-sections" id="td-sections">
+    {%- for section in techdocs.sections %}
+    <section class="td-section" data-key="{{ section.key }}">
+      <h2 class="td-section-head">{{ section.title }} <span class="td-count">{{ section.docs | length }}</span></h2>
+      {%- for doc in section.docs %}
+      <details class="td-doc" data-section="{{ section.key }}" data-date="{{ doc.date }}" data-title="{{ doc.title | lower }} {{ doc.path | lower }}">
+        <summary class="td-doc-summary">
+          <span class="td-doc-title">{{ doc.title }}</span>
+          <span class="td-doc-meta">
+            <span class="td-doc-path">{{ doc.path }}</span>
+            <span class="td-doc-date">{{ doc.date or "no date" }}</span>
+          </span>
+        </summary>
+        <div class="td-doc-body">
+          {{ doc.markdown | markdown | safe }}
+        </div>
+      </details>
+      {%- endfor %}
+    </section>
+    {%- endfor %}
+  </div>
+  {% else %}
+  <p class="td-empty">
+    No documents found yet. Once the app repository's <code>docs/</code>, <code>week-in-review/</code>,
+    and <code>CHANGELOG.md</code> are pushed to <code>{{ techdocs.repo }}</code> (branch <code>{{ techdocs.branch }}</code>),
+    this page fills in automatically on the next site build.
+  </p>
+  {% endif %}
+  </div>
+</main>
+
+{% raw %}
+<style>
+  .td { max-width: var(--max); margin: 0 auto; padding: 48px 20px 96px; }
+  .td .eyebrow { color: var(--rust); font-weight: 600; letter-spacing: .08em; text-transform: uppercase; font-size: .72rem; margin: 0 0 6px; }
+  .td-hero h1 { font-family: var(--serif); color: var(--navy); font-size: clamp(2rem, 5vw, 3rem); margin: 0 0 8px; }
+  .td-sub { color: var(--wg600); font-size: 1.05rem; max-width: 60ch; margin: 0 0 10px; }
+  .td-status { color: var(--wg500); font-size: .82rem; margin: 0 0 16px; }
+  .td-status code, .td-empty code, .td-doc-path { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .8em; }
+  .td-warn { background: #FBEEE9; border: 1px solid #E8C9BC; color: #8A3B22; border-radius: var(--radius-sm); padding: 10px 14px; font-size: .85rem; margin: 0 0 28px; }
+
+  .td-controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; background: var(--card); border: 1px solid var(--wg200); border-radius: var(--radius-md); padding: 16px; box-shadow: var(--shadow-sm); position: sticky; top: 8px; z-index: 5; }
+  .td-field { display: flex; flex-direction: column; gap: 4px; }
+  .td-field.td-grow { flex: 1 1 220px; }
+  .td-field label { font-size: .7rem; text-transform: uppercase; letter-spacing: .06em; color: var(--wg500); font-weight: 600; }
+  .td-field input { font: inherit; padding: 9px 11px; border: 1px solid var(--wg300); border-radius: var(--radius-sm); background: #fff; color: var(--navy); }
+  .td-field input:focus { outline: 2px solid var(--rust); outline-offset: 1px; }
+  .td-btn { font: inherit; font-weight: 600; padding: 9px 16px; border: 1px solid var(--wg300); background: #fff; color: var(--navy); border-radius: var(--radius-sm); cursor: pointer; }
+  .td-btn:hover { background: var(--wg100); }
+
+  .td-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 4px; }
+  .td-chip { font: inherit; font-size: .82rem; font-weight: 600; padding: 6px 13px; border-radius: 999px; border: 1px solid var(--wg300); background: #fff; color: var(--wg600); cursor: pointer; transition: all .15s; }
+  .td-chip:hover { border-color: var(--rust); }
+  .td-chip.active { background: var(--navy); border-color: var(--navy); color: #fff; }
+
+  .td-resultcount { color: var(--wg500); font-size: .8rem; margin: 14px 0 4px; min-height: 1em; }
+
+  .td-section { margin: 28px 0 0; }
+  .td-section-head { font-family: var(--serif); color: var(--navy); font-size: 1.4rem; border-bottom: 2px solid var(--wg200); padding-bottom: 8px; margin: 0 0 12px; display: flex; align-items: center; gap: 10px; }
+  .td-count { font-family: var(--sans); font-size: .72rem; font-weight: 700; background: var(--wg100); color: var(--wg600); border-radius: 999px; padding: 2px 9px; }
+
+  .td-doc { border: 1px solid var(--wg200); border-radius: var(--radius-md); background: var(--card); margin: 0 0 10px; box-shadow: var(--shadow-sm); overflow: hidden; }
+  .td-doc[open] { box-shadow: var(--shadow-md); }
+  .td-doc-summary { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 14px 18px; cursor: pointer; list-style: none; }
+  .td-doc-summary::-webkit-details-marker { display: none; }
+  .td-doc-summary::before { content: "▸"; color: var(--rust); font-size: .8em; margin-right: 2px; }
+  .td-doc[open] .td-doc-summary::before { content: "▾"; }
+  .td-doc-title { font-weight: 600; color: var(--navy); }
+  .td-doc-meta { display: flex; gap: 12px; align-items: baseline; white-space: nowrap; }
+  .td-doc-path { color: var(--wg400); }
+  .td-doc-date { font-size: .78rem; font-weight: 600; color: var(--wg600); background: var(--wg100); border-radius: 999px; padding: 2px 10px; }
+  .td-doc-body { padding: 4px 22px 22px; border-top: 1px solid var(--wg200); }
+
+  /* rendered markdown */
+  .td-doc-body h1 { display: none; } /* title already shown in summary */
+  .td-doc-body h2 { font-family: var(--serif); color: var(--navy); font-size: 1.15rem; margin: 22px 0 8px; }
+  .td-doc-body h3 { color: var(--navy); font-size: 1rem; margin: 16px 0 6px; }
+  .td-doc-body p, .td-doc-body li { color: var(--wg600); line-height: 1.6; }
+  .td-doc-body a { color: var(--rust); }
+  .td-doc-body code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .85em; background: var(--wg100); padding: 1px 5px; border-radius: 4px; }
+  .td-doc-body pre { background: var(--navy); color: #EAF1F5; padding: 14px 16px; border-radius: var(--radius-sm); overflow-x: auto; }
+  .td-doc-body pre code { background: none; padding: 0; color: inherit; }
+  .td-doc-body table { border-collapse: collapse; width: 100%; display: block; overflow-x: auto; margin: 12px 0; font-size: .9rem; }
+  .td-doc-body th, .td-doc-body td { border: 1px solid var(--wg200); padding: 7px 10px; text-align: left; vertical-align: top; }
+  .td-doc-body th { background: var(--wg100); color: var(--navy); }
+  .td-doc-body blockquote { border-left: 3px solid var(--wg300); margin: 10px 0; padding: 2px 14px; color: var(--wg500); font-style: italic; }
+  .td-doc-body hr { border: none; border-top: 1px solid var(--wg200); margin: 18px 0; }
+
+  .td-hidden { display: none !important; }
+  .td-gatebox { max-width: 620px; margin: 60px auto; text-align: center; color: var(--wg600); background: var(--card); border: 1px solid var(--wg200); border-radius: var(--radius-md); padding: 40px 28px; box-shadow: var(--shadow-sm); }
+  .td-gatebox .eyebrow { color: var(--rust); }
+  .td-gatebox h1 { font-family: var(--serif); color: var(--navy); margin: 6px 0 10px; }
+  .td-gatebox .td-btn { margin-top: 10px; }
+  .td-empty { color: var(--wg600); background: var(--card); border: 1px dashed var(--wg300); border-radius: var(--radius-md); padding: 24px; }
+
+  @media (max-width: 640px) {
+    .td-doc-summary { flex-direction: column; gap: 4px; }
+    .td-doc-meta { white-space: normal; }
+    .td-controls { position: static; }
+  }
+</style>
+<script>
+  (function () {
+    var from = document.getElementById('td-from');
+    var to = document.getElementById('td-to');
+    var q = document.getElementById('td-search');
+    var clear = document.getElementById('td-clear');
+    var count = document.getElementById('td-resultcount');
+    if (!from || !to) return; // controls absent (empty state) — nothing to filter
+    var chips = Array.prototype.slice.call(document.querySelectorAll('.td-chip'));
+    var docs = Array.prototype.slice.call(document.querySelectorAll('.td-doc'));
+    var sections = Array.prototype.slice.call(document.querySelectorAll('.td-section'));
+    var active = { all: true };
+
+    function syncChips() {
+      chips.forEach(function (c) {
+        var k = c.getAttribute('data-sec');
+        c.classList.toggle('active', !!active[k]);
+      });
+    }
+    function apply() {
+      var f = from.value || null;
+      var t = to.value || null;
+      var term = (q.value || '').trim().toLowerCase();
+      var shown = 0;
+      docs.forEach(function (d) {
+        var date = d.getAttribute('data-date') || '';
+        var sec = d.getAttribute('data-section');
+        var title = d.getAttribute('data-title') || '';
+        var ok = true;
+        if (!active.all && !active[sec]) ok = false;
+        if (ok && f && date && date < f) ok = false;
+        if (ok && t && date && date > t) ok = false;
+        if (ok && (f || t) && !date) ok = false; // undated docs drop out once a date filter is set
+        if (ok && term && title.indexOf(term) === -1) ok = false;
+        d.classList.toggle('td-hidden', !ok);
+        if (ok) shown++;
+      });
+      sections.forEach(function (s) {
+        var vis = s.querySelectorAll('.td-doc:not(.td-hidden)').length;
+        s.classList.toggle('td-hidden', vis === 0);
+        var c = s.querySelector('.td-count');
+        if (c) c.textContent = vis;
+      });
+      count.textContent = 'Showing ' + shown + ' of ' + docs.length + ' documents';
+    }
+    chips.forEach(function (ch) {
+      ch.addEventListener('click', function () {
+        var sec = ch.getAttribute('data-sec');
+        if (sec === 'all') {
+          active = { all: true };
+        } else {
+          active.all = false;
+          if (active[sec]) delete active[sec];
+          else active[sec] = true;
+          if (Object.keys(active).length === 0) active = { all: true };
+        }
+        syncChips();
+        apply();
+      });
+    });
+    [from, to, q].forEach(function (el) { if (el) el.addEventListener('input', apply); });
+    if (clear) clear.addEventListener('click', function () {
+      from.value = ''; to.value = ''; q.value = ''; active = { all: true }; syncChips(); apply();
+    });
+    apply();
+  })();
+</script>
+{% endraw %}
+<script type="module" src="/assets/js/wt-techdocs.js?v={{ buildTime }}"></script>

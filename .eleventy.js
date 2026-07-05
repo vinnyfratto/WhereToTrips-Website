@@ -14,6 +14,10 @@ module.exports = function (eleventyConfig) {
   // collections/sitemap so it isn't advertised to search/AI crawlers.
   eleventyConfig.ignores.add("src/vibes-engine/**");
 
+  // Markdown filter — renders doc strings to HTML for the (internal) TechDocs page.
+  const md = require("markdown-it")({ html: true, linkify: true, breaks: false });
+  eleventyConfig.addFilter("markdown", (str) => (str ? md.render(String(str)) : ""));
+
   // Hub collections, sorted by an `order` front-matter field.
   const byOrder = (a, b) => (a.data.order || 0) - (b.data.order || 0);
   eleventyConfig.addCollection("vibe", (c) => c.getFilteredByTag("vibe").sort(byOrder));
