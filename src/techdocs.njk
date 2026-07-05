@@ -68,6 +68,7 @@ eleventyExcludeFromCollections: true
           <span class="td-doc-meta">
             <span class="td-doc-path">{{ doc.path }}</span>
             <span class="td-doc-date">{{ doc.date or "no date" }}</span>
+            <span class="td-doc-toggle" aria-hidden="true"></span>
           </span>
         </summary>
         <div class="td-doc-body">
@@ -127,7 +128,13 @@ eleventyExcludeFromCollections: true
   .td-doc-title { font-weight: 600; color: var(--navy); }
   .td-doc-meta { display: flex; gap: 12px; align-items: baseline; white-space: nowrap; }
   .td-doc-path { color: var(--wg400); }
-  .td-doc-date { font-size: .78rem; font-weight: 600; color: var(--wg600); background: var(--wg100); border-radius: 999px; padding: 2px 10px; }
+  .td-doc-date { font-size: .78rem; font-weight: 600; color: var(--wg600); background: #fff; border: 1px solid var(--wg200); border-radius: 999px; padding: 2px 10px; }
+  .td-doc-toggle { font-size: .74rem; font-weight: 700; color: var(--rust); border: 1px solid var(--wg300); border-radius: 999px; padding: 2px 11px; white-space: nowrap; transition: all .15s; }
+  .td-doc-toggle::after { content: "View"; }
+  .td-doc[open] .td-doc-toggle::after { content: "Hide"; }
+  .td-doc-summary:hover { background: var(--wg100); }
+  .td-doc-summary:hover .td-doc-title { color: var(--rust); }
+  .td-doc-summary:hover .td-doc-toggle { background: var(--rust); color: #fff; border-color: var(--rust); }
   .td-doc-body { padding: 4px 22px 22px; border-top: 1px solid var(--wg200); }
 
   /* rendered markdown */
