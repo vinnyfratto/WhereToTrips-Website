@@ -550,7 +550,7 @@ function showGrid(){
     return '<div class="dcard" onclick="showDetail(\''+esc(d.id)+'\')" title="'+esc(d.city)+'">'
       +'<div class="'+thumbCls+'"'+thumbStyle+'>'+inner+'<span class="dcard-count">'+n+' img</span></div>'
       +'<div class="dcard-body"><div class="dcard-city">'+esc(d.city)+'</div>'
-      +'<div class="dcard-sub">'+esc(d.country)+(d.iata?' &middot; '+esc(d.iata):'')+'</div>'
+      +'<div class="dcard-sub">'+(d.state?esc(d.state)+', ':'')+esc(d.country)+(d.iata?' &middot; '+esc(d.iata):'')+'</div>'
       +'<div class="dcard-meta"><span title="Vibes in the Vibe Engine">&#9733; '+vc+' vibe'+(vc===1?'':'s')+'</span>'
       +'<span title="Last time images were pulled or edited">'+_fmtDate(d.lastEdited)+'</span></div>'
       +'</div></div>';
@@ -569,7 +569,7 @@ function showDetail(destId){
   currentRegion=d.gr; currentSub=d.gs;
   document.getElementById('det-region').textContent=String(d.gr).toUpperCase()+' \u203A '+String(d.gs).toUpperCase();
   document.getElementById('det-label').textContent=d.city;
-  document.getElementById('det-meta').textContent=d.country+(d.iata?'  \u00B7  '+d.iata:'')+'  \u00B7  '+(d.vibeCount==null?'—':d.vibeCount)+' vibes  \u00B7  edited '+_fmtDate(d.lastEdited);
+  document.getElementById('det-meta').textContent=(d.state?d.state+'  \u00B7  ':'')+d.country+(d.iata?'  \u00B7  '+d.iata:'')+'  \u00B7  '+(d.vibeCount==null?'—':d.vibeCount)+' vibes  \u00B7  edited '+_fmtDate(d.lastEdited);
   renderGallery(getEditedImages(destId));
   document.getElementById('grid-view').classList.add('hidden');
   document.getElementById('detail-view').classList.remove('hidden');
