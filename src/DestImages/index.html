@@ -176,6 +176,8 @@
   .set-actions button { font-size:12px; font-weight:700; padding:8px 16px; border-radius:8px; cursor:pointer; font-family:var(--sans); }
   .set-reset { border:1.5px solid var(--wg300); background:var(--card); color:var(--wg600); }
   .set-reset:hover { background:var(--wg100); }
+  .set-cancel { border:1.5px solid var(--wg300); background:var(--card); color:var(--wg600); }
+  .set-cancel:hover { background:var(--wg100); }
   .set-save { border:none; background:var(--rust); color:#fff; }
   .set-save:hover { opacity:.88; }
   #set-status { font-size:11px; color:var(--rust); min-height:16px; margin-top:8px; }
@@ -327,7 +329,7 @@
 </div>
 
 <!-- Fetch settings -->
-<div id="settings-overlay" class="overlay hidden" onclick="if(event.target===this)closeSettings()">
+<div id="settings-overlay" class="overlay hidden">
   <div class="modal" role="dialog" aria-modal="true" onclick="event.stopPropagation()" style="max-width:620px">
     <div class="modal-head">
       <div>
@@ -354,7 +356,10 @@
       <div id="set-status"></div>
       <div class="set-actions">
         <button class="set-reset" onclick="settingsReset()">Reset to defaults</button>
-        <button class="set-save" onclick="settingsSave()">Save</button>
+        <div style="display:flex;gap:10px">
+          <button class="set-cancel" onclick="closeSettings()">Cancel</button>
+          <button class="set-save" onclick="settingsSave()">Save</button>
+        </div>
       </div>
     </div>
   </div>
