@@ -151,6 +151,12 @@
   .hdr-gear { background:rgba(255,255,255,.14); border:none; color:var(--cream); cursor:pointer; font-size:15px; width:34px; height:34px; border-radius:8px; display:flex; align-items:center; justify-content:center; }
   .hdr-gear:hover { background:rgba(255,255,255,.26); }
   .set-label { font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--wg500); display:block; margin:2px 0 8px; }
+  .set-head { display:flex; gap:6px; align-items:center; margin-bottom:5px; padding:0 1px; }
+  .set-head span { font-size:9px; font-weight:700; letter-spacing:.8px; text-transform:uppercase; color:var(--wg400); }
+  .set-head .sh-src { flex:0 0 108px; }
+  .set-head .sh-q { flex:1; }
+  .set-head .sh-l { flex:0 0 50px; }
+  .set-head .sh-actions { flex:0 0 96px; }
   .set-step { display:flex; gap:6px; align-items:center; margin-bottom:6px; }
   .set-step select { flex:0 0 108px; }
   .set-step .sq { flex:1; min-width:0; }
@@ -332,6 +338,7 @@
     </div>
     <div class="modal-body">
       <span class="set-label">Fetch steps &mdash; run top to bottom, stop at max</span>
+      <div class="set-head"><span class="sh-src">Source</span><span class="sh-q">Query</span><span class="sh-l">Limit</span><span class="sh-actions"></span></div>
       <div id="set-steps"></div>
       <button class="set-add" onclick="settingsAddStep()">+ Add step</button>
       <div class="set-grid">
