@@ -6,6 +6,7 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy("src/CNAME");
   eleventyConfig.addPassthroughCopy("src/.nojekyll");
   eleventyConfig.addPassthroughCopy("src/vibes-engine");
+  eleventyConfig.addPassthroughCopy("src/DestImages");
 
   // Admin is copied verbatim (Sveltia CMS) — keep it out of template processing.
   eleventyConfig.ignores.add("src/admin/**");
@@ -13,6 +14,10 @@ module.exports = function (eleventyConfig) {
   // Vibes Engine is an internal tool — copy it verbatim, but keep it out of
   // collections/sitemap so it isn't advertised to search/AI crawlers.
   eleventyConfig.ignores.add("src/vibes-engine/**");
+
+  // Destination Images admin tool — same treatment as Vibes Engine: copied
+  // verbatim, kept out of collections/sitemap.
+  eleventyConfig.ignores.add("src/DestImages/**");
 
   // Markdown filter — renders doc strings to HTML for the (internal) TechDocs page.
   const md = require("markdown-it")({ html: true, linkify: true, breaks: false });

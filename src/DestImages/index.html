@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex,nofollow" />
+<title>Destination Images · Internal — WhereTo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Nunito+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --cream:#F0EBE0; --card:#FDFAF6; --navy:#1C3649; --navy-lt:#2A4D65; --rust:#B85C38;
+    --wg100:#F5F0E8; --wg200:#E4DDD3; --wg300:#D4CCC2; --wg400:#B8B0A6; --wg500:#9E9690; --wg600:#5C5449;
+    --serif:'DM Serif Display',Georgia,serif; --sans:'Nunito Sans',system-ui,sans-serif;
+    --r-lg:20px; --r-md:12px; --r-sm:8px;
+    --sh-sm:0 2px 10px rgba(28,54,73,.07); --sh-md:0 8px 28px rgba(28,54,73,.11); --sh-lg:0 24px 60px rgba(28,54,73,.18);
+  }
+  *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--cream); color:var(--navy); font-family:var(--sans); font-size:15px; line-height:1.6; min-height:100vh; }
+
+  .hdr { position:sticky; top:0; z-index:100; background:var(--navy); height:56px; padding:0 24px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 2px 20px rgba(0,0,0,.22); }
+  .hdr-brand { display:flex; align-items:baseline; gap:10px; }
+  .hdr-logo { font-family:var(--serif); font-size:22px; color:var(--cream); letter-spacing:-.3px; }
+  .hdr-sub { font-family:var(--serif); font-style:italic; font-size:17px; color:var(--rust); }
+  .hdr-badge { font-size:10px; font-weight:600; letter-spacing:1.8px; text-transform:uppercase; color:var(--rust); border:1.5px solid var(--rust); padding:3px 9px; border-radius:4px; }
+
+  .sr-bar { background:var(--card); border-bottom:1px solid var(--wg200); padding:0 24px; display:flex; align-items:center; gap:14px; height:52px; flex-wrap:wrap; }
+  .sr-label { font-size:10px; font-weight:600; letter-spacing:1.6px; text-transform:uppercase; color:var(--wg500); white-space:nowrap; }
+  .sr-select { font-family:var(--sans); font-size:13px; font-weight:600; color:var(--navy); background:var(--wg100); border:1.5px solid var(--wg300); border-radius:var(--r-sm); padding:6px 32px 6px 12px; cursor:pointer; outline:none; appearance:none; -webkit-appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235C5449' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 10px center; transition:border-color .15s,box-shadow .15s; min-width:180px; }
+  .sr-select:hover { border-color:var(--wg400); }
+  .sr-select:focus { border-color:var(--rust); box-shadow:0 0 0 3px rgba(184,92,56,.12); }
+  .sr-arrow { color:var(--wg400); font-size:16px; line-height:1; }
+
+  .breadcrumb { background:var(--wg100); border-bottom:1px solid var(--wg200); padding:10px 24px; display:flex; align-items:center; gap:7px; font-size:11px; font-weight:600; letter-spacing:1.4px; text-transform:uppercase; color:var(--wg500); }
+  .breadcrumb span { color:var(--navy); }
+  .breadcrumb .sep { color:var(--wg400); font-weight:300; }
+  .breadcrumb .aside { margin-left:auto; text-transform:none; letter-spacing:0; font-weight:400; font-size:12px; color:var(--wg600); }
+  .breadcrumb .aside b { color:var(--rust); font-weight:600; }
+
+  main { max-width:1200px; margin:0 auto; padding:32px 24px 90px; }
+  .section-hdr-row { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom:22px; }
+  .section-hdr-row > div { flex:1; min-width:0; }
+  .section-title { font-family:var(--serif); font-size:30px; margin-bottom:6px; }
+  .section-sub { font-size:13px; color:var(--wg600); font-weight:300; }
+  #boot-error { display:none; background:#f8d7da; color:#721c24; padding:14px 18px; border-radius:var(--r-sm); font-size:13px; margin-bottom:20px; }
+  .hidden { display:none !important; }
+
+  /* Destination cards */
+  .dgrid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+  @media(max-width:900px){ .dgrid { grid-template-columns:repeat(3,1fr); } }
+  @media(max-width:600px){ .dgrid { grid-template-columns:repeat(2,1fr); } }
+  .dcard { background:var(--card); border:1.5px solid var(--wg200); border-radius:var(--r-md); overflow:hidden; cursor:pointer; transition:border-color .18s,box-shadow .18s,transform .18s; }
+  .dcard:hover { border-color:var(--rust); box-shadow:var(--sh-md); transform:translateY(-2px); }
+  .dcard-thumb { position:relative; height:150px; background-color:var(--wg200); background-size:cover; background-position:center; display:flex; align-items:center; justify-content:center; }
+  .dcard-thumb.empty { background:var(--wg100); border-bottom:1px dashed var(--wg300); }
+  .dcard-none { font-size:10px; font-weight:700; letter-spacing:1.4px; text-transform:uppercase; color:var(--wg400); }
+  .dcard-count { position:absolute; top:8px; right:8px; background:rgba(28,54,73,.82); color:#fff; font-size:10px; font-weight:700; padding:3px 8px; border-radius:10px; }
+  .dcard-body { padding:12px 14px; }
+  .dcard-city { font-family:var(--serif); font-size:16px; color:var(--navy); line-height:1.2; }
+  .dcard-sub { font-size:11px; color:var(--wg500); margin-top:3px; }
+
+  .curate-btn { font-size:12px; font-family:var(--sans); font-weight:700; padding:9px 18px; border-radius:8px; border:none; background:var(--rust); color:#fff; cursor:pointer; transition:opacity .12s; white-space:nowrap; flex-shrink:0; align-self:flex-start; }
+  .curate-btn:hover:not(:disabled) { opacity:.82; }
+  .curate-btn:disabled, .curate-btn.busy { opacity:.45; cursor:wait; }
+
+  /* Back + detail header */
+  .back { display:inline-flex; align-items:center; gap:8px; background:none; border:none; cursor:pointer; font-family:var(--sans); font-size:11px; font-weight:600; letter-spacing:1.4px; text-transform:uppercase; color:var(--rust); padding:0; margin-bottom:24px; transition:opacity .15s; }
+  .back:hover { opacity:.65; }
+  .back svg { width:14px; height:14px; }
+  .det-hdr { display:flex; align-items:flex-start; gap:20px; margin-bottom:20px; padding-bottom:22px; border-bottom:1px solid var(--wg200); }
+  .det-info { flex:1; }
+  .det-region { font-size:10px; font-weight:600; letter-spacing:1.8px; text-transform:uppercase; color:var(--rust); margin-bottom:6px; }
+  .det-label { font-family:var(--serif); font-size:34px; line-height:1.2; margin-bottom:6px; }
+  .det-meta { font-size:13px; color:var(--wg600); }
+  .det-hero-note { font-size:11px; color:var(--wg500); margin-top:16px; }
+  .det-hero-note b { color:var(--rust); font-weight:700; }
+
+  .admin-bar { display:flex; align-items:center; gap:10px; padding:2px 0 18px; }
+  .admin-bar-label { font-size:10px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; color:var(--rust); }
+  .admin-bar button { font-size:11px; font-family:var(--sans); font-weight:600; padding:5px 12px; border-radius:6px; border:1.5px solid var(--wg200); background:var(--card); color:var(--navy); cursor:pointer; transition:background .12s; }
+  .admin-bar button:hover { background:var(--wg100); }
+
+  /* Gallery */
+  .gallery { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:28px; }
+  @media(max-width:900px){ .gallery { grid-template-columns:repeat(3,1fr); } }
+  @media(max-width:600px){ .gallery { grid-template-columns:repeat(2,1fr); } }
+  .img-thumb { position:relative; width:100%; height:175px; border-radius:var(--r-md); overflow:hidden; cursor:zoom-in; box-shadow:var(--sh-sm); transition:transform .16s,box-shadow .16s; }
+  .img-thumb:hover { transform:scale(1.025); box-shadow:var(--sh-md); }
+  .img-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+  .img-hero-badge { position:absolute; top:8px; left:8px; background:var(--navy); color:var(--cream); font-size:9px; font-weight:700; letter-spacing:1.3px; text-transform:uppercase; padding:3px 8px; border-radius:10px; pointer-events:none; }
+  .img-source-stamp { position:absolute; bottom:8px; left:8px; background:var(--rust); color:#fff; font-size:9px; font-weight:700; letter-spacing:1.3px; text-transform:uppercase; padding:3px 8px; border-radius:10px; pointer-events:none; white-space:nowrap; }
+  .img-details-btn { position:absolute; bottom:8px; right:8px; background:rgba(28,54,73,.70); backdrop-filter:blur(3px); color:var(--cream); font-size:9px; font-weight:600; letter-spacing:.7px; padding:4px 9px; border-radius:6px; border:none; cursor:pointer; font-family:var(--sans); transition:background .14s; }
+  .img-details-btn:hover { background:rgba(28,54,73,.92); }
+  .img-trash-btn { position:absolute; top:7px; right:7px; width:28px; height:28px; border-radius:50%; background:rgba(180,30,30,.82); backdrop-filter:blur(3px); border:none; cursor:pointer; color:#fff; font-size:14px; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .14s; z-index:10; }
+  .img-thumb:hover .img-trash-btn { opacity:1; }
+  .img-thumb.drag-over { outline:2.5px dashed var(--rust); outline-offset:-3px; }
+  .img-thumb.dragging { opacity:.4; }
+  .img-thumb.admin-draggable { cursor:grab; }
+  .img-thumb.admin-draggable:active { cursor:grabbing; }
+  .img-add-card { display:flex; flex-direction:column; align-items:center; justify-content:center; height:175px; border-radius:var(--r-md); border:2px dashed var(--wg300); background:var(--wg100); cursor:pointer; transition:border-color .14s,background .14s; color:var(--wg400); gap:6px; }
+  .img-add-card:hover { border-color:var(--rust); background:#fdf8f6; color:var(--rust); }
+  .img-add-icon { font-size:28px; font-weight:300; line-height:1; }
+  .img-add-label { font-size:10px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; }
+  .gallery-empty { font-size:13px; color:var(--wg500); font-style:italic; padding:8px 0 20px; }
+
+  /* Modals */
+  .overlay { position:fixed; inset:0; z-index:300; background:rgba(28,54,73,.55); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; padding:20px; animation:fadeIn .18s ease; }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+  .modal { background:var(--card); border-radius:var(--r-lg); max-width:480px; width:100%; max-height:82vh; overflow-y:auto; box-shadow:var(--sh-lg); }
+  .modal-head { position:sticky; top:0; background:var(--navy); padding:18px 22px; border-radius:var(--r-lg) var(--r-lg) 0 0; display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+  .modal-title { font-family:var(--serif); font-size:18px; color:var(--cream); line-height:1.2; }
+  .modal-sub { font-size:12px; color:var(--wg400); margin-top:4px; font-weight:300; }
+  .modal-close { background:rgba(255,255,255,.12); border:none; cursor:pointer; color:var(--cream); font-size:20px; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:background .14s; }
+  .modal-close:hover { background:rgba(255,255,255,.22); }
+  .modal-body { padding:20px 22px 24px; }
+  .img-meta-row { display:flex; align-items:flex-start; gap:16px; padding:11px 0; border-bottom:1px solid var(--wg200); }
+  .img-meta-row:last-child { border-bottom:none; }
+  .img-meta-key { min-width:90px; font-size:10px; font-weight:600; letter-spacing:1.1px; text-transform:uppercase; color:var(--wg500); padding-top:1px; flex-shrink:0; }
+  .img-meta-val { font-size:13px; color:var(--navy); line-height:1.5; word-break:break-all; }
+  .img-meta-val a { color:var(--rust); text-decoration:underline; text-underline-offset:2px; }
+  .add-img-field { display:flex; flex-direction:column; gap:4px; margin-bottom:14px; }
+  .add-img-field label { font-size:10px; font-weight:700; letter-spacing:1.1px; text-transform:uppercase; color:var(--wg500); }
+  .add-img-field input, .add-img-field select { padding:8px 10px; border:1.5px solid var(--wg200); border-radius:6px; font-family:var(--sans); font-size:13px; color:var(--navy); background:var(--cream); }
+  .add-img-field input:focus { outline:none; border-color:var(--rust); }
+  .add-img-submit { width:100%; padding:10px; background:var(--rust); color:#fff; border:none; border-radius:8px; font-family:var(--sans); font-size:13px; font-weight:700; cursor:pointer; margin-top:4px; transition:opacity .14s; }
+  .add-img-submit:hover { opacity:.88; }
+
+  /* Lightbox */
+  #lightbox { position:fixed; inset:0; z-index:400; background:rgba(0,0,0,.90); display:flex; align-items:center; justify-content:center; padding:20px; animation:fadeIn .15s ease; cursor:zoom-out; }
+  #lightbox img { max-width:90vw; max-height:88vh; object-fit:contain; border-radius:var(--r-md); box-shadow:0 32px 80px rgba(0,0,0,.6); pointer-events:none; }
+  .lb-close { position:absolute; top:14px; right:14px; background:rgba(255,255,255,.12); border:none; cursor:pointer; color:#fff; font-size:22px; width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+
+  /* Curate progress */
+  #curate-overlay { position:fixed; inset:0; z-index:400; background:rgba(28,54,73,.6); display:flex; align-items:center; justify-content:center; }
+  .curate-modal { background:var(--cream); border-radius:14px; padding:28px 32px; width:520px; max-width:95vw; box-shadow:0 8px 40px rgba(0,0,0,.22); display:flex; flex-direction:column; gap:14px; max-height:88vh; overflow:hidden; }
+  .curate-modal-title { font-family:var(--serif); font-size:20px; color:var(--navy); line-height:1.25; }
+  .curate-bar-wrap { width:100%; height:8px; background:var(--wg100); border-radius:4px; overflow:hidden; flex-shrink:0; }
+  .curate-bar { height:100%; width:0%; background:var(--rust); border-radius:4px; transition:width .35s; }
+  .curate-log { flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:3px; min-height:80px; }
+  .curate-log-row { display:flex; justify-content:space-between; align-items:center; padding:4px 10px; border-radius:4px; font-size:12px; gap:8px; }
+  .curate-log-good { background:#d4edda; color:#155724; }
+  .curate-log-warn { background:#fff3cd; color:#856404; }
+  .curate-log-bad { background:#f8d7da; color:#721c24; }
+  .curate-log-label { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .curate-log-count { font-weight:700; flex-shrink:0; }
+  .curate-status { font-size:11px; color:var(--wg500); flex-shrink:0; }
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-brand">
+    <span class="hdr-logo">WhereTo</span>
+    <span class="hdr-sub">&middot; Destination Images</span>
+  </div>
+  <span class="hdr-badge">Internal</span>
+</header>
+
+<div class="sr-bar">
+  <span class="sr-label">Region</span>
+  <select class="sr-select" id="region-select" onchange="onRegionChange()"></select>
+  <span class="sr-arrow">&rsaquo;</span>
+  <select class="sr-select" id="subregion-select" onchange="onSubRegionChange()"></select>
+</div>
+
+<div class="breadcrumb">
+  <span id="bc-region"></span>
+  <span class="sep">&rsaquo;</span>
+  <span id="bc-subregion"></span>
+  <span class="aside" id="bc-aside"></span>
+</div>
+
+<main>
+  <div id="boot-error"></div>
+
+  <!-- Grid view -->
+  <div id="grid-view">
+    <div class="section-hdr-row">
+      <div>
+        <h1 class="section-title" id="grid-title">Loading…</h1>
+        <p class="section-sub" id="grid-sub">Fetching destinations from Supabase.</p>
+      </div>
+      <button class="curate-btn" id="curate-all-btn" onclick="runCurateSub()">&#x26A1; Fetch images for empty destinations</button>
+    </div>
+    <div class="dgrid" id="dest-grid"></div>
+  </div>
+
+  <!-- Detail view -->
+  <div id="detail-view" class="hidden">
+    <button class="back" onclick="showGrid()">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3L5 8l5 5"/></svg>
+      All destinations
+    </button>
+    <div class="det-hdr">
+      <div class="det-info">
+        <div class="det-region" id="det-region"></div>
+        <div class="det-label" id="det-label"></div>
+        <div class="det-meta" id="det-meta"></div>
+        <div class="det-hero-note">Image <b>#1</b> is the hero shown in the app. Drag to reorder; the new #1 updates the app automatically.</div>
+      </div>
+      <button class="curate-btn" id="curate-dest-btn" onclick="runCurateDest()">&#x26A1; Fetch 1–5 images</button>
+    </div>
+    <div class="admin-bar">
+      <span class="admin-bar-label">&#x270E; Admin</span>
+      <button id="export-btn" onclick="exportEdits()">Copy JSON</button>
+      <button onclick="resetEdits()">Clear gallery</button>
+    </div>
+    <div class="gallery" id="gallery"></div>
+  </div>
+
+  <!-- Curate progress -->
+  <div id="curate-overlay" class="hidden">
+    <div class="curate-modal">
+      <div class="curate-modal-title" id="curate-modal-title">Fetching images</div>
+      <div class="curate-bar-wrap"><div class="curate-bar" id="curate-progress-bar"></div></div>
+      <div class="curate-log" id="curate-progress-log"></div>
+      <div class="curate-status" id="curate-progress-status">Starting…</div>
+    </div>
+  </div>
+</main>
+
+<!-- Lightbox -->
+<div id="lightbox" class="hidden" onclick="closeLightbox()">
+  <button class="lb-close" onclick="closeLightbox()" aria-label="Close">&times;</button>
+  <img id="lb-img" src="" alt="" />
+</div>
+
+<!-- Image details -->
+<div id="img-details-overlay" class="overlay hidden" onclick="if(event.target===this)closeImageDetails()">
+  <div class="modal" role="dialog" aria-modal="true" onclick="event.stopPropagation()">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title">Image Details</div>
+        <div class="modal-sub" id="img-details-source-sub"></div>
+      </div>
+      <button class="modal-close" onclick="closeImageDetails()" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div style="margin-bottom:16px;border-radius:var(--r-sm);overflow:hidden;max-height:180px">
+        <img id="img-details-thumb" src="" alt="" style="width:100%;height:180px;object-fit:cover;display:block" />
+      </div>
+      <div id="img-details-body"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Add image -->
+<div id="add-img-overlay" class="overlay hidden" onclick="if(event.target===this)closeAddImageModal()">
+  <div class="modal" role="dialog" aria-modal="true" onclick="event.stopPropagation()">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title">Add Image</div>
+        <div class="modal-sub">Paste a source page URL &mdash; metadata auto-fills</div>
+      </div>
+      <button class="modal-close" onclick="closeAddImageModal()" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <img id="add-img-preview" src="" alt="" style="width:100%;height:140px;object-fit:cover;border-radius:var(--r-sm);margin-bottom:16px;display:none" />
+      <div class="add-img-field">
+        <label>Source</label>
+        <select id="add-img-source" onchange="onSourceChange()">
+          <option value="openverse">Openverse</option>
+          <option value="pexels">Pexels</option>
+          <option value="pixabay">Pixabay</option>
+          <option value="wikipedia">Wikimedia Commons</option>
+          <option value="manual">Manual</option>
+        </select>
+      </div>
+      <div class="add-img-field" id="add-img-page-row">
+        <label>Image page URL</label>
+        <input type="url" id="add-img-page" placeholder="https://openverse.org/image/..." oninput="onPageUrlInput()" />
+        <div id="add-img-status" style="font-size:11px;color:var(--wg500);margin-top:4px;min-height:16px"></div>
+      </div>
+      <div class="add-img-field">
+        <label id="add-img-url-label">CDN image URL <span style="font-weight:400;text-transform:none">(auto-filled)</span></label>
+        <input type="url" id="add-img-url" placeholder="https://..." oninput="onDirectUrlInput()" />
+      </div>
+      <div class="add-img-field">
+        <label>Thumbnail URL <span style="font-weight:400;text-transform:none">(auto-filled)</span></label>
+        <input type="url" id="add-img-thumb" placeholder="https://..." />
+      </div>
+      <div class="add-img-field">
+        <label>Description / Alt text <span style="font-weight:400;text-transform:none">(auto-filled)</span></label>
+        <input type="text" id="add-img-alt" placeholder="Brief description of the image" />
+      </div>
+      <button class="add-img-submit" onclick="submitAddImage()">Add to Gallery</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── Build-time config ───────────────────────────────────────────────────── */
+const REGION_LABELS    = {"NA":"North America","EU":"Europe","AS":"Asia","SA":"South America","AF":"Africa","OC":"Oceania"};
+const REGION_ORDER     = ["NA","EU","AS","SA","AF","OC"];
+const SUBREGION_LABELS = {"north_america":"USA & Canada","mexico":"Mexico","caribbean":"Caribbean","central_america":"Central America","western_europe":"Western Europe","british_isles":"British Isles","mediterranean":"Mediterranean","eastern_europe":"Eastern Europe","nordic":"Nordic / Scandinavia","east_asia":"East Asia","southeast_asia":"Southeast Asia","south_asia":"South Asia","middle_east":"Middle East","central_asia":"Central Asia","brazil":"Brazil","andean":"Andean Countries","southern_cone":"Southern Cone","northern_sa":"Northern South America","north_africa":"North Africa","west_africa":"West Africa","east_africa":"East Africa","southern_africa":"Southern Africa","australia_nz":"Australia & New Zealand","pacific_islands":"Pacific Islands"};
+const _PEXELS_KEY  = '9VMHqzRbrRnjz9YFpmajdAThHvG69qsGxH3GSDrXuPQnEpbmMqhIW6TH';
+const _PIXABAY_KEY = '22813997-3cd8c57975999ca7b9b897b14';
+const _SUPA_URL    = 'https://pvqwxphrmcvmztlkzhsg.supabase.co';
+const _SUPA_ANON   = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2cXd4cGhybWN2bXp0bGt6aHNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzIxMjIsImV4cCI6MjA5NTMwODEyMn0.uz1WFZqymop5mhIUx6bxW8qofMQuGo-ltyRA8f0P1lk';
+const _OV_ID       = 'hRpg360HAjxAcvlvDJkdzUTQR8mzYkeDOsRGU2SZ';
+const _OV_SEC      = 'UBKgXjU8tDxOlPoGtayZ37EGf3cQVE94yhV3X96BSt84ZpFuzTcgTGTpgS0VwsimOZca2mqD11Jkzj6VoAyfrxR66acxfQnBSDA2WLUH27AAY6jM8ch39ZzIakFjOwmn';
+
+const ADMIN_MODE = true;
+const EDITS_KEY  = 'dest_img_edits';
+const _H = { apikey:_SUPA_ANON, Authorization:'Bearer '+_SUPA_ANON };
+
+/* ── Fetch caps (1–5, vs the vibe engine's 3–12) ─────────────────────────── */
+var _SEED_MIN = 1;
+var _SEED_MAX = 5;
+var _SEED_DELAY_MS = 380;
+
+var DATA = {}, DEST_BY_ID = {}, currentRegion = null, currentSub = null, currentDest = null;
+
+/* ── Helpers ─────────────────────────────────────────────────────────────── */
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function _regionLabel(rc){ return REGION_LABELS[rc]||rc; }
+function _subLabel(sc){ return SUBREGION_LABELS[sc]||sc; }
+function _loadEdits(){ try { return JSON.parse(localStorage.getItem(EDITS_KEY)||'{}'); } catch(e) { return {}; } }
+function _destById(id){ return DEST_BY_ID[id]||null; }
+
+// Seed the gallery from the destination's current single hero (image_url) so the
+// existing app hero shows up as image #1 even before any curation.
+function _seedHero(d){
+  if(!d.image_url) return [];
+  var u=d.image_url, src = u.indexOf('wikimedia')>-1?'wikipedia' : u.indexOf('pexels')>-1?'pexels' : u.indexOf('pixabay')>-1?'pixabay' : u.indexOf('openverse')>-1?'openverse' : 'manual';
+  return [{ url:u, thumb:u, alt:d.city, source:src, attribution:d.image_attribution||'', _seed:true }];
+}
+
+/* ── Load data (live from Supabase) ──────────────────────────────────────── */
+async function _loadData(){
+  if(!_SUPA_URL||!_SUPA_ANON){ _bootError('Supabase not configured in the build (.env keys missing).'); return; }
+  try {
+    var dr = await fetch(_SUPA_URL+'/rest/v1/destinations?select=id,city,country,iata,region,subregion,image_url,image_attribution&is_active=eq.true&order=city.asc',{headers:_H});
+    if(!dr.ok) throw new Error('destinations HTTP '+dr.status);
+    var dests = await dr.json();
+    var er = await fetch(_SUPA_URL+'/rest/v1/destination_image_edits?select=dest_id,images',{headers:_H});
+    var edits = er.ok ? await er.json() : [];
+    var em = {}; edits.forEach(function(r){ em[r.dest_id]=r.images; });
+    var local = _loadEdits();
+
+    DATA = {}; DEST_BY_ID = {};
+    dests.forEach(function(d){
+      var imgs;
+      if(local[d.id]!==undefined) imgs = local[d.id];
+      else if(em[d.id]!==undefined) imgs = em[d.id];
+      else imgs = _seedHero(d);
+      d.images = imgs;
+      DEST_BY_ID[d.id] = d;
+      var rc=d.region||'??', sc=d.subregion||'??';
+      if(!DATA[rc]) DATA[rc]={subs:{}};
+      if(!DATA[rc].subs[sc]) DATA[rc].subs[sc]={dests:[]};
+      DATA[rc].subs[sc].dests.push(d);
+    });
+
+    // Converge localStorage with server edits so both editors share state.
+    var merged=_loadEdits();
+    edits.forEach(function(r){ if(merged[r.dest_id]===undefined) merged[r.dest_id]=r.images; });
+    localStorage.setItem(EDITS_KEY,JSON.stringify(merged));
+
+    renderSelector();
+    var p=new URLSearchParams(location.search), ir=p.get('r'), is=p.get('s'), id=p.get('d');
+    if(ir&&DATA[ir]){ selectRegion(ir); if(is&&DATA[ir].subs[is]) selectSub(ir,is); }
+    else { var first=_regionsPresent()[0]; if(first){ selectRegion(first); } }
+    if(id&&DEST_BY_ID[id]) showDetail(id);
+  } catch(e){ _bootError('Failed to load: '+e.message); console.error(e); }
+}
+function _bootError(msg){ var el=document.getElementById('boot-error'); el.style.display='block'; el.textContent=msg; document.getElementById('grid-title').textContent='Could not load'; document.getElementById('grid-sub').textContent=''; }
+
+/* ── Selector ────────────────────────────────────────────────────────────── */
+function _regionsPresent(){ return REGION_ORDER.filter(function(rc){ return DATA[rc]; }); }
+function _subsPresent(rc){ var subs=Object.keys((DATA[rc]&&DATA[rc].subs)||{}); subs.sort(function(a,b){ return _subLabel(a).localeCompare(_subLabel(b)); }); return subs; }
+
+function renderSelector(){
+  var rSel=document.getElementById('region-select');
+  rSel.innerHTML=_regionsPresent().map(function(rc){ return '<option value="'+esc(rc)+'">'+esc(_regionLabel(rc))+'</option>'; }).join('');
+}
+function populateSubRegions(rc){
+  var sSel=document.getElementById('subregion-select');
+  sSel.innerHTML=_subsPresent(rc).map(function(sc){ var n=DATA[rc].subs[sc].dests.length; return '<option value="'+esc(sc)+'">'+esc(_subLabel(sc))+' ('+n+')</option>'; }).join('');
+}
+function onRegionChange(){ var rc=document.getElementById('region-select').value; selectRegion(rc); }
+function onSubRegionChange(){ selectSub(currentRegion, document.getElementById('subregion-select').value); }
+
+function selectRegion(rc){
+  currentRegion=rc;
+  document.getElementById('region-select').value=rc;
+  populateSubRegions(rc);
+  var first=_subsPresent(rc)[0];
+  if(first) selectSub(rc, first);
+}
+function selectSub(rc, sc){
+  currentRegion=rc; currentSub=sc;
+  document.getElementById('region-select').value=rc;
+  populateSubRegions(rc);
+  document.getElementById('subregion-select').value=sc;
+  document.getElementById('bc-region').textContent=_regionLabel(rc).toUpperCase();
+  document.getElementById('bc-subregion').textContent=_subLabel(sc).toUpperCase();
+  var dests=(DATA[rc].subs[sc].dests)||[];
+  var withImgs=dests.filter(function(d){ return getEditedImages(d.id).length>0; }).length;
+  document.getElementById('bc-aside').innerHTML='<b>'+dests.length+' destinations</b> &nbsp;&middot;&nbsp; <b>'+withImgs+'</b> with images';
+  showGrid();
+}
+
+/* ── Grid ────────────────────────────────────────────────────────────────── */
+function showGrid(){
+  if(!currentRegion||!currentSub) return;
+  var dests=(DATA[currentRegion].subs[currentSub].dests)||[];
+  document.getElementById('grid-title').textContent=_subLabel(currentSub)+' Destinations';
+  document.getElementById('grid-sub').textContent='Click a destination to manage its images. The thumbnail is the current hero (image #1).';
+  document.getElementById('dest-grid').innerHTML=dests.map(function(d){
+    var imgs=getEditedImages(d.id), n=imgs.length;
+    var hero=n?(imgs[0].thumb||imgs[0].url):(d.image_url||'');
+    var thumbStyle=hero?' style="background-image:url(\''+esc(hero)+'\')"':'';
+    var thumbCls='dcard-thumb'+(hero?'':' empty');
+    var inner=hero?'':'<span class="dcard-none">No image</span>';
+    return '<div class="dcard" onclick="showDetail(\''+esc(d.id)+'\')" title="'+esc(d.city)+'">'
+      +'<div class="'+thumbCls+'"'+thumbStyle+'>'+inner+'<span class="dcard-count">'+n+' img</span></div>'
+      +'<div class="dcard-body"><div class="dcard-city">'+esc(d.city)+'</div>'
+      +'<div class="dcard-sub">'+esc(d.country)+(d.iata?' &middot; '+esc(d.iata):'')+'</div></div></div>';
+  }).join('');
+  document.getElementById('grid-view').classList.remove('hidden');
+  document.getElementById('detail-view').classList.add('hidden');
+  window.scrollTo({top:0,behavior:'instant'});
+  var params=new URLSearchParams(location.search); params.set('r',currentRegion); params.set('s',currentSub); params.delete('d');
+  history.replaceState({r:currentRegion,s:currentSub},'','?'+params.toString());
+}
+
+/* ── Detail ──────────────────────────────────────────────────────────────── */
+function showDetail(destId){
+  var d=_destById(destId); if(!d) return;
+  currentDest=d;
+  currentRegion=d.region; currentSub=d.subregion;
+  document.getElementById('det-region').textContent=_regionLabel(d.region).toUpperCase()+' \u203A '+_subLabel(d.subregion).toUpperCase();
+  document.getElementById('det-label').textContent=d.city;
+  document.getElementById('det-meta').textContent=d.country+(d.iata?'  \u00B7  '+d.iata:'');
+  renderGallery(getEditedImages(destId));
+  document.getElementById('grid-view').classList.add('hidden');
+  document.getElementById('detail-view').classList.remove('hidden');
+  window.scrollTo({top:0,behavior:'instant'});
+  var params=new URLSearchParams(location.search); params.set('r',d.region); params.set('s',d.subregion); params.set('d',destId);
+  history.pushState({r:d.region,s:d.subregion,d:destId},'','?'+params.toString());
+}
+
+/* ── Gallery ─────────────────────────────────────────────────────────────── */
+var _galleryImages = [];
+var _SRC_LABELS = { pexels:'Pexels', wikipedia:'Wikipedia', openverse:'Openverse', pixabay:'Pixabay', manual:'Manual' };
+
+function getEditedImages(destId){
+  var all=_loadEdits();
+  if(all[destId]!==undefined) return all[destId];
+  var d=_destById(destId);
+  return (d&&d.images)?d.images:[];
+}
+
+function renderGallery(images){
+  var el=document.getElementById('gallery');
+  _galleryImages=images||[];
+  if(!_galleryImages.length){
+    el.innerHTML='<div class="gallery-empty">No images yet. Use “Fetch 1–5 images” or “Add Image”.</div>'
+      +'<div class="img-add-card" onclick="openAddImageModal()"><div class="img-add-icon">+</div><div class="img-add-label">Add Image</div></div>';
+    return;
+  }
+  var html=_galleryImages.map(function(img,i){
+    var thumb=esc(img.thumb||img.url||''), alt=esc(img.alt||'');
+    var label=_SRC_LABELS[img.source]||esc(img.source||'Photo');
+    var hero=i===0?'<span class="img-hero-badge">Hero</span>':'';
+    var trash='<button class="img-trash-btn" onclick="event.stopPropagation();deleteImage('+i+')" title="Remove">&#128465;</button>';
+    var drag=' draggable="true" ondragstart="onDragStart(event,'+i+')" ondragend="onDragEnd(event)" ondragover="onDragOver(event,'+i+')" ondrop="onDrop(event,'+i+')"';
+    return '<div class="img-thumb admin-draggable"'+drag+' onclick="openLightbox('+i+')" title="'+alt+'">'
+      +'<img src="'+thumb+'" alt="'+alt+'" loading="lazy" onerror="this.parentElement.style.opacity=0.35" />'
+      +hero+'<span class="img-source-stamp">'+label+'</span>'+trash
+      +'<button class="img-details-btn" onclick="event.stopPropagation();openImageDetails('+i+')">Details</button></div>';
+  }).join('');
+  html+='<div class="img-add-card" onclick="openAddImageModal()"><div class="img-add-icon">+</div><div class="img-add-label">Add Image</div></div>';
+  el.innerHTML=html;
+}
+
+/* ── Persist (localStorage + Supabase + hero write-back) ─────────────────── */
+async function _supaSave(destId, images){
+  if(!_SUPA_URL||!_SUPA_ANON||!destId) return;
+  try {
+    await fetch(_SUPA_URL+'/rest/v1/destination_image_edits?on_conflict=dest_id',{method:'POST',headers:{apikey:_SUPA_ANON,Authorization:'Bearer '+_SUPA_ANON,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates'},body:JSON.stringify({dest_id:destId,images:images})});
+  } catch(e){ console.warn('[supaSave] failed:',e); }
+}
+function _heroAttribution(img){
+  if(!img) return null;
+  var src=_SRC_LABELS[img.source]||img.source||'';
+  var who=img.photographer||img.creator||img.uploader||'';
+  var lic=(img.source!=='pexels'&&img.source!=='pixabay'&&img.license)?(' ('+String(img.license).toUpperCase()+')'):'';
+  var s=src; if(who) s+=' — '+who; s+=lic;
+  return s||src||null;
+}
+async function _supaSyncHero(destId, images){
+  if(!_SUPA_URL||!_SUPA_ANON||!destId) return;
+  var hero=images&&images[0];
+  var body={ image_url:hero?(hero.url||hero.thumb||null):null, image_attribution:hero?_heroAttribution(hero):null };
+  try {
+    await fetch(_SUPA_URL+'/rest/v1/destinations?id=eq.'+encodeURIComponent(destId),{method:'PATCH',headers:{apikey:_SUPA_ANON,Authorization:'Bearer '+_SUPA_ANON,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(body)});
+    var d=_destById(destId); if(d){ d.image_url=body.image_url; d.image_attribution=body.image_attribution; }
+  } catch(e){ console.warn('[hero] sync failed:',e); }
+}
+function _persist(destId, images){
+  var all=_loadEdits(); all[destId]=images; localStorage.setItem(EDITS_KEY,JSON.stringify(all));
+  var d=_destById(destId); if(d) d.images=images;
+  _supaSave(destId,images);
+  _supaSyncHero(destId,images);
+}
+function saveEdits(images){ if(currentDest) _persist(currentDest.id,images); }
+function resetEdits(){
+  if(!currentDest) return;
+  if(!confirm('Clear all images for '+currentDest.city+'? This also clears the app hero.')) return;
+  _persist(currentDest.id,[]); renderGallery([]);
+}
+function exportEdits(){
+  var out={}; out[currentDest.id]={ city:currentDest.city, images:_galleryImages };
+  navigator.clipboard.writeText(JSON.stringify(out,null,2)).then(function(){
+    var b=document.getElementById('export-btn'), o=b.textContent; b.textContent='Copied!'; setTimeout(function(){ b.textContent=o; },1600);
+  });
+}
+function deleteImage(idx){ var imgs=_galleryImages.filter(function(_,i){ return i!==idx; }); saveEdits(imgs); renderGallery(imgs); }
+
+/* drag-reorder (native HTML5) */
+var _dragIdx=null;
+function onDragStart(e,idx){ _dragIdx=idx; e.currentTarget.classList.add('dragging'); e.dataTransfer.effectAllowed='move'; }
+function onDragEnd(e){ e.currentTarget.classList.remove('dragging'); document.querySelectorAll('.drag-over').forEach(function(el){ el.classList.remove('drag-over'); }); _dragIdx=null; }
+function onDragOver(e,idx){ e.preventDefault(); if(_dragIdx===null||_dragIdx===idx) return; document.querySelectorAll('.drag-over').forEach(function(el){ el.classList.remove('drag-over'); }); e.currentTarget.classList.add('drag-over'); }
+function onDrop(e,idx){ e.preventDefault(); if(_dragIdx===null||_dragIdx===idx) return; var imgs=_galleryImages.slice(); var m=imgs.splice(_dragIdx,1)[0]; imgs.splice(idx,0,m); saveEdits(imgs); renderGallery(imgs); }
+
+/* ── Lightbox + details ──────────────────────────────────────────────────── */
+function openLightbox(idx){ var img=_galleryImages[idx]; if(!img) return; var el=document.getElementById('lb-img'); el.src=img.url||img.thumb||''; el.alt=img.alt||''; document.getElementById('lightbox').classList.remove('hidden'); document.body.style.overflow='hidden'; }
+function closeLightbox(){ document.getElementById('lightbox').classList.add('hidden'); document.body.style.overflow=''; }
+function openImageDetails(idx){
+  var img=_galleryImages[idx]; if(!img) return;
+  var srcLabel=_SRC_LABELS[img.source]||esc(img.source||'');
+  document.getElementById('img-details-source-sub').textContent=srcLabel+(idx===0?' · Hero':'');
+  document.getElementById('img-details-thumb').src=img.thumb||img.url||'';
+  var rows=[];
+  if(img.source) rows.push(['Source',srcLabel]);
+  if(img.alt) rows.push(['Description',esc(img.alt)]);
+  if(img.photographer) rows.push(['Photographer', img.photographer_url?'<a href="'+esc(img.photographer_url)+'" target="_blank" rel="noopener">'+esc(img.photographer)+'</a>':esc(img.photographer)]);
+  if(img.creator) rows.push(['Creator', img.creator_url?'<a href="'+esc(img.creator_url)+'" target="_blank" rel="noopener">'+esc(img.creator)+'</a>':esc(img.creator)]);
+  if(img.uploader) rows.push(['Uploaded by', img.uploader_url?'<a href="'+esc(img.uploader_url)+'" target="_blank" rel="noopener">'+esc(img.uploader)+'</a>':esc(img.uploader)]);
+  if(img.title) rows.push(['Subject',esc(img.title)]);
+  if(img.width&&img.height) rows.push(['Dimensions',img.width+' \u00D7 '+img.height]);
+  if(img.license) rows.push(['License', img.license_url?'<a href="'+esc(img.license_url)+'" target="_blank" rel="noopener">'+esc(String(img.license).toUpperCase())+'</a>':esc(String(img.license).toUpperCase())]);
+  if(img.url) rows.push(['Full image','<a href="'+esc(img.url)+'" target="_blank" rel="noopener">Open &#8599;</a>']);
+  if(img.wiki_page) rows.push(['Commons','<a href="'+esc(img.wiki_page)+'" target="_blank" rel="noopener">File page &#8599;</a>']);
+  var srcId=img.pexels_id||img.openverse_id||img.pixabay_id; if(srcId) rows.push(['Source ID',esc(String(srcId))]);
+  document.getElementById('img-details-body').innerHTML=rows.map(function(r){ return '<div class="img-meta-row"><div class="img-meta-key">'+r[0]+'</div><div class="img-meta-val">'+r[1]+'</div></div>'; }).join('');
+  document.getElementById('img-details-overlay').classList.remove('hidden'); document.body.style.overflow='hidden';
+}
+function closeImageDetails(){ document.getElementById('img-details-overlay').classList.add('hidden'); document.body.style.overflow=''; }
+
+/* ── Add image modal (source auto-resolve) ───────────────────────────────── */
+var _addImgMeta={};
+var _SRC_HINTS={ openverse:'https://openverse.org/image/UUID', pexels:'https://www.pexels.com/photo/name-12345/', pixabay:'https://pixabay.com/photos/name-12345/', wikipedia:'https://commons.wikimedia.org/wiki/File:Name.jpg', manual:'https://example.com/image.jpg' };
+function openAddImageModal(){
+  document.getElementById('add-img-overlay').classList.remove('hidden'); document.body.style.overflow='hidden';
+  ['add-img-page','add-img-url','add-img-thumb','add-img-alt'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+  document.getElementById('add-img-source').value='openverse'; document.getElementById('add-img-status').textContent='';
+  var p=document.getElementById('add-img-preview'); p.src=''; p.style.display='none'; _addImgMeta={}; onSourceChange();
+}
+function closeAddImageModal(){ document.getElementById('add-img-overlay').classList.add('hidden'); document.body.style.overflow=''; }
+function onSourceChange(){
+  var src=document.getElementById('add-img-source').value, isManual=src==='manual';
+  document.getElementById('add-img-page-row').style.display=isManual?'none':'flex';
+  document.getElementById('add-img-url-label').innerHTML=isManual?'Image URL <span style="font-weight:400;text-transform:none;color:var(--rust)">*</span>':'CDN image URL <span style="font-weight:400;text-transform:none">(auto-filled)</span>';
+  document.getElementById('add-img-page').placeholder=_SRC_HINTS[src]||'https://...';
+  ['add-img-page','add-img-url','add-img-thumb','add-img-alt'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+  document.getElementById('add-img-status').textContent=''; var p=document.getElementById('add-img-preview'); p.src=''; p.style.display='none'; _addImgMeta={};
+}
+function _setStatus(msg,ok){ var el=document.getElementById('add-img-status'); el.textContent=msg; el.style.color=(ok===false)?'var(--wg400)':'var(--rust)'; }
+function _showPreview(url){ if(!url) return; var p=document.getElementById('add-img-preview'); p.style.display='block'; p.src=url; p.onerror=function(){ p.style.display='none'; }; }
+function _extractTrailingId(url,marker){ var idx=url.indexOf(marker); if(idx===-1) return null; var slug=url.slice(idx+marker.length).split('?')[0]; if(slug.length&&slug[slug.length-1]==='/') slug=slug.slice(0,-1); var parts=slug.split('-'), id=parts[parts.length-1]; for(var i=0;i<id.length;i++){ if(id[i]<'0'||id[i]>'9') return null; } return id.length?id:null; }
+function _extractWikimediaFilename(url){ var markers=['wiki/File:','File:']; for(var i=0;i<markers.length;i++){ var idx=url.indexOf(markers[i]); if(idx!==-1) return decodeURIComponent(url.slice(idx+markers[i].length).split('?')[0]); } return null; }
+function onDirectUrlInput(){ var url=document.getElementById('add-img-url').value.trim(); if(!url) return; if(!document.getElementById('add-img-thumb').value.trim()) document.getElementById('add-img-thumb').value=url; _showPreview(url); }
+async function onPageUrlInput(){
+  var raw=document.getElementById('add-img-page').value.trim(); if(!raw) return;
+  var srcEl=document.getElementById('add-img-source');
+  if(raw.indexOf('openverse.org/image/')!==-1) srcEl.value='openverse';
+  else if(raw.indexOf('pexels.com/photo/')!==-1) srcEl.value='pexels';
+  else if(raw.indexOf('pixabay.com/')!==-1) srcEl.value='pixabay';
+  else if(raw.indexOf('wikimedia.org')!==-1||raw.indexOf('wikipedia.org/wiki/File:')!==-1) srcEl.value='wikipedia';
+  var src=srcEl.value; document.getElementById('add-img-page-row').style.display='flex';
+  if(src==='openverse'){ var OV='openverse.org/image/', idx=raw.toLowerCase().indexOf(OV); if(idx!==-1){ var uuid=raw.slice(idx+OV.length,idx+OV.length+36).split('?')[0]; if(uuid.length===36){ await resolveOpenverse(uuid); return; } } _setStatus('Could not extract Openverse image ID.',false); }
+  else if(src==='pexels'){ var id=_extractTrailingId(raw,'pexels.com/photo/'); if(id){ await resolvePexels(id); return; } _setStatus('Could not extract Pexels photo ID.',false); }
+  else if(src==='pixabay'){ var pid=_extractTrailingId(raw,'pixabay.com/photos/')||_extractTrailingId(raw,'pixabay.com/images/'); if(pid){ await resolvePixabay(pid); return; } _setStatus('Could not extract Pixabay image ID.',false); }
+  else if(src==='wikipedia'){ var fn=_extractWikimediaFilename(raw); if(fn){ await resolveWikimedia(fn); return; } _setStatus('Paste the Commons URL with File: in it.',false); }
+}
+async function resolveOpenverse(uuid){
+  _setStatus('Fetching Openverse metadata…',null);
+  try { var res=await fetch('https://api.openverse.org/v1/images/'+uuid+'/'); if(!res.ok) throw new Error('API '+res.status); var d=await res.json();
+    document.getElementById('add-img-url').value=d.url||''; document.getElementById('add-img-thumb').value=d.thumbnail||d.url||''; document.getElementById('add-img-alt').value=d.title||'';
+    _addImgMeta={ creator:d.creator||'', creator_url:d.creator_url||'', license:d.license||'', license_url:d.license_url||'', openverse_id:uuid };
+    _showPreview(d.thumbnail||d.url);
+    _setStatus([d.creator?'Photo by '+d.creator:'', d.license?(d.license+(d.license_version?' '+d.license_version:'')).toUpperCase():''].filter(Boolean).join(' · '),true);
+  } catch(e){ _setStatus('Could not fetch metadata: '+e.message,false); }
+}
+async function resolvePexels(photoId){
+  _setStatus('Fetching Pexels metadata…',null);
+  if(!_PEXELS_KEY){ _setStatus('Pexels key not configured.',false); return; }
+  try { var res=await fetch('https://api.pexels.com/v1/photos/'+photoId,{headers:{Authorization:_PEXELS_KEY}}); if(!res.ok) throw new Error('API '+res.status); var d=await res.json();
+    var full=(d.src&&(d.src.large2x||d.src.original))||'', thumb=(d.src&&d.src.medium)||full;
+    document.getElementById('add-img-url').value=full; document.getElementById('add-img-thumb').value=thumb; document.getElementById('add-img-alt').value=d.alt||'';
+    _addImgMeta={ photographer:d.photographer||'', photographer_url:d.photographer_url||'', pexels_id:d.id }; _showPreview(thumb);
+    _setStatus(d.photographer?'Photo by '+d.photographer:'Metadata loaded',true);
+  } catch(e){ _setStatus('Could not fetch metadata: '+e.message,false); }
+}
+async function resolvePixabay(photoId){
+  _setStatus('Fetching Pixabay metadata…',null);
+  if(!_PIXABAY_KEY){ _setStatus('Pixabay key not configured.',false); return; }
+  try { var res=await fetch('https://pixabay.com/api/?key='+_PIXABAY_KEY+'&id='+photoId); if(!res.ok) throw new Error('API '+res.status); var d=await res.json(); var hit=d.hits&&d.hits[0]; if(!hit) throw new Error('Image not found');
+    document.getElementById('add-img-url').value=hit.largeImageURL||hit.webformatURL||''; document.getElementById('add-img-thumb').value=hit.webformatURL||hit.previewURL||''; document.getElementById('add-img-alt').value=hit.tags||'';
+    var pbUrl=(hit.user&&hit.user_id)?'https://pixabay.com/users/'+hit.user.toLowerCase()+'-'+hit.user_id+'/':'';
+    _addImgMeta={ uploader:hit.user||'', uploader_url:pbUrl, pixabay_id:hit.id, width:hit.imageWidth, height:hit.imageHeight }; _showPreview(hit.webformatURL||hit.previewURL);
+    _setStatus(hit.user?'Photo by '+hit.user+' · Pixabay License':'Metadata loaded',true);
+  } catch(e){ _setStatus('Could not fetch metadata: '+e.message,false); }
+}
+async function resolveWikimedia(filename){
+  _setStatus('Fetching Wikimedia metadata…',null);
+  try {
+    var apiUrl='https://commons.wikimedia.org/w/api.php?action=query&titles=File:'+encodeURIComponent(filename)+'&prop=imageinfo&iiprop=url%7Cextmetadata&iiurlwidth=800&format=json&origin=*';
+    var res=await fetch(apiUrl); if(!res.ok) throw new Error('API '+res.status); var d=await res.json();
+    var page=d.query&&d.query.pages&&Object.values(d.query.pages)[0], info=page&&page.imageinfo&&page.imageinfo[0]; if(!info) throw new Error('No image info');
+    var meta=info.extmetadata||{}, stripHtml=function(s){ var div=document.createElement('div'); div.innerHTML=s||''; return div.textContent||''; };
+    var artist=meta.Artist?stripHtml(meta.Artist.value):'', license=meta.LicenseShortName?meta.LicenseShortName.value:'', licUrl=meta.LicenseUrl?meta.LicenseUrl.value:'';
+    var desc=meta.ImageDescription?stripHtml(meta.ImageDescription.value):(meta.ObjectName?stripHtml(meta.ObjectName.value):filename);
+    document.getElementById('add-img-url').value=info.url||''; document.getElementById('add-img-thumb').value=info.thumburl||info.url||''; document.getElementById('add-img-alt').value=desc;
+    _addImgMeta={ creator:artist, license:license, license_url:licUrl, wiki_page:'https://commons.wikimedia.org/wiki/File:'+encodeURIComponent(filename) }; _showPreview(info.thumburl||info.url);
+    _setStatus([artist?'By '+artist:'', license].filter(Boolean).join(' · '),true);
+  } catch(e){ _setStatus('Could not fetch metadata: '+e.message,false); }
+}
+function submitAddImage(){
+  var url=document.getElementById('add-img-url').value.trim(), thumb=document.getElementById('add-img-thumb').value.trim()||url, alt=document.getElementById('add-img-alt').value.trim(), source=document.getElementById('add-img-source').value||'manual';
+  if(!url){ alert('Image URL required — fetch metadata first or enter a CDN URL directly.'); return; }
+  var imgs=_galleryImages.concat([Object.assign({url:url,thumb:thumb,alt:alt,source:source},_addImgMeta)]);
+  saveEdits(imgs); renderGallery(imgs); closeAddImageModal();
+}
+
+/* ── Image fetch engine (same sources as the vibe engine; metadata identical) */
+var _apiCalls={pexels:0,openverse:0,pixabay:0,wikipedia:0};
+function _resetApi(){ _apiCalls={pexels:0,openverse:0,pixabay:0,wikipedia:0}; }
+var _sSleep=function(ms){ return new Promise(function(r){ setTimeout(r,ms); }); };
+function _sCleanWiki(dest){ return dest.replace(/\s*&\s*.+$/,'').replace(/\s*,.*$/,'').replace(/\s*\([^)]*\)/g,'').replace(/\s+the\s+.+/i,'').trim(); }
+
+var _ovTok=null;
+async function _sOvToken(){
+  if(_ovTok) return _ovTok; if(!_OV_ID||!_OV_SEC) return null;
+  try { var body='grant_type=client_credentials&client_id='+encodeURIComponent(_OV_ID)+'&client_secret='+encodeURIComponent(_OV_SEC);
+    var r=await fetch('https://api.openverse.org/v1/auth_tokens/token/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body}); if(!r.ok) return null;
+    var d=await r.json(); _ovTok=d.access_token||null; return _ovTok; } catch(e){ return null; }
+}
+async function _sPexels(q,lim){
+  _apiCalls.pexels++;
+  try { var r=await fetch('https://api.pexels.com/v1/search?query='+encodeURIComponent(q)+'&orientation=landscape&per_page='+lim+'&size=medium',{headers:{Authorization:_PEXELS_KEY}}); if(!r.ok) return []; var d=await r.json();
+    return (d.photos||[]).map(function(p){ return { url:p.src.large2x||p.src.large, thumb:p.src.medium, alt:p.alt||q, source:'pexels', photographer:p.photographer, photographer_url:p.photographer_url, width:p.width, height:p.height, pexels_id:String(p.id) }; }); } catch(e){ return []; }
+}
+async function _sOpenverse(q,lim){
+  _apiCalls.openverse++;
+  try { var tok=await _sOvToken(), hdrs=tok?{Authorization:'Bearer '+tok}:{};
+    var r=await fetch('https://api.openverse.org/v1/images/?q='+encodeURIComponent(q)+'&page_size='+lim+'&license_type=commercial&orientation=landscape',{headers:hdrs}); if(!r.ok) return []; var d=await r.json();
+    return (d.results||[]).map(function(p){ return { url:p.url, thumb:p.thumbnail, alt:p.title||q, source:'openverse', creator:p.creator||'', creator_url:p.creator_url||'', license:'CC '+(p.license||'').toUpperCase()+' '+(p.license_version||''), license_url:p.license_url||'', openverse_id:p.id }; }); } catch(e){ return []; }
+}
+async function _sPixabay(q,lim){
+  if(!_PIXABAY_KEY) return []; _apiCalls.pixabay++;
+  try { var r=await fetch('https://pixabay.com/api/?key='+_PIXABAY_KEY+'&q='+encodeURIComponent(q)+'&image_type=photo&orientation=horizontal&per_page='+lim+'&safesearch=true&lang=en'); if(!r.ok) return []; var d=await r.json();
+    return (d.hits||[]).map(function(p){ return { url:p.largeImageURL, thumb:p.webformatURL, alt:p.tags||q, source:'pixabay', pixabay_id:String(p.id), width:p.imageWidth, height:p.imageHeight }; }); } catch(e){ return []; }
+}
+async function _sWiki(dest){
+  _apiCalls.wikipedia++;
+  try { var r=await fetch('https://en.wikipedia.org/w/api.php?action=query&format=json&redirects=1&prop=pageimages&piprop=thumbnail&pithumbsize=900&titles='+encodeURIComponent(dest)+'&origin=*'); if(!r.ok) return null;
+    var d=await r.json(), pages=Object.values((d.query&&d.query.pages)||{}); if(!pages.length||pages[0].missing!==undefined) return null;
+    var th=pages[0].thumbnail&&pages[0].thumbnail.source; if(!th) return null;
+    if(/disambig|_map\b|flag_of|\.svg|logo|icon|coat.of.arms/i.test(th)) return null;
+    var w=pages[0].thumbnail.width, h=pages[0].thumbnail.height; if(h&&w&&h>w) return null;
+    return { url:th.replace(/\/\d+px-/,'/900px-'), thumb:th, source:'wikipedia', alt:pages[0].title||dest, title:pages[0].title||dest, wiki_page:'https://en.wikipedia.org/wiki/'+encodeURIComponent(pages[0].title||dest), width:w||null, height:h||null }; } catch(e){ return null; }
+}
+
+// Fetch 1–5 images for one city. Wikipedia lead first (best hero), then Pexels /
+// Openverse / Pixabay by "{city} {country}" and "{city} cityscape".
+async function _sFetchDest(d){
+  var city=d.city, country=d.country, wikiTitle=_sCleanWiki(city);
+  var collected=[], seenU=new Set(), seenT=new Set();
+  function add(imgs,lim){ var added=0; for(var i=0;i<imgs.length;i++){ if(collected.length>=_SEED_MAX||added>=(lim==null?Infinity:lim)) break; var img=imgs[i]; if(!img||!img.url||seenU.has(img.url)) continue; var tk=(img.alt||'').toLowerCase().trim(); if(tk&&seenT.has(tk)) continue; seenU.add(img.url); if(tk) seenT.add(tk); collected.push(img); added++; } }
+  var wi=await _sWiki(wikiTitle); await _sSleep(_SEED_DELAY_MS);
+  if(!wi){ wi=await _sWiki(city+', '+country); await _sSleep(_SEED_DELAY_MS); }
+  if(wi&&!seenU.has(wi.url)){ seenU.add(wi.url); collected.push(wi); }
+  if(collected.length<_SEED_MAX){ add(await _sPexels(city+' '+country,6),3); await _sSleep(_SEED_DELAY_MS); }
+  if(collected.length<_SEED_MAX){ add(await _sPexels(city+' cityscape',5),3); await _sSleep(_SEED_DELAY_MS); }
+  if(collected.length<_SEED_MAX){ add(await _sOpenverse(city+' '+country,6),3); await _sSleep(_SEED_DELAY_MS); }
+  if(collected.length<_SEED_MAX){ add(await _sPixabay(city+' '+country,6),_SEED_MAX-collected.length); await _sSleep(_SEED_DELAY_MS); }
+  return collected.slice(0,_SEED_MAX);
+}
+
+/* ── Curate progress modal ───────────────────────────────────────────────── */
+var _curating=false;
+function _cOpen(title){ document.getElementById('curate-modal-title').textContent=title; document.getElementById('curate-progress-bar').style.width='0%'; document.getElementById('curate-progress-log').innerHTML=''; document.getElementById('curate-progress-status').textContent='Starting…'; document.getElementById('curate-overlay').classList.remove('hidden'); document.body.style.overflow='hidden'; }
+function _cLog(label,count){ var cls=count>=3?'curate-log-good':count>=1?'curate-log-warn':'curate-log-bad'; var el=document.getElementById('curate-progress-log'); el.innerHTML+='<div class="curate-log-row '+cls+'"><span class="curate-log-label">'+esc(label)+'</span><span class="curate-log-count">'+count+' img</span></div>'; el.scrollTop=el.scrollHeight; }
+function _cSetBar(done,total){ document.getElementById('curate-progress-bar').style.width=Math.round(done/total*100)+'%'; document.getElementById('curate-progress-status').textContent=done+' / '+total; }
+function _cSetStatus(msg){ document.getElementById('curate-progress-status').textContent=msg; }
+function _cClose(){ document.getElementById('curate-overlay').classList.add('hidden'); document.body.style.overflow=''; }
+function _cSetBtns(busy){ ['curate-all-btn','curate-dest-btn'].forEach(function(id){ var b=document.getElementById(id); if(!b) return; b.disabled=busy; if(busy) b.classList.add('busy'); else b.classList.remove('busy'); }); }
+
+/* ── Curate a single destination (append, non-destructive; no email) ─────── */
+async function runCurateDest(){
+  if(_curating||!currentDest) return;
+  _curating=true; _cSetBtns(true); _resetApi();
+  _cOpen('Fetching: '+currentDest.city);
+  var existing=getEditedImages(currentDest.id).slice(), seen=new Set(existing.map(function(x){ return x.url; }));
+  var fetched=await _sFetchDest(currentDest), addedN=0;
+  fetched.forEach(function(im){ if(!seen.has(im.url)){ existing.push(im); seen.add(im.url); addedN++; } });
+  _persist(currentDest.id,existing); renderGallery(existing);
+  _cLog(currentDest.city,addedN); _cSetBar(1,1);
+  _cSetStatus('Done — added '+addedN+' new image'+(addedN===1?'':'s')+' ('+existing.length+' total).');
+  setTimeout(_cClose,2000); _cSetBtns(false); _curating=false;
+}
+
+/* ── Curate all EMPTY destinations in the sub-region (one summary email) ──── */
+async function runCurateSub(){
+  if(_curating||!currentRegion||!currentSub) return;
+  var all=(DATA[currentRegion].subs[currentSub].dests)||[];
+  var targets=all.filter(function(d){ return getEditedImages(d.id).length===0; });
+  _curating=true; _cSetBtns(true); _resetApi();
+  _cOpen('Fetching '+_subLabel(currentSub)+' — '+targets.length+' empty of '+all.length);
+  if(!targets.length){ _cSetStatus('Every destination already has images. Nothing to fetch.'); setTimeout(_cClose,2200); _cSetBtns(false); _curating=false; return; }
+  var results=[];
+  for(var i=0;i<targets.length;i++){
+    var d=targets[i];
+    _cSetStatus('Fetching '+(i+1)+' of '+targets.length+': '+d.city+'…');
+    var imgs=await _sFetchDest(d);
+    _persist(d.id,imgs);
+    results.push({ label:d.city+', '+d.country, count:imgs.length, sources:Array.from(new Set(imgs.map(function(x){ return x.source; }))).join(', ') });
+    _cLog(d.city,imgs.length); _cSetBar(i+1,targets.length);
+    if(currentDest&&currentDest.id===d.id) renderGallery(imgs);
+  }
+  await _sendCurateEmail(currentRegion,currentSub,results);
+  var tot=results.reduce(function(s,r){ return s+r.count; },0);
+  _cSetStatus('Done — '+tot+' images across '+targets.length+' destinations. Email sent.');
+  if(!document.getElementById('detail-view').classList.contains('hidden')&&currentDest) renderGallery(getEditedImages(currentDest.id));
+  else showGrid();
+  setTimeout(_cClose,3500); _cSetBtns(false); _curating=false;
+}
+
+/* ── Summary email (bulk only) ───────────────────────────────────────────── */
+async function _sendCurateEmail(regionCode, subCode, results){
+  if(!_SUPA_URL||!_SUPA_ANON) return;
+  var region=_regionLabel(regionCode), subregion=_subLabel(subCode);
+  var subject='Destination Images | '+region+' | '+subregion+' — '+results.length+' fetched';
+  var total=results.reduce(function(s,r){ return s+r.count; },0);
+  var thin=results.filter(function(r){ return r.count<_SEED_MIN||r.count===0; });
+  var rowsHtml=results.map(function(r){ var bg=r.count>=3?'#d4edda':r.count>=1?'#fff3cd':'#f8d7da'; return '<tr style="background:'+bg+'"><td style="padding:6px 12px;border-bottom:1px solid #eee">'+esc(r.label)+'</td><td style="padding:6px 12px;text-align:center;border-bottom:1px solid #eee">'+r.count+'</td><td style="padding:6px 12px;border-bottom:1px solid #eee;font-size:12px;color:#555">'+esc(r.sources)+'</td></tr>'; }).join('');
+  var usageHtml='<tr><td style="padding:6px 12px">Pexels</td><td style="padding:6px 12px;text-align:center">'+_apiCalls.pexels+' / 200 hr</td></tr><tr><td style="padding:6px 12px">Openverse</td><td style="padding:6px 12px;text-align:center">'+_apiCalls.openverse+'</td></tr><tr><td style="padding:6px 12px">Pixabay</td><td style="padding:6px 12px;text-align:center">'+_apiCalls.pixabay+' / 100 min</td></tr><tr><td style="padding:6px 12px">Wikipedia</td><td style="padding:6px 12px;text-align:center">'+_apiCalls.wikipedia+'</td></tr>';
+  var thinNote=thin.length?'<p style="background:#f8d7da;color:#721c24;padding:10px 14px;border-radius:6px">Under-filled: '+thin.map(function(r){ return esc(r.label)+' ('+r.count+')'; }).join(', ')+'</p>':'';
+  var html='<!DOCTYPE html><html><body style="font-family:sans-serif;max-width:660px;margin:0 auto;padding:24px;color:#1C3649">'
+    +'<h2 style="color:#B85C38;margin-top:0">'+esc(subregion)+' — Destination Images</h2>'
+    +'<p><strong>'+esc(region)+'</strong> &rsaquo; <strong>'+esc(subregion)+'</strong></p>'
+    +'<p><strong>'+total+'</strong> images across <strong>'+results.length+'</strong> destination'+(results.length!==1?'s':'')+'</p>'+thinNote
+    +'<table style="border-collapse:collapse;width:100%;font-size:13px"><thead><tr style="background:#1C3649;color:#fff"><th style="padding:8px 12px;text-align:left">Destination</th><th style="padding:8px 12px">Images</th><th style="padding:8px 12px;text-align:left">Sources</th></tr></thead><tbody>'+rowsHtml+'</tbody></table>'
+    +'<h3 style="border-bottom:2px solid #B85C38;padding-bottom:6px;margin-top:24px">API Usage This Run</h3>'
+    +'<table style="border-collapse:collapse;width:100%;font-size:13px"><tbody>'+usageHtml+'</tbody></table></body></html>';
+  try { await fetch(_SUPA_URL+'/functions/v1/send-curation-email',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+_SUPA_ANON,apikey:_SUPA_ANON},body:JSON.stringify({to:'vfratto@vcinnovationsgroup.com',cc:'ccupero@vcinnovationsgroup.com',subject:subject,html:html})}); } catch(e){ console.warn('[email] failed:',e); }
+}
+
+/* ── Keyboard + nav ──────────────────────────────────────────────────────── */
+document.addEventListener('keydown',function(e){
+  if(e.key!=='Escape') return;
+  if(!document.getElementById('lightbox').classList.contains('hidden')){ closeLightbox(); return; }
+  if(!document.getElementById('img-details-overlay').classList.contains('hidden')){ closeImageDetails(); return; }
+  if(!document.getElementById('add-img-overlay').classList.contains('hidden')){ closeAddImageModal(); return; }
+});
+window.addEventListener('popstate',function(e){ var st=e.state||{}; if(st.d&&DEST_BY_ID[st.d]){ showDetail(st.d); } else if(st.r&&st.s){ selectSub(st.r,st.s); } else { showGrid(); } });
+
+/* ── Init ────────────────────────────────────────────────────────────────── */
+_loadData();
+</script>
+</body>
+</html>
