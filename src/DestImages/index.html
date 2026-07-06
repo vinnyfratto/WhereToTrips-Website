@@ -147,6 +147,32 @@
   .curate-log-label { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .curate-log-count { font-weight:700; flex-shrink:0; }
   .curate-status { font-size:11px; color:var(--wg500); flex-shrink:0; }
+  /* Settings panel */
+  .hdr-gear { background:rgba(255,255,255,.14); border:none; color:var(--cream); cursor:pointer; font-size:15px; width:34px; height:34px; border-radius:8px; display:flex; align-items:center; justify-content:center; }
+  .hdr-gear:hover { background:rgba(255,255,255,.26); }
+  .set-label { font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--wg500); display:block; margin:2px 0 8px; }
+  .set-step { display:flex; gap:6px; align-items:center; margin-bottom:6px; }
+  .set-step select { flex:0 0 108px; }
+  .set-step .sq { flex:1; min-width:0; }
+  .set-step .sl { flex:0 0 50px; }
+  .set-step select, .set-step input { padding:6px 8px; border:1.5px solid var(--wg200); border-radius:6px; font-family:var(--sans); font-size:12px; color:var(--navy); background:var(--cream); }
+  .set-step button { flex:0 0 28px; height:30px; border:1.5px solid var(--wg200); background:var(--card); border-radius:6px; cursor:pointer; color:var(--wg600); font-size:12px; padding:0; }
+  .set-step button:hover { background:var(--wg100); }
+  .set-add { margin:2px 0 14px; font-size:11px; font-weight:700; letter-spacing:.5px; padding:7px 12px; border:1.5px dashed var(--wg300); background:var(--wg100); color:var(--rust); border-radius:6px; cursor:pointer; }
+  .set-add:hover { border-color:var(--rust); }
+  .set-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:14px 0 10px; }
+  .set-fld label { font-size:10px; font-weight:700; letter-spacing:.7px; text-transform:uppercase; color:var(--wg500); display:block; margin-bottom:3px; }
+  .set-fld input, .set-fld select { width:100%; padding:6px 8px; border:1.5px solid var(--wg200); border-radius:6px; font-size:12px; color:var(--navy); background:var(--cream); font-family:var(--sans); }
+  .set-fld.chk { display:flex; align-items:center; gap:7px; align-self:end; padding-bottom:6px; }
+  .set-fld.chk input { width:auto; }
+  .set-fld.chk label { margin:0; text-transform:none; letter-spacing:0; font-size:12px; font-weight:600; color:var(--navy); }
+  .set-actions { display:flex; justify-content:space-between; margin-top:14px; gap:10px; }
+  .set-actions button { font-size:12px; font-weight:700; padding:8px 16px; border-radius:8px; cursor:pointer; font-family:var(--sans); }
+  .set-reset { border:1.5px solid var(--wg300); background:var(--card); color:var(--wg600); }
+  .set-reset:hover { background:var(--wg100); }
+  .set-save { border:none; background:var(--rust); color:#fff; }
+  .set-save:hover { opacity:.88; }
+  #set-status { font-size:11px; color:var(--rust); min-height:16px; margin-top:8px; }
 </style>
 </head>
 <body>
@@ -156,7 +182,10 @@
     <span class="hdr-logo">WhereTo</span>
     <span class="hdr-sub">&middot; Destination Images</span>
   </div>
-  <span class="hdr-badge">Internal</span>
+  <div style="display:flex;align-items:center;gap:10px">
+    <button class="hdr-gear" onclick="openSettings()" title="Image fetch settings">&#9881;</button>
+    <span class="hdr-badge">Internal</span>
+  </div>
 </header>
 
 <div class="sr-bar">
@@ -287,6 +316,38 @@
         <input type="text" id="add-img-alt" placeholder="Brief description of the image" />
       </div>
       <button class="add-img-submit" onclick="submitAddImage()">Add to Gallery</button>
+    </div>
+  </div>
+</div>
+
+<!-- Fetch settings -->
+<div id="settings-overlay" class="overlay hidden" onclick="if(event.target===this)closeSettings()">
+  <div class="modal" role="dialog" aria-modal="true" onclick="event.stopPropagation()" style="max-width:620px">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title">Image Fetch Settings</div>
+        <div class="modal-sub">Save, then re-fetch a destination to see the effect</div>
+      </div>
+      <button class="modal-close" onclick="closeSettings()" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <span class="set-label">Fetch steps &mdash; run top to bottom, stop at max</span>
+      <div id="set-steps"></div>
+      <button class="set-add" onclick="settingsAddStep()">+ Add step</button>
+      <div class="set-grid">
+        <div class="set-fld"><label>Max images</label><input id="set-max" type="number" min="1" max="20" /></div>
+        <div class="set-fld"><label>Delay between calls (ms)</label><input id="set-delay" type="number" min="0" max="2000" /></div>
+        <div class="set-fld"><label>Orientation</label><select id="set-ori"><option value="landscape">landscape</option><option value="portrait">portrait</option><option value="square">square</option><option value="any">any</option></select></div>
+        <div class="set-fld"><label>Pexels size</label><select id="set-psize"><option value="large2x">large2x</option><option value="large">large</option><option value="medium">medium</option><option value="small">small</option><option value="">(default)</option></select></div>
+        <div class="set-fld"><label>Pixabay category</label><input id="set-pcat" type="text" placeholder="places, travel, buildings…" /></div>
+        <div class="set-fld chk"><input id="set-wiki" type="checkbox" /><label for="set-wiki">Skip Wikipedia portraits</label></div>
+      </div>
+      <div class="set-fld"><label>Block terms &mdash; comma-separated; empty keeps everything (people included)</label><input id="set-block" type="text" placeholder="portrait, selfie, model" /></div>
+      <div id="set-status"></div>
+      <div class="set-actions">
+        <button class="set-reset" onclick="settingsReset()">Reset to defaults</button>
+        <button class="set-save" onclick="settingsSave()">Save</button>
+      </div>
     </div>
   </div>
 </div>
@@ -848,6 +909,78 @@ document.addEventListener('keydown',function(e){
   if(!document.getElementById('add-img-overlay').classList.contains('hidden')){ closeAddImageModal(); return; }
 });
 window.addEventListener('popstate',function(e){ var st=e.state||{}; if(st.d&&DEST_BY_ID[st.d]){ showDetail(st.d); } else if(st.r&&st.s){ selectSub(st.r,st.s); } else { showGrid(); } });
+
+/* ── Fetch settings panel ────────────────────────────────────────────────── */
+var _setSteps = [];
+function openSettings(){
+  _setSteps = JSON.parse(JSON.stringify(_CFG.steps || []));
+  document.getElementById('set-max').value = _CFG.max_images;
+  document.getElementById('set-delay').value = _CFG.delay_ms;
+  document.getElementById('set-ori').value = _CFG.orientation || 'landscape';
+  document.getElementById('set-psize').value = _CFG.pexels_size || '';
+  document.getElementById('set-pcat').value = _CFG.pixabay_category || '';
+  document.getElementById('set-wiki').checked = _CFG.wiki_skip_portrait !== false;
+  document.getElementById('set-block').value = (_CFG.block_terms || []).join(', ');
+  document.getElementById('set-status').textContent = '';
+  renderSettingsSteps();
+  document.getElementById('settings-overlay').classList.remove('hidden'); document.body.style.overflow = 'hidden';
+}
+function closeSettings(){ document.getElementById('settings-overlay').classList.add('hidden'); document.body.style.overflow = ''; }
+function renderSettingsSteps(){
+  var SRC = ['wikipedia','pexels','openverse','pixabay'];
+  document.getElementById('set-steps').innerHTML = _setSteps.map(function(s,i){
+    var opts = SRC.map(function(o){ return '<option value="'+o+'"'+(s.source===o?' selected':'')+'>'+o+'</option>'; }).join('');
+    return '<div class="set-step">'
+      + '<select onchange="_setSteps['+i+'].source=this.value">'+opts+'</select>'
+      + '<input class="sq" type="text" value="'+esc(s.query||'')+'" oninput="_setSteps['+i+'].query=this.value" placeholder="{city} {country}" />'
+      + '<input class="sl" type="number" min="1" max="10" value="'+(s.limit||3)+'" oninput="_setSteps['+i+'].limit=parseInt(this.value)||1" title="images from this step" />'
+      + '<button onclick="settingsMove('+i+',-1)" title="move up">&#8593;</button>'
+      + '<button onclick="settingsMove('+i+',1)" title="move down">&#8595;</button>'
+      + '<button onclick="settingsDel('+i+')" title="remove">&times;</button>'
+      + '</div>';
+  }).join('') || '<div style="font-size:12px;color:var(--wg500);font-style:italic;margin-bottom:8px">No steps — add one below.</div>';
+}
+function settingsAddStep(){ _setSteps.push({ source:'pexels', query:'{city} {country}', limit:3 }); renderSettingsSteps(); }
+function settingsDel(i){ _setSteps.splice(i,1); renderSettingsSteps(); }
+function settingsMove(i,dir){ var j=i+dir; if(j<0||j>=_setSteps.length) return; var t=_setSteps[i]; _setSteps[i]=_setSteps[j]; _setSteps[j]=t; renderSettingsSteps(); }
+function settingsReset(){
+  _setSteps = JSON.parse(JSON.stringify(_DEFAULT_CFG.steps));
+  document.getElementById('set-max').value = _DEFAULT_CFG.max_images;
+  document.getElementById('set-delay').value = _DEFAULT_CFG.delay_ms;
+  document.getElementById('set-ori').value = 'landscape';
+  document.getElementById('set-psize').value = 'medium';
+  document.getElementById('set-pcat').value = '';
+  document.getElementById('set-wiki').checked = true;
+  document.getElementById('set-block').value = '';
+  document.getElementById('set-status').textContent = 'Defaults loaded — click Save to apply.';
+  renderSettingsSteps();
+}
+function _settingsCfg(){
+  var block = document.getElementById('set-block').value.split(',').map(function(t){ return t.trim().toLowerCase(); }).filter(Boolean);
+  return {
+    max_images: parseInt(document.getElementById('set-max').value)||5,
+    min_images: _CFG.min_images||1,
+    delay_ms: parseInt(document.getElementById('set-delay').value)||380,
+    steps: _setSteps.filter(function(s){ return s.source && s.query; }),
+    block_terms: block,
+    pexels_size: document.getElementById('set-psize').value,
+    pixabay_category: document.getElementById('set-pcat').value.trim(),
+    orientation: document.getElementById('set-ori').value,
+    wiki_skip_portrait: document.getElementById('set-wiki').checked,
+  };
+}
+async function settingsSave(){
+  var cfg = _settingsCfg();
+  if(!cfg.steps.length){ document.getElementById('set-status').textContent = 'Add at least one step with a source and query.'; return; }
+  _CFG = cfg;   // apply immediately for this session (works even before the table exists)
+  var st = document.getElementById('set-status'); st.textContent = 'Saving…';
+  try {
+    var body = { id:1, name:'custom', max_images:cfg.max_images, min_images:cfg.min_images, delay_ms:cfg.delay_ms, steps:cfg.steps, block_terms:cfg.block_terms, pexels_size:cfg.pexels_size, pixabay_category:cfg.pixabay_category, orientation:cfg.orientation, wiki_skip_portrait:cfg.wiki_skip_portrait, updated_at:new Date().toISOString() };
+    var r = await fetch(_SUPA_URL+'/rest/v1/image_fetch_config?on_conflict=id',{ method:'POST', headers:{ apikey:_SUPA_ANON, Authorization:'Bearer '+_SUPA_ANON, 'Content-Type':'application/json', Prefer:'resolution=merge-duplicates' }, body:JSON.stringify(body) });
+    if(r.ok){ st.textContent = 'Saved & applied — re-fetch a destination to see it.'; setTimeout(closeSettings, 1500); }
+    else { st.textContent = 'Applied for this session. DB save failed (run image_fetch_config.sql once): HTTP '+r.status; }
+  } catch(e){ st.textContent = 'Applied for this session. DB save error: '+e.message; }
+}
 
 /* ── Init ────────────────────────────────────────────────────────────────── */
 _loadData();
