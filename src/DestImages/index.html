@@ -310,10 +310,49 @@ const ADMIN_MODE = true;
 const EDITS_KEY  = 'dest_img_edits';
 const _H = { apikey:_SUPA_ANON, Authorization:'Bearer '+_SUPA_ANON };
 
-/* ── Fetch caps (1–5, vs the vibe engine's 3–12) ─────────────────────────── */
+/* ── Fetch caps (defaults; overridden by the image_fetch_config table) ────── */
 var _SEED_MIN = 1;
 var _SEED_MAX = 5;
 var _SEED_DELAY_MS = 380;
+
+/* ── Image-fetch settings ─────────────────────────────────────────────────────
+   Live-tunable via the image_fetch_config Supabase table. _DEFAULT_CFG is the
+   built-in fallback used whenever that row is missing / empty / invalid, so the
+   Fetch button can never be broken from the table. ──────────────────────────*/
+var _DEFAULT_CFG = {
+  max_images: _SEED_MAX, min_images: _SEED_MIN, delay_ms: _SEED_DELAY_MS,
+  steps: [
+    { source: 'wikipedia', query: '{city}',            limit: 1 },
+    { source: 'wikipedia', query: '{city}, {country}', limit: 1 },
+    { source: 'pexels',    query: '{city} {country}',  limit: 3 },
+    { source: 'pexels',    query: '{city} cityscape',  limit: 3 },
+    { source: 'openverse', query: '{city} {country}',  limit: 3 },
+    { source: 'pixabay',   query: '{city} {country}',  limit: 5 },
+  ],
+  block_terms: [], pexels_size: 'medium', pixabay_category: '', orientation: 'landscape', wiki_skip_portrait: true,
+};
+var _CFG = _DEFAULT_CFG;
+var _KNOWN_SRC = { wikipedia: 1, pexels: 1, openverse: 1, pixabay: 1 };
+
+async function _loadFetchCfg(){
+  if(!_SUPA_URL||!_SUPA_ANON) return;
+  try {
+    var r = await fetch(_SUPA_URL+'/rest/v1/image_fetch_config?id=eq.1&select=*',{headers:_H});
+    if(!r.ok) return;                                   // table missing → keep default
+    var c = (await r.json())[0];
+    if(!c) return;
+    var steps = Array.isArray(c.steps) ? c.steps.filter(function(s){ return s && _KNOWN_SRC[s.source] && s.query; }) : [];
+    if(!steps.length) return;                           // no valid steps → keep default
+    _CFG = {
+      max_images: c.max_images || 5, min_images: c.min_images || 1, delay_ms: c.delay_ms || 380,
+      steps: steps,
+      block_terms: (c.block_terms || []).map(function(t){ return String(t).toLowerCase().trim(); }).filter(Boolean),
+      pexels_size: c.pexels_size || '', pixabay_category: c.pixabay_category || '',
+      orientation: c.orientation || 'any', wiki_skip_portrait: c.wiki_skip_portrait !== false,
+    };
+    console.log('[fetch] image_fetch_config loaded ('+steps.length+' steps, max '+_CFG.max_images+')');
+  } catch(e){ /* keep default */ }
+}
 
 var DATA = {}, DEST_BY_ID = {}, currentRegion = null, currentSub = null, currentDest = null;
 
@@ -345,6 +384,7 @@ function _seedHero(d){
 async function _loadData(){
   if(!_SUPA_URL||!_SUPA_ANON){ _bootError('Supabase not configured in the build (.env keys missing).'); return; }
   try {
+    await _loadFetchCfg();
     var dr = await fetch(_SUPA_URL+'/rest/v1/destinations?select=id,city,country,iata,region,subregion,image_url,image_attribution&is_active=eq.true&order=city.asc',{headers:_H});
     if(!dr.ok) throw new Error('destinations HTTP '+dr.status);
     var dests = await dr.json();
@@ -671,20 +711,24 @@ async function _sOvToken(){
     var r=await fetch('https://api.openverse.org/v1/auth_tokens/token/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:body}); if(!r.ok) return null;
     var d=await r.json(); _ovTok=d.access_token||null; return _ovTok; } catch(e){ return null; }
 }
+function _oriParam(sep){ return (_CFG.orientation && _CFG.orientation!=='any') ? sep+'orientation='+encodeURIComponent(_CFG.orientation) : ''; }
 async function _sPexels(q,lim){
   _apiCalls.pexels++;
-  try { var r=await fetch('https://api.pexels.com/v1/search?query='+encodeURIComponent(q)+'&orientation=landscape&per_page='+lim+'&size=medium',{headers:{Authorization:_PEXELS_KEY}}); if(!r.ok) return []; var d=await r.json();
+  var sz=_CFG.pexels_size?'&size='+encodeURIComponent(_CFG.pexels_size):'';
+  try { var r=await fetch('https://api.pexels.com/v1/search?query='+encodeURIComponent(q)+_oriParam('&')+'&per_page='+Math.max(1,lim)+sz,{headers:{Authorization:_PEXELS_KEY}}); if(!r.ok) return []; var d=await r.json();
     return (d.photos||[]).map(function(p){ return { url:p.src.large2x||p.src.large, thumb:p.src.medium, alt:p.alt||q, source:'pexels', photographer:p.photographer, photographer_url:p.photographer_url, width:p.width, height:p.height, pexels_id:String(p.id) }; }); } catch(e){ return []; }
 }
 async function _sOpenverse(q,lim){
   _apiCalls.openverse++;
   try { var tok=await _sOvToken(), hdrs=tok?{Authorization:'Bearer '+tok}:{};
-    var r=await fetch('https://api.openverse.org/v1/images/?q='+encodeURIComponent(q)+'&page_size='+lim+'&license_type=commercial&orientation=landscape',{headers:hdrs}); if(!r.ok) return []; var d=await r.json();
+    var r=await fetch('https://api.openverse.org/v1/images/?q='+encodeURIComponent(q)+'&page_size='+Math.max(1,lim)+'&license_type=commercial'+_oriParam('&'),{headers:hdrs}); if(!r.ok) return []; var d=await r.json();
     return (d.results||[]).map(function(p){ return { url:p.url, thumb:p.thumbnail, alt:p.title||q, source:'openverse', creator:p.creator||'', creator_url:p.creator_url||'', license:'CC '+(p.license||'').toUpperCase()+' '+(p.license_version||''), license_url:p.license_url||'', openverse_id:p.id }; }); } catch(e){ return []; }
 }
 async function _sPixabay(q,lim){
   if(!_PIXABAY_KEY) return []; _apiCalls.pixabay++;
-  try { var r=await fetch('https://pixabay.com/api/?key='+_PIXABAY_KEY+'&q='+encodeURIComponent(q)+'&image_type=photo&orientation=horizontal&per_page='+lim+'&safesearch=true&lang=en'); if(!r.ok) return []; var d=await r.json();
+  var ori=_CFG.orientation==='portrait'?'vertical':(_CFG.orientation==='landscape'?'horizontal':'all');
+  var cat=_CFG.pixabay_category?'&category='+encodeURIComponent(_CFG.pixabay_category):'';
+  try { var r=await fetch('https://pixabay.com/api/?key='+_PIXABAY_KEY+'&q='+encodeURIComponent(q)+'&image_type=photo&orientation='+ori+cat+'&per_page='+Math.max(3,lim)+'&safesearch=true&lang=en'); if(!r.ok) return []; var d=await r.json();
     return (d.hits||[]).map(function(p){ return { url:p.largeImageURL, thumb:p.webformatURL, alt:p.tags||q, source:'pixabay', pixabay_id:String(p.id), width:p.imageWidth, height:p.imageHeight }; }); } catch(e){ return []; }
 }
 async function _sWiki(dest){
@@ -693,24 +737,38 @@ async function _sWiki(dest){
     var d=await r.json(), pages=Object.values((d.query&&d.query.pages)||{}); if(!pages.length||pages[0].missing!==undefined) return null;
     var th=pages[0].thumbnail&&pages[0].thumbnail.source; if(!th) return null;
     if(/disambig|_map\b|flag_of|\.svg|logo|icon|coat.of.arms/i.test(th)) return null;
-    var w=pages[0].thumbnail.width, h=pages[0].thumbnail.height; if(h&&w&&h>w) return null;
+    var w=pages[0].thumbnail.width, h=pages[0].thumbnail.height; if(_CFG.wiki_skip_portrait&&h&&w&&h>w) return null;
     return { url:th.replace(/\/\d+px-/,'/900px-'), thumb:th, source:'wikipedia', alt:pages[0].title||dest, title:pages[0].title||dest, wiki_page:'https://en.wikipedia.org/wiki/'+encodeURIComponent(pages[0].title||dest), width:w||null, height:h||null }; } catch(e){ return null; }
 }
 
-// Fetch 1–5 images for one city. Wikipedia lead first (best hero), then Pexels /
-// Openverse / Pixabay by "{city} {country}" and "{city} cityscape".
+// Config-driven fetch: walk _CFG.steps in order, interpolate {city}/{country},
+// dedupe + apply the block-terms filter, stop once we reach _CFG.max_images.
+function _interp(t, city, country){ return String(t).replace(/\{city\}/g, city).replace(/\{country\}/g, country); }
+function _blocked(img){
+  if(!_CFG.block_terms.length) return false;
+  var t=((img.alt||'')+' '+(img.title||'')).toLowerCase();
+  for(var i=0;i<_CFG.block_terms.length;i++){ if(t.indexOf(_CFG.block_terms[i])!==-1) return true; }
+  return false;
+}
+async function _runStep(step, city, country){
+  var q=_interp(step.query, city, country), lim=(step.limit||3)+2;
+  if(step.source==='wikipedia'){ var w=await _sWiki(q); return w?[w]:[]; }
+  if(step.source==='pexels')    return await _sPexels(q, lim);
+  if(step.source==='openverse') return await _sOpenverse(q, lim);
+  if(step.source==='pixabay')   return await _sPixabay(q, lim);
+  return [];
+}
 async function _sFetchDest(d){
-  var city=d.city, country=d.country, wikiTitle=_sCleanWiki(city);
+  var city=d.city, country=d.country, max=_CFG.max_images;
   var collected=[], seenU=new Set(), seenT=new Set();
-  function add(imgs,lim){ var added=0; for(var i=0;i<imgs.length;i++){ if(collected.length>=_SEED_MAX||added>=(lim==null?Infinity:lim)) break; var img=imgs[i]; if(!img||!img.url||seenU.has(img.url)) continue; var tk=(img.alt||'').toLowerCase().trim(); if(tk&&seenT.has(tk)) continue; seenU.add(img.url); if(tk) seenT.add(tk); collected.push(img); added++; } }
-  var wi=await _sWiki(wikiTitle); await _sSleep(_SEED_DELAY_MS);
-  if(!wi){ wi=await _sWiki(city+', '+country); await _sSleep(_SEED_DELAY_MS); }
-  if(wi&&!seenU.has(wi.url)){ seenU.add(wi.url); collected.push(wi); }
-  if(collected.length<_SEED_MAX){ add(await _sPexels(city+' '+country,6),3); await _sSleep(_SEED_DELAY_MS); }
-  if(collected.length<_SEED_MAX){ add(await _sPexels(city+' cityscape',5),3); await _sSleep(_SEED_DELAY_MS); }
-  if(collected.length<_SEED_MAX){ add(await _sOpenverse(city+' '+country,6),3); await _sSleep(_SEED_DELAY_MS); }
-  if(collected.length<_SEED_MAX){ add(await _sPixabay(city+' '+country,6),_SEED_MAX-collected.length); await _sSleep(_SEED_DELAY_MS); }
-  return collected.slice(0,_SEED_MAX);
+  function add(imgs,lim){ var added=0; for(var i=0;i<imgs.length;i++){ if(collected.length>=max||added>=(lim==null?Infinity:lim)) break; var img=imgs[i]; if(!img||!img.url||seenU.has(img.url)||_blocked(img)) continue; var tk=(img.alt||'').toLowerCase().trim(); if(tk&&seenT.has(tk)) continue; seenU.add(img.url); if(tk) seenT.add(tk); collected.push(img); added++; } }
+  for(var s=0;s<_CFG.steps.length;s++){
+    if(collected.length>=max) break;
+    var step=_CFG.steps[s];
+    add(await _runStep(step, city, country), step.limit||3);
+    await _sSleep(_CFG.delay_ms);
+  }
+  return collected.slice(0,max);
 }
 
 /* ── Curate progress modal ───────────────────────────────────────────────── */
