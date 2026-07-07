@@ -214,18 +214,27 @@ main{max-width:1100px;margin:0 auto;padding:36px 24px 80px}
 .meta-finding{display:flex;align-items:center;gap:8px;font-size:11px;color:rgba(255,255,255,.6);font-style:italic}
 .spinner-sm{width:13px;height:13px;border:2px solid rgba(255,255,255,.2);border-top-color:var(--cream);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;flex-shrink:0}
 .inner-table tr.selected-row td{background:rgba(184,92,56,.06)}
-.row-sel-badge{font-size:9px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--rust);background:rgba(184,92,56,.12);border:1px solid rgba(184,92,56,.3);border-radius:6px;padding:1px 6px;margin-left:6px;white-space:nowrap}</style>
+.row-sel-badge{font-size:9px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--rust);background:rgba(184,92,56,.12);border:1px solid rgba(184,92,56,.3);border-radius:6px;padding:1px 6px;margin-left:6px;white-space:nowrap}
+.hdr-left{display:flex;align-items:center;gap:22px}
+.hdr-logo-link{display:flex;align-items:center}
+.hdr-logo-img{height:22px;width:auto;display:block}
+.hdr-nav{display:flex;align-items:center;gap:4px}
+.hdr-tab{font-family:var(--sans);font-size:13px;font-weight:600;color:rgba(240,235,224,0.6);text-decoration:none;padding:6px 13px;border-radius:7px;transition:background .14s,color .14s;white-space:nowrap}
+.hdr-tab:hover{color:var(--cream);background:rgba(255,255,255,0.08)}
+.hdr-tab.active{color:var(--cream);background:rgba(255,255,255,0.13)}</style>
 </head>
 <body>
 <header class="hdr">
-  <div class="hdr-brand">
-    <span class="hdr-logo">WhereTo</span>
-    <span class="hdr-sub">Vibes Engine</span>
+  <div class="hdr-left">
+    <a href="/" class="hdr-logo-link" aria-label="WhereTo home"><img class="hdr-logo-img" src="/assets/whereto-logo-white.svg" alt="WhereTo" /></a>
+    <nav class="hdr-nav">
+      <a href="/DestImages/" class="hdr-tab">Destination Images</a>
+      <a href="/vibesimages/" class="hdr-tab">Vibe Images</a>
+      <a href="/vibes-engine/" class="hdr-tab">Vibes Engine</a>
+      <a href="/vibes-engine/dashboard.html" class="hdr-tab active">Vibe Engine Tester</a>
+    </nav>
   </div>
-  <div class="hdr-right">
-    <a href="/vibes-engine/" class="hdr-link">← Review Page</a>
-    <span class="hdr-badge">Internal Dashboard</span>
-  </div>
+  <div class="hdr-right"></div>
 </header>
 <div class="state-bar" id="state-bar">
   <span style="opacity:.35">Select a region to begin</span>

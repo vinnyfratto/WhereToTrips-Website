@@ -104,6 +104,12 @@
   .chip { font-size: 10px; font-weight: 500; letter-spacing: .6px; padding: 4px 10px; border-radius: 20px; background: var(--wg100); color: var(--wg600); border: 1px solid var(--wg200); }
   .chip.win { background: rgba(184,92,56,.08); border-color: rgba(184,92,56,.25); color: var(--rust); }
   .chip.chip-dest { background: var(--navy); border-color: var(--navy); color: #fff; }
+  a.chip-dest-link { text-decoration: none; cursor: pointer; transition: background .12s, border-color .12s; }
+  a.chip-dest-link:hover { background: var(--rust); border-color: var(--rust); }
+  a.dest-cell-link { color: var(--rust); text-decoration: none; border-bottom: 1px dotted rgba(184,92,56,.5); transition: color .12s, border-color .12s; }
+  a.dest-cell-link:hover { color: var(--navy); border-bottom-color: var(--navy); }
+  .modal-manage-link { display: inline-block; margin: 2px 0 14px; font-size: 12px; font-weight: 600; color: var(--rust); text-decoration: none; border: 1.5px solid var(--wg200); border-radius: 20px; padding: 6px 13px; transition: background .12s, border-color .12s, color .12s; }
+  .modal-manage-link:hover { background: var(--rust); border-color: var(--rust); color: #fff; }
 
   /* Jump nav */
   .jump-nav { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 32px; }
@@ -268,6 +274,7 @@
       <a href="/DestImages/" class="hdr-tab">Destination Images</a>
       <a href="/vibesimages/" class="hdr-tab">Vibe Images</a>
       <a href="/vibes-engine/" class="hdr-tab active">Vibes Engine</a>
+      <a href="/vibes-engine/dashboard.html" class="hdr-tab">Vibe Engine Tester</a>
     </nav>
   </div>
   <div class="hdr-right">
@@ -431,6 +438,7 @@
     </div>
     <div class="modal-body">
       <div class="modal-vibe-count" id="modal-vibe-count"></div>
+      <a class="modal-manage-link" id="modal-manage-link" href="#" title="Manage this destination's images">&#9881; Manage images in Destination Images &rarr;</a>
       <div id="modal-vibes"></div>
     </div>
   </div>
@@ -1279,6 +1287,7 @@ function closeImageDetails() {
 }
 
 /* ── Detail ──────────────────────────────────────────────────────── */
+function _normDest(s){ return String(s==null?'':s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim(); }
 function showDetail(key) {
   const v = currentSR && currentSR.vibes.find(x => x.key === key);
   if (!v) return;
@@ -1289,12 +1298,23 @@ function showDetail(key) {
   document.getElementById('det-label').textContent  = v.label;
   document.getElementById('foot-vibe').textContent  = v.label;
 
+  // Map each destination name in this sub-region to its IATA so the ranked-dest
+  // chips can deep-link into /DestImages/?iata=… (the reverse of the vibe chips
+  // on the Destination Images page). Names come from the same body tables, so a
+  // normalized match is reliable; unmatched names fall back to a plain chip.
+  const _iataByName = {};
+  (currentSR.destinations || []).forEach(dd => { if (dd.iata) _iataByName[_normDest(dd.name)] = dd.iata; });
   document.getElementById('det-chips').innerHTML = [
     `<span class="chip win">${esc(v.bestWindow)}</span>`,
     `<span class="chip">${v.wordCount.toLocaleString()} words</span>`,
     `<span class="chip">${v.sourcesCount} sources</span>`,
     `<span class="chip">Researched ${esc(v.lastResearched)}</span>`,
-    ...(v.rankedDests && v.rankedDests.length ? v.rankedDests : v.topDests).map(d => `<span class="chip chip-dest">${esc(d)}</span>`),
+    ...(v.rankedDests && v.rankedDests.length ? v.rankedDests : v.topDests).map(d => {
+      const ia = _iataByName[_normDest(d)];
+      return ia
+        ? `<a class="chip chip-dest chip-dest-link" href="/DestImages/?iata=${encodeURIComponent(ia)}" title="Manage ${esc(d)} images in Destination Images">${esc(d)}</a>`
+        : `<span class="chip chip-dest">${esc(d)}</span>`;
+    }),
   ].join('');
 
   renderGallery(getEditedImages(key));
@@ -1326,6 +1346,24 @@ function showDetail(key) {
       cells[si].innerHTML = `<span style="font-family:var(--serif);font-size:16px;font-weight:600;color:${col}">${n}</span>`;
     });
   });
+
+  // Reverse deep-link: in a vibe's scored ranking table, make each destination
+  // cell open that destination in Destination Images. Reads the IATA straight
+  // from the row's own iata column, so it's reliable (no name matching).
+  bodyEl.querySelectorAll('table').forEach(tbl => {
+    const ths = Array.from(tbl.querySelectorAll('th')).map(th => th.textContent.trim().toLowerCase());
+    const di = ths.indexOf('destination'), ii = ths.indexOf('iata');
+    if (di < 0 || ii < 0) return;
+    tbl.querySelectorAll('tbody tr').forEach(row => {
+      const cells = row.querySelectorAll('td');
+      if (!cells[di] || !cells[ii]) return;
+      const iata = cells[ii].textContent.trim().toUpperCase();
+      if (!/^[A-Z]{3}$/.test(iata)) return;
+      const name = cells[di].textContent.trim();
+      if (!name) return;
+      cells[di].innerHTML = `<a class="dest-cell-link" href="/DestImages/?iata=${encodeURIComponent(iata)}" title="Manage ${esc(name)} images in Destination Images">${esc(name)}</a>`;
+    });
+  });
   bodyEl.querySelectorAll('p').forEach(p => {
     if (/^Confidence:/i.test(p.textContent.trim()))
       p.style.cssText = 'font-size:12px;color:var(--wg500);font-style:italic;margin-top:-8px';
@@ -1347,6 +1385,9 @@ function openDestModal(idx) {
   document.getElementById('modal-country').textContent     = d.country;
   document.getElementById('modal-iata').textContent        = d.iata || '';
   document.getElementById('modal-vibe-count').textContent  = d.vibeCount + ' vibe' + (d.vibeCount !== 1 ? 's' : '') + ' connected';
+  const _ml = document.getElementById('modal-manage-link');
+  if (d.iata) { _ml.href = '/DestImages/?iata=' + encodeURIComponent(d.iata); _ml.style.display = ''; }
+  else { _ml.style.display = 'none'; }
   document.getElementById('modal-vibes').innerHTML = d.vibes.map(v => {
     const col = tierColor(v.tier);
     return `<div class="modal-vibe-row">

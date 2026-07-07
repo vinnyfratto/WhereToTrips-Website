@@ -75,6 +75,8 @@
   .det-region { font-size:10px; font-weight:600; letter-spacing:1.8px; text-transform:uppercase; color:var(--rust); margin-bottom:6px; }
   .det-label { font-family:var(--serif); font-size:34px; line-height:1.2; margin-bottom:6px; }
   .det-meta { font-size:13px; color:var(--wg600); }
+  .det-engine-link { display:inline-block; margin-top:12px; font-size:12px; font-weight:600; color:var(--rust); text-decoration:none; border:1.5px solid var(--wg200); border-radius:20px; padding:5px 13px; transition:background .12s, border-color .12s, color .12s; }
+  .det-engine-link:hover { background:var(--rust); border-color:var(--rust); color:#fff; }
 
   .admin-bar { display:flex; align-items:center; gap:10px; padding:2px 0 18px; flex-wrap:wrap; }
   .admin-bar-label { font-size:10px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; color:var(--rust); }
@@ -167,6 +169,7 @@
       <a href="/DestImages/" class="hdr-tab">Destination Images</a>
       <a href="/vibesimages/" class="hdr-tab active">Vibe Images</a>
       <a href="/vibes-engine/" class="hdr-tab">Vibes Engine</a>
+      <a href="/vibes-engine/dashboard.html" class="hdr-tab">Vibe Engine Tester</a>
     </nav>
   </div>
   <div class="hdr-right">
@@ -205,6 +208,7 @@
         <div class="det-region" id="det-region"></div>
         <div class="det-label" id="det-label"></div>
         <div class="det-meta" id="det-meta"></div>
+        <a class="det-engine-link" id="det-engine-link" href="#" title="Open this vibe in the Vibes Engine">&#9881; View ranking &amp; blog in the Vibes Engine &rarr;</a>
       </div>
       <button class="curate-btn" id="curate-vibe-btn" onclick="runCurateVibe()">&#x26A1; Fetch images</button>
     </div>
@@ -398,6 +402,7 @@ function showDetail(k){
   document.getElementById('det-region').textContent=String(v._sr.region).toUpperCase()+' \u203A '+String(v._sr.subregion).toUpperCase();
   document.getElementById('det-label').textContent=v.label;
   document.getElementById('det-meta').textContent=(v.dests&&v.dests.length?v.dests.slice(0,4).join('  \u00B7  '):'No top destinations listed');
+  document.getElementById('det-engine-link').href='/vibes-engine/?sr='+encodeURIComponent(v._sr.srKey)+'&vibe='+encodeURIComponent(v.key);
   renderGallery(getEditedImages(k));
   document.getElementById('grid-view').classList.add('hidden');
   document.getElementById('detail-view').classList.remove('hidden');
