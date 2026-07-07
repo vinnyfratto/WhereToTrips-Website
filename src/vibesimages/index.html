@@ -291,11 +291,12 @@ var _SEED_MAX = 8, _SEED_MIN = 1, _SEED_DELAY_MS = 380;
 var _DEFAULT_CFG = {
   max_images:_SEED_MAX, min_images:_SEED_MIN, delay_ms:_SEED_DELAY_MS,
   steps:[
-    { source:'pexels',    query:'{dest} {vibe}',      limit:2 },
-    { source:'pexels',    query:'{dest}',             limit:2 },
-    { source:'openverse', query:'{dest} {vibe}',      limit:2 },
-    { source:'pixabay',   query:'{dest} {subregion}', limit:2 },
-    { source:'wikipedia', query:'{dest}',             limit:1 },
+    { source:'pexels',    query:'{vibe} {subregion}', limit:2 },
+    { source:'pexels',    query:'{vibe}',             limit:2 },
+    { source:'openverse', query:'{vibe} {subregion}', limit:2 },
+    { source:'pixabay',   query:'{vibe} {subregion}', limit:2 },
+    { source:'pexels',    query:'{dest} {vibe}',      limit:1 },
+    { source:'wikipedia', query:'{vibe}',             limit:1 },
   ],
   block_terms:[], pexels_size:'medium', pixabay_category:'', orientation:'landscape', wiki_skip_portrait:true,
 };
@@ -557,8 +558,8 @@ async function _sendCurateEmail(region, subregion, results){
 var _setSteps=[];
 function openSettings(){ _setSteps=JSON.parse(JSON.stringify(_CFG.steps||[])); document.getElementById('set-max').value=_CFG.max_images; document.getElementById('set-delay').value=_CFG.delay_ms; document.getElementById('set-ori').value=_CFG.orientation||'landscape'; document.getElementById('set-psize').value=_CFG.pexels_size||''; document.getElementById('set-pcat').value=_CFG.pixabay_category||''; document.getElementById('set-wiki').checked=_CFG.wiki_skip_portrait!==false; document.getElementById('set-block').value=(_CFG.block_terms||[]).join(', '); document.getElementById('set-status').textContent=''; renderSettingsSteps(); document.getElementById('settings-overlay').classList.remove('hidden'); document.body.style.overflow='hidden'; }
 function closeSettings(){ document.getElementById('settings-overlay').classList.add('hidden'); document.body.style.overflow=''; }
-function renderSettingsSteps(){ var SRC=['wikipedia','pexels','openverse','pixabay']; document.getElementById('set-steps').innerHTML=_setSteps.map(function(s,i){ var opts=SRC.map(function(o){ return '<option value="'+o+'"'+(s.source===o?' selected':'')+'>'+o+'</option>'; }).join(''); return '<div class="set-step"><select onchange="_setSteps['+i+'].source=this.value">'+opts+'</select><input class="sq" type="text" value="'+esc(s.query||'')+'" oninput="_setSteps['+i+'].query=this.value" placeholder="{dest} {vibe}" /><input class="sl" type="number" min="1" max="10" value="'+(s.limit||3)+'" oninput="_setSteps['+i+'].limit=parseInt(this.value)||1" /><button onclick="settingsMove('+i+',-1)">&#8593;</button><button onclick="settingsMove('+i+',1)">&#8595;</button><button onclick="settingsDel('+i+')">&times;</button></div>'; }).join('')||'<div style="font-size:12px;color:var(--wg500);font-style:italic;margin-bottom:8px">No steps — add one below.</div>'; }
-function settingsAddStep(){ _setSteps.push({ source:'pexels', query:'{dest} {vibe}', limit:2 }); renderSettingsSteps(); }
+function renderSettingsSteps(){ var SRC=['wikipedia','pexels','openverse','pixabay']; document.getElementById('set-steps').innerHTML=_setSteps.map(function(s,i){ var opts=SRC.map(function(o){ return '<option value="'+o+'"'+(s.source===o?' selected':'')+'>'+o+'</option>'; }).join(''); return '<div class="set-step"><select onchange="_setSteps['+i+'].source=this.value">'+opts+'</select><input class="sq" type="text" value="'+esc(s.query||'')+'" oninput="_setSteps['+i+'].query=this.value" placeholder="{vibe} {subregion}" /><input class="sl" type="number" min="1" max="10" value="'+(s.limit||3)+'" oninput="_setSteps['+i+'].limit=parseInt(this.value)||1" /><button onclick="settingsMove('+i+',-1)">&#8593;</button><button onclick="settingsMove('+i+',1)">&#8595;</button><button onclick="settingsDel('+i+')">&times;</button></div>'; }).join('')||'<div style="font-size:12px;color:var(--wg500);font-style:italic;margin-bottom:8px">No steps — add one below.</div>'; }
+function settingsAddStep(){ _setSteps.push({ source:'pexels', query:'{vibe} {subregion}', limit:2 }); renderSettingsSteps(); }
 function settingsDel(i){ _setSteps.splice(i,1); renderSettingsSteps(); }
 function settingsMove(i,dir){ var j=i+dir; if(j<0||j>=_setSteps.length) return; var t=_setSteps[i]; _setSteps[i]=_setSteps[j]; _setSteps[j]=t; renderSettingsSteps(); }
 function settingsReset(){ _setSteps=JSON.parse(JSON.stringify(_DEFAULT_CFG.steps)); document.getElementById('set-max').value=_DEFAULT_CFG.max_images; document.getElementById('set-delay').value=_DEFAULT_CFG.delay_ms; document.getElementById('set-ori').value='landscape'; document.getElementById('set-psize').value='medium'; document.getElementById('set-pcat').value=''; document.getElementById('set-wiki').checked=true; document.getElementById('set-block').value=''; document.getElementById('set-status').textContent='Defaults loaded — click Save to apply.'; renderSettingsSteps(); }
