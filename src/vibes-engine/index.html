@@ -560,6 +560,42 @@ var _SEED_MAX      = 12;
 var _SEED_GEO_FREE = 3;
 var _SEED_DELAY_MS = 380;
 
+// ── Config-driven fetch — reads the shared vibe_image_fetch_config table so the
+//    Vibes Engine fetches with the SAME steps/tokens/knobs as /vibesimages/ and
+//    the same table pattern as /DestImages/. Edit it from the Vibe Images gear
+//    panel (or the table) and both vibe pages pick it up. Falls back to
+//    _DEFAULT_CFG when the row is missing/empty, so fetching can't be broken. ──
+var _KNOWN_SRC = { wikipedia:1, pexels:1, openverse:1, pixabay:1 };
+var _DEFAULT_CFG = {
+  max_images:8, min_images:1, delay_ms:380,
+  steps:[
+    { source:'pexels',    query:'{vibe} {subregion}', limit:2 },
+    { source:'pexels',    query:'{vibe}',             limit:2 },
+    { source:'openverse', query:'{vibe} {subregion}', limit:2 },
+    { source:'pixabay',   query:'{vibe} {subregion}', limit:2 },
+    { source:'pexels',    query:'{dest} {vibe}',      limit:1 },
+    { source:'wikipedia', query:'{vibe}',             limit:1 },
+  ],
+  block_terms:[], pexels_size:'medium', pixabay_category:'', orientation:'landscape', wiki_skip_portrait:true,
+};
+var _CFG = _DEFAULT_CFG;
+async function _loadFetchCfg() {
+  if(!_SUPA_URL||!_SUPA_ANON) return;
+  try {
+    var r=await fetch(_SUPA_URL+'/rest/v1/vibe_image_fetch_config?id=eq.1&select=*',{headers:{apikey:_SUPA_ANON,Authorization:'Bearer '+_SUPA_ANON}});
+    if(!r.ok) return;
+    var c=(await r.json())[0]; if(!c) return;
+    var steps=Array.isArray(c.steps)?c.steps.filter(function(s){return s&&_KNOWN_SRC[s.source]&&s.query;}):[];
+    if(!steps.length) return;
+    _CFG={max_images:c.max_images||8,min_images:c.min_images||1,delay_ms:c.delay_ms||380,steps:steps,block_terms:(c.block_terms||[]).map(function(t){return String(t).toLowerCase().trim();}).filter(Boolean),pexels_size:c.pexels_size||'',pixabay_category:c.pixabay_category||'',orientation:c.orientation||'any',wiki_skip_portrait:c.wiki_skip_portrait!==false};
+  } catch(e){}
+}
+function _oriParam(sep){ return (_CFG.orientation&&_CFG.orientation!=='any')?sep+'orientation='+encodeURIComponent(_CFG.orientation):''; }
+function _shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+function _interp(t,ctx){ return String(t).replace(/\{vibe\}/gi,ctx.vibe||'').replace(/\{dest\}/gi,ctx.dest||'').replace(/\{region\}/gi,ctx.region||'').replace(/\{subregion\}/gi,ctx.subregion||'').replace(/\{[a-z0-9_]+\}/gi,'').replace(/\s{2,}/g,' ').replace(/^[\s,]+|[\s,]+$/g,'').trim(); }
+function _blocked(img){ if(!_CFG.block_terms||!_CFG.block_terms.length) return false; var t=((img.alt||'')+' '+(img.title||'')).toLowerCase(); for(var i=0;i<_CFG.block_terms.length;i++){ if(t.indexOf(_CFG.block_terms[i])!==-1) return true; } return false; }
+function _randDest(v){ var ds=v.topDests||[]; return ds.length?_sCleanWiki(ds[Math.floor(Math.random()*ds.length)]):''; }
+
 var _S_STOP = new Set(['and','the','its','for','with','via','from','into','over','under','travel','best','top']);
 var _S_ACT  = new Set(['whale','shark','surf','dive','diving','scuba','snorkel','snorkeling','hike','hiking','walk','walks','trek','trekking','swim','kite','wine','food','music','art','culture','luxury','spa','thermal','watching','stargazing','carnival','festival','cuisine','seafood','resort','stays','escapes','summit','volcanic','volcano','levada','crater','lake','lakes','garden','gardens','peak','peaks','beaches','dunes','resorts','pools','cliffs']);
 var _S_GEN  = new Set(['atlantic','ocean','sea','island','islands','reserve','museum','region','europe','world','nature','beach','mountain','river','coast','water','marine','tropical','national','sites','dives','palms','view','photo','landscape','palace','castle','cathedral','church','temple','monastery','fountain','square']);
@@ -618,7 +654,8 @@ async function _sOvToken() {
 async function _sPexels(q,lim) {
   _apiCalls.pexels++;
   try {
-    var r=await fetch('https://api.pexels.com/v1/search?query='+encodeURIComponent(q)+'&orientation=landscape&per_page='+lim+'&size=medium',{headers:{Authorization:_PEXELS_KEY}});
+    var sz=_CFG.pexels_size?'&size='+encodeURIComponent(_CFG.pexels_size):'';
+    var r=await fetch('https://api.pexels.com/v1/search?query='+encodeURIComponent(q)+_oriParam('&')+'&per_page='+lim+sz,{headers:{Authorization:_PEXELS_KEY}});
     if(!r.ok) return [];
     var d=await r.json();
     return (d.photos||[]).map(function(p){return{url:p.src.large2x||p.src.large,thumb:p.src.medium,alt:p.alt||q,source:'pexels',photographer:p.photographer,photographer_url:p.photographer_url,width:p.width,height:p.height,pexels_id:String(p.id)};});
@@ -628,7 +665,7 @@ async function _sOpenverse(q,lim) {
   _apiCalls.openverse++;
   try {
     var tok=await _sOvToken(), hdrs=tok?{Authorization:'Bearer '+tok}:{};
-    var r=await fetch('https://api.openverse.org/v1/images/?q='+encodeURIComponent(q)+'&page_size='+lim+'&license_type=commercial&orientation=landscape',{headers:hdrs});
+    var r=await fetch('https://api.openverse.org/v1/images/?q='+encodeURIComponent(q)+'&page_size='+lim+'&license_type=commercial'+_oriParam('&'),{headers:hdrs});
     if(!r.ok) return [];
     var d=await r.json();
     return (d.results||[]).map(function(p){return{url:p.url,thumb:p.thumbnail,alt:p.title||q,source:'openverse',creator:p.creator||'',creator_url:p.creator_url||'',license:'CC '+(p.license||'').toUpperCase()+' '+(p.license_version||''),license_url:p.license_url||'',openverse_id:p.id};});
@@ -638,7 +675,9 @@ async function _sPixabay(q,lim) {
   if(!_PIXABAY_KEY) return [];
   _apiCalls.pixabay++;
   try {
-    var r=await fetch('https://pixabay.com/api/?key='+_PIXABAY_KEY+'&q='+encodeURIComponent(q)+'&image_type=photo&orientation=horizontal&per_page='+lim+'&safesearch=true&lang=en');
+    var ori=_CFG.orientation==='portrait'?'vertical':(_CFG.orientation==='landscape'?'horizontal':'all');
+    var cat=_CFG.pixabay_category?'&category='+encodeURIComponent(_CFG.pixabay_category):'';
+    var r=await fetch('https://pixabay.com/api/?key='+_PIXABAY_KEY+'&q='+encodeURIComponent(q)+'&image_type=photo&orientation='+ori+cat+'&per_page='+Math.max(3,lim)+'&safesearch=true&lang=en');
     if(!r.ok) return [];
     var d=await r.json();
     return (d.hits||[]).map(function(p){return{url:p.largeImageURL,thumb:p.webformatURL,alt:p.tags||q,source:'pixabay',pixabay_id:String(p.id),width:p.imageWidth,height:p.imageHeight};});
@@ -654,64 +693,40 @@ async function _sWiki(dest) {
     var th=pages[0].thumbnail&&pages[0].thumbnail.source; if(!th) return null;
     if(/disambig|_map\b|flag_of|\.svg|logo|icon|coat.of.arms/i.test(th)) return null;
     var w=pages[0].thumbnail.width, h=pages[0].thumbnail.height;
-    if(h&&w&&h>w) return null;
+    if(_CFG.wiki_skip_portrait&&h&&w&&h>w) return null;
     return {url:th.replace(/\/\d+px-/,'/900px-'),thumb:th,source:'wikipedia',alt:pages[0].title||dest,title:pages[0].title||dest,wiki_page:'https://en.wikipedia.org/wiki/'+encodeURIComponent(pages[0].title||dest),width:w||null,height:h||null};
   } catch(e){return null;}
 }
 
+// One config step -> images. {vibe}/{dest}/{region}/{subregion} tokens; a wider
+// pool is pulled then shuffled so re-fetching returns different images.
+async function _runStep(step, v) {
+  var ctx={ vibe:v.label, region:v.region, subregion:v.subregion, dest:_randDest(v) };
+  var q=_interp(step.query, ctx); if(!q) return [];
+  var pool=Math.max(15,(step.limit||3)*4);
+  if(step.source==='wikipedia'){ var w=await _sWiki(q); return w?[w]:[]; }
+  if(step.source==='pexels') return _shuffle(await _sPexels(q,pool));
+  if(step.source==='openverse') return _shuffle(await _sOpenverse(q,pool));
+  if(step.source==='pixabay') return _shuffle(await _sPixabay(q,pool));
+  return [];
+}
 async function _sFetchVibe(vibe) {
-  var tops=vibe.topDests||[], sep=_sSepTerms(vibe), pl=sep.pl, th=sep.th;
-  var ctx=_sBuildCtx(vibe), firstDest=_sCleanWiki(tops[0]||''), PCAP=5;
-  var collected=[], seenU=new Set(), seenT=new Set();
-  function add(imgs, lim, reqSig) {
-    var added=0;
-    for (var i=0;i<imgs.length;i++) {
-      if(added>=(lim==null?Infinity:lim)) break;
-      var img=imgs[i]; if(!img||!img.url||seenU.has(img.url)) continue;
+  var max=_CFG.max_images, collected=[], seenU=new Set(), seenT=new Set();
+  function add(imgs, lim) {
+    var a=0;
+    for(var i=0;i<imgs.length;i++){
+      if(collected.length>=max||a>=(lim==null?Infinity:lim)) break;
+      var img=imgs[i]; if(!img||!img.url||seenU.has(img.url)||_blocked(img)) continue;
       var tk=(img.alt||'').toLowerCase().trim(); if(tk&&seenT.has(tk)) continue;
-      if(!_sGeoGate(img.alt,ctx)) continue;
-      if((reqSig||collected.length>=_SEED_GEO_FREE)&&!_sGeoSignal(img.alt,ctx)) continue;
-      seenU.add(img.url); if(tk) seenT.add(tk); collected.push(img); added++;
+      seenU.add(img.url); if(tk) seenT.add(tk); collected.push(img); a++;
     }
   }
-  // Pexels geo queries
-  if(pl.length) {
-    add(await _sPexels(pl.join(' '),6),3); await _sSleep(_SEED_DELAY_MS);
-    if(th.length&&collected.length<PCAP){add(await _sPexels(pl.join(' ')+' '+th[0],5),PCAP-collected.length); await _sSleep(_SEED_DELAY_MS);}
+  for(var s=0;s<_CFG.steps.length;s++){
+    if(collected.length>=max) break;
+    add(await _runStep(_CFG.steps[s], vibe), _CFG.steps[s].limit||3);
+    await _sSleep(_CFG.delay_ms);
   }
-  if(firstDest&&th.length&&collected.length<PCAP) {
-    var dl=firstDest.toLowerCase();
-    if(!pl.some(function(p){return dl.startsWith(p);})){add(await _sPexels(firstDest+' '+th.slice(0,2).join(' '),5),PCAP-collected.length); await _sSleep(_SEED_DELAY_MS);}
-  }
-  // Openverse
-  if(collected.length<_SEED_MAX){
-    var oq1=pl.length?(pl.join(' ')+' '+th.slice(0,1).join(' ')).trim():(firstDest+' '+th.slice(0,2).join(' ')).trim();
-    if(oq1.length>4){add(await _sOpenverse(oq1,6),3,true); await _sSleep(_SEED_DELAY_MS);}
-  }
-  if(collected.length<_SEED_MAX&&th.length){add(await _sOpenverse((th.slice(0,2).join(' ')+' '+(firstDest||vibe.subregion)).trim(),6),2,true); await _sSleep(_SEED_DELAY_MS);}
-  // Blog-content Openverse pass
-  if(collected.length<_SEED_MAX&&vibe.body) {
-    var bp=_sBlogTerms(vibe.body), bth=th.slice(0,1).join(' ');
-    for(var bi=0;bi<Math.min(bp.length,4);bi++){
-      if(collected.length>=_SEED_MAX) break;
-      var bplace=bp[bi]; if(pl.indexOf(bplace)!==-1||_sNorm(firstDest).indexOf(bplace)!==-1) continue;
-      add(await _sOpenverse(bth?bplace+' '+bth:bplace,5),2,true); await _sSleep(_SEED_DELAY_MS);
-    }
-  }
-  // Wikipedia
-  for(var di=0;di<Math.min(tops.length,2);di++){
-    var wt=_sCleanWiki(tops[di]); if(!wt||wt.split(/\s+/).length>3||wt.length<4) continue;
-    var wi=await _sWiki(wt); await _sSleep(_SEED_DELAY_MS);
-    if(wi&&!seenU.has(wi.url)&&_sGeoGate(wi.alt,ctx)){seenU.add(wi.url); collected.push(wi);}
-  }
-  // Pixabay fill
-  if(collected.length<_SEED_MAX){
-    var pbq=pl.length?(pl.join(' ')+' '+th.slice(0,1).join(' ')).trim():(firstDest+' '+th.slice(0,1).join(' ')).trim();
-    if(pbq.length>3){add(await _sPixabay(pbq,8),_SEED_MAX-collected.length,true); await _sSleep(_SEED_DELAY_MS);}
-  }
-  // Theme fallback
-  if(collected.length<_SEED_MIN&&th.length){add(await _sPexels(th.slice(0,2).join(' ')+' '+vibe.subregion,8),_SEED_MAX-collected.length);}
-  return collected.slice(0,_SEED_MAX);
+  return collected;
 }
 
 // ── Curation UI helpers ─────────────────────────────────────────────────────
@@ -1314,6 +1329,7 @@ window.addEventListener('popstate', e => {
 
 /* ── Init ────────────────────────────────────────────────────────── */
 renderSelector();
+_loadFetchCfg(); // fire-and-forget: load shared vibe_image_fetch_config before any curate
 const params = new URLSearchParams(location.search);
 const initSR   = params.get('sr')   || (SUBREGIONS[0] && SUBREGIONS[0].key);
 const initVibe = params.get('vibe');
