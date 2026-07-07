@@ -66,9 +66,16 @@
   .dcard-meta { display:flex; justify-content:space-between; gap:8px; margin-top:9px; padding-top:8px; border-top:1px solid var(--wg200); font-size:10px; font-weight:700; letter-spacing:.3px; color:var(--wg500); }
   .dcard-meta span:first-child { color:var(--rust); }
 
-  .curate-btn { font-size:12px; font-family:var(--sans); font-weight:700; padding:9px 18px; border-radius:8px; border:none; background:var(--rust); color:#fff; cursor:pointer; transition:opacity .12s; white-space:nowrap; flex-shrink:0; align-self:flex-start; }
+  .curate-btn { font-size:12px; font-family:var(--sans); font-weight:700; padding:9px 18px; border-radius:8px; border:none; background:var(--rust); color:#fff; cursor:pointer; transition:opacity .12s,background .12s; white-space:nowrap; flex-shrink:0; align-self:flex-start; }
   .curate-btn:hover:not(:disabled) { opacity:.82; }
   .curate-btn:disabled, .curate-btn.busy { opacity:.45; cursor:wait; }
+  .curate-btn-col { display:flex; flex-direction:column; gap:8px; align-items:flex-end; flex-shrink:0; }
+  .curate-btn.ai { background:var(--navy); }
+  .curate-btn.ai:hover:not(:disabled) { background:var(--navy-lt); opacity:1; }
+  .curate-btn.ghost { background:var(--card); color:var(--wg600); border:1.5px solid var(--wg300); font-weight:600; }
+  .curate-btn.ghost:hover:not(:disabled) { background:var(--wg100); opacity:1; }
+  .img-ai-badge { position:absolute; top:8px; right:8px; background:rgba(28,54,73,.85); color:#fff; font-size:9px; font-weight:700; letter-spacing:.3px; padding:3px 7px; border-radius:10px; pointer-events:none; transition:opacity .14s; }
+  .img-thumb:hover .img-ai-badge { opacity:0; }
 
   /* Back + detail header */
   .back { display:inline-flex; align-items:center; gap:8px; background:none; border:none; cursor:pointer; font-family:var(--sans); font-size:11px; font-weight:600; letter-spacing:1.4px; text-transform:uppercase; color:var(--rust); padding:0; margin-bottom:24px; transition:opacity .15s; }
@@ -237,7 +244,10 @@
         <h1 class="section-title" id="grid-title">Loading…</h1>
         <p class="section-sub" id="grid-sub">Fetching destinations from Supabase.</p>
       </div>
-      <button class="curate-btn" id="curate-all-btn" onclick="runCurateSub()">&#x26A1; Fetch images for empty destinations</button>
+      <div class="curate-btn-col">
+        <button class="curate-btn ai" id="ai-curate-all-btn" onclick="runAICurateSub()">&#10024; AI Curate Sub-Region</button>
+        <button class="curate-btn ghost" id="curate-all-btn" onclick="runCurateSub()">&#x26A1; Fetch empties (no AI)</button>
+      </div>
     </div>
     <div class="dgrid" id="dest-grid"></div>
   </div>
@@ -256,7 +266,10 @@
         <div class="det-vibes" id="det-vibes"></div>
         <div class="det-hero-note">Image <b>#1</b> is the hero shown in the app. Drag to reorder; the new #1 updates the app automatically.</div>
       </div>
-      <button class="curate-btn" id="curate-dest-btn" onclick="runCurateDest()">&#x26A1; Fetch 1–5 images</button>
+      <div class="curate-btn-col">
+        <button class="curate-btn ai" id="ai-curate-dest-btn" onclick="runAICurateDest()">&#10024; AI Curate</button>
+        <button class="curate-btn ghost" id="curate-dest-btn" onclick="runCurateDest()">&#x26A1; Fetch only (no AI)</button>
+      </div>
     </div>
     <div class="admin-bar">
       <span class="admin-bar-label">&#x270E; Admin</span>
@@ -644,11 +657,12 @@ function renderGallery(images){
     var thumb=esc(img.thumb||img.url||''), alt=esc(img.alt||'');
     var label=_SRC_LABELS[img.source]||esc(img.source||'Photo');
     var hero=i===0?'<span class="img-hero-badge">Hero</span>':'';
+    var aibadge=(img.ai&&img.ai.quality!=null)?'<span class="img-ai-badge" title="'+esc(img.ai.reason||'')+'">&#10024; '+img.ai.quality+'</span>':'';
     var trash='<button class="img-trash-btn" onclick="event.stopPropagation();deleteImage('+i+')" title="Remove">&#128465;</button>';
     var drag=' draggable="true" ondragstart="onDragStart(event,'+i+')" ondragend="onDragEnd(event)" ondragover="onDragOver(event,'+i+')" ondrop="onDrop(event,'+i+')"';
     return '<div class="img-thumb admin-draggable"'+drag+' onclick="openLightbox('+i+')" title="'+alt+'">'
       +'<img src="'+thumb+'" alt="'+alt+'" loading="lazy" onerror="this.parentElement.style.opacity=0.35" />'
-      +hero+'<span class="img-source-stamp">'+label+'</span>'+trash
+      +hero+aibadge+'<span class="img-source-stamp">'+label+'</span>'+trash
       +'<button class="img-details-btn" onclick="event.stopPropagation();openImageDetails('+i+')">Details</button></div>';
   }).join('');
   html+='<div class="img-add-card" onclick="openAddImageModal()"><div class="img-add-icon">+</div><div class="img-add-label">Add Image</div></div>';
@@ -751,6 +765,16 @@ function openImageDetails(idx){
   document.getElementById('img-details-source-sub').textContent=srcLabel+(idx===0?' · Hero':'');
   document.getElementById('img-details-thumb').src=img.thumb||img.url||'';
   var rows=[];
+  if(img.ai){
+    var a=img.ai, flags=[];
+    if(a.hero) flags.push('hero pick');
+    if(a.textlogo) flags.push('has text/logo');
+    if(a.standard===false) flags.push('non-photo');
+    if(a.relevant===false) flags.push('off-topic');
+    if(a.personSubject) flags.push('person is subject');
+    rows.push(['AI quality',(a.quality==null?'&mdash;':a.quality+' / 100')+(flags.length?'  &middot;  '+esc(flags.join(', ')):'')]);
+    if(a.reason) rows.push(['AI verdict',esc(a.reason)]);
+  }
   if(img.source) rows.push(['Source',srcLabel]);
   if(img.alt) rows.push(['Description',esc(img.alt)]);
   if(img.photographer) rows.push(['Photographer', img.photographer_url?'<a href="'+esc(img.photographer_url)+'" target="_blank" rel="noopener">'+esc(img.photographer)+'</a>':esc(img.photographer)]);
@@ -854,8 +878,8 @@ function submitAddImage(){
 }
 
 /* ── Image fetch engine (same sources as the vibe engine; metadata identical) */
-var _apiCalls={pexels:0,openverse:0,pixabay:0,wikipedia:0};
-function _resetApi(){ _apiCalls={pexels:0,openverse:0,pixabay:0,wikipedia:0}; }
+var _apiCalls={pexels:0,openverse:0,pixabay:0,wikipedia:0,curate:0};
+function _resetApi(){ _apiCalls={pexels:0,openverse:0,pixabay:0,wikipedia:0,curate:0}; }
 var _sSleep=function(ms){ return new Promise(function(r){ setTimeout(r,ms); }); };
 function _sCleanWiki(dest){ return dest.replace(/\s*&\s*.+$/,'').replace(/\s*,.*$/,'').replace(/\s*\([^)]*\)/g,'').replace(/\s+the\s+.+/i,'').trim(); }
 
@@ -930,8 +954,8 @@ async function _runStep(step, city, country, state, iata){
   if(step.source==='pixabay')   return _shuffle(await _sPixabay(q, pool));
   return [];
 }
-async function _sFetchDest(d){
-  var city=d.city, country=d.country, max=_CFG.max_images;
+async function _sFetchDest(d, maxOverride){
+  var city=d.city, country=d.country, max=maxOverride||_CFG.max_images;
   var collected=[], seenU=new Set(), seenT=new Set();
   function add(imgs,lim){ var added=0; for(var i=0;i<imgs.length;i++){ if(collected.length>=max||added>=(lim==null?Infinity:lim)) break; var img=imgs[i]; if(!img||!img.url||seenU.has(img.url)||_rejected.has(img.url)||_blocked(img)) continue; var tk=(img.alt||'').toLowerCase().trim(); if(tk&&seenT.has(tk)) continue; seenU.add(img.url); if(tk) seenT.add(tk); collected.push(img); added++; } }
   for(var s=0;s<_CFG.steps.length;s++){
@@ -950,7 +974,7 @@ function _cLog(label,count){ var cls=count>=3?'curate-log-good':count>=1?'curate
 function _cSetBar(done,total){ document.getElementById('curate-progress-bar').style.width=Math.round(done/total*100)+'%'; document.getElementById('curate-progress-status').textContent=done+' / '+total; }
 function _cSetStatus(msg){ document.getElementById('curate-progress-status').textContent=msg; }
 function _cClose(){ document.getElementById('curate-overlay').classList.add('hidden'); document.body.style.overflow=''; }
-function _cSetBtns(busy){ ['curate-all-btn','curate-dest-btn'].forEach(function(id){ var b=document.getElementById(id); if(!b) return; b.disabled=busy; if(busy) b.classList.add('busy'); else b.classList.remove('busy'); }); }
+function _cSetBtns(busy){ ['curate-all-btn','curate-dest-btn','ai-curate-all-btn','ai-curate-dest-btn'].forEach(function(id){ var b=document.getElementById(id); if(!b) return; b.disabled=busy; if(busy) b.classList.add('busy'); else b.classList.remove('busy'); }); }
 
 /* ── Curate a single destination (append, non-destructive; no email) ─────── */
 async function runCurateDest(){
@@ -992,21 +1016,152 @@ async function runCurateSub(){
   setTimeout(_cClose,3500); _cSetBtns(false); _curating=false;
 }
 
+/* ── AI curation (server-side Claude vision via the curate-image edge fn) ────
+   Fetch a WIDE candidate pool, hand every image to Claude in one call, keep only
+   the images it approves, ordered hero-first by quality. The Anthropic key lives
+   in a Supabase secret — never in this page — so all vision runs go through the
+   edge function. ─────────────────────────────────────────────────────────────*/
+var _AI_POOL = 14;   // candidates fetched per destination for the model to choose from
+async function _aiCurate(dest, candidates){
+  _apiCalls.curate++;
+  var payload={
+    destination:{ city:dest.city, country:dest.country, state:dest.state||'', region:dest.gr||'' },
+    max_keep:_CFG.max_images,
+    images:candidates.map(function(im){ return { url:(im.thumb||im.url), alt:im.alt||'', source:im.source||'' }; })
+  };
+  var r=await fetch(_SUPA_URL+'/functions/v1/curate-image',{method:'POST',headers:{'Content-Type':'application/json',apikey:_SUPA_ANON,Authorization:'Bearer '+_SUPA_ANON},body:JSON.stringify(payload)});
+  if(!r.ok){ var t=''; try { t=await r.text(); } catch(e){} throw new Error('HTTP '+r.status+(t?': '+t.slice(0,140):'')); }
+  var d=await r.json();
+  if(!d||d.ok===false) throw new Error((d&&d.error)||'curation failed');
+  return d.verdicts||[];
+}
+// Attach each verdict to its candidate, then return the KEPT set ordered
+// hero-first, quality desc, capped to max_images. Dropped candidates keep their
+// .ai so the progress log can explain WHY they were culled.
+function _applyVerdicts(candidates, verdicts, maxKeep){
+  var byIdx={}; verdicts.forEach(function(v){ byIdx[v.index]=v; });
+  var kept=[];
+  candidates.forEach(function(im,i){
+    var v=byIdx[i]; if(!v) return;
+    im.ai={ quality:(v.quality==null?null:v.quality), reason:v.reason||'', hero:!!v.hero, keep:!!v.keep,
+      relevant:v.relevant!==false, standard:v.standard_photo!==false, textlogo:!!v.has_text_or_logo, personSubject:!!v.person_is_subject };
+    if(v.keep) kept.push(im);
+  });
+  kept.sort(function(a,b){ var ah=(a.ai&&a.ai.hero)?1:0, bh=(b.ai&&b.ai.hero)?1:0; if(ah!==bh) return bh-ah; return ((b.ai&&b.ai.quality)||0)-((a.ai&&a.ai.quality)||0); });
+  return kept.slice(0, maxKeep||kept.length);
+}
+function _dropSummary(pool, kept){
+  var keptU={}; kept.forEach(function(x){ keptU[x.url]=1; });
+  var off=0,txt=0,por=0,nph=0,low=0,unk=0;
+  pool.forEach(function(im){
+    if(keptU[im.url]) return; var a=im.ai;
+    if(!a){ unk++; return; }
+    if(a.relevant===false) off++; else if(a.textlogo) txt++; else if(a.standard===false) nph++; else if(a.personSubject) por++; else low++;
+  });
+  var p=[]; if(off)p.push(off+' off-topic'); if(txt)p.push(txt+' text/logo'); if(nph)p.push(nph+' non-photo'); if(por)p.push(por+' portrait'); if(low)p.push(low+' low-qual'); if(unk)p.push(unk+' unreadable');
+  return p.join(', ');
+}
+function _cLogAI(label, kept, dropped, note){
+  var cls=kept>=3?'curate-log-good':kept>=1?'curate-log-warn':'curate-log-bad';
+  var el=document.getElementById('curate-progress-log');
+  var lbl=esc(label); if(dropped) lbl+=' <span style="opacity:.6">&middot; dropped '+dropped+(note?' ('+esc(note)+')':'')+'</span>';
+  el.innerHTML+='<div class="curate-log-row '+cls+'"><span class="curate-log-label">'+lbl+'</span><span class="curate-log-count">'+kept+' kept</span></div>';
+  el.scrollTop=el.scrollHeight;
+}
+// Build the merged, deduped candidate pool for a destination (existing gallery +
+// a fresh wide fetch) so re-curation can rescue good existing images and add new.
+async function _aiPoolFor(d){
+  var existing=getEditedImages(d.id).slice();
+  var fresh=await _sFetchDest(d, _AI_POOL);
+  var pool=[], seen={};
+  existing.concat(fresh).forEach(function(im){ if(im&&im.url&&!seen[im.url]){ seen[im.url]=1; pool.push(im); } });
+  return pool;
+}
+
+/* ── AI-curate a single destination (fetch + curate in one pass) ──────────── */
+async function runAICurateDest(){
+  if(_curating||!currentDest) return;
+  _curating=true; _cSetBtns(true); _resetApi();
+  _cOpen('AI curating: '+currentDest.city);
+  try {
+    _cSetStatus('Fetching candidate photos…');
+    var pool=await _aiPoolFor(currentDest);
+    if(!pool.length){ _cSetStatus('No candidate photos found for '+currentDest.city+'.'); _cSetBar(1,1); setTimeout(_cClose,2200); _cSetBtns(false); _curating=false; return; }
+    _cSetStatus('Claude is reviewing '+pool.length+' images…');
+    var verdicts=await _aiCurate(currentDest, pool);
+    var curated=_applyVerdicts(pool, verdicts, _CFG.max_images);
+    _persist(currentDest.id, curated); renderGallery(curated);
+    _cLogAI(currentDest.city, curated.length, pool.length-curated.length, _dropSummary(pool,curated));
+    _cSetBar(1,1);
+    _cSetStatus('Done — kept '+curated.length+' of '+pool.length+' reviewed.');
+  } catch(e){
+    _cLog('Error — '+e.message, 0);
+    _cSetStatus('Curation failed: '+e.message);
+    console.error('[ai-curate]',e);
+  }
+  setTimeout(_cClose,2800); _cSetBtns(false); _curating=false;
+}
+
+/* ── AI-curate EVERY destination in the sub-region (one pass, one email) ───── */
+async function runAICurateSub(){
+  if(_curating||!currentRegion||!currentSub) return;
+  var all=(DATA[currentRegion].subs[currentSub].dests)||[];
+  if(!all.length) return;
+  if(!confirm('AI-curate all '+all.length+' destinations in '+currentSub+'?\n\nThis fetches fresh photos, runs each destination through Claude vision, and replaces every gallery with the AI-approved set. Existing images are re-judged and may be dropped. It can take several minutes and uses the vision API.')) return;
+  _curating=true; _cSetBtns(true); _resetApi();
+  _cOpen('AI curating '+currentSub+' — '+all.length+' destinations');
+  var results=[];
+  for(var i=0;i<all.length;i++){
+    var d=all[i];
+    try {
+      _cSetStatus('('+(i+1)+'/'+all.length+') '+d.city+' — fetching…');
+      var pool=await _aiPoolFor(d);
+      var curated=[];
+      if(pool.length){
+        _cSetStatus('('+(i+1)+'/'+all.length+') '+d.city+' — Claude reviewing '+pool.length+'…');
+        var verdicts=await _aiCurate(d, pool);
+        curated=_applyVerdicts(pool, verdicts, _CFG.max_images);
+      }
+      _persist(d.id, curated);
+      if(currentDest&&currentDest.id===d.id) renderGallery(curated);
+      _cLogAI(d.city, curated.length, pool.length-curated.length, _dropSummary(pool,curated));
+      results.push({ label:d.city+', '+d.country, count:curated.length, pool:pool.length, dropped:pool.length-curated.length, sources:Array.from(new Set(curated.map(function(x){ return x.source; }))).join(', ') });
+    } catch(e){
+      _cLog(d.city+' — '+e.message, 0);
+      results.push({ label:d.city+', '+d.country, count:0, pool:0, dropped:0, sources:'error: '+e.message });
+      console.error('[ai-curate]',d.city,e);
+    }
+    _cSetBar(i+1,all.length);
+    await _sSleep(_CFG.delay_ms);
+  }
+  await _sendCurateEmail(currentRegion, currentSub, results, true);
+  var tot=results.reduce(function(s,r){ return s+r.count; },0), drop=results.reduce(function(s,r){ return s+(r.dropped||0); },0);
+  _cSetStatus('Done — kept '+tot+', dropped '+drop+', across '+all.length+' destinations. Email sent.');
+  if(!document.getElementById('detail-view').classList.contains('hidden')&&currentDest) renderGallery(getEditedImages(currentDest.id));
+  else showGrid();
+  setTimeout(_cClose,4200); _cSetBtns(false); _curating=false;
+}
+
 /* ── Summary email (bulk only) ───────────────────────────────────────────── */
-async function _sendCurateEmail(regionCode, subCode, results){
+async function _sendCurateEmail(regionCode, subCode, results, isAI){
   if(!_SUPA_URL||!_SUPA_ANON) return;
   var region=regionCode, subregion=subCode;
-  var subject='Destination Images | '+region+' | '+subregion+' — '+results.length+' fetched';
+  var tag=isAI?'AI Curated':'Fetched';
+  var subject='Destination Images | '+tag+' | '+region+' | '+subregion+' — '+results.length+' destinations';
   var total=results.reduce(function(s,r){ return s+r.count; },0);
+  var totDrop=results.reduce(function(s,r){ return s+(r.dropped||0); },0);
   var thin=results.filter(function(r){ return r.count<_SEED_MIN||r.count===0; });
-  var rowsHtml=results.map(function(r){ var bg=r.count>=3?'#d4edda':r.count>=1?'#fff3cd':'#f8d7da'; return '<tr style="background:'+bg+'"><td style="padding:6px 12px;border-bottom:1px solid #eee">'+esc(r.label)+'</td><td style="padding:6px 12px;text-align:center;border-bottom:1px solid #eee">'+r.count+'</td><td style="padding:6px 12px;border-bottom:1px solid #eee;font-size:12px;color:#555">'+esc(r.sources)+'</td></tr>'; }).join('');
-  var usageHtml='<tr><td style="padding:6px 12px">Pexels</td><td style="padding:6px 12px;text-align:center">'+_apiCalls.pexels+' / 200 hr</td></tr><tr><td style="padding:6px 12px">Openverse</td><td style="padding:6px 12px;text-align:center">'+_apiCalls.openverse+'</td></tr><tr><td style="padding:6px 12px">Pixabay</td><td style="padding:6px 12px;text-align:center">'+_apiCalls.pixabay+' / 100 min</td></tr><tr><td style="padding:6px 12px">Wikipedia</td><td style="padding:6px 12px;text-align:center">'+_apiCalls.wikipedia+'</td></tr>';
+  var extraHead=isAI?'<th style="padding:8px 12px">Pool</th><th style="padding:8px 12px">Dropped</th>':'';
+  var rowsHtml=results.map(function(r){ var bg=r.count>=3?'#d4edda':r.count>=1?'#fff3cd':'#f8d7da'; var extra=isAI?'<td style="padding:6px 12px;text-align:center;border-bottom:1px solid #eee">'+(r.pool||0)+'</td><td style="padding:6px 12px;text-align:center;border-bottom:1px solid #eee">'+(r.dropped||0)+'</td>':''; return '<tr style="background:'+bg+'"><td style="padding:6px 12px;border-bottom:1px solid #eee">'+esc(r.label)+'</td><td style="padding:6px 12px;text-align:center;border-bottom:1px solid #eee">'+r.count+'</td>'+extra+'<td style="padding:6px 12px;border-bottom:1px solid #eee;font-size:12px;color:#555">'+esc(r.sources)+'</td></tr>'; }).join('');
+  var curateRow=isAI?'<tr><td style="padding:6px 12px">Claude curation calls</td><td style="padding:6px 12px;text-align:center">'+_apiCalls.curate+'</td></tr>':'';
+  var usageHtml=curateRow+'<tr><td style="padding:6px 12px">Pexels</td><td style="padding:6px 12px;text-align:center">'+_apiCalls.pexels+' / 200 hr</td></tr><tr><td style="padding:6px 12px">Openverse</td><td style="padding:6px 12px;text-align:center">'+_apiCalls.openverse+'</td></tr><tr><td style="padding:6px 12px">Pixabay</td><td style="padding:6px 12px;text-align:center">'+_apiCalls.pixabay+' / 100 min</td></tr><tr><td style="padding:6px 12px">Wikipedia</td><td style="padding:6px 12px;text-align:center">'+_apiCalls.wikipedia+'</td></tr>';
   var thinNote=thin.length?'<p style="background:#f8d7da;color:#721c24;padding:10px 14px;border-radius:6px">Under-filled: '+thin.map(function(r){ return esc(r.label)+' ('+r.count+')'; }).join(', ')+'</p>':'';
+  var dropNote=isAI?'<p style="color:#555;font-size:13px">Claude reviewed the fetched pool and dropped <strong>'+totDrop+'</strong> off-topic / text-logo / non-photo / portrait / low-quality images.</p>':'';
   var html='<!DOCTYPE html><html><body style="font-family:sans-serif;max-width:660px;margin:0 auto;padding:24px;color:#1C3649">'
-    +'<h2 style="color:#B85C38;margin-top:0">'+esc(subregion)+' — Destination Images</h2>'
+    +'<h2 style="color:#B85C38;margin-top:0">'+esc(subregion)+' — '+(isAI?'AI-Curated ':'')+'Destination Images</h2>'
     +'<p><strong>'+esc(region)+'</strong> &rsaquo; <strong>'+esc(subregion)+'</strong></p>'
-    +'<p><strong>'+total+'</strong> images across <strong>'+results.length+'</strong> destination'+(results.length!==1?'s':'')+'</p>'+thinNote
-    +'<table style="border-collapse:collapse;width:100%;font-size:13px"><thead><tr style="background:#1C3649;color:#fff"><th style="padding:8px 12px;text-align:left">Destination</th><th style="padding:8px 12px">Images</th><th style="padding:8px 12px;text-align:left">Sources</th></tr></thead><tbody>'+rowsHtml+'</tbody></table>'
+    +'<p><strong>'+total+'</strong> images kept across <strong>'+results.length+'</strong> destination'+(results.length!==1?'s':'')+'</p>'+dropNote+thinNote
+    +'<table style="border-collapse:collapse;width:100%;font-size:13px"><thead><tr style="background:#1C3649;color:#fff"><th style="padding:8px 12px;text-align:left">Destination</th><th style="padding:8px 12px">Kept</th>'+extraHead+'<th style="padding:8px 12px;text-align:left">Sources</th></tr></thead><tbody>'+rowsHtml+'</tbody></table>'
     +'<h3 style="border-bottom:2px solid #B85C38;padding-bottom:6px;margin-top:24px">API Usage This Run</h3>'
     +'<table style="border-collapse:collapse;width:100%;font-size:13px"><tbody>'+usageHtml+'</tbody></table></body></html>';
   try { await fetch(_SUPA_URL+'/functions/v1/send-curation-email',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+_SUPA_ANON,apikey:_SUPA_ANON},body:JSON.stringify({to:'vfratto@vcinnovationsgroup.com',cc:'ccupero@vcinnovationsgroup.com',subject:subject,html:html})}); } catch(e){ console.warn('[email] failed:',e); }
