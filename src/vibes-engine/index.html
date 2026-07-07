@@ -26,9 +26,13 @@
 
   /* Header */
   .hdr { position: sticky; top: 0; z-index: 100; background: var(--navy); height: 56px; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 20px rgba(0,0,0,.22); }
-  .hdr-brand { display: flex; align-items: baseline; gap: 10px; }
-  .hdr-logo  { font-family: var(--serif); font-size: 22px; color: var(--cream); letter-spacing: -.3px; }
-  .hdr-sub   { font-family: var(--serif); font-style: italic; font-size: 17px; color: var(--rust); }
+  .hdr-left { display: flex; align-items: center; gap: 22px; }
+  .hdr-logo-img { height: 22px; width: auto; display: block; }
+  .hdr-nav { display: flex; align-items: center; gap: 4px; }
+  .hdr-tab { font-family: var(--sans); font-size: 13px; font-weight: 600; color: rgba(240,235,224,0.6); text-decoration: none; padding: 6px 13px; border-radius: 7px; transition: background .14s, color .14s; white-space: nowrap; }
+  .hdr-tab:hover { color: var(--cream); background: rgba(255,255,255,0.08); }
+  .hdr-tab.active { color: var(--cream); background: rgba(255,255,255,0.13); }
+  .hdr-right { display: flex; align-items: center; gap: 10px; }
   .hdr-badge { font-size: 10px; font-weight: 600; letter-spacing: 1.8px; text-transform: uppercase; color: var(--rust); border: 1.5px solid var(--rust); padding: 3px 9px; border-radius: 4px; }
 
   /* Region / Sub-region selector bar */
@@ -231,11 +235,16 @@
 <body>
 
 <header class="hdr">
-  <div class="hdr-brand">
-    <span class="hdr-logo">WhereTo</span>
-    <span class="hdr-sub">&middot; Vibes Engine</span>
+  <div class="hdr-left">
+    <a href="/" class="hdr-logo-link" aria-label="WhereTo home"><img class="hdr-logo-img" src="/assets/whereto-logo-white.svg" alt="WhereTo" /></a>
+    <nav class="hdr-nav">
+      <a href="/DestImages/" class="hdr-tab">Destination Images</a>
+      <a href="/vibes-engine/" class="hdr-tab active">Vibes Engine</a>
+    </nav>
   </div>
-  <span class="hdr-badge">Internal Review</span>
+  <div class="hdr-right">
+    <span class="hdr-badge">Internal Review</span>
+  </div>
 </header>
 
 <!-- Region / Sub-region selector -->
