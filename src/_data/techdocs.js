@@ -1,12 +1,12 @@
 // Build-time loader for the TechDocs page.
-// Pulls the engineering docs out of the (public) Wander_App repo and returns them
+// Pulls the engineering docs out of the (public) whereto-docs repo and returns them
 // grouped by section with a parsed date, ready for the /techdocs page to render and
 // filter. Discovery is one GitHub tree API call; file contents come from the raw CDN
 // (not rate limited). Set GITHUB_TOKEN in CI to raise the API limit.
 //
 // Env overrides:
-//   TECHDOCS_REPO    default "vinnyfratto/Wander_App"
-//   TECHDOCS_BRANCH  default "master"
+//   TECHDOCS_REPO    default "vinnyfratto/whereto-docs"
+//   TECHDOCS_BRANCH  default "main"
 //   TECHDOCS_LOCAL   absolute path to a local Wander_App checkout; if set, reads the
 //                    working tree from disk instead of GitHub (used for local preview).
 //   GITHUB_TOKEN     optional, raises the GitHub API rate limit.
@@ -14,8 +14,8 @@
 const fs = require("fs");
 const path = require("path");
 
-const REPO = process.env.TECHDOCS_REPO || "vinnyfratto/Wander_App";
-const BRANCH = process.env.TECHDOCS_BRANCH || "master";
+const REPO = process.env.TECHDOCS_REPO || "vinnyfratto/whereto-docs";
+const BRANCH = process.env.TECHDOCS_BRANCH || "main";
 const LOCAL = process.env.TECHDOCS_LOCAL || "";
 const TOKEN = process.env.GITHUB_TOKEN || process.env.GH_TOKEN || "";
 
