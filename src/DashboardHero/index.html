@@ -40,6 +40,13 @@
   .panel-title { font-size:12px; font-weight:700; letter-spacing:1.6px; text-transform:uppercase; color:var(--wg500); }
   .empty { color:var(--wg500); font-size:13.5px; font-style:italic; padding:6px 0; }
 
+  .flt-bar { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:14px; padding-bottom:14px; border-bottom:1px solid var(--wg200); }
+  .flt-label { font-size:11px; font-weight:700; letter-spacing:1.4px; text-transform:uppercase; color:var(--wg500); }
+  .flt-select { font-family:var(--sans); font-size:13px; font-weight:600; color:var(--navy); background:var(--wg100); border:1.5px solid var(--wg300); border-radius:var(--r-sm); padding:7px 12px; cursor:pointer; outline:none; }
+  .flt-select:focus { border-color:var(--rust); box-shadow:0 0 0 3px rgba(184,92,56,.12); }
+  .flt-clear { font-family:var(--sans); font-size:12px; font-weight:700; color:var(--rust); background:none; border:none; cursor:pointer; padding:4px 2px; }
+  .flt-clear:hover { text-decoration:underline; }
+
   /* Live strip */
   .live-meta { font-size:12.5px; color:var(--ok); font-weight:700; margin-bottom:10px; }
   .mini-row { display:flex; gap:12px; flex-wrap:wrap; }
@@ -51,10 +58,15 @@
   /* Editor cards */
   .hgrid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:14px; }
   .hcard { position:relative; background:var(--wg100); border:1px solid var(--wg200); border-radius:var(--r-md); padding:12px; display:flex; flex-direction:column; gap:9px; }
-  .hcard-top { display:flex; align-items:center; justify-content:space-between; }
+  .hcard-top { display:flex; align-items:center; justify-content:space-between; cursor:grab; }
+  .hcard-top:active { cursor:grabbing; }
+  .hcard-lead { display:flex; align-items:center; gap:7px; }
+  .hcard-grip { color:var(--wg400); font-size:15px; line-height:1; user-select:none; }
   .hcard-pos { font-size:10.5px; font-weight:700; letter-spacing:1.4px; text-transform:uppercase; color:var(--wg500); }
   .hcard-x { border:none; background:none; color:var(--wg400); font-size:19px; line-height:1; cursor:pointer; padding:0 2px; border-radius:5px; }
   .hcard-x:hover { color:var(--err); }
+  .hcard.dragging { opacity:.45; }
+  .hcard.drop-target { border-color:var(--rust); box-shadow:0 0 0 3px rgba(184,92,56,.16); }
 
   .combo { position:relative; }
   .combo-input { width:100%; font-family:var(--sans); font-size:13px; color:var(--navy); background:#fff; border:1.5px solid var(--wg300); border-radius:var(--r-sm); padding:8px 11px; outline:none; transition:border-color .15s, box-shadow .15s; }
@@ -147,9 +159,16 @@
 
   <!-- Card editor -->
   <div class="panel">
-    <div class="panel-head"><span class="panel-title">Featured Cards</span><span class="et-tag" id="card-count"></span></div>
+    <div class="panel-head"><span class="panel-title">Set Hero Destinations</span><span class="et-tag" id="card-count"></span></div>
+    <div class="flt-bar">
+      <span class="flt-label">Filter</span>
+      <select class="flt-select" id="flt-region" onchange="onRegionFilter()"><option value="">All regions</option></select>
+      <select class="flt-select" id="flt-sub" onchange="onSubFilter()"><option value="">All sub-regions</option></select>
+      <button class="flt-clear" id="flt-clear" onclick="clearFilters()" style="display:none">Clear filter</button>
+    </div>
     <div class="hgrid" id="cards-wrap"></div>
     <button class="addcard" id="add-card-btn" onclick="addCard()">＋ Add card</button>
+    <p class="et-tag" style="margin-top:10px;color:var(--wg500);font-weight:600">Drag any card by its ⠿ handle to reorder. Card 1 is the first hero shown.</p>
   </div>
 
   <!-- Upcoming schedule -->
@@ -182,12 +201,19 @@ const _H = { apikey:_SUPA_ANON, Authorization:'Bearer '+_SUPA_ANON };
 const _WH = { apikey:_SUPA_ANON, Authorization:'Bearer '+_SUPA_ANON, 'Content-Type':'application/json' };
 const MAX_CARDS = 8;
 
+/* ── Static taxonomy (labels for the Region / Sub-Region picker filters) ──── */
+var CODE_REGION = { NA:'North & Central America', EU:'Europe', AS:'Asia', SA:'South America', AF:'Africa', OC:'Oceania' };
+var REGION_ORDER = ['NA','EU','AS','SA','AF','OC'];
+var SUBREGION_LABELS = { north_america:'USA & Canada', mexico:'Mexico', caribbean:'Caribbean', central_america:'Central America', western_europe:'Western Europe', british_isles:'British Isles', mediterranean:'Mediterranean', eastern_europe:'Eastern Europe', nordic:'Nordic / Scandinavia', east_asia:'East Asia', southeast_asia:'Southeast Asia', south_asia:'South Asia', middle_east:'Middle East', central_asia:'Central Asia', brazil:'Brazil', andean:'Andean Countries', southern_cone:'Southern Cone', northern_sa:'Northern South America', north_africa:'North Africa', west_africa:'West Africa', east_africa:'East Africa', southern_africa:'Southern Africa', australia_nz:'Australia & New Zealand', pacific_islands:'Pacific Islands' };
+
 /* ── State ───────────────────────────────────────────────────────────────── */
 var DESTS = [], DEST_BY_ID = {}, SETS = [], ITEMS_BY_SET = {};
 var cards = [];
 var _menuMatches = {};   // idx -> current filtered matches (numeric-index select)
 var _upcoming = [];      // renderUpcoming stash for numeric-index cancel
 var _busy = false;
+var fltRegion = '', fltSub = '';   // Region / Sub-Region picker filters
+var _dragIdx = null;               // index of the card being dragged
 
 /* ── Helpers ─────────────────────────────────────────────────────────────── */
 function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -277,6 +303,7 @@ async function loadData(){
     } else { cards = []; }
     while(cards.length < 5) cards.push({ destId:null });
 
+    renderFilters();
     renderLive();
     renderCards();
     renderUpcoming();
@@ -315,8 +342,8 @@ function renderCards(){
   var wrap = el('cards-wrap'), out = '';
   for(var i=0;i<cards.length;i++){
     var c = cards[i], d = c.destId ? DEST_BY_ID[c.destId] : null;
-    out += '<div class="hcard">';
-    out +=   '<div class="hcard-top"><span class="hcard-pos">Card '+(i+1)+'</span><button class="hcard-x" title="Remove card" onclick="removeCard('+i+')">&times;</button></div>';
+    out += '<div class="hcard" id="hcard-'+i+'" draggable="true" ondragstart="onCardDragStart(event,'+i+')" ondragover="onCardDragOver(event,'+i+')" ondragleave="onCardDragLeave(event,'+i+')" ondrop="onCardDrop(event,'+i+')" ondragend="onCardDragEnd()">';
+    out +=   '<div class="hcard-top"><span class="hcard-lead"><span class="hcard-grip" title="Drag to reorder">⠿</span><span class="hcard-pos">Card '+(i+1)+'</span></span><button class="hcard-x" title="Remove card" onclick="removeCard('+i+')">&times;</button></div>';
     if(d){
       out += '<div class="hcard-prev">';
       out +=   '<div class="hcard-img" style="'+_bg(d.image_url)+'"></div>';
@@ -355,6 +382,8 @@ function filterCard(idx){
   for(var i=0;i<DESTS.length && matches.length<60;i++){
     var d = DESTS[i];
     if(chosen[d.id]) continue;                 // hide already-picked destinations
+    if(fltRegion && d.region !== fltRegion) continue;
+    if(fltSub && d.subregion !== fltSub) continue;
     if(!q || d._s.indexOf(q) >= 0) matches.push(d);
   }
   _menuMatches[idx] = matches;
@@ -378,6 +407,66 @@ function addCard(){ if(cards.length >= MAX_CARDS) return; cards.push({ destId:nu
 function removeCard(idx){
   if(cards.length <= 1){ toast('Keep at least one card.','warn'); return; }
   cards.splice(idx,1); renderCards();
+}
+
+/* ── Region / Sub-Region picker filters ──────────────────────────────────── */
+function _subLabel(code){
+  if(SUBREGION_LABELS[code]) return SUBREGION_LABELS[code];
+  var parts = String(code).split('_'), out = [];
+  for(var i=0;i<parts.length;i++){ var p = parts[i]; out.push(p ? p.charAt(0).toUpperCase()+p.slice(1) : p); }
+  return out.join(' ');
+}
+function renderFilters(){
+  var present = {};
+  DESTS.forEach(function(d){ if(d.region) present[d.region] = 1; });
+  var html = '<option value="">All regions</option>', seen = {};
+  REGION_ORDER.forEach(function(code){ if(present[code]){ html += '<option value="'+code+'">'+esc(CODE_REGION[code]||code)+'</option>'; seen[code] = 1; } });
+  Object.keys(present).forEach(function(code){ if(!seen[code]) html += '<option value="'+code+'">'+esc(CODE_REGION[code]||code)+'</option>'; });
+  var rsel = el('flt-region'); rsel.innerHTML = html; rsel.value = fltRegion;
+  renderSubOptions();
+  _syncFilterUI();
+}
+function renderSubOptions(){
+  var subs = {};
+  DESTS.forEach(function(d){ if((!fltRegion || d.region===fltRegion) && d.subregion) subs[d.subregion] = 1; });
+  var keys = Object.keys(subs).sort(function(a,b){ return _subLabel(a).localeCompare(_subLabel(b)); });
+  var html = '<option value="">All sub-regions</option>';
+  keys.forEach(function(k){ html += '<option value="'+k+'">'+esc(_subLabel(k))+'</option>'; });
+  var ssel = el('flt-sub'); ssel.innerHTML = html; ssel.value = fltSub;
+}
+function _syncFilterUI(){ el('flt-clear').style.display = (fltRegion || fltSub) ? '' : 'none'; }
+function onRegionFilter(){ fltRegion = el('flt-region').value; fltSub = ''; renderSubOptions(); _syncFilterUI(); refilterMenus(); }
+function onSubFilter(){ fltSub = el('flt-sub').value; _syncFilterUI(); refilterMenus(); }
+function clearFilters(){ fltRegion = ''; fltSub = ''; el('flt-region').value = ''; renderSubOptions(); _syncFilterUI(); refilterMenus(); }
+function refilterMenus(){
+  var menus = document.querySelectorAll('.combo-menu');
+  for(var i=0;i<menus.length;i++){ if(!menus[i].classList.contains('hidden')) filterCard(+menus[i].id.split('-')[1]); }
+}
+
+/* ── Drag to reorder cards ───────────────────────────────────────────────── */
+function onCardDragStart(e,i){
+  if(e.target && e.target.closest && e.target.closest('.combo')){ e.preventDefault(); return; } // let the search field handle its own mouse
+  _dragIdx = i;
+  if(e.dataTransfer){ e.dataTransfer.effectAllowed = 'move'; try { e.dataTransfer.setData('text/plain', String(i)); } catch(_){} }
+  var c = el('hcard-'+i); if(c) c.classList.add('dragging');
+}
+function onCardDragOver(e,i){
+  if(_dragIdx === null) return;
+  e.preventDefault(); if(e.dataTransfer) e.dataTransfer.dropEffect = 'move';
+  var c = el('hcard-'+i); if(c && i !== _dragIdx) c.classList.add('drop-target');
+}
+function onCardDragLeave(e,i){ var c = el('hcard-'+i); if(c) c.classList.remove('drop-target'); }
+function onCardDrop(e,i){ if(_dragIdx === null) return; e.preventDefault(); moveCard(_dragIdx, i); }
+function onCardDragEnd(){
+  _dragIdx = null;
+  var els = document.querySelectorAll('.hcard');
+  for(var k=0;k<els.length;k++){ els[k].classList.remove('dragging'); els[k].classList.remove('drop-target'); }
+}
+function moveCard(from,to){
+  if(from === to || from === null || to === null) return;
+  var it = cards.splice(from,1)[0];
+  cards.splice(to,0,it);
+  renderCards();
 }
 
 /* ── Collect + write ─────────────────────────────────────────────────────── */
