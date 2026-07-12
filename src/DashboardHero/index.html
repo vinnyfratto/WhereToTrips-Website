@@ -281,7 +281,7 @@ function setBusy(b){
 async function loadData(){
   if(!_SUPA_URL || !_SUPA_ANON){ _bootError('Supabase not configured in the build (.env keys missing).'); return; }
   try {
-    var dr = await fetch(_SUPA_URL+'/rest/v1/destinations?select=id,city,country,iata,region,subregion,image_url&is_active=eq.true&order=city.asc', { headers:_H });
+    var dr = await fetch(_SUPA_URL+'/rest/v1/destinations?select=id,city,country,iata,region,subregion,image_url,vibes&is_active=eq.true&order=city.asc', { headers:_H });
     if(!dr.ok) throw new Error('destinations HTTP '+dr.status);
     DESTS = await dr.json();
     DEST_BY_ID = {};
@@ -326,6 +326,7 @@ function resolveLive(){
 
 /* ── Render ──────────────────────────────────────────────────────────────── */
 function _bg(url){ return url ? "background-image:url('"+String(url).replace(/'/g,"%27")+"')" : ''; }
+function _vibeCount(d){ return Array.isArray(d.vibes) ? d.vibes.length : 0; }
 
 function renderLive(){
   var box = el('live-body'), live = resolveLive();
@@ -333,7 +334,7 @@ function renderLive(){
   var its = ITEMS_BY_SET[live.id] || [];
   var mini = its.map(function(it){
     var d = DEST_BY_ID[it.dest_id]; if(!d) return '';
-    return '<div class="mini"><div class="mini-img" style="'+_bg(d.image_url)+'"></div><div class="mini-city">'+esc(d.city)+'</div><div class="mini-sub">'+esc(d.country)+' · '+esc(d.iata)+'</div></div>';
+    return '<div class="mini"><div class="mini-img" style="'+_bg(d.image_url)+'"></div><div class="mini-city">'+esc(d.city)+'</div><div class="mini-sub">'+esc(d.country)+' · '+esc(d.iata)+' · '+_vibeCount(d)+' vibes</div></div>';
   }).join('');
   box.innerHTML = '<div class="live-meta">● Live since '+esc(fmtET(live.go_live_at))+'</div><div class="mini-row">'+(mini||'<div class="empty">Set has no destinations.</div>')+'</div>';
 }
@@ -347,7 +348,7 @@ function renderCards(){
     if(d){
       out += '<div class="hcard-prev">';
       out +=   '<div class="hcard-img" style="'+_bg(d.image_url)+'"></div>';
-      out +=   '<div class="hcard-meta"><div><div class="hcard-city">'+esc(d.city)+'</div><div class="hcard-sub">'+esc(d.country)+' · '+esc(d.iata)+'</div></div><button class="hcard-clear" onclick="clearCard('+i+')">Change</button></div>';
+      out +=   '<div class="hcard-meta"><div><div class="hcard-city">'+esc(d.city)+'</div><div class="hcard-sub">'+esc(d.country)+' · '+esc(d.iata)+' · '+_vibeCount(d)+' vibes</div></div><button class="hcard-clear" onclick="clearCard('+i+')">Change</button></div>';
       out += '</div>';
     } else {
       out += '<div class="combo"><input class="combo-input" id="combo-'+i+'" autocomplete="off" placeholder="Search a destination…" oninput="filterCard('+i+')" onfocus="filterCard('+i+')" /><div class="combo-menu hidden" id="menu-'+i+'"></div></div>';
@@ -389,7 +390,7 @@ function filterCard(idx){
   _menuMatches[idx] = matches;
   if(!matches.length){ menu.innerHTML = '<div class="combo-empty">No matches</div>'; menu.classList.remove('hidden'); return; }
   menu.innerHTML = matches.map(function(d, mi){
-    return '<div class="combo-item" onmousedown="event.preventDefault();selectCard('+idx+','+mi+')"><img src="'+esc(d.image_url||'')+'" onerror="this.style.visibility=\'hidden\'" /><div class="ci-text"><div class="ci-city">'+esc(d.city)+'</div><div class="ci-sub">'+esc(d.country)+' · '+esc(d.iata)+'</div></div></div>';
+    return '<div class="combo-item" onmousedown="event.preventDefault();selectCard('+idx+','+mi+')"><img src="'+esc(d.image_url||'')+'" onerror="this.style.visibility=\'hidden\'" /><div class="ci-text"><div class="ci-city">'+esc(d.city)+'</div><div class="ci-sub">'+esc(d.country)+' · '+esc(d.iata)+' · '+_vibeCount(d)+' vibes</div></div></div>';
   }).join('');
   menu.classList.remove('hidden');
 }
