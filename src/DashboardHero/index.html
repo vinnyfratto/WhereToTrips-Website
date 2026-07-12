@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex,nofollow" />
+<title>Dashboard Hero · Internal — WhereTo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Nunito+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --cream:#F0EBE0; --card:#FDFAF6; --navy:#1C3649; --navy-lt:#2A4D65; --rust:#B85C38;
+    --wg100:#F5F0E8; --wg200:#E4DDD3; --wg300:#D4CCC2; --wg400:#B8B0A6; --wg500:#9E9690; --wg600:#5C5449;
+    --ok:#2E7D5B; --warn:#B4881F; --err:#C0492E;
+    --serif:'DM Serif Display',Georgia,serif; --sans:'Nunito Sans',system-ui,sans-serif;
+    --r-lg:20px; --r-md:12px; --r-sm:8px;
+    --sh-sm:0 2px 10px rgba(28,54,73,.07); --sh-md:0 8px 28px rgba(28,54,73,.11); --sh-lg:0 24px 60px rgba(28,54,73,.18);
+  }
+  *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--cream); color:var(--navy); font-family:var(--sans); font-size:15px; line-height:1.6; min-height:100vh; }
+
+  .hdr { position:sticky; top:0; z-index:100; background:var(--navy); height:56px; padding:0 24px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 2px 20px rgba(0,0,0,.22); }
+  .hdr-left { display:flex; align-items:center; gap:22px; }
+  .hdr-logo-img { height:22px; width:auto; display:block; }
+  .hdr-nav { display:flex; align-items:center; gap:4px; flex-wrap:wrap; }
+  .hdr-tab { font-family:var(--sans); font-size:13px; font-weight:600; color:rgba(240,235,224,0.6); text-decoration:none; padding:6px 13px; border-radius:7px; transition:background .14s, color .14s; white-space:nowrap; }
+  .hdr-tab:hover { color:var(--cream); background:rgba(255,255,255,0.08); }
+  .hdr-tab.active { color:var(--cream); background:rgba(255,255,255,0.13); }
+  .hdr-right { display:flex; align-items:center; gap:10px; }
+  .hdr-badge { font-size:10px; font-weight:600; letter-spacing:1.8px; text-transform:uppercase; color:var(--rust); border:1.5px solid var(--rust); padding:3px 9px; border-radius:4px; }
+
+  .wrap { max-width:1080px; margin:0 auto; padding:26px 24px 120px; }
+  .page-head { margin-bottom:22px; }
+  .page-head h1 { font-family:var(--serif); font-size:30px; font-weight:400; line-height:1.15; }
+  .page-head .sub { color:var(--wg600); font-size:14px; margin-top:4px; max-width:680px; }
+
+  .panel { background:var(--card); border:1px solid var(--wg200); border-radius:var(--r-md); box-shadow:var(--sh-sm); padding:18px 20px; margin-bottom:20px; }
+  .panel-head { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; }
+  .panel-title { font-size:12px; font-weight:700; letter-spacing:1.6px; text-transform:uppercase; color:var(--wg500); }
+  .empty { color:var(--wg500); font-size:13.5px; font-style:italic; padding:6px 0; }
+
+  /* Live strip */
+  .live-meta { font-size:12.5px; color:var(--ok); font-weight:700; margin-bottom:10px; }
+  .mini-row { display:flex; gap:12px; flex-wrap:wrap; }
+  .mini { width:132px; }
+  .mini-img { width:132px; height:84px; border-radius:var(--r-sm); background:var(--wg200) center/cover no-repeat; box-shadow:var(--sh-sm); }
+  .mini-city { font-size:13px; font-weight:700; margin-top:5px; line-height:1.2; }
+  .mini-sub { font-size:11px; color:var(--wg500); }
+
+  /* Editor cards */
+  .hgrid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:14px; }
+  .hcard { position:relative; background:var(--wg100); border:1px solid var(--wg200); border-radius:var(--r-md); padding:12px; display:flex; flex-direction:column; gap:9px; }
+  .hcard-top { display:flex; align-items:center; justify-content:space-between; }
+  .hcard-pos { font-size:10.5px; font-weight:700; letter-spacing:1.4px; text-transform:uppercase; color:var(--wg500); }
+  .hcard-x { border:none; background:none; color:var(--wg400); font-size:19px; line-height:1; cursor:pointer; padding:0 2px; border-radius:5px; }
+  .hcard-x:hover { color:var(--err); }
+
+  .combo { position:relative; }
+  .combo-input { width:100%; font-family:var(--sans); font-size:13px; color:var(--navy); background:#fff; border:1.5px solid var(--wg300); border-radius:var(--r-sm); padding:8px 11px; outline:none; transition:border-color .15s, box-shadow .15s; }
+  .combo-input:focus { border-color:var(--rust); box-shadow:0 0 0 3px rgba(184,92,56,.12); }
+  .combo-menu { position:absolute; z-index:60; top:calc(100% + 4px); left:0; right:0; max-height:260px; overflow-y:auto; background:#fff; border:1px solid var(--wg300); border-radius:var(--r-sm); box-shadow:var(--sh-md); }
+  .combo-item { display:flex; align-items:center; gap:9px; padding:7px 9px; cursor:pointer; border-bottom:1px solid var(--wg100); }
+  .combo-item:hover { background:var(--wg100); }
+  .combo-item img { width:40px; height:28px; object-fit:cover; border-radius:4px; background:var(--wg200); flex:none; }
+  .ci-text { min-width:0; }
+  .ci-city { font-size:12.5px; font-weight:700; line-height:1.15; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .ci-sub { font-size:10.5px; color:var(--wg500); }
+  .combo-empty { padding:9px 11px; font-size:12.5px; color:var(--wg500); font-style:italic; }
+
+  .hcard-prev { display:flex; flex-direction:column; gap:7px; }
+  .hcard-img { width:100%; height:120px; border-radius:var(--r-sm); background:var(--wg200) center/cover no-repeat; box-shadow:var(--sh-sm); }
+  .hcard-meta { display:flex; align-items:flex-end; justify-content:space-between; gap:8px; }
+  .hcard-city { font-size:15px; font-weight:700; line-height:1.15; }
+  .hcard-sub { font-size:11.5px; color:var(--wg500); }
+  .hcard-clear { border:none; background:none; color:var(--rust); font-size:11.5px; font-weight:700; cursor:pointer; padding:2px 0; white-space:nowrap; }
+  .hcard-clear:hover { text-decoration:underline; }
+
+  .addcard { margin-top:14px; display:inline-flex; align-items:center; gap:7px; font-family:var(--sans); font-size:13px; font-weight:700; color:var(--navy); background:var(--wg100); border:1.5px dashed var(--wg300); border-radius:var(--r-sm); padding:9px 15px; cursor:pointer; transition:border-color .15s, background .15s; }
+  .addcard:hover { border-color:var(--rust); background:#fff; }
+  .addcard:disabled { opacity:.45; cursor:not-allowed; }
+
+  /* Upcoming */
+  .sched-item { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:11px 0; border-bottom:1px solid var(--wg200); }
+  .sched-item:last-child { border-bottom:none; }
+  .sched-when { font-size:14px; font-weight:700; }
+  .sched-rel { font-size:11.5px; font-weight:600; color:var(--warn); margin-left:5px; }
+  .sched-names { font-size:12px; color:var(--wg500); margin-top:2px; }
+  .btn-cancel { font-family:var(--sans); font-size:12px; font-weight:700; color:var(--err); background:#fff; border:1.5px solid var(--wg300); border-radius:var(--r-sm); padding:6px 13px; cursor:pointer; white-space:nowrap; }
+  .btn-cancel:hover { border-color:var(--err); }
+
+  /* Action bar */
+  .actionbar { position:fixed; left:0; right:0; bottom:0; z-index:90; background:var(--card); border-top:1px solid var(--wg200); box-shadow:0 -6px 24px rgba(28,54,73,.10); padding:12px 24px; display:flex; align-items:center; justify-content:space-between; gap:18px; flex-wrap:wrap; }
+  .act-sched { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .act-label { font-size:11px; font-weight:700; letter-spacing:1.4px; text-transform:uppercase; color:var(--wg500); }
+  .sched-input { font-family:var(--sans); font-size:13px; color:var(--navy); background:var(--wg100); border:1.5px solid var(--wg300); border-radius:var(--r-sm); padding:8px 11px; outline:none; }
+  .sched-input:focus { border-color:var(--rust); box-shadow:0 0 0 3px rgba(184,92,56,.12); }
+  .et-tag { font-size:11px; font-weight:700; color:var(--wg600); }
+  .act-btns { display:flex; align-items:center; gap:10px; }
+  .btn { font-family:var(--sans); font-size:14px; font-weight:700; border-radius:var(--r-sm); padding:10px 20px; cursor:pointer; border:1.5px solid transparent; transition:transform .06s, box-shadow .15s, background .15s; }
+  .btn:active { transform:translateY(1px); }
+  .btn:disabled { opacity:.5; cursor:not-allowed; }
+  .btn-sched { color:var(--navy); background:#fff; border-color:var(--wg300); }
+  .btn-sched:hover:not(:disabled) { border-color:var(--navy); }
+  .btn-primary { color:#fff; background:var(--rust); box-shadow:0 4px 14px rgba(184,92,56,.30); }
+  .btn-primary:hover:not(:disabled) { background:#a4502f; }
+
+  .toast { position:fixed; left:50%; transform:translateX(-50%); bottom:78px; z-index:200; background:var(--navy); color:var(--cream); font-size:13.5px; font-weight:600; padding:11px 20px; border-radius:var(--r-sm); box-shadow:var(--sh-md); opacity:0; pointer-events:none; transition:opacity .2s, bottom .2s; max-width:88vw; }
+  .toast.show { opacity:1; bottom:88px; }
+  .toast.ok { background:var(--ok); } .toast.warn { background:var(--warn); } .toast.err { background:var(--err); }
+
+  .hidden { display:none !important; }
+  #boot-error { color:var(--err); font-weight:600; padding:10px 0; }
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-left">
+    <a href="/" class="hdr-logo-link" aria-label="WhereTo home"><img class="hdr-logo-img" src="/assets/whereto-logo-white.svg" alt="WhereTo" /></a>
+    <nav class="hdr-nav">
+      <a href="/DestImages/" class="hdr-tab">Destination Images</a>
+      <a href="/vibesimages/" class="hdr-tab">Vibe Images</a>
+      <a href="/vibes-engine/" class="hdr-tab">Vibes Engine</a>
+      <a href="/vibes-engine/dashboard.html" class="hdr-tab">Vibe Engine Tester</a>
+      <a href="/DashboardHero/" class="hdr-tab active">Dashboard Hero</a>
+    </nav>
+  </div>
+  <div class="hdr-right">
+    <span class="hdr-badge">Internal</span>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="page-head">
+    <h1>Dashboard Hero</h1>
+    <p class="sub">Pick the destinations featured on the app Dashboard's main Hero. <b>Publish Now</b> makes them live immediately; <b>Schedule Go Live</b> sets an Eastern-time date/time when they take over. Either one replaces whatever is currently live.</p>
+  </div>
+
+  <div id="boot-error"></div>
+
+  <!-- Currently live -->
+  <div class="panel">
+    <div class="panel-head"><span class="panel-title">Currently Live</span></div>
+    <div id="live-body"><div class="empty">Loading…</div></div>
+  </div>
+
+  <!-- Card editor -->
+  <div class="panel">
+    <div class="panel-head"><span class="panel-title">Featured Cards</span><span class="et-tag" id="card-count"></span></div>
+    <div class="hgrid" id="cards-wrap"></div>
+    <button class="addcard" id="add-card-btn" onclick="addCard()">＋ Add card</button>
+  </div>
+
+  <!-- Upcoming schedule -->
+  <div class="panel">
+    <div class="panel-head"><span class="panel-title">Scheduled Go-Lives</span></div>
+    <div id="upcoming-body"><div class="empty">Loading…</div></div>
+  </div>
+</div>
+
+<!-- Action bar -->
+<div class="actionbar">
+  <div class="act-sched">
+    <span class="act-label">Schedule</span>
+    <input type="datetime-local" class="sched-input" id="sched-input" />
+    <span class="et-tag">Eastern (ET)</span>
+    <button class="btn btn-sched" id="btn-sched" onclick="schedule()">Schedule Go Live</button>
+  </div>
+  <div class="act-btns">
+    <button class="btn btn-primary" id="btn-publish" onclick="publishNow()">Publish Now</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ── Config (injected at build) ──────────────────────────────────────────── */
+const _SUPA_URL  = 'https://pvqwxphrmcvmztlkzhsg.supabase.co';
+const _SUPA_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2cXd4cGhybWN2bXp0bGt6aHNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzIxMjIsImV4cCI6MjA5NTMwODEyMn0.uz1WFZqymop5mhIUx6bxW8qofMQuGo-ltyRA8f0P1lk';
+const _H = { apikey:_SUPA_ANON, Authorization:'Bearer '+_SUPA_ANON };
+const _WH = { apikey:_SUPA_ANON, Authorization:'Bearer '+_SUPA_ANON, 'Content-Type':'application/json' };
+const MAX_CARDS = 8;
+
+/* ── State ───────────────────────────────────────────────────────────────── */
+var DESTS = [], DEST_BY_ID = {}, SETS = [], ITEMS_BY_SET = {};
+var cards = [];
+var _menuMatches = {};   // idx -> current filtered matches (numeric-index select)
+var _upcoming = [];      // renderUpcoming stash for numeric-index cancel
+var _busy = false;
+
+/* ── Helpers ─────────────────────────────────────────────────────────────── */
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function el(id){ return document.getElementById(id); }
+function _bootError(m){ el('boot-error').textContent = m; }
+
+// Format a UTC ISO timestamp as Eastern-time wall clock.
+function fmtET(iso){
+  if(!iso) return '';
+  var d = new Date(iso);
+  if(isNaN(d.getTime())) return String(iso);
+  return d.toLocaleString('en-US',{ timeZone:'America/New_York', year:'numeric', month:'short', day:'numeric', hour:'numeric', minute:'2-digit' }) + ' ET';
+}
+// Human "in 3 days" / "in 2 hours" for a future ISO.
+function relFuture(iso){
+  var ms = new Date(iso).getTime() - Date.now();
+  if(ms <= 0) return 'now';
+  var mins = Math.round(ms/60000);
+  if(mins < 60) return 'in '+mins+' min';
+  var hrs = Math.round(mins/60);
+  if(hrs < 48) return 'in '+hrs+' hr';
+  var days = Math.round(hrs/24);
+  return 'in '+days+' day'+(days===1?'':'s');
+}
+// America/New_York offset (ms local is ahead of UTC) at a given UTC instant.
+function tzOffsetMs(utcMs){
+  var dtf = new Intl.DateTimeFormat('en-US',{ timeZone:'America/New_York', hour12:false, year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', second:'2-digit' });
+  var parts = dtf.formatToParts(new Date(utcMs)), m = {};
+  for(var i=0;i<parts.length;i++) m[parts[i].type] = parts[i].value;
+  var hh = m.hour==='24' ? '00' : m.hour;
+  var asIfUTC = Date.UTC(+m.year, +m.month-1, +m.day, +hh, +m.minute, +m.second);
+  return asIfUTC - utcMs;
+}
+// Convert an Eastern wall-clock time to a UTC epoch (handles EST/EDT + DST edges).
+function etWallToUTC(y,mo,d,h,mi){
+  var guess = Date.UTC(y, mo-1, d, h, mi, 0);
+  var off = tzOffsetMs(guess);
+  var utc = guess - off;
+  var off2 = tzOffsetMs(utc);
+  if(off2 !== off) utc = guess - off2;
+  return utc;
+}
+// Current Eastern wall time as a datetime-local value (min= guard).
+function nowETInput(){
+  var dtf = new Intl.DateTimeFormat('en-CA',{ timeZone:'America/New_York', hour12:false, year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' });
+  var parts = dtf.formatToParts(new Date()), m = {};
+  for(var i=0;i<parts.length;i++) m[parts[i].type] = parts[i].value;
+  var hh = m.hour==='24' ? '00' : m.hour;
+  return m.year+'-'+m.month+'-'+m.day+'T'+hh+':'+m.minute;
+}
+function toast(msg, kind){
+  var t = el('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (kind ? ' '+kind : '');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(function(){ t.className = 'toast'; }, 3400);
+}
+function setBusy(b){
+  _busy = b;
+  el('btn-publish').disabled = b;
+  el('btn-sched').disabled = b;
+}
+
+/* ── Load data (live from Supabase) ──────────────────────────────────────── */
+async function loadData(){
+  if(!_SUPA_URL || !_SUPA_ANON){ _bootError('Supabase not configured in the build (.env keys missing).'); return; }
+  try {
+    var dr = await fetch(_SUPA_URL+'/rest/v1/destinations?select=id,city,country,iata,region,subregion,image_url&is_active=eq.true&order=city.asc', { headers:_H });
+    if(!dr.ok) throw new Error('destinations HTTP '+dr.status);
+    DESTS = await dr.json();
+    DEST_BY_ID = {};
+    DESTS.forEach(function(d){ d._s = ((d.city||'')+' '+(d.country||'')+' '+(d.iata||'')).toLowerCase(); DEST_BY_ID[d.id] = d; });
+
+    var sr = await fetch(_SUPA_URL+'/rest/v1/dashboard_hero_sets?select=id,go_live_at,status,label,created_at&order=go_live_at.desc', { headers:_H });
+    SETS = sr.ok ? await sr.json() : [];
+    var ir = await fetch(_SUPA_URL+'/rest/v1/dashboard_hero_destinations?select=set_id,dest_id,position&order=position.asc', { headers:_H });
+    var items = ir.ok ? await ir.json() : [];
+    ITEMS_BY_SET = {};
+    items.forEach(function(it){ (ITEMS_BY_SET[it.set_id] = ITEMS_BY_SET[it.set_id] || []).push(it); });
+    Object.keys(ITEMS_BY_SET).forEach(function(k){ ITEMS_BY_SET[k].sort(function(a,b){ return a.position-b.position; }); });
+
+    // Seed the editor from the current live set so "edit + republish" is one step.
+    var live = resolveLive();
+    if(live){
+      var its = ITEMS_BY_SET[live.id] || [];
+      cards = its.map(function(it){ return { destId: DEST_BY_ID[it.dest_id] ? it.dest_id : null }; }).filter(function(c){ return c.destId; });
+    } else { cards = []; }
+    while(cards.length < 5) cards.push({ destId:null });
+
+    renderLive();
+    renderCards();
+    renderUpcoming();
+  } catch(e){
+    _bootError('Load failed: '+e.message);
+  }
+}
+
+// The most recent set whose go_live_at has passed (mirrors the dashboard_hero_live view).
+function resolveLive(){
+  var now = Date.now(), best = null;
+  SETS.forEach(function(s){
+    var t = new Date(s.go_live_at).getTime();
+    if(t <= now){
+      if(!best || t > new Date(best.go_live_at).getTime()) best = s;
+    }
+  });
+  return best;
+}
+
+/* ── Render ──────────────────────────────────────────────────────────────── */
+function _bg(url){ return url ? "background-image:url('"+String(url).replace(/'/g,"%27")+"')" : ''; }
+
+function renderLive(){
+  var box = el('live-body'), live = resolveLive();
+  if(!live){ box.innerHTML = '<div class="empty">No hero set is live yet. Pick destinations below and Publish Now.</div>'; return; }
+  var its = ITEMS_BY_SET[live.id] || [];
+  var mini = its.map(function(it){
+    var d = DEST_BY_ID[it.dest_id]; if(!d) return '';
+    return '<div class="mini"><div class="mini-img" style="'+_bg(d.image_url)+'"></div><div class="mini-city">'+esc(d.city)+'</div><div class="mini-sub">'+esc(d.country)+' · '+esc(d.iata)+'</div></div>';
+  }).join('');
+  box.innerHTML = '<div class="live-meta">● Live since '+esc(fmtET(live.go_live_at))+'</div><div class="mini-row">'+(mini||'<div class="empty">Set has no destinations.</div>')+'</div>';
+}
+
+function renderCards(){
+  var wrap = el('cards-wrap'), out = '';
+  for(var i=0;i<cards.length;i++){
+    var c = cards[i], d = c.destId ? DEST_BY_ID[c.destId] : null;
+    out += '<div class="hcard">';
+    out +=   '<div class="hcard-top"><span class="hcard-pos">Card '+(i+1)+'</span><button class="hcard-x" title="Remove card" onclick="removeCard('+i+')">&times;</button></div>';
+    if(d){
+      out += '<div class="hcard-prev">';
+      out +=   '<div class="hcard-img" style="'+_bg(d.image_url)+'"></div>';
+      out +=   '<div class="hcard-meta"><div><div class="hcard-city">'+esc(d.city)+'</div><div class="hcard-sub">'+esc(d.country)+' · '+esc(d.iata)+'</div></div><button class="hcard-clear" onclick="clearCard('+i+')">Change</button></div>';
+      out += '</div>';
+    } else {
+      out += '<div class="combo"><input class="combo-input" id="combo-'+i+'" autocomplete="off" placeholder="Search a destination…" oninput="filterCard('+i+')" onfocus="filterCard('+i+')" /><div class="combo-menu hidden" id="menu-'+i+'"></div></div>';
+    }
+    out += '</div>';
+  }
+  wrap.innerHTML = out;
+  el('card-count').textContent = cards.length + ' card' + (cards.length===1?'':'s');
+  el('add-card-btn').disabled = cards.length >= MAX_CARDS;
+}
+
+function renderUpcoming(){
+  var box = el('upcoming-body'), now = Date.now();
+  _upcoming = SETS.filter(function(s){ return new Date(s.go_live_at).getTime() > now; })
+                  .sort(function(a,b){ return new Date(a.go_live_at) - new Date(b.go_live_at); });
+  if(!_upcoming.length){ box.innerHTML = '<div class="empty">Nothing scheduled.</div>'; return; }
+  box.innerHTML = _upcoming.map(function(s, ui){
+    var its = ITEMS_BY_SET[s.id] || [];
+    var names = its.map(function(it){ var d = DEST_BY_ID[it.dest_id]; return d ? esc(d.city) : '?'; }).join(', ');
+    return '<div class="sched-item"><div class="sched-info"><div class="sched-when">'+esc(fmtET(s.go_live_at))+'<span class="sched-rel">'+esc(relFuture(s.go_live_at))+'</span></div><div class="sched-names">'+its.length+' destination'+(its.length===1?'':'s')+' · '+names+'</div></div><button class="btn-cancel" onclick="cancelUpcoming('+ui+')">Cancel</button></div>';
+  }).join('');
+}
+
+/* ── Combobox ────────────────────────────────────────────────────────────── */
+function filterCard(idx){
+  var inp = el('combo-'+idx), menu = el('menu-'+idx);
+  if(!inp || !menu) return;
+  var q = inp.value.trim().toLowerCase();
+  var chosen = {};
+  cards.forEach(function(c){ if(c.destId) chosen[c.destId] = 1; });
+  var matches = [];
+  for(var i=0;i<DESTS.length && matches.length<60;i++){
+    var d = DESTS[i];
+    if(chosen[d.id]) continue;                 // hide already-picked destinations
+    if(!q || d._s.indexOf(q) >= 0) matches.push(d);
+  }
+  _menuMatches[idx] = matches;
+  if(!matches.length){ menu.innerHTML = '<div class="combo-empty">No matches</div>'; menu.classList.remove('hidden'); return; }
+  menu.innerHTML = matches.map(function(d, mi){
+    return '<div class="combo-item" onmousedown="event.preventDefault();selectCard('+idx+','+mi+')"><img src="'+esc(d.image_url||'')+'" onerror="this.style.visibility=\'hidden\'" /><div class="ci-text"><div class="ci-city">'+esc(d.city)+'</div><div class="ci-sub">'+esc(d.country)+' · '+esc(d.iata)+'</div></div></div>';
+  }).join('');
+  menu.classList.remove('hidden');
+}
+function selectCard(idx, mi){
+  var m = _menuMatches[idx]; if(!m || !m[mi]) return;
+  cards[idx].destId = m[mi].id;
+  closeAllMenus();
+  renderCards();
+}
+function clearCard(idx){ cards[idx].destId = null; renderCards(); setTimeout(function(){ var i = el('combo-'+idx); if(i) i.focus(); }, 0); }
+function closeAllMenus(){ var ms = document.querySelectorAll('.combo-menu'); for(var i=0;i<ms.length;i++) ms[i].classList.add('hidden'); }
+document.addEventListener('mousedown', function(e){ if(e.target.closest && e.target.closest('.combo')) return; closeAllMenus(); });
+
+function addCard(){ if(cards.length >= MAX_CARDS) return; cards.push({ destId:null }); renderCards(); }
+function removeCard(idx){
+  if(cards.length <= 1){ toast('Keep at least one card.','warn'); return; }
+  cards.splice(idx,1); renderCards();
+}
+
+/* ── Collect + write ─────────────────────────────────────────────────────── */
+function collectItems(){
+  var out = [], seen = {};
+  for(var i=0;i<cards.length;i++){ var id = cards[i].destId; if(id && !seen[id]){ seen[id] = 1; out.push(id); } }
+  return out;
+}
+async function createSet(goLiveIso, status){
+  var r = await fetch(_SUPA_URL+'/rest/v1/dashboard_hero_sets', { method:'POST', headers:Object.assign({ Prefer:'return=representation' }, _WH), body:JSON.stringify({ go_live_at:goLiveIso, status:status, created_by:'admin' }) });
+  if(!r.ok) throw new Error('set HTTP '+r.status+' '+(await r.text()).slice(0,140));
+  var rows = await r.json();
+  if(!rows || !rows[0]) throw new Error('set insert returned no row (check dashboard_hero.sql is applied)');
+  return rows[0].id;
+}
+async function insertItems(setId, destIds){
+  var body = destIds.map(function(id, i){ return { set_id:setId, dest_id:id, position:i+1 }; });
+  var r = await fetch(_SUPA_URL+'/rest/v1/dashboard_hero_destinations', { method:'POST', headers:Object.assign({ Prefer:'return=minimal' }, _WH), body:JSON.stringify(body) });
+  if(!r.ok) throw new Error('items HTTP '+r.status+' '+(await r.text()).slice(0,140));
+}
+
+async function publishNow(){
+  if(_busy) return;
+  var items = collectItems();
+  if(!items.length){ toast('Pick at least one destination first.','warn'); return; }
+  if(!confirm('Publish these '+items.length+' destination(s) to the Dashboard Hero now?\n\nThis immediately replaces what is currently live.')) return;
+  setBusy(true);
+  try {
+    var setId = await createSet(new Date().toISOString(), 'published');
+    await insertItems(setId, items);
+    toast(items.length+' destination(s) are now live.','ok');
+    await loadData();
+  } catch(e){ toast('Publish failed: '+e.message,'err'); }
+  setBusy(false);
+}
+
+async function schedule(){
+  if(_busy) return;
+  var items = collectItems();
+  if(!items.length){ toast('Pick at least one destination first.','warn'); return; }
+  var val = el('sched-input').value;
+  if(!val){ toast('Choose a date and time (ET) first.','warn'); return; }
+  var p = val.split('T'), ymd = p[0].split('-'), hm = (p[1]||'').split(':');
+  var utcMs = etWallToUTC(+ymd[0], +ymd[1], +ymd[2], +hm[0], +hm[1]);
+  if(utcMs <= Date.now()){ toast('Pick a time in the future (ET).','warn'); return; }
+  var iso = new Date(utcMs).toISOString();
+  if(!confirm('Schedule these '+items.length+' destination(s) to go live at\n'+fmtET(iso)+'?\n\nThey will replace whatever is live at that time.')) return;
+  setBusy(true);
+  try {
+    var setId = await createSet(iso, 'scheduled');
+    await insertItems(setId, items);
+    toast('Scheduled for '+fmtET(iso)+'.','ok');
+    el('sched-input').value = '';
+    await loadData();
+  } catch(e){ toast('Schedule failed: '+e.message,'err'); }
+  setBusy(false);
+}
+
+async function cancelUpcoming(ui){
+  var s = _upcoming[ui]; if(!s) return;
+  if(!confirm('Cancel the go-live scheduled for '+fmtET(s.go_live_at)+'?\n\nThis removes it entirely.')) return;
+  try {
+    var r = await fetch(_SUPA_URL+'/rest/v1/dashboard_hero_sets?id=eq.'+encodeURIComponent(s.id), { method:'DELETE', headers:_H });
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    toast('Scheduled go-live canceled.','ok');
+    await loadData();
+  } catch(e){ toast('Cancel failed: '+e.message,'err'); }
+}
+
+/* ── Init ────────────────────────────────────────────────────────────────── */
+el('sched-input').min = nowETInput();
+loadData();
+</script>
+</body>
+</html>
