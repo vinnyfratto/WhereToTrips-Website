@@ -30,6 +30,7 @@ const SECTIONS = [
   { key: "stack", title: "Tech Stack", order: 2, match: (p) => p === "docs/tech-stack.md" },
   { key: "architecture", title: "Architecture", order: 3, match: (p) => p.startsWith("docs/architecture/") },
   { key: "decisions", title: "Decisions (ADRs)", order: 4, match: (p) => p.startsWith("docs/decisions/") },
+  { key: "liteapi", title: "LiteAPI Integration", order: 4.5, match: (p) => p.startsWith("docs/liteapi/") },
   { key: "process", title: "Process", order: 5, match: (p) => p.startsWith("docs/process/") },
   { key: "operations", title: "Operations", order: 6, match: (p) => p.startsWith("docs/operations/") },
   { key: "security", title: "Security & Data", order: 7, match: (p) => p === "docs/security-and-data.md" },
@@ -117,6 +118,16 @@ function adrNum(p) {
 function sortDocs(section) {
   if (section.key === "decisions") section.docs.sort((a, b) => adrNum(a.path) - adrNum(b.path));
   else if (section.key === "weekly") section.docs.sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+  else if (section.key === "liteapi") {
+    // Deliberate reading order: index first, then platform, per-product, commercials.
+    const ORDER = ["README", "PLATFORM", "FLIGHTS", "HOTELS", "PAYMENTS", "COMMERCIALS"];
+    const rank = (p) => {
+      const f = p.split("/").pop().replace(/\.md$/i, "");
+      const i = ORDER.indexOf(f);
+      return i === -1 ? 99 : i;
+    };
+    section.docs.sort((a, b) => rank(a.path) - rank(b.path));
+  }
   else section.docs.sort((a, b) => (b.date || "").localeCompare(a.date || "") || a.title.localeCompare(b.title));
 }
 
