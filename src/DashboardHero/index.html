@@ -33,7 +33,7 @@
   .wrap { max-width:1080px; margin:0 auto; padding:26px 24px 120px; }
   .page-head { margin-bottom:22px; }
   .page-head h1 { font-family:var(--serif); font-size:30px; font-weight:400; line-height:1.15; }
-  .page-head .sub { color:var(--wg600); font-size:14px; margin-top:4px; max-width:680px; }
+  .page-head .sub { color:var(--wg600); font-size:14px; margin-top:4px; max-width:700px; }
 
   .panel { background:var(--card); border:1px solid var(--wg200); border-radius:var(--r-md); box-shadow:var(--sh-sm); padding:18px 20px; margin-bottom:20px; }
   .panel-head { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; }
@@ -48,16 +48,35 @@
   .flt-clear:hover { text-decoration:underline; }
 
   /* Live strip */
-  .live-meta { font-size:12.5px; color:var(--ok); font-weight:700; margin-bottom:10px; }
-  .mini-row { display:flex; gap:12px; flex-wrap:wrap; }
+  .live-meta { font-size:12.5px; color:var(--ok); font-weight:700; margin-bottom:14px; }
+  .live-tile { padding:12px 0; border-top:1px solid var(--wg200); }
+  .live-tile:first-of-type { border-top:none; padding-top:0; }
+  .live-tile-title { font-family:var(--serif); font-size:17px; font-weight:400; color:var(--navy); }
+  .live-tile-copy { font-size:12.5px; color:var(--wg600); margin-top:2px; margin-bottom:9px; max-width:640px; }
+  .mini-row { display:flex; gap:12px; flex-wrap:wrap; margin-top:9px; }
   .mini { width:132px; }
   .mini-img { width:132px; height:84px; border-radius:var(--r-sm); background:var(--wg200) center/cover no-repeat; box-shadow:var(--sh-sm); }
   .mini-city { font-size:13px; font-weight:700; margin-top:5px; line-height:1.2; }
   .mini-sub { font-size:11px; color:var(--wg500); }
 
+  /* Hero tile editor panels */
+  .tile-panel { background:var(--wg100); border:1px solid var(--wg200); border-radius:var(--r-md); padding:16px; margin-bottom:16px; }
+  .tile-panel:last-child { margin-bottom:0; }
+  .tile-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+  .tile-pos { font-size:11px; font-weight:700; letter-spacing:1.4px; text-transform:uppercase; color:var(--wg500); }
+  .tile-x { border:none; background:#fff; color:var(--wg500); font-size:18px; line-height:1; cursor:pointer; padding:3px 9px; border-radius:6px; border:1.5px solid var(--wg300); }
+  .tile-x:hover { color:var(--err); border-color:var(--err); }
+
+  .fld-label { display:block; font-size:10.5px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; color:var(--wg500); margin-bottom:4px; }
+  .fld-input, .fld-textarea { width:100%; font-family:var(--sans); font-size:14px; color:var(--navy); background:#fff; border:1.5px solid var(--wg300); border-radius:var(--r-sm); padding:9px 12px; outline:none; transition:border-color .15s, box-shadow .15s; }
+  .fld-input:focus, .fld-textarea:focus { border-color:var(--rust); box-shadow:0 0 0 3px rgba(184,92,56,.12); }
+  .fld-textarea { resize:vertical; font-family:inherit; line-height:1.45; }
+  .fld-row { margin-bottom:11px; }
+  .fld-row:last-of-type { margin-bottom:16px; }
+
   /* Editor cards */
   .hgrid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:14px; }
-  .hcard { position:relative; background:var(--wg100); border:1px solid var(--wg200); border-radius:var(--r-md); padding:12px; display:flex; flex-direction:column; gap:9px; }
+  .hcard { position:relative; background:#fff; border:1px solid var(--wg200); border-radius:var(--r-md); padding:12px; display:flex; flex-direction:column; gap:9px; }
   .hcard-top { display:flex; align-items:center; justify-content:space-between; cursor:grab; }
   .hcard-top:active { cursor:grabbing; }
   .hcard-lead { display:flex; align-items:center; gap:7px; }
@@ -88,9 +107,10 @@
   .hcard-clear { border:none; background:none; color:var(--rust); font-size:11.5px; font-weight:700; cursor:pointer; padding:2px 0; white-space:nowrap; }
   .hcard-clear:hover { text-decoration:underline; }
 
-  .addcard { margin-top:14px; display:inline-flex; align-items:center; gap:7px; font-family:var(--sans); font-size:13px; font-weight:700; color:var(--navy); background:var(--wg100); border:1.5px dashed var(--wg300); border-radius:var(--r-sm); padding:9px 15px; cursor:pointer; transition:border-color .15s, background .15s; }
-  .addcard:hover { border-color:var(--rust); background:#fff; }
-  .addcard:disabled { opacity:.45; cursor:not-allowed; }
+  .addcard, .addtile { margin-top:14px; display:inline-flex; align-items:center; gap:7px; font-family:var(--sans); font-size:13px; font-weight:700; color:var(--navy); background:var(--wg100); border:1.5px dashed var(--wg300); border-radius:var(--r-sm); padding:9px 15px; cursor:pointer; transition:border-color .15s, background .15s; }
+  .addcard:hover, .addtile:hover { border-color:var(--rust); background:#fff; }
+  .addcard:disabled, .addtile:disabled { opacity:.45; cursor:not-allowed; }
+  .addtile { background:#fff; }
 
   /* Upcoming */
   .sched-item { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:11px 0; border-bottom:1px solid var(--wg200); }
@@ -146,7 +166,7 @@
 <div class="wrap">
   <div class="page-head">
     <h1>Dashboard Hero</h1>
-    <p class="sub">Pick the destinations featured on the app Dashboard's main Hero. <b>Publish Now</b> makes them live immediately; <b>Schedule Go Live</b> sets an Eastern-time date/time when they take over. Either one replaces whatever is currently live.</p>
+    <p class="sub">Build the app Dashboard's main Hero out of named tiles — e.g. "Beach Getaways" or "Domestic Gems" — each with its own title, copy, and destinations. <b>Publish Now</b> makes them live immediately; <b>Schedule Go Live</b> sets an Eastern-time date/time when they take over. Either one replaces whatever is currently live.</p>
   </div>
 
   <div id="boot-error"></div>
@@ -157,18 +177,12 @@
     <div id="live-body"><div class="empty">Loading…</div></div>
   </div>
 
-  <!-- Card editor -->
+  <!-- Tile editor -->
   <div class="panel">
-    <div class="panel-head"><span class="panel-title">Set Hero Destinations</span><span class="et-tag" id="card-count"></span></div>
-    <div class="flt-bar">
-      <span class="flt-label">Filter</span>
-      <select class="flt-select" id="flt-region" onchange="onRegionFilter()"><option value="">All regions</option></select>
-      <select class="flt-select" id="flt-sub" onchange="onSubFilter()"><option value="">All sub-regions</option></select>
-      <button class="flt-clear" id="flt-clear" onclick="clearFilters()" style="display:none">Clear filter</button>
-    </div>
-    <div class="hgrid" id="cards-wrap"></div>
-    <button class="addcard" id="add-card-btn" onclick="addCard()">＋ Add card</button>
-    <p class="et-tag" style="margin-top:10px;color:var(--wg500);font-weight:600">Drag any card by its ⠿ handle to reorder. Card 1 is the first hero shown.</p>
+    <div class="panel-head"><span class="panel-title">Hero Tiles</span><span class="et-tag" id="tile-count"></span></div>
+    <div id="tiles-wrap"></div>
+    <button class="addtile" id="add-tile-btn" onclick="addTile()">＋ Add Hero Tile</button>
+    <p class="et-tag" style="margin-top:10px;color:var(--wg500);font-weight:600">Drag any destination card by its ⠿ handle to reorder within its tile.</p>
   </div>
 
   <!-- Upcoming schedule -->
@@ -199,6 +213,7 @@ const _SUPA_URL  = 'https://pvqwxphrmcvmztlkzhsg.supabase.co';
 const _SUPA_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2cXd4cGhybWN2bXp0bGt6aHNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzIxMjIsImV4cCI6MjA5NTMwODEyMn0.uz1WFZqymop5mhIUx6bxW8qofMQuGo-ltyRA8f0P1lk';
 const _H = { apikey:_SUPA_ANON, Authorization:'Bearer '+_SUPA_ANON };
 const _WH = { apikey:_SUPA_ANON, Authorization:'Bearer '+_SUPA_ANON, 'Content-Type':'application/json' };
+const MAX_TILES = 10;
 const MAX_CARDS = 8;
 
 /* ── Static taxonomy (labels for the Region / Sub-Region picker filters) ──── */
@@ -207,13 +222,13 @@ var REGION_ORDER = ['NA','EU','AS','SA','AF','OC'];
 var SUBREGION_LABELS = { north_america:'USA & Canada', mexico:'Mexico', caribbean:'Caribbean', central_america:'Central America', western_europe:'Western Europe', british_isles:'British Isles', mediterranean:'Mediterranean', eastern_europe:'Eastern Europe', nordic:'Nordic / Scandinavia', east_asia:'East Asia', southeast_asia:'Southeast Asia', south_asia:'South Asia', middle_east:'Middle East', central_asia:'Central Asia', brazil:'Brazil', andean:'Andean Countries', southern_cone:'Southern Cone', northern_sa:'Northern South America', north_africa:'North Africa', west_africa:'West Africa', east_africa:'East Africa', southern_africa:'Southern Africa', australia_nz:'Australia & New Zealand', pacific_islands:'Pacific Islands' };
 
 /* ── State ───────────────────────────────────────────────────────────────── */
-var DESTS = [], DEST_BY_ID = {}, SETS = [], ITEMS_BY_SET = {};
-var cards = [];
-var _menuMatches = {};   // idx -> current filtered matches (numeric-index select)
+// tiles[t] = { title, copy, fltRegion, fltSub, cards:[{destId}, ...] }
+var DESTS = [], DEST_BY_ID = {}, SETS = [], TILES_BY_SET = {}, ITEMS_BY_TILE = {};
+var tiles = [];
+var _menuMatches = {};   // 't-idx' key -> current filtered matches (for numeric-index select)
 var _upcoming = [];      // renderUpcoming stash for numeric-index cancel
 var _busy = false;
-var fltRegion = '', fltSub = '';   // Region / Sub-Region picker filters
-var _dragIdx = null;               // index of the card being dragged
+var _dragPos = null;     // {t,i} of the card being dragged
 
 /* ── Helpers ─────────────────────────────────────────────────────────────── */
 function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -276,6 +291,9 @@ function setBusy(b){
   el('btn-publish').disabled = b;
   el('btn-sched').disabled = b;
 }
+function newTile(){
+  return { title:'', copy:'', fltRegion:'', fltSub:'', cards:[{destId:null},{destId:null},{destId:null},{destId:null},{destId:null}] };
+}
 
 /* ── Load data (live from Supabase) ──────────────────────────────────────── */
 async function loadData(){
@@ -289,23 +307,34 @@ async function loadData(){
 
     var sr = await fetch(_SUPA_URL+'/rest/v1/dashboard_hero_sets?select=id,go_live_at,status,label,created_at&order=go_live_at.desc', { headers:_H });
     SETS = sr.ok ? await sr.json() : [];
-    var ir = await fetch(_SUPA_URL+'/rest/v1/dashboard_hero_destinations?select=set_id,dest_id,position&order=position.asc', { headers:_H });
+
+    var tr = await fetch(_SUPA_URL+'/rest/v1/dashboard_hero_tiles?select=id,set_id,title,copy,position&order=position.asc', { headers:_H });
+    var tileRows = tr.ok ? await tr.json() : [];
+    TILES_BY_SET = {};
+    tileRows.forEach(function(row){ (TILES_BY_SET[row.set_id] = TILES_BY_SET[row.set_id] || []).push(row); });
+    Object.keys(TILES_BY_SET).forEach(function(k){ TILES_BY_SET[k].sort(function(a,b){ return a.position-b.position; }); });
+
+    var ir = await fetch(_SUPA_URL+'/rest/v1/dashboard_hero_destinations?select=tile_id,dest_id,position&order=position.asc', { headers:_H });
     var items = ir.ok ? await ir.json() : [];
-    ITEMS_BY_SET = {};
-    items.forEach(function(it){ (ITEMS_BY_SET[it.set_id] = ITEMS_BY_SET[it.set_id] || []).push(it); });
-    Object.keys(ITEMS_BY_SET).forEach(function(k){ ITEMS_BY_SET[k].sort(function(a,b){ return a.position-b.position; }); });
+    ITEMS_BY_TILE = {};
+    items.forEach(function(it){ (ITEMS_BY_TILE[it.tile_id] = ITEMS_BY_TILE[it.tile_id] || []).push(it); });
+    Object.keys(ITEMS_BY_TILE).forEach(function(k){ ITEMS_BY_TILE[k].sort(function(a,b){ return a.position-b.position; }); });
 
     // Seed the editor from the current live set so "edit + republish" is one step.
     var live = resolveLive();
     if(live){
-      var its = ITEMS_BY_SET[live.id] || [];
-      cards = its.map(function(it){ return { destId: DEST_BY_ID[it.dest_id] ? it.dest_id : null }; }).filter(function(c){ return c.destId; });
-    } else { cards = []; }
-    while(cards.length < 5) cards.push({ destId:null });
+      var tRows = TILES_BY_SET[live.id] || [];
+      tiles = tRows.map(function(row){
+        var its = ITEMS_BY_TILE[row.id] || [];
+        var cards = its.map(function(it){ return { destId: DEST_BY_ID[it.dest_id] ? it.dest_id : null }; }).filter(function(c){ return c.destId; });
+        while(cards.length < 5) cards.push({ destId:null });
+        return { title: row.title||'', copy: row.copy||'', fltRegion:'', fltSub:'', cards: cards };
+      });
+    } else { tiles = []; }
+    if(!tiles.length) tiles = [ newTile() ];
 
-    renderFilters();
     renderLive();
-    renderCards();
+    renderTiles();
     renderUpcoming();
   } catch(e){
     _bootError('Load failed: '+e.message);
@@ -330,34 +359,68 @@ function _vibeCount(d){ return Array.isArray(d.vibes) ? d.vibes.length : 0; }
 
 function renderLive(){
   var box = el('live-body'), live = resolveLive();
-  if(!live){ box.innerHTML = '<div class="empty">No hero set is live yet. Pick destinations below and Publish Now.</div>'; return; }
-  var its = ITEMS_BY_SET[live.id] || [];
-  var mini = its.map(function(it){
-    var d = DEST_BY_ID[it.dest_id]; if(!d) return '';
-    return '<div class="mini"><div class="mini-img" style="'+_bg(d.image_url)+'"></div><div class="mini-city">'+esc(d.city)+'</div><div class="mini-sub">'+esc(d.country)+' · '+esc(d.iata)+' · '+_vibeCount(d)+' vibes</div></div>';
-  }).join('');
-  box.innerHTML = '<div class="live-meta">● Live since '+esc(fmtET(live.go_live_at))+'</div><div class="mini-row">'+(mini||'<div class="empty">Set has no destinations.</div>')+'</div>';
+  if(!live){ box.innerHTML = '<div class="empty">No hero set is live yet. Build tiles below and Publish Now.</div>'; return; }
+  var tRows = TILES_BY_SET[live.id] || [];
+  var out = '<div class="live-meta">● Live since '+esc(fmtET(live.go_live_at))+'</div>';
+  if(!tRows.length){ out += '<div class="empty">Set has no tiles.</div>'; box.innerHTML = out; return; }
+  tRows.forEach(function(row){
+    var its = ITEMS_BY_TILE[row.id] || [];
+    var mini = its.map(function(it){
+      var d = DEST_BY_ID[it.dest_id]; if(!d) return '';
+      return '<div class="mini"><div class="mini-img" style="'+_bg(d.image_url)+'"></div><div class="mini-city">'+esc(d.city)+'</div><div class="mini-sub">'+esc(d.country)+' · '+esc(d.iata)+' · '+_vibeCount(d)+' vibes</div></div>';
+    }).join('');
+    out += '<div class="live-tile">';
+    out +=   '<div class="live-tile-title">'+(row.title ? esc(row.title) : '<i>Untitled tile</i>')+'</div>';
+    if(row.copy) out += '<div class="live-tile-copy">'+esc(row.copy)+'</div>';
+    out +=   '<div class="mini-row">'+(mini || '<div class="empty">No destinations.</div>')+'</div>';
+    out += '</div>';
+  });
+  box.innerHTML = out;
 }
 
-function renderCards(){
-  var wrap = el('cards-wrap'), out = '';
-  for(var i=0;i<cards.length;i++){
-    var c = cards[i], d = c.destId ? DEST_BY_ID[c.destId] : null;
-    out += '<div class="hcard" id="hcard-'+i+'" draggable="true" ondragstart="onCardDragStart(event,'+i+')" ondragover="onCardDragOver(event,'+i+')" ondragleave="onCardDragLeave(event,'+i+')" ondrop="onCardDrop(event,'+i+')" ondragend="onCardDragEnd()">';
-    out +=   '<div class="hcard-top"><span class="hcard-lead"><span class="hcard-grip" title="Drag to reorder">⠿</span><span class="hcard-pos">Card '+(i+1)+'</span></span><button class="hcard-x" title="Remove card" onclick="removeCard('+i+')">&times;</button></div>';
+function renderTiles(){
+  var wrap = el('tiles-wrap'), out = '';
+  for(var t=0;t<tiles.length;t++) out += tilePanelHtml(t);
+  wrap.innerHTML = out;
+  for(var t=0;t<tiles.length;t++){
+    renderTileFilterOptions(t);
+    renderTileCards(t);
+  }
+  el('tile-count').textContent = tiles.length + ' tile' + (tiles.length===1?'':'s');
+  el('add-tile-btn').disabled = tiles.length >= MAX_TILES;
+}
+
+function tilePanelHtml(t){
+  var tile = tiles[t];
+  var out = '<div class="tile-panel" id="tile-'+t+'">';
+  out +=   '<div class="tile-head"><span class="tile-pos">Hero Tile '+(t+1)+'</span><button class="tile-x" title="Remove tile" onclick="removeTile('+t+')">&times;</button></div>';
+  out +=   '<div class="fld-row"><label class="fld-label" for="title-'+t+'">Hero Title</label><input class="fld-input" id="title-'+t+'" value="'+esc(tile.title)+'" placeholder="e.g. Beach Getaways" oninput="onTitleInput('+t+')" /></div>';
+  out +=   '<div class="fld-row"><label class="fld-label" for="copy-'+t+'">Hero Copy</label><textarea class="fld-textarea" id="copy-'+t+'" rows="3" placeholder="A short line shown with this tile…" oninput="onCopyInput('+t+')">'+esc(tile.copy)+'</textarea></div>';
+  out +=   '<div class="flt-bar"><span class="flt-label">Filter</span><select class="flt-select" id="flt-region-'+t+'" onchange="onRegionFilter('+t+')"></select><select class="flt-select" id="flt-sub-'+t+'" onchange="onSubFilter('+t+')"></select><button class="flt-clear" id="flt-clear-'+t+'" onclick="clearFilters('+t+')" style="display:none">Clear filter</button></div>';
+  out +=   '<div class="hgrid" id="cards-wrap-'+t+'"></div>';
+  out +=   '<button class="addcard" id="add-card-btn-'+t+'" onclick="addCard('+t+')">＋ Add destination</button>';
+  out += '</div>';
+  return out;
+}
+
+function renderTileCards(t){
+  var tile = tiles[t], wrap = el('cards-wrap-'+t), out = '';
+  for(var i=0;i<tile.cards.length;i++){
+    var c = tile.cards[i], d = c.destId ? DEST_BY_ID[c.destId] : null;
+    out += '<div class="hcard" id="hcard-'+t+'-'+i+'" draggable="true" ondragstart="onCardDragStart(event,'+t+','+i+')" ondragover="onCardDragOver(event,'+t+','+i+')" ondragleave="onCardDragLeave(event,'+t+','+i+')" ondrop="onCardDrop(event,'+t+','+i+')" ondragend="onCardDragEnd()">';
+    out +=   '<div class="hcard-top"><span class="hcard-lead"><span class="hcard-grip" title="Drag to reorder">⠿</span><span class="hcard-pos">Card '+(i+1)+'</span></span><button class="hcard-x" title="Remove card" onclick="removeCard('+t+','+i+')">&times;</button></div>';
     if(d){
       out += '<div class="hcard-prev">';
       out +=   '<div class="hcard-img" style="'+_bg(d.image_url)+'"></div>';
-      out +=   '<div class="hcard-meta"><div><div class="hcard-city">'+esc(d.city)+'</div><div class="hcard-sub">'+esc(d.country)+' · '+esc(d.iata)+' · '+_vibeCount(d)+' vibes</div></div><button class="hcard-clear" onclick="clearCard('+i+')">Change</button></div>';
+      out +=   '<div class="hcard-meta"><div><div class="hcard-city">'+esc(d.city)+'</div><div class="hcard-sub">'+esc(d.country)+' · '+esc(d.iata)+' · '+_vibeCount(d)+' vibes</div></div><button class="hcard-clear" onclick="clearCard('+t+','+i+')">Change</button></div>';
       out += '</div>';
     } else {
-      out += '<div class="combo"><input class="combo-input" id="combo-'+i+'" autocomplete="off" placeholder="Search a destination…" oninput="filterCard('+i+')" onfocus="filterCard('+i+')" /><div class="combo-menu hidden" id="menu-'+i+'"></div></div>';
+      out += '<div class="combo"><input class="combo-input" id="combo-'+t+'-'+i+'" autocomplete="off" placeholder="Search a destination…" oninput="filterCard('+t+','+i+')" onfocus="filterCard('+t+','+i+')" /><div class="combo-menu hidden" id="menu-'+t+'-'+i+'"></div></div>';
     }
     out += '</div>';
   }
   wrap.innerHTML = out;
-  el('card-count').textContent = cards.length + ' card' + (cards.length===1?'':'s');
-  el('add-card-btn').disabled = cards.length >= MAX_CARDS;
+  var btn = el('add-card-btn-'+t); if(btn) btn.disabled = tile.cards.length >= MAX_CARDS;
 }
 
 function renderUpcoming(){
@@ -366,114 +429,137 @@ function renderUpcoming(){
                   .sort(function(a,b){ return new Date(a.go_live_at) - new Date(b.go_live_at); });
   if(!_upcoming.length){ box.innerHTML = '<div class="empty">Nothing scheduled.</div>'; return; }
   box.innerHTML = _upcoming.map(function(s, ui){
-    var its = ITEMS_BY_SET[s.id] || [];
-    var names = its.map(function(it){ var d = DEST_BY_ID[it.dest_id]; return d ? esc(d.city) : '?'; }).join(', ');
-    return '<div class="sched-item"><div class="sched-info"><div class="sched-when">'+esc(fmtET(s.go_live_at))+'<span class="sched-rel">'+esc(relFuture(s.go_live_at))+'</span></div><div class="sched-names">'+its.length+' destination'+(its.length===1?'':'s')+' · '+names+'</div></div><button class="btn-cancel" onclick="cancelUpcoming('+ui+')">Cancel</button></div>';
+    var tRows = TILES_BY_SET[s.id] || [];
+    var summary = tRows.map(function(row){
+      var its = ITEMS_BY_TILE[row.id] || [];
+      return (row.title || 'Untitled')+' ('+its.length+')';
+    }).join(', ');
+    return '<div class="sched-item"><div class="sched-info"><div class="sched-when">'+esc(fmtET(s.go_live_at))+'<span class="sched-rel">'+esc(relFuture(s.go_live_at))+'</span></div><div class="sched-names">'+esc(summary || 'No tiles')+'</div></div><button class="btn-cancel" onclick="cancelUpcoming('+ui+')">Cancel</button></div>';
   }).join('');
 }
 
-/* ── Combobox ────────────────────────────────────────────────────────────── */
-function filterCard(idx){
-  var inp = el('combo-'+idx), menu = el('menu-'+idx);
+/* ── Tile management ─────────────────────────────────────────────────────── */
+function addTile(){ if(tiles.length >= MAX_TILES) return; tiles.push(newTile()); renderTiles(); }
+function removeTile(t){
+  if(tiles.length <= 1){ toast('Keep at least one hero tile.','warn'); return; }
+  tiles.splice(t,1); renderTiles();
+}
+function onTitleInput(t){ tiles[t].title = el('title-'+t).value; }
+function onCopyInput(t){ tiles[t].copy = el('copy-'+t).value; }
+
+/* ── Combobox (per-tile) ──────────────────────────────────────────────────── */
+function filterCard(t, idx){
+  var inp = el('combo-'+t+'-'+idx), menu = el('menu-'+t+'-'+idx);
   if(!inp || !menu) return;
+  var tile = tiles[t];
   var q = inp.value.trim().toLowerCase();
   var chosen = {};
-  cards.forEach(function(c){ if(c.destId) chosen[c.destId] = 1; });
+  tiles.forEach(function(tl){ tl.cards.forEach(function(c){ if(c.destId) chosen[c.destId] = 1; }); }); // hide dests already used anywhere in this hero
   var matches = [];
   for(var i=0;i<DESTS.length && matches.length<60;i++){
     var d = DESTS[i];
-    if(chosen[d.id]) continue;                 // hide already-picked destinations
-    if(fltRegion && d.region !== fltRegion) continue;
-    if(fltSub && d.subregion !== fltSub) continue;
+    if(chosen[d.id]) continue;
+    if(tile.fltRegion && d.region !== tile.fltRegion) continue;
+    if(tile.fltSub && d.subregion !== tile.fltSub) continue;
     if(!q || d._s.indexOf(q) >= 0) matches.push(d);
   }
-  _menuMatches[idx] = matches;
+  var key = t+'-'+idx;
+  _menuMatches[key] = matches;
   if(!matches.length){ menu.innerHTML = '<div class="combo-empty">No matches</div>'; menu.classList.remove('hidden'); return; }
   menu.innerHTML = matches.map(function(d, mi){
-    return '<div class="combo-item" onmousedown="event.preventDefault();selectCard('+idx+','+mi+')"><img src="'+esc(d.image_url||'')+'" onerror="this.style.visibility=\'hidden\'" /><div class="ci-text"><div class="ci-city">'+esc(d.city)+'</div><div class="ci-sub">'+esc(d.country)+' · '+esc(d.iata)+' · '+_vibeCount(d)+' vibes</div></div></div>';
+    return '<div class="combo-item" onmousedown="event.preventDefault();selectCard('+t+','+idx+','+mi+')"><img src="'+esc(d.image_url||'')+'" onerror="this.style.visibility=\'hidden\'" /><div class="ci-text"><div class="ci-city">'+esc(d.city)+'</div><div class="ci-sub">'+esc(d.country)+' · '+esc(d.iata)+' · '+_vibeCount(d)+' vibes</div></div></div>';
   }).join('');
   menu.classList.remove('hidden');
 }
-function selectCard(idx, mi){
-  var m = _menuMatches[idx]; if(!m || !m[mi]) return;
-  cards[idx].destId = m[mi].id;
+function selectCard(t, idx, mi){
+  var m = _menuMatches[t+'-'+idx]; if(!m || !m[mi]) return;
+  tiles[t].cards[idx].destId = m[mi].id;
   closeAllMenus();
-  renderCards();
+  renderTileCards(t);
 }
-function clearCard(idx){ cards[idx].destId = null; renderCards(); setTimeout(function(){ var i = el('combo-'+idx); if(i) i.focus(); }, 0); }
+function clearCard(t, idx){ tiles[t].cards[idx].destId = null; renderTileCards(t); setTimeout(function(){ var i = el('combo-'+t+'-'+idx); if(i) i.focus(); }, 0); }
 function closeAllMenus(){ var ms = document.querySelectorAll('.combo-menu'); for(var i=0;i<ms.length;i++) ms[i].classList.add('hidden'); }
 document.addEventListener('mousedown', function(e){ if(e.target.closest && e.target.closest('.combo')) return; closeAllMenus(); });
 
-function addCard(){ if(cards.length >= MAX_CARDS) return; cards.push({ destId:null }); renderCards(); }
-function removeCard(idx){
-  if(cards.length <= 1){ toast('Keep at least one card.','warn'); return; }
-  cards.splice(idx,1); renderCards();
+function addCard(t){ if(tiles[t].cards.length >= MAX_CARDS) return; tiles[t].cards.push({ destId:null }); renderTileCards(t); }
+function removeCard(t, idx){
+  if(tiles[t].cards.length <= 1){ toast('Keep at least one card.','warn'); return; }
+  tiles[t].cards.splice(idx,1); renderTileCards(t);
 }
 
-/* ── Region / Sub-Region picker filters ──────────────────────────────────── */
+/* ── Region / Sub-Region picker filters (per tile) ───────────────────────── */
 function _subLabel(code){
   if(SUBREGION_LABELS[code]) return SUBREGION_LABELS[code];
   var parts = String(code).split('_'), out = [];
   for(var i=0;i<parts.length;i++){ var p = parts[i]; out.push(p ? p.charAt(0).toUpperCase()+p.slice(1) : p); }
   return out.join(' ');
 }
-function renderFilters(){
+function renderTileFilterOptions(t){
+  var tile = tiles[t];
   var present = {};
   DESTS.forEach(function(d){ if(d.region) present[d.region] = 1; });
   var html = '<option value="">All regions</option>', seen = {};
   REGION_ORDER.forEach(function(code){ if(present[code]){ html += '<option value="'+code+'">'+esc(CODE_REGION[code]||code)+'</option>'; seen[code] = 1; } });
   Object.keys(present).forEach(function(code){ if(!seen[code]) html += '<option value="'+code+'">'+esc(CODE_REGION[code]||code)+'</option>'; });
-  var rsel = el('flt-region'); rsel.innerHTML = html; rsel.value = fltRegion;
-  renderSubOptions();
-  _syncFilterUI();
+  var rsel = el('flt-region-'+t); rsel.innerHTML = html; rsel.value = tile.fltRegion;
+  renderTileSubOptions(t);
+  _syncFilterUI(t);
 }
-function renderSubOptions(){
+function renderTileSubOptions(t){
+  var tile = tiles[t];
   var subs = {};
-  DESTS.forEach(function(d){ if((!fltRegion || d.region===fltRegion) && d.subregion) subs[d.subregion] = 1; });
+  DESTS.forEach(function(d){ if((!tile.fltRegion || d.region===tile.fltRegion) && d.subregion) subs[d.subregion] = 1; });
   var keys = Object.keys(subs).sort(function(a,b){ return _subLabel(a).localeCompare(_subLabel(b)); });
   var html = '<option value="">All sub-regions</option>';
   keys.forEach(function(k){ html += '<option value="'+k+'">'+esc(_subLabel(k))+'</option>'; });
-  var ssel = el('flt-sub'); ssel.innerHTML = html; ssel.value = fltSub;
+  var ssel = el('flt-sub-'+t); ssel.innerHTML = html; ssel.value = tile.fltSub;
 }
-function _syncFilterUI(){ el('flt-clear').style.display = (fltRegion || fltSub) ? '' : 'none'; }
-function onRegionFilter(){ fltRegion = el('flt-region').value; fltSub = ''; renderSubOptions(); _syncFilterUI(); refilterMenus(); }
-function onSubFilter(){ fltSub = el('flt-sub').value; _syncFilterUI(); refilterMenus(); }
-function clearFilters(){ fltRegion = ''; fltSub = ''; el('flt-region').value = ''; renderSubOptions(); _syncFilterUI(); refilterMenus(); }
-function refilterMenus(){
-  var menus = document.querySelectorAll('.combo-menu');
-  for(var i=0;i<menus.length;i++){ if(!menus[i].classList.contains('hidden')) filterCard(+menus[i].id.split('-')[1]); }
+function _syncFilterUI(t){ var c = el('flt-clear-'+t); if(c) c.style.display = (tiles[t].fltRegion || tiles[t].fltSub) ? '' : 'none'; }
+function onRegionFilter(t){ tiles[t].fltRegion = el('flt-region-'+t).value; tiles[t].fltSub = ''; renderTileSubOptions(t); _syncFilterUI(t); refilterMenus(t); }
+function onSubFilter(t){ tiles[t].fltSub = el('flt-sub-'+t).value; _syncFilterUI(t); refilterMenus(t); }
+function clearFilters(t){ tiles[t].fltRegion = ''; tiles[t].fltSub = ''; el('flt-region-'+t).value = ''; renderTileSubOptions(t); _syncFilterUI(t); refilterMenus(t); }
+function refilterMenus(t){
+  var menus = document.querySelectorAll('#cards-wrap-'+t+' .combo-menu');
+  for(var i=0;i<menus.length;i++){
+    if(!menus[i].classList.contains('hidden')){ var parts = menus[i].id.split('-'); filterCard(+parts[1], +parts[2]); }
+  }
 }
 
-/* ── Drag to reorder cards ───────────────────────────────────────────────── */
-function onCardDragStart(e,i){
+/* ── Drag to reorder cards (within a tile only) ──────────────────────────── */
+function onCardDragStart(e,t,i){
   if(e.target && e.target.closest && e.target.closest('.combo')){ e.preventDefault(); return; } // let the search field handle its own mouse
-  _dragIdx = i;
-  if(e.dataTransfer){ e.dataTransfer.effectAllowed = 'move'; try { e.dataTransfer.setData('text/plain', String(i)); } catch(_){} }
-  var c = el('hcard-'+i); if(c) c.classList.add('dragging');
+  _dragPos = { t:t, i:i };
+  if(e.dataTransfer){ e.dataTransfer.effectAllowed = 'move'; try { e.dataTransfer.setData('text/plain', t+'-'+i); } catch(_){} }
+  var c = el('hcard-'+t+'-'+i); if(c) c.classList.add('dragging');
 }
-function onCardDragOver(e,i){
-  if(_dragIdx === null) return;
+function onCardDragOver(e,t,i){
+  if(!_dragPos || _dragPos.t !== t) return;   // no cross-tile reordering
   e.preventDefault(); if(e.dataTransfer) e.dataTransfer.dropEffect = 'move';
-  var c = el('hcard-'+i); if(c && i !== _dragIdx) c.classList.add('drop-target');
+  var c = el('hcard-'+t+'-'+i); if(c && i !== _dragPos.i) c.classList.add('drop-target');
 }
-function onCardDragLeave(e,i){ var c = el('hcard-'+i); if(c) c.classList.remove('drop-target'); }
-function onCardDrop(e,i){ if(_dragIdx === null) return; e.preventDefault(); moveCard(_dragIdx, i); }
+function onCardDragLeave(e,t,i){ var c = el('hcard-'+t+'-'+i); if(c) c.classList.remove('drop-target'); }
+function onCardDrop(e,t,i){ if(!_dragPos || _dragPos.t !== t) return; e.preventDefault(); moveCard(t, _dragPos.i, i); }
 function onCardDragEnd(){
-  _dragIdx = null;
+  _dragPos = null;
   var els = document.querySelectorAll('.hcard');
   for(var k=0;k<els.length;k++){ els[k].classList.remove('dragging'); els[k].classList.remove('drop-target'); }
 }
-function moveCard(from,to){
+function moveCard(t, from, to){
   if(from === to || from === null || to === null) return;
-  var it = cards.splice(from,1)[0];
-  cards.splice(to,0,it);
-  renderCards();
+  var it = tiles[t].cards.splice(from,1)[0];
+  tiles[t].cards.splice(to,0,it);
+  renderTileCards(t);
 }
 
 /* ── Collect + write ─────────────────────────────────────────────────────── */
-function collectItems(){
-  var out = [], seen = {};
-  for(var i=0;i<cards.length;i++){ var id = cards[i].destId; if(id && !seen[id]){ seen[id] = 1; out.push(id); } }
+// Tiles with zero picked destinations are dropped — nothing to publish for them.
+function collectTilesPayload(){
+  var out = [];
+  for(var t=0;t<tiles.length;t++){
+    var seen = {}, destIds = [];
+    tiles[t].cards.forEach(function(c){ if(c.destId && !seen[c.destId]){ seen[c.destId] = 1; destIds.push(c.destId); } });
+    if(destIds.length) out.push({ title: tiles[t].title.trim(), copy: tiles[t].copy.trim(), destIds: destIds });
+  }
   return out;
 }
 async function createSet(goLiveIso, status){
@@ -483,22 +569,31 @@ async function createSet(goLiveIso, status){
   if(!rows || !rows[0]) throw new Error('set insert returned no row (check dashboard_hero.sql is applied)');
   return rows[0].id;
 }
-async function insertItems(setId, destIds){
-  var body = destIds.map(function(id, i){ return { set_id:setId, dest_id:id, position:i+1 }; });
-  var r = await fetch(_SUPA_URL+'/rest/v1/dashboard_hero_destinations', { method:'POST', headers:Object.assign({ Prefer:'return=minimal' }, _WH), body:JSON.stringify(body) });
-  if(!r.ok) throw new Error('items HTTP '+r.status+' '+(await r.text()).slice(0,140));
+async function insertTiles(setId, payload){
+  for(var i=0;i<payload.length;i++){
+    var tp = payload[i];
+    var tr = await fetch(_SUPA_URL+'/rest/v1/dashboard_hero_tiles', { method:'POST', headers:Object.assign({ Prefer:'return=representation' }, _WH), body:JSON.stringify({ set_id:setId, title:tp.title, copy:tp.copy, position:i+1 }) });
+    if(!tr.ok) throw new Error('tile HTTP '+tr.status+' '+(await tr.text()).slice(0,140));
+    var tRows = await tr.json();
+    if(!tRows || !tRows[0]) throw new Error('tile insert returned no row (check dashboard_hero_tiles.sql is applied)');
+    var tileId = tRows[0].id;
+    var body = tp.destIds.map(function(id, pi){ return { tile_id:tileId, dest_id:id, position:pi+1 }; });
+    var ir = await fetch(_SUPA_URL+'/rest/v1/dashboard_hero_destinations', { method:'POST', headers:Object.assign({ Prefer:'return=minimal' }, _WH), body:JSON.stringify(body) });
+    if(!ir.ok) throw new Error('items HTTP '+ir.status+' '+(await ir.text()).slice(0,140));
+  }
 }
 
 async function publishNow(){
   if(_busy) return;
-  var items = collectItems();
-  if(!items.length){ toast('Pick at least one destination first.','warn'); return; }
-  if(!confirm('Publish these '+items.length+' destination(s) to the Dashboard Hero now?\n\nThis immediately replaces what is currently live.')) return;
+  var payload = collectTilesPayload();
+  if(!payload.length){ toast('Add at least one destination to a hero tile first.','warn'); return; }
+  var totalDests = payload.reduce(function(n,tp){ return n+tp.destIds.length; }, 0);
+  if(!confirm('Publish '+payload.length+' hero tile(s), '+totalDests+' destination(s) total, now?\n\nThis immediately replaces what is currently live.')) return;
   setBusy(true);
   try {
     var setId = await createSet(new Date().toISOString(), 'published');
-    await insertItems(setId, items);
-    toast(items.length+' destination(s) are now live.','ok');
+    await insertTiles(setId, payload);
+    toast(payload.length+' hero tile(s) are now live.','ok');
     await loadData();
   } catch(e){ toast('Publish failed: '+e.message,'err'); }
   setBusy(false);
@@ -506,19 +601,20 @@ async function publishNow(){
 
 async function schedule(){
   if(_busy) return;
-  var items = collectItems();
-  if(!items.length){ toast('Pick at least one destination first.','warn'); return; }
+  var payload = collectTilesPayload();
+  if(!payload.length){ toast('Add at least one destination to a hero tile first.','warn'); return; }
   var val = el('sched-input').value;
   if(!val){ toast('Choose a date and time (ET) first.','warn'); return; }
   var p = val.split('T'), ymd = p[0].split('-'), hm = (p[1]||'').split(':');
   var utcMs = etWallToUTC(+ymd[0], +ymd[1], +ymd[2], +hm[0], +hm[1]);
   if(utcMs <= Date.now()){ toast('Pick a time in the future (ET).','warn'); return; }
   var iso = new Date(utcMs).toISOString();
-  if(!confirm('Schedule these '+items.length+' destination(s) to go live at\n'+fmtET(iso)+'?\n\nThey will replace whatever is live at that time.')) return;
+  var totalDests = payload.reduce(function(n,tp){ return n+tp.destIds.length; }, 0);
+  if(!confirm('Schedule '+payload.length+' hero tile(s), '+totalDests+' destination(s) total, to go live at\n'+fmtET(iso)+'?\n\nThey will replace whatever is live at that time.')) return;
   setBusy(true);
   try {
     var setId = await createSet(iso, 'scheduled');
-    await insertItems(setId, items);
+    await insertTiles(setId, payload);
     toast('Scheduled for '+fmtET(iso)+'.','ok');
     el('sched-input').value = '';
     await loadData();
