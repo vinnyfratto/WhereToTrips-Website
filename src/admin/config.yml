@@ -212,6 +212,7 @@ collections:
                 fields:
                   - { name: id, widget: string, required: false }
                   - { label: "Tinted background", name: background, widget: boolean, default: false, required: false }
+                  - { label: "Center heading", name: center, widget: boolean, default: false, required: false }
                   - { name: eyebrow, widget: string, required: false }
                   - label: Title
                     name: title
@@ -227,6 +228,31 @@ collections:
                     widget: select
                     options: [vibe, destination, insight]
                   - { name: columns, widget: number, default: 3, required: false }
+                  - { label: "Max cards (0 or empty = show all)", name: limit, widget: number, required: false }
+
+              - name: testimonial
+                label: Testimonials
+                fields:
+                  - { name: id, widget: string, required: false }
+                  - { label: "Tinted background", name: background, widget: boolean, default: true, required: false }
+                  - { name: eyebrow, widget: string, required: false }
+                  - label: Title
+                    name: title
+                    widget: object
+                    required: false
+                    fields:
+                      - { name: pre, widget: string }
+                      - { name: accent, widget: string }
+                      - { name: post, widget: string, required: false }
+                  - { name: intro, widget: text, required: false }
+                  - label: Quotes
+                    name: items
+                    widget: list
+                    fields:
+                      - { name: quote, widget: text }
+                      - { name: name, widget: string }
+                      - { name: location, widget: string, required: false }
+                      - { label: "Avatar initials (optional)", name: initials, widget: string, required: false }
 
               - name: faq_accordion
                 label: FAQ accordion
@@ -492,6 +518,14 @@ collections:
             name: partnerNav
             widget: list
             fields: [ { name: label, widget: string }, { name: href, widget: string } ]
+          - label: "Social links (footer)"
+            name: social
+            widget: list
+            required: false
+            fields:
+              - { name: label, widget: string }
+              - { label: "Icon", name: icon, widget: select, options: [instagram, tiktok, x, facebook] }
+              - { name: href, widget: string }
           - label: "Footer columns"
             name: footerCols
             widget: list

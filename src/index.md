@@ -72,6 +72,7 @@ sections:
       accent: go
       post: .
     background: true
+    center: true
     columns: 4
     tiles:
       - label: Travel More
@@ -93,7 +94,9 @@ sections:
       accent: feeling
       post: .
     intro: Browse by the experience you want. Each vibe maps to real destinations and typical budgets.
-    columns: 5
+    center: true
+    columns: 3
+    limit: 6
     collection: vibe
   - type: feature_split
     eyebrow: Wander Together
@@ -140,6 +143,35 @@ sections:
       - A beach week under $2k in April
       - Somewhere in Europe with great food, any time in June
       - Warm, not too far, leaving this weekend
+  # NOTE: placeholder testimonials — replace with real quotes in the CMS before launch.
+  - type: testimonial
+    eyebrow: What travelers say
+    title:
+      pre: Loved by people who
+      accent: wander
+      post: .
+    items:
+      - quote: I never would have thought to search Albania. WhereTo matched my budget to a coastline I now can't stop talking about.
+        name: Maya R.
+        location: Austin, TX
+      - quote: We planned a five-person trip without a single 40-message group chat. Everyone set their vibe and it just found the overlap.
+        name: Devin K.
+        location: Chicago, IL
+      - quote: I told it warm, not too far, under two grand. It gave me three places I'd never considered and the flights were real.
+        name: Priya S.
+        location: Seattle, WA
+  - type: collection_grid
+    eyebrow: From the blog
+    title:
+      pre: Travel smarter with our
+      accent: Insights
+      post: .
+    intro: Budgeting, group trips, and getting more out of every mile.
+    background: true
+    center: true
+    columns: 3
+    limit: 3
+    collection: insight
   - type: cta_band
     eyebrow: Ready to wander?
     title:

@@ -1,0 +1,28 @@
+{#- Testimonials — Varaus "What Say Clients" section.
+    3-up quote cards on desktop, horizontal scroll-snap carousel on mobile. -#}
+<section class="block{% if s.background %} tint{% endif %}"{% if s.id %} id="{{ s.id }}"{% endif %}>
+  <div class="wrap">
+    {% if s.eyebrow or s.title %}
+    <div class="sec-head center reveal">
+      {% if s.eyebrow %}<span class="eyebrow">{{ s.eyebrow }}</span>{% endif %}
+      {% if s.title %}<h2>{{ s.title.pre }}<span class="italic">{{ s.title.accent }}</span>{{ s.title.post }}</h2>{% endif %}
+      {% if s.intro %}<p class="lede">{{ s.intro }}</p>{% endif %}
+    </div>
+    {% endif %}
+    <div class="testimonial-grid reveal reveal-delay-1">
+      {% for t in s.items %}
+      <figure class="testimonial-card">
+        <div class="stars" aria-label="5 out of 5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <blockquote>{{ t.quote }}</blockquote>
+        <figcaption>
+          <span class="tavatar">{{ (t.initials or t.name) | truncate(2, true, "") | upper }}</span>
+          <span class="tmeta">
+            <span class="tname">{{ t.name }}</span>
+            {% if t.location %}<span class="tloc">{{ t.location }}</span>{% endif %}
+          </span>
+        </figcaption>
+      </figure>
+      {% endfor %}
+    </div>
+  </div>
+</section>

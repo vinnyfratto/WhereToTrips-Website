@@ -33,6 +33,12 @@
     { "label": "For Creators & Influencers", "href": "/partners/creators/" },
     { "label": "For Travel Industry Partners", "href": "/partners/industry/" }
   ],
+  "social": [
+    { "label": "Instagram", "icon": "instagram", "href": "#" },
+    { "label": "TikTok", "icon": "tiktok", "href": "#" },
+    { "label": "X", "icon": "x", "href": "#" },
+    { "label": "Facebook", "icon": "facebook", "href": "#" }
+  ],
   "footerCols": [
     {
       "heading": "Get the App",

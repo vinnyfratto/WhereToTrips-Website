@@ -18,15 +18,16 @@ Reference: Varaus live demo — varaus-react.wpocean.com/home. Local template co
 
 | Varaus section | WhereTo equivalent | Status |
 |---|---|---|
-| Hero fade-slider + navy overlay + caption | `hero` (new slider mode) | **Done (phase 1)** |
+| Hero fade-slider + navy overlay + caption | `hero` (new slider mode) | **Done** |
+| Transparent nav → solid on scroll | `header` overlay states | **Done** |
 | Search / booking bar | *(skipped — no booking on site)* | n/a |
-| About split (image + text) | `feature_split` (+ optional 2nd image) | CMS ready; styling pass pending |
-| Popular Destinations card grid | `collection_grid` / `tile_grid` | pending |
-| Rooms (tabbed, hover-reveal) | `tile_grid` hover-reveal on Vibes/Destinations | pending |
+| About split (image + text) | `feature_split` (+ optional 2nd image) | **Done** (styling on-brand; 2nd-image opt-in) |
+| Popular Destinations card grid | `collection_grid` image-forward cards | **Done** |
+| Rooms (hover-reveal) | photo-card hover zoom + reveal cue | **Done** |
+| Testimonials carousel | new `testimonial` section type | **Done** (placeholder quotes) |
+| Blog "Latest News" | `insights` `collection_grid` on home | **Done** |
+| Footer 4-col + newsletter + social | `footer.njk` newsletter + social icons | **Done** |
 | Video banner + modal | optional new section | deferred |
-| Testimonials carousel | new `testimonial` section type | pending |
-| Blog "Latest News" | `insights` `collection_grid` | pending |
-| Footer 4-col + newsletter | `footer.njk` + `email_capture` | pending |
 
 ---
 
@@ -50,12 +51,19 @@ Reference: Varaus live demo — varaus-react.wpocean.com/home. Local template co
 - **`feature_split.njk`** — optional `image2` renders as an overlapping accent image (the "two images on a content section" pattern).
 - **CMS `admin/config.yml`** — hero gets a `slides` image list (single `image` now optional, used as fallback); feature_split gets an optional `image2`. Both fully editable in Sveltia.
 
+### Phase 2–3 — Full home page + nav (done)
+- **Header** — transparent, white logo/links over the hero; on scroll past 72px it re-solidifies (fixed, cream bg, dark links) and slides in. Driven by `body.has-hero-overlay` + `header.scrolled` (JS in `base.njk`). Inner pages keep the original sticky white header, unchanged.
+- **Image-forward cards** — `collection_grid` now renders each vibe/destination/insight as a photo card (heroImage, hover zoom, gradient wash, "Explore →" cue). Falls back to the icon tile when no image. New optional `limit` field to cap cards on a page.
+- **Home grid tuning** — Featured Vibes: 6 cards, 3-up, centered head. Added a "Latest Insights" blog section (3 posts) to mirror Varaus's blog block.
+- **Testimonials** — new `testimonial` section type (3-up cards, star row, serif quote, monogram avatar; scroll-snap on mobile). Seeded with **placeholder** quotes — replace via CMS before launch.
+- **Footer** — new 3-zone layout: brand + tagline + **social icons** (Instagram/TikTok/X/Facebook, inline SVG partials), the 4 link columns, and a **newsletter** signup (Web3Forms, intent `newsletter`). Social hrefs are `#` placeholders in `site.json` — set real URLs in CMS → Settings.
+- **CMS** — added: `testimonial` section type, `collection_grid` `center` + `limit`, and a Social links editor in Site Settings.
+
 ### Not yet done / next
-- Header transparent-over-hero → solid-on-scroll behavior.
-- Restyle cards (image-forward, two-column caption) + hover-reveal tiles.
-- Testimonials section type + CMS.
-- Footer newsletter + social bar.
-- Broader button/section-rhythm foundation pass.
+- Assign distinct per-vibe / per-destination hero images (several currently reuse the same few stock shots).
+- Optional: video banner section, real testimonials, real social URLs.
+- Roll the restyled sections out across the other hub/leaf pages (they already share the CSS, so most cascade for free — needs a visual pass).
+- Optional broader button/section-rhythm foundation polish.
 
 ---
 

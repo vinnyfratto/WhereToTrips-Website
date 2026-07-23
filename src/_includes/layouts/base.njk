@@ -125,6 +125,20 @@
   }, { threshold: 0.1, rootMargin: '0px 0px -32px 0px' });
   document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
 
+  // Transparent-over-hero header that solidifies on scroll (home page).
+  (function () {
+    var heroSlider = document.querySelector('.hero-slider');
+    var hdr = document.querySelector('header');
+    if (!heroSlider || !hdr) return;
+    document.body.classList.add('has-hero-overlay');
+    var threshold = 72;
+    function onScroll() {
+      hdr.classList.toggle('scrolled', window.scrollY > threshold);
+    }
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  })();
+
   // Hero slider (home) — rotating background images, arrows + dots.
   (function () {
     var slider = document.querySelector('[data-hero-slider]');
