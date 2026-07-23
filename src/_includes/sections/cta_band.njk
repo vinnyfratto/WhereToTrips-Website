@@ -2,7 +2,7 @@
   <div class="wrap">
     <div class="download-band reveal">
       {% if s.eyebrow %}<span class="eyebrow">{{ s.eyebrow }}</span>{% endif %}
-      <h2>{{ s.title.pre }}<span class="italic">{{ s.title.accent }}</span>{{ s.title.post }}</h2>
+      <h2>{{ s.title.pre }} <span class="italic">{{ s.title.accent }}</span>{{ s.title.post }}</h2>
       {% if s.body %}<p>{{ s.body }}</p>{% endif %}
       {% if site.launchMode == "post" %}
         {% include "partials/store-buttons.njk" %}

@@ -17,7 +17,7 @@
       <div class="wrap hero-caption-wrap">
         <div class="slide-caption">
           {% if s.eyebrow %}<div class="slide-eyebrow"><span class="eyebrow">{{ s.eyebrow }}</span></div>{% endif %}
-          <div class="slide-title"><h1>{{ s.title.pre }}<span class="italic">{{ s.title.accent }}</span>{{ s.title.post }}</h1></div>
+          <div class="slide-title"><h1>{{ s.title.pre }} <span class="italic">{{ s.title.accent }}</span>{{ s.title.post }}</h1></div>
           {% if s.lede %}<div class="slide-subtitle"><p class="lede">{{ s.lede }}</p></div>{% endif %}
           {% if s.primaryBtn or s.ghostBtn %}
           <div class="btns">
@@ -47,7 +47,7 @@
   <div class="wrap hero-grid">
     <div class="reveal hero-copy">
       {% if s.eyebrow %}<span class="eyebrow">{{ s.eyebrow }}</span>{% endif %}
-      <h1>{{ s.title.pre }}<span class="italic">{{ s.title.accent }}</span>{{ s.title.post }}</h1>
+      <h1>{{ s.title.pre }} <span class="italic">{{ s.title.accent }}</span>{{ s.title.post }}</h1>
       {% if s.lede %}<p class="lede">{{ s.lede }}</p>{% endif %}
       {% if s.primaryBtn or s.ghostBtn %}
       <div class="cta">
