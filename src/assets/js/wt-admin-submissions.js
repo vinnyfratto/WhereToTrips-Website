@@ -14,7 +14,12 @@ const supabase = createClient(cfg.url, cfg.anonKey, {
 const ADMIN_FN = cfg.url + '/functions/v1/admin';
 
 let TOKEN = null;
+let overviewData = null;
 const loaded = {};
+
+function intentLabel(intent) {
+  return String(intent || '').split('_').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') || 'Unknown';
+}
 
 const $ = (s, r = document) => r.querySelector(s);
 const panel = (name) => $(`[data-panel="${name}"]`);
@@ -59,6 +64,7 @@ async function init() {
     t.addEventListener('click', () => switchTab(t.dataset.tab));
   });
 
+  overviewData = data;
   renderOverview(data);
   loaded.overview = true;
 }
@@ -77,11 +83,15 @@ function renderOverview(d) {
   const card = (label, val) => `<div class="stat-card"><p class="label">${label}</p><p class="value">${val}</p></div>`;
   const rows = (d.last_14_days || []).map((r) => `<tr><td>${esc(r.date)}</td><td class="num">${r.count}</td></tr>`).join('');
 
+  // One card per intent that has actually shown up — no hardcoded list, so a
+  // brand-new content page's intent appears here automatically.
+  const intentEntries = Object.entries(d.by_intent || {}).sort((a, b) => b[1] - a[1]);
+  const intentCards = intentEntries.map(([k, v]) => card(intentLabel(k), v)).join('');
+
   panel('overview').innerHTML = `
     <div class="adm-overview-grid">
       ${card('Total submissions', d.total)}
-      ${card('Early access', d.by_intent.early_access || 0)}
-      ${card('Contact', d.by_intent.contact || 0)}
+      ${intentCards}
     </div>
     <div class="adm-card">
       <h3>Last 14 days</h3>
@@ -92,17 +102,23 @@ function renderOverview(d) {
     </div>`;
 }
 
-// ── Early Access / Contact lists ────────────────────────────────────
-async function loadList(intent) {
-  panel(intent).innerHTML = `
+// ── All Submissions (filterable by whatever intents actually exist) ──
+async function loadList() {
+  const intentEntries = Object.entries((overviewData && overviewData.by_intent) || {}).sort((a, b) => b[1] - a[1]);
+  const opts = intentEntries.map(([k]) => `<option value="${esc(k)}">${esc(intentLabel(k))}</option>`).join('');
+  panel('submissions').innerHTML = `
     <div class="adm-card">
       <div class="adm-form-row">
-        <div class="field"><label>Search (name or email)</label><input id="sub-search-${intent}" type="text" placeholder="jane@example.com" /></div>
+        <div class="field"><label>Type</label>
+          <select id="sub-filter"><option value="">All types</option>${opts}</select>
+        </div>
+        <div class="field"><label>Search (name or email)</label><input id="sub-search" type="text" placeholder="jane@example.com" /></div>
       </div>
-      <div id="sub-list-${intent}" class="adm-wrap-scroll">Loading…</div>
+      <div id="sub-list" class="adm-wrap-scroll">Loading…</div>
     </div>`;
-  $(`#sub-search-${intent}`).addEventListener('input', debounce(() => fetchList(intent), 300));
-  fetchList(intent);
+  $('#sub-filter').addEventListener('change', fetchList);
+  $('#sub-search').addEventListener('input', debounce(fetchList, 300));
+  fetchList();
 }
 
 function debounce(fn, ms) {
@@ -110,12 +126,14 @@ function debounce(fn, ms) {
   return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); };
 }
 
-async function fetchList(intent) {
-  const search = $(`#sub-search-${intent}`) ? $(`#sub-search-${intent}`).value.trim() : '';
+async function fetchList() {
+  const intent = $('#sub-filter') ? $('#sub-filter').value : '';
+  const search = $('#sub-search') ? $('#sub-search').value.trim() : '';
   const r = await callAdmin('list_submissions', { intent, search });
   const rows = (r.submissions || []).map((s) => `
     <tr>
       <td>${date(s.created_at)}</td>
+      <td><span class="adm-pill">${esc(intentLabel(s.intent))}</span></td>
       <td>${esc(s.name || '—')}</td>
       <td>${esc(s.email || '—')}</td>
       <td>${esc(s.company || '—')}</td>
@@ -124,18 +142,18 @@ async function fetchList(intent) {
       <td>${esc(s.utm_source || '—')}</td>
       <td><button class="btn btn-ghost btn-xs" data-del="${s.id}">Delete</button></td>
     </tr>`).join('');
-  const list = $(`#sub-list-${intent}`);
+  const list = $('#sub-list');
   if (!list) return;
   list.innerHTML = `<table class="adm-table">
-    <thead><tr><th>Date</th><th>Name</th><th>Email</th><th>Company</th><th>Message</th><th>Page</th><th>UTM source</th><th></th></tr></thead>
-    <tbody>${rows || '<tr><td colspan="8">No submissions yet.</td></tr>'}</tbody></table>`;
+    <thead><tr><th>Date</th><th>Type</th><th>Name</th><th>Email</th><th>Company</th><th>Message</th><th>Page</th><th>UTM source</th><th></th></tr></thead>
+    <tbody>${rows || '<tr><td colspan="9">No submissions yet.</td></tr>'}</tbody></table>`;
   list.querySelectorAll('[data-del]').forEach((b) => {
     b.addEventListener('click', async () => {
       if (!confirm('Delete this submission?')) return;
       const r2 = await callAdmin('delete_submission', { id: b.dataset.del });
       if (!r2.ok) { msg('error', 'Delete failed: ' + r2.error); return; }
       msg('success', 'Submission deleted.');
-      fetchList(intent);
+      fetchList();
     });
   });
 }
