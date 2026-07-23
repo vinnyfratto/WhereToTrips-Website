@@ -23,31 +23,46 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family={{ hf.param }}&family={{ bf.param }}&display=swap" rel="stylesheet" />
+  {#- Body font: Noto Sans (matches the app). Heading font RCL Morland is self-hosted (see styles.css @font-face). -#}
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
 
   <style>
     :root {
-      --cream:      {{ theme.colors.cream }};
-      --card:       {{ theme.colors.card }};
-      --navy:       {{ theme.colors.navy }};
-      --navy-light: {{ theme.colors.navyLight }};
-      --rust:       {{ theme.colors.rust }};
-      --wg100: #F5F0E8;
-      --wg200: #E4DDD3;
-      --wg300: #D4CCC2;
-      --wg400: #B8B0A6;
-      --wg500: #9E9690;
-      --wg600: #5C5449;
-      --serif: {{ hf.stack | safe }};
-      --sans:  {{ bf.stack | safe }};
-      --max: {{ theme.maxWidth }}px;
-      --radius-lg: 28px;
-      --radius-md: 18px;
-      --radius-sm: 10px;
-      --shadow-sm: 0 2px 10px rgba(28,54,73,0.07);
-      --shadow-md: 0 12px 36px rgba(28,54,73,0.12);
-      --shadow-lg: 0 28px 70px rgba(28,54,73,0.18);
-      --shadow-xl: 0 40px 100px rgba(28,54,73,0.22);
+      /* ── App "Azure / Amber / Charcoal" palette ─────────────────── */
+      --cream:      #FFFFFF;          /* page base */
+      --tint:       #F2F5F7;          /* Soft Azure — alternate section bg */
+      --card:       #FFFFFF;
+      --navy:       #313131;          /* Charcoal — headings & primary text */
+      --navy-light: #4A4A4A;
+      --ink-soft:   #5C616A;          /* secondary text */
+      --ink-muted:  #8A9098;          /* muted text */
+      /* --rust is the historical accent var; repointed to Azure so every accent cascades */
+      --rust:        #209CE0;         /* Azure — primary accent / CTA */
+      --azure:       #209CE0;
+      --azure-press: #1B86C2;
+      --azure-tint:  #E6F4FC;
+      --amber:       #E69800;         /* secondary accent */
+      --amber-tint:  #FBEFD6;
+      --footer:      #262626;         /* charcoal-dark footer */
+      --footer-low:  #1C1C1C;
+      /* cool-gray ramp (repointed from the old warm ramp; names kept for cascade) */
+      --wg100: #F7F9FA;
+      --wg200: #E2E7EB;
+      --wg300: #D2D8DD;
+      --wg400: #AEB4BB;
+      --wg500: #8A9098;
+      --wg600: #5C616A;
+      --serif: 'RCL Morland', Georgia, 'Times New Roman', serif;
+      --sans:  'Noto Sans', system-ui, -apple-system, sans-serif;
+      --max: 1200px;
+      --wide: 1425px;
+      --radius-lg: 20px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --shadow-sm: 0 2px 12px rgba(20,30,40,0.06);
+      --shadow-md: 0 10px 40px rgba(50,50,50,0.10);
+      --shadow-lg: 0 20px 60px rgba(20,30,40,0.14);
+      --shadow-xl: 0 30px 80px rgba(20,30,40,0.18);
     }
   </style>
   <link rel="stylesheet" href="/assets/styles.css?v={{ buildTime }}" />

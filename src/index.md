@@ -27,6 +27,20 @@ sections:
         alt: A palm-fringed island lagoon
       - src: /media/hero/desert.jpg
         alt: Golden sand dunes rolling to the horizon
+  - type: highlights
+    items:
+      - icon: 💸
+        title: Budget-first
+        text: Your number drives the trip, not the other way around.
+      - icon: 🧭
+        title: 150+ Vibes
+        text: Match a feeling to real destinations worldwide.
+      - icon: ✈️
+        title: Real flights
+        text: Live pricing on routes you'd never have searched.
+      - icon: 👥
+        title: Group travel
+        text: Plan and decide together with Wander Together.
   - type: steps
     eyebrow: How it works
     title:
@@ -143,6 +157,17 @@ sections:
       - A beach week under $2k in April
       - Somewhere in Europe with great food, any time in June
       - Warm, not too far, leaving this weekend
+  - type: video_banner
+    eyebrow: See it in action
+    title:
+      pre: A trip planned in
+      accent: minutes
+      post: .
+    body: Tell WhereTo your budget and your vibe. Watch it surface destinations, flights, and stays that actually fit.
+    image:
+      src: /media/hero/mountains.jpg
+    href: /app/
+    playLabel: Get the app
   # NOTE: placeholder testimonials — replace with real quotes in the CMS before launch.
   - type: testimonial
     eyebrow: What travelers say

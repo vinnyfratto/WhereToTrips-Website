@@ -1,12 +1,12 @@
 {
   "colors": {
-    "cream": "#F0EBE0",
-    "card": "#FDFAF6",
-    "navy": "#1C3649",
-    "navyLight": "#2A4D65",
-    "rust": "#B85C38"
+    "cream": "#FFFFFF",
+    "card": "#FFFFFF",
+    "navy": "#313131",
+    "navyLight": "#4A4A4A",
+    "rust": "#209CE0"
   },
-  "maxWidth": 1080,
+  "maxWidth": 1200,
   "headingFont": "dm-serif",
   "bodyFont": "nunito-sans"
 }

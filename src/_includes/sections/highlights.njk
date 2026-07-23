@@ -1,0 +1,17 @@
+{#- Highlights bar — the white card that overlaps the bottom of the hero,
+    recreating the Varaus search-bar overlap without any booking function. -#}
+<section class="highlights-wrap">
+  <div class="wrap">
+    <div class="highlights reveal">
+      {% for item in s.items %}
+      <div class="highlight">
+        <span class="highlight-icon">{{ item.icon }}</span>
+        <div class="highlight-text">
+          <h4>{{ item.title }}</h4>
+          {% if item.text %}<p>{{ item.text }}</p>{% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
