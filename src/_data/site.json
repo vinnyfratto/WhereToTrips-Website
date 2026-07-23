@@ -23,10 +23,12 @@
     "accessKey": "a7729135-d5f2-4fb2-a4cd-9a99f3801393"
   },
   "nav": [
-    { "label": "How It Works", "href": "/how-it-works/" },
-    { "label": "Travel Vibes", "href": "/travel-vibes/" },
-    { "label": "Destinations", "href": "/destinations/" },
-    { "label": "Wander Together", "href": "/wander-together/" },
+    { "label": "How It Works", "href": "/how-it-works/", "children": [
+      { "label": "How It Works", "href": "/how-it-works/" },
+      { "label": "Travel Vibes", "href": "/travel-vibes/" },
+      { "label": "Destinations", "href": "/destinations/" },
+      { "label": "Wander Together", "href": "/wander-together/" }
+    ] },
     { "label": "Insights", "href": "/insights/" }
   ],
   "partnerNav": [

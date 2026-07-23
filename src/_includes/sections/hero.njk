@@ -10,25 +10,26 @@
 <section class="hero-slider" data-hero-slider>
   <div class="hero-slides">
     {%- for slide in s.slides %}
-    <div class="hero-slide{% if loop.first %} active{% endif %}" role="group"
-         aria-roledescription="slide" aria-label="{{ slide.alt }}"
-         style="background-image:url('{{ slide.src }}')">
-      <div class="hero-slide-overlay"></div>
-      <div class="wrap hero-caption-wrap">
-        <div class="slide-caption">
-          {% if s.eyebrow %}<div class="slide-eyebrow"><span class="eyebrow">{{ s.eyebrow }}</span></div>{% endif %}
-          <div class="slide-title"><h1>{{ s.title.pre }} <span class="italic">{{ s.title.accent }}</span>{{ s.title.post }}</h1></div>
-          {% if s.lede %}<div class="slide-subtitle"><p class="lede">{{ s.lede }}</p></div>{% endif %}
-          {% if s.primaryBtn or s.ghostBtn %}
-          <div class="btns">
-            {% if s.primaryBtn %}<a class="btn btn-primary" href="{{ s.primaryBtn.href }}">{{ s.primaryBtn.label }}</a>{% endif %}
-            {% if s.ghostBtn %}<a class="btn btn-hero-ghost" href="{{ s.ghostBtn.href }}">{{ s.ghostBtn.label }}</a>{% endif %}
-          </div>
-          {% endif %}
-        </div>
-      </div>
-    </div>
+    <div class="hero-slide{% if loop.first %} active{% endif %}" role="img"
+         aria-label="{{ slide.alt }}"
+         style="background-image:url('{{ slide.src }}')"></div>
     {%- endfor %}
+  </div>
+  <div class="hero-slide-overlay"></div>
+
+  {#- Single caption, animates in ONCE on load; the images cycle behind it. -#}
+  <div class="wrap hero-caption-wrap">
+    <div class="slide-caption">
+      {% if s.eyebrow %}<div class="slide-eyebrow"><span class="eyebrow">{{ s.eyebrow }}</span></div>{% endif %}
+      <div class="slide-title"><h1>{{ s.title.pre }} <span class="italic">{{ s.title.accent }}</span>{{ s.title.post }}</h1></div>
+      {% if s.lede %}<div class="slide-subtitle"><p class="lede">{{ s.lede }}</p></div>{% endif %}
+      {% if s.primaryBtn or s.ghostBtn %}
+      <div class="btns">
+        {% if s.primaryBtn %}<a class="btn btn-primary" href="{{ s.primaryBtn.href }}">{{ s.primaryBtn.label }}</a>{% endif %}
+        {% if s.ghostBtn %}<a class="btn btn-hero-ghost" href="{{ s.ghostBtn.href }}">{{ s.ghostBtn.label }}</a>{% endif %}
+      </div>
+      {% endif %}
+    </div>
   </div>
 
   {% if s.slides.length > 1 %}

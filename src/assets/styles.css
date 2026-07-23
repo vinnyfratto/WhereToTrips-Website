@@ -159,13 +159,18 @@ footer .brand-logo { height: 32px; }
 .nav-dropdown > button .caret { font-size: 9px; transition: transform .2s ease; }
 .nav-dropdown:hover > button .caret, .nav-dropdown:focus-within > button .caret { transform: rotate(180deg); }
 .nav-dropdown-menu {
-  position: absolute; top: calc(100% + 10px); right: 0;
+  position: absolute; top: calc(100% + 10px); left: 0; right: auto;
   background: var(--card); border: 1px solid var(--wg200);
   border-radius: var(--radius-md); box-shadow: var(--shadow-md);
-  padding: 8px; min-width: 248px;
+  padding: 8px; min-width: 230px;
   opacity: 0; visibility: hidden; transform: translateY(-6px);
   transition: opacity .18s ease, transform .18s ease, visibility .18s;
 }
+/* invisible bridge so the menu survives the gap between button and menu */
+.nav-dropdown-menu::before {
+  content: ''; position: absolute; top: -12px; left: 0; right: 0; height: 12px;
+}
+.nav-dropdown-end .nav-dropdown-menu { left: auto; right: 0; }
 .nav-dropdown:hover .nav-dropdown-menu, .nav-dropdown:focus-within .nav-dropdown-menu {
   opacity: 1; visibility: visible; transform: none;
 }
@@ -270,12 +275,11 @@ header.menu-open .nav-toggle span:nth-child(3) { transform: translateY(-7px) rot
 .hero-slide {
   position: absolute; inset: 0;
   background-size: cover; background-position: center;
-  display: flex; align-items: center;
-  opacity: 0; transform: scale(1.06); pointer-events: none;
+  opacity: 0; transform: scale(1.06);
   transition: opacity 1.2s ease, transform 7s ease;
   will-change: opacity, transform;
 }
-.hero-slide.active { opacity: 1; transform: scale(1); pointer-events: auto; }
+.hero-slide.active { opacity: 1; transform: scale(1); }
 /* Charcoal wash so the caption stays readable over any photo */
 .hero-slide-overlay {
   position: absolute; inset: 0; pointer-events: none;
@@ -295,22 +299,17 @@ header.menu-open .nav-toggle span:nth-child(3) { transform: translateY(-7px) rot
 .slide-caption .lede { color: rgba(255,255,255,0.88); font-size: clamp(16px, 1.6vw, 20px); max-width: 54ch; }
 .slide-caption .btns { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 38px; }
 
-/* Caption slide-in — matches Varaus exactly: fadeInLeft 1.5s both, ease,
-   staggered delays (title 0.5s / subtitle 1s / buttons 1.5s), only on the
-   active slide; inactive slides hold the fadeOutLeft end-state. */
-.slide-caption > * { animation: fadeOutLeft 1.5s both; }
-.hero-slide.active .slide-caption > * { animation-name: fadeInLeft; }
-.hero-slide.active .slide-caption > .slide-eyebrow  { animation-delay: 0.2s; }
-.hero-slide.active .slide-caption > .slide-title    { animation-delay: 0.5s; }
-.hero-slide.active .slide-caption > .slide-subtitle { animation-delay: 1s; }
-.hero-slide.active .slide-caption > .btns           { animation-delay: 1.5s; }
+/* Caption slide-in — plays ONCE on load (Varaus fadeInLeft timing: 1.5s both,
+   ease, staggered title 0.5s / subtitle 1s / buttons 1.5s). The background
+   images cycle behind the static caption; the caption does not re-animate. */
+.slide-caption > * { animation: fadeInLeft 1.5s both; }
+.slide-caption > .slide-eyebrow  { animation-delay: 0.2s; }
+.slide-caption > .slide-title    { animation-delay: 0.5s; }
+.slide-caption > .slide-subtitle { animation-delay: 1s; }
+.slide-caption > .btns           { animation-delay: 1.5s; }
 @keyframes fadeInLeft {
   from { opacity: 0; transform: translate3d(-100%, 0, 0); }
   to   { opacity: 1; transform: translate3d(0, 0, 0); }
-}
-@keyframes fadeOutLeft {
-  from { opacity: 1; transform: translate3d(0, 0, 0); }
-  to   { opacity: 0; transform: translate3d(-100%, 0, 0); }
 }
 .btn-hero-ghost {
   background: rgba(255,255,255,0.08); color: #fff;

@@ -546,7 +546,14 @@ collections:
           - label: "Primary navigation"
             name: nav
             widget: list
-            fields: [ { name: label, widget: string }, { name: href, widget: string } ]
+            fields:
+              - { name: label, widget: string }
+              - { name: href, widget: string }
+              - label: "Dropdown items (optional)"
+                name: children
+                widget: list
+                required: false
+                fields: [ { name: label, widget: string }, { name: href, widget: string } ]
           - label: "Partner dropdown links"
             name: partnerNav
             widget: list
