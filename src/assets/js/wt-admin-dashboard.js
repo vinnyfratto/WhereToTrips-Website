@@ -128,8 +128,18 @@ function bar(pct) {
 }
 const card = (label, val) => `<div class="stat-card"><p class="label">${label}</p><p class="value">${val}</p></div>`;
 
+// Renders `body` normally, or an "Unavailable" card if `errors[key]` is set —
+// used so one bad HogQL query degrades just its own card, not the whole tab.
+function errCard(title, body, key, errors) {
+  if (errors && errors[key]) {
+    return `<div class="adm-card"><h3>${esc(title)}</h3><p class="acct-sub">Unavailable — ${esc(errors[key])}</p></div>`;
+  }
+  return body;
+}
+
 // ── WhereToTrips.com ────────────────────────────────────────────────
 function renderWebsiteAnalytics(d) {
+  const errors = d.errors || {};
   const maxCount = Math.max(1, ...(d.series || []).map((r) => r.pageviews));
   const seriesRows = (d.series || []).map((r) => `
     <tr>
@@ -142,37 +152,47 @@ function renderWebsiteAnalytics(d) {
   const pageRows = (d.top_pages || []).map((p) => `<tr><td>${esc(p.path)}</td><td class="num">${p.views}</td></tr>`).join('');
   const refRows = (d.top_referrers || []).map((r) => `<tr><td>${esc(r.domain)}</td><td class="num">${r.visits}</td></tr>`).join('');
 
-  $('#analytics-root').innerHTML = `
-    <div class="adm-form-row" style="justify-content:space-between; align-items:center; margin-bottom:14px;">
-      <p class="acct-sub" style="margin:0;">Live from PostHog · refreshes every 60s</p>
-      <div style="display:flex; gap:8px;">${rangeBtnsHtml()}</div>
-    </div>
-    <div class="adm-overview-grid">
-      ${card('Pageviews', d.totals.pageviews)}
-      ${card('Unique visitors', d.totals.visitors)}
-    </div>
+  const totalsCards = errors.totals
+    ? `<div class="adm-card"><h3>Totals</h3><p class="acct-sub">Unavailable — ${esc(errors.totals)}</p></div>`
+    : `<div class="adm-overview-grid">${card('Pageviews', d.totals.pageviews)}${card('Unique visitors', d.totals.visitors)}</div>`;
+
+  const trafficCard = errCard('Traffic over time', `
     <div class="adm-card">
       <h3>Traffic over time</h3>
       <div class="adm-wrap-scroll"><table class="adm-table">
         <thead><tr><th>${bucketCol()}</th><th class="num">Pageviews</th><th class="num">Visitors</th><th></th></tr></thead>
         <tbody>${seriesRows || '<tr><td colspan="4">No data yet.</td></tr>'}</tbody>
       </table></div>
+    </div>`, 'series', errors);
+
+  const topPagesCard = errCard('Top pages', `
+    <div class="adm-card">
+      <h3>Top pages</h3>
+      <div class="adm-wrap-scroll"><table class="adm-table">
+        <thead><tr><th>Page</th><th class="num">Views</th></tr></thead>
+        <tbody>${pageRows || '<tr><td colspan="2">No data yet.</td></tr>'}</tbody>
+      </table></div>
+    </div>`, 'top_pages', errors);
+
+  const topRefCard = errCard('Top referrers', `
+    <div class="adm-card">
+      <h3>Top referrers</h3>
+      <div class="adm-wrap-scroll"><table class="adm-table">
+        <thead><tr><th>Domain</th><th class="num">Visits</th></tr></thead>
+        <tbody>${refRows || '<tr><td colspan="2">No referral traffic yet.</td></tr>'}</tbody>
+      </table></div>
+    </div>`, 'top_referrers', errors);
+
+  $('#analytics-root').innerHTML = `
+    <div class="adm-form-row" style="justify-content:space-between; align-items:center; margin-bottom:14px;">
+      <p class="acct-sub" style="margin:0;">Live from PostHog · refreshes every 60s</p>
+      <div style="display:flex; gap:8px;">${rangeBtnsHtml()}</div>
     </div>
+    ${totalsCards}
+    ${trafficCard}
     <div class="adm-overview-grid" style="grid-template-columns: 1fr 1fr;">
-      <div class="adm-card">
-        <h3>Top pages</h3>
-        <div class="adm-wrap-scroll"><table class="adm-table">
-          <thead><tr><th>Page</th><th class="num">Views</th></tr></thead>
-          <tbody>${pageRows || '<tr><td colspan="2">No data yet.</td></tr>'}</tbody>
-        </table></div>
-      </div>
-      <div class="adm-card">
-        <h3>Top referrers</h3>
-        <div class="adm-wrap-scroll"><table class="adm-table">
-          <thead><tr><th>Domain</th><th class="num">Visits</th></tr></thead>
-          <tbody>${refRows || '<tr><td colspan="2">No referral traffic yet.</td></tr>'}</tbody>
-        </table></div>
-      </div>
+      ${topPagesCard}
+      ${topRefCard}
     </div>`;
 
   wireRangeBtns();
@@ -184,6 +204,7 @@ function eventLabel(name) {
 }
 
 function renderAppAnalytics(d) {
+  const errors = d.errors || {};
   const maxCount = Math.max(1, ...(d.series || []).map((r) => r.active_users));
   const seriesRows = (d.series || []).map((r) => `
     <tr>
@@ -195,49 +216,61 @@ function renderAppAnalytics(d) {
 
   const eventRows = (d.top_events || []).map((e) => `<tr><td>${esc(eventLabel(e.name))}</td><td class="num">${e.count}</td></tr>`).join('');
 
-  const funnelCards = (d.funnels || []).map((f) => {
-    const rows = f.steps.map((s, i) => `
-      <tr>
-        <td>${i + 1}. ${esc(eventLabel(s.event))}</td>
-        <td class="num">${s.count}</td>
-        <td class="num">${i === 0 ? '100%' : s.pct + '%'}</td>
-        <td style="width:30%;">${bar(s.pct)}</td>
-      </tr>`).join('');
-    return `
-      <div class="adm-card">
-        <h3>${esc(f.label)}</h3>
-        <div class="adm-wrap-scroll"><table class="adm-table">
-          <thead><tr><th>Step</th><th class="num">Count</th><th class="num">% of step 1</th><th></th></tr></thead>
-          <tbody>${rows || '<tr><td colspan="4">No data yet.</td></tr>'}</tbody>
-        </table></div>
-      </div>`;
-  }).join('');
+  const funnelCards = errors.funnels
+    ? `<div class="adm-card"><h3>Funnels</h3><p class="acct-sub">Unavailable — ${esc(errors.funnels)}</p></div>`
+    : (d.funnels || []).map((f) => {
+      const rows = f.steps.map((s, i) => `
+        <tr>
+          <td>${i + 1}. ${esc(eventLabel(s.event))}</td>
+          <td class="num">${s.count}</td>
+          <td class="num">${i === 0 ? '100%' : s.pct + '%'}</td>
+          <td style="width:30%;">${bar(s.pct)}</td>
+        </tr>`).join('');
+      return `
+        <div class="adm-card">
+          <h3>${esc(f.label)}</h3>
+          <div class="adm-wrap-scroll"><table class="adm-table">
+            <thead><tr><th>Step</th><th class="num">Count</th><th class="num">% of step 1</th><th></th></tr></thead>
+            <tbody>${rows || '<tr><td colspan="4">No data yet.</td></tr>'}</tbody>
+          </table></div>
+        </div>`;
+    }).join('');
 
-  $('#analytics-root').innerHTML = `
-    <div class="adm-form-row" style="justify-content:space-between; align-items:center; margin-bottom:14px;">
-      <p class="acct-sub" style="margin:0;">Live from PostHog · refreshes every 60s</p>
-      <div style="display:flex; gap:8px;">${rangeBtnsHtml()}</div>
-    </div>
-    <div class="adm-overview-grid">
-      ${card('Active users', d.totals.active_users)}
-      ${card('New signups', d.totals.signups)}
-      ${card('Flights booked', d.totals.bookings)}
-      ${card('Total events', d.totals.events)}
-    </div>
+  const totalsCards = errors.totals
+    ? `<div class="adm-card"><h3>Totals</h3><p class="acct-sub">Unavailable — ${esc(errors.totals)}</p></div>`
+    : `<div class="adm-overview-grid">
+        ${card('Active users', d.totals.active_users)}
+        ${card('New signups', d.totals.signups)}
+        ${card('Flights booked', d.totals.bookings)}
+        ${card('Total events', d.totals.events)}
+      </div>`;
+
+  const seriesCard = errCard('Active users over time', `
     <div class="adm-card">
       <h3>Active users over time</h3>
       <div class="adm-wrap-scroll"><table class="adm-table">
         <thead><tr><th>${bucketCol()}</th><th class="num">Active users</th><th class="num">Events</th><th></th></tr></thead>
         <tbody>${seriesRows || '<tr><td colspan="4">No data yet.</td></tr>'}</tbody>
       </table></div>
-    </div>
+    </div>`, 'series', errors);
+
+  const topEventsCard = errCard('Top events', `
     <div class="adm-card">
       <h3>Top events</h3>
       <div class="adm-wrap-scroll"><table class="adm-table">
         <thead><tr><th>Event</th><th class="num">Count</th></tr></thead>
         <tbody>${eventRows || '<tr><td colspan="2">No data yet.</td></tr>'}</tbody>
       </table></div>
+    </div>`, 'top_events', errors);
+
+  $('#analytics-root').innerHTML = `
+    <div class="adm-form-row" style="justify-content:space-between; align-items:center; margin-bottom:14px;">
+      <p class="acct-sub" style="margin:0;">Live from PostHog · refreshes every 60s</p>
+      <div style="display:flex; gap:8px;">${rangeBtnsHtml()}</div>
     </div>
+    ${totalsCards}
+    ${seriesCard}
+    ${topEventsCard}
     ${funnelCards}`;
 
   wireRangeBtns();
