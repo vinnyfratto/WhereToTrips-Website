@@ -1,0 +1,47 @@
+[
+  {
+    "slug": "beach",
+    "file": "/media/hero/beach.jpg",
+    "bytes": 679962,
+    "dims": "12000x7994",
+    "photographer": "Jess Loiterton",
+    "credit": "https://www.pexels.com/photo/people-enjoying-the-tropical-beach-9259687/",
+    "alt": "Stunning drone shot capturing palm tree shadows and turquoise waters on a tropical beach."
+  },
+  {
+    "slug": "mountains",
+    "file": "/media/hero/mountains.jpg",
+    "bytes": 326724,
+    "dims": "7360x4912",
+    "photographer": "Павел  Хлыстунов",
+    "credit": "https://www.pexels.com/photo/snow-covered-mountains-under-the-blue-sky-8119609/",
+    "alt": "A breathtaking view of snow-capped mountains under a dramatic sky in winter."
+  },
+  {
+    "slug": "city",
+    "file": "/media/hero/city.jpg",
+    "bytes": 190578,
+    "dims": "8196x5466",
+    "photographer": "Esra Saltürk",
+    "credit": "https://www.pexels.com/photo/sunset-over-istanbul-s-majestic-skyline-38369225/",
+    "alt": "A breathtaking view of Istanbul's skyscrapers silhouetted against a vibrant sunset."
+  },
+  {
+    "slug": "island",
+    "file": "/media/hero/island.jpg",
+    "bytes": 533006,
+    "dims": "7907x5274",
+    "photographer": "Jonathan Borba",
+    "credit": "https://www.pexels.com/photo/scenic-tropical-beach-with-clear-waters-36367652/",
+    "alt": "Explore a pristine tropical beach with clear waters and lush palm trees, perfect for a serene getaway."
+  },
+  {
+    "slug": "desert",
+    "file": "/media/hero/desert.jpg",
+    "bytes": 256072,
+    "dims": "9504x6336",
+    "photographer": "光曦 刘",
+    "credit": "https://www.pexels.com/photo/scenic-view-of-desert-under-storm-clouds-16908876/",
+    "alt": "Vast sand dunes under dramatic storm clouds in a remote desert scene."
+  }
+]

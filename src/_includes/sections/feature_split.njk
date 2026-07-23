@@ -11,6 +11,9 @@
         </div>
         {% endfor %}
         {% endif %}
+        {% if s.image2 %}
+        <img class="feature-img-2 reveal reveal-delay-2" src="{{ s.image2.src }}" alt="{{ s.image2.alt }}" loading="lazy" />
+        {% endif %}
       </div>
       <div class="feature-text reveal{% if not s.flip %} reveal-delay-1{% endif %}">
         {% if s.eyebrow %}<span class="eyebrow">{{ s.eyebrow }}</span>{% endif %}

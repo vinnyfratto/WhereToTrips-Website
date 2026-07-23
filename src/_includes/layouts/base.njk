@@ -125,6 +125,40 @@
   }, { threshold: 0.1, rootMargin: '0px 0px -32px 0px' });
   document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
 
+  // Hero slider (home) — rotating background images, arrows + dots.
+  (function () {
+    var slider = document.querySelector('[data-hero-slider]');
+    if (!slider) return;
+    var slides = Array.prototype.slice.call(slider.querySelectorAll('.hero-slide'));
+    var dots = Array.prototype.slice.call(slider.querySelectorAll('[data-hero-dot]'));
+    if (slides.length < 2) return;
+    var i = 0, timer = null;
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var DELAY = 6000;
+
+    function go(n) {
+      i = (n + slides.length) % slides.length;
+      slides.forEach(function (s, idx) { s.classList.toggle('active', idx === i); });
+      dots.forEach(function (d, idx) { d.classList.toggle('active', idx === i); });
+    }
+    function next() { go(i + 1); }
+    function prev() { go(i - 1); }
+    function start() { if (!reduce) { stop(); timer = setInterval(next, DELAY); } }
+    function stop() { if (timer) { clearInterval(timer); timer = null; } }
+
+    var nextBtn = slider.querySelector('[data-hero-next]');
+    var prevBtn = slider.querySelector('[data-hero-prev]');
+    if (nextBtn) nextBtn.addEventListener('click', function () { next(); start(); });
+    if (prevBtn) prevBtn.addEventListener('click', function () { prev(); start(); });
+    dots.forEach(function (d) {
+      d.addEventListener('click', function () { go(parseInt(d.getAttribute('data-hero-dot'), 10)); start(); });
+    });
+    slider.addEventListener('mouseenter', stop);
+    slider.addEventListener('mouseleave', start);
+    document.addEventListener('visibilitychange', function () { document.hidden ? stop() : start(); });
+    start();
+  })();
+
   // Vibe chip → image swap (used by feature_split sections with chips)
   document.querySelectorAll('[data-chip-target]').forEach(function (img) {
     var group = img.closest('section');

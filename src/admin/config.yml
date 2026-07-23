@@ -65,9 +65,17 @@ collections:
                     fields:
                       - { name: label, widget: string }
                       - { name: href, widget: string }
-                  - label: Image
+                  - label: "Slider images (full-screen rotating hero — leave empty for a single-image hero)"
+                    name: slides
+                    widget: list
+                    required: false
+                    fields:
+                      - { name: src, widget: image }
+                      - { label: "Alt / caption", name: alt, widget: string }
+                  - label: "Single image (used when no slider images are set)"
                     name: image
                     widget: object
+                    required: false
                     fields:
                       - { name: src, widget: image }
                       - { name: alt, widget: string }
@@ -98,6 +106,13 @@ collections:
                   - label: Image
                     name: image
                     widget: object
+                    fields:
+                      - { name: src, widget: image }
+                      - { name: alt, widget: string }
+                  - label: "Second image (optional — overlaps the main image, bottom corner)"
+                    name: image2
+                    widget: object
+                    required: false
                     fields:
                       - { name: src, widget: image }
                       - { name: alt, widget: string }

@@ -16,12 +16,17 @@ sections:
     ghostBtn:
       label: See how it works
       href: '#how'
-    image:
-      src: /media/hero.jpg
-      alt: Whitewashed steps winding up a sun-drenched hillside village
-    badge:
-      title: 100s of curated Vibes
-      subtitle: Real flights · Live pricing
+    slides:
+      - src: /media/hero/beach.jpg
+        alt: Turquoise water lapping a wide tropical beach from above
+      - src: /media/hero/mountains.jpg
+        alt: Dramatic mountain range under shifting light
+      - src: /media/hero/city.jpg
+        alt: A glittering city skyline at dusk
+      - src: /media/hero/island.jpg
+        alt: A palm-fringed island lagoon
+      - src: /media/hero/desert.jpg
+        alt: Golden sand dunes rolling to the horizon
   - type: steps
     eyebrow: How it works
     title:

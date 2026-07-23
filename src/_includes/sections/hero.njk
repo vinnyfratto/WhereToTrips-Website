@@ -1,3 +1,48 @@
+{#- Hero section.
+    Two modes:
+     • Slider hero  → when `s.slides` (a list of {src, alt}) is provided.
+       Full-viewport rotating background images with an overlaid caption.
+       Used on the home page (Varaus "Home Style 1" treatment).
+     • Split hero   → the original two-column copy + image-card layout.
+       Used by the inner hub pages. Unchanged.
+-#}
+{% if s.slides %}
+<section class="hero-slider" data-hero-slider>
+  <div class="hero-slides">
+    {%- for slide in s.slides %}
+    <div class="hero-slide{% if loop.first %} active{% endif %}" role="img"
+         aria-label="{{ slide.alt }}"
+         style="background-image:url('{{ slide.src }}')"></div>
+    {%- endfor %}
+  </div>
+  <div class="hero-slider-overlay"></div>
+
+  <div class="wrap hero-slider-inner">
+    <div class="hero-slider-copy">
+      {% if s.eyebrow %}<span class="eyebrow">{{ s.eyebrow }}</span>{% endif %}
+      <h1>{{ s.title.pre }}<span class="italic">{{ s.title.accent }}</span>{{ s.title.post }}</h1>
+      {% if s.lede %}<p class="lede">{{ s.lede }}</p>{% endif %}
+      {% if s.primaryBtn or s.ghostBtn %}
+      <div class="cta">
+        {% if s.primaryBtn %}<a class="btn btn-primary" href="{{ s.primaryBtn.href }}">{{ s.primaryBtn.label }}</a>{% endif %}
+        {% if s.ghostBtn %}<a class="btn btn-hero-ghost" href="{{ s.ghostBtn.href }}">{{ s.ghostBtn.label }}</a>{% endif %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if s.slides.length > 1 %}
+  <button class="hero-arrow hero-prev" type="button" aria-label="Previous slide" data-hero-prev>&#8249;</button>
+  <button class="hero-arrow hero-next" type="button" aria-label="Next slide" data-hero-next>&#8250;</button>
+  <div class="hero-dots" role="tablist" aria-label="Choose slide">
+    {%- for slide in s.slides %}
+    <button class="hero-dot{% if loop.first %} active{% endif %}" type="button"
+            role="tab" aria-label="Slide {{ loop.index }}" data-hero-dot="{{ loop.index0 }}"></button>
+    {%- endfor %}
+  </div>
+  {% endif %}
+</section>
+{% else %}
 <section class="hero">
   <div class="wrap hero-grid">
     <div class="reveal hero-copy">
@@ -25,3 +70,4 @@
     </div>
   </div>
 </section>
+{% endif %}
