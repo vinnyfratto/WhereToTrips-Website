@@ -15,6 +15,8 @@ const ADMIN_FN = cfg.url + '/functions/v1/admin';
 
 let TOKEN = null;
 let overviewData = null;
+let currentRange = 'week';
+const RANGES = [['today', 'Today'], ['week', 'This week'], ['30d', 'Last 30 days']];
 const loaded = {};
 
 function intentLabel(intent) {
@@ -47,7 +49,7 @@ async function init() {
   if (!sess.session) { window.location.href = '/account/login/'; return; }
   TOKEN = sess.session.access_token;
 
-  const data = await callAdmin('submissions_overview');
+  const data = await callAdmin('submissions_overview', { range: currentRange });
   if (!data.ok) {
     $('#adm-gate').style.display = 'none';
     if (data.error === 'forbidden') { $('#adm-denied').style.display = 'block'; }
@@ -81,25 +83,40 @@ function switchTab(name) {
 // ── Overview ────────────────────────────────────────────────────────
 function renderOverview(d) {
   const card = (label, val) => `<div class="stat-card"><p class="label">${label}</p><p class="value">${val}</p></div>`;
-  const rows = (d.last_14_days || []).map((r) => `<tr><td>${esc(r.date)}</td><td class="num">${r.count}</td></tr>`).join('');
+  const rows = (d.series || []).map((r) => `<tr><td>${esc(r.label)}</td><td class="num">${r.count}</td></tr>`).join('');
 
   // One card per intent that has actually shown up — no hardcoded list, so a
   // brand-new content page's intent appears here automatically.
   const intentEntries = Object.entries(d.by_intent || {}).sort((a, b) => b[1] - a[1]);
   const intentCards = intentEntries.map(([k, v]) => card(intentLabel(k), v)).join('');
 
+  const rangeBtns = RANGES.map(([key, label]) =>
+    `<button type="button" class="btn btn-xs ${key === currentRange ? 'btn-primary' : 'btn-ghost'}" data-range="${key}">${label}</button>`).join('');
+
   panel('overview').innerHTML = `
     <div class="adm-overview-grid">
-      ${card('Total submissions', d.total)}
+      ${card('Total submissions (all time)', d.total)}
       ${intentCards}
     </div>
     <div class="adm-card">
-      <h3>Last 14 days</h3>
+      <div class="adm-form-row" style="justify-content:space-between; align-items:center;">
+        <h3 style="margin:0;">Submissions over time</h3>
+        <div style="display:flex; gap:8px;">${rangeBtns}</div>
+      </div>
       <div class="adm-wrap-scroll"><table class="adm-table">
-        <thead><tr><th>Date</th><th class="num">Submissions</th></tr></thead>
+        <thead><tr><th>${currentRange === 'today' ? 'Hour' : currentRange === '30d' ? 'Week' : 'Day'}</th><th class="num">Submissions</th></tr></thead>
         <tbody>${rows || '<tr><td colspan="2">No submissions yet.</td></tr>'}</tbody>
       </table></div>
     </div>`;
+
+  panel('overview').querySelectorAll('[data-range]').forEach((b) => {
+    b.addEventListener('click', async () => {
+      if (b.dataset.range === currentRange) return;
+      currentRange = b.dataset.range;
+      const fresh = await callAdmin('submissions_overview', { range: currentRange });
+      if (fresh.ok) { overviewData = fresh; renderOverview(fresh); }
+    });
+  });
 }
 
 // ── All Submissions (filterable by whatever intents actually exist) ──

@@ -238,6 +238,8 @@ async function initProfile() {
       if (link) link.style.display = 'inline-block';
       const subLink = document.getElementById('wt-submissions-admin-link');
       if (subLink) subLink.style.display = 'inline-block';
+      const analyticsLink = document.getElementById('wt-analytics-admin-link');
+      if (analyticsLink) analyticsLink.style.display = 'inline-block';
     }
   } catch (_e) { /* not an admin */ }
 }
