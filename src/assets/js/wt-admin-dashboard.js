@@ -96,7 +96,8 @@ async function loadAnalytics(silent = false) {
     return;
   }
 
-  if (d.channel === 'app') renderAppAnalytics(d);
+  if (d.channel === 'travel') renderTravelMetrics(d);
+  else if (d.channel === 'app') renderAppAnalytics(d);
   else renderWebsiteAnalytics(d);
 }
 
@@ -237,6 +238,76 @@ function renderAppAnalytics(d) {
       </table></div>
     </div>
     ${funnelCards}`;
+
+  wireRangeBtns();
+}
+
+// ── Travel Metrics ──────────────────────────────────────────────────
+function tallyTable(title, tally, errKey, errors, labelFn) {
+  const fn = labelFn || eventLabel;
+  if (errors && errors[errKey]) {
+    return `<div class="adm-card"><h3>${esc(title)}</h3><p class="acct-sub">Unavailable — ${esc(errors[errKey])}</p></div>`;
+  }
+  const rows = (tally || []).map((t) => `<tr><td>${esc(fn(t.key))}</td><td class="num">${t.count}</td></tr>`).join('');
+  return `
+    <div class="adm-card">
+      <h3>${esc(title)}</h3>
+      <div class="adm-wrap-scroll"><table class="adm-table">
+        <thead><tr><th></th><th class="num">Count</th></tr></thead>
+        <tbody>${rows || '<tr><td colspan="2">No data yet.</td></tr>'}</tbody>
+      </table></div>
+    </div>`;
+}
+
+function renderTravelMetrics(d) {
+  const errors = d.errors || {};
+  const identity = (k) => (k === null || k === undefined || k === '') ? '(none)' : String(k);
+
+  const workflows   = tallyTable('Workflows', d.workflows, 'workflows', errors, eventLabel);
+  const regions     = tallyTable('Selected Regions', d.regions, 'regions', errors, identity);
+  const subregions  = tallyTable('Selected Sub-Regions', d.subregions, 'subregions', errors, identity);
+  const vibes       = tallyTable('Selected Vibes', d.vibes, 'vibes', errors, eventLabel);
+  const blogsByDest = tallyTable('Blogs Loaded — by destination', d.blogs && d.blogs.by_destination, 'blog_destinations', errors, identity);
+  const blogsBySurf = tallyTable('Blogs Loaded — by surface', d.blogs && d.blogs.by_surface, 'blog_surfaces', errors, eventLabel);
+  const hotelsByCity = tallyTable('Hotels Previewed — by city', d.hotels_previewed && d.hotels_previewed.by_city, 'hotels_by_city', errors, identity);
+  const prebookings  = tallyTable('Pre-Bookings', d.prebookings, 'prebookings', errors, eventLabel);
+  const bookingLabel = (k) => ({ flight_booked: 'Flights', hotel_booked: 'Hotels', together_booking_confirmed: 'Together (group)' }[k] || eventLabel(k));
+  const bookings     = tallyTable('Bookings', d.bookings, 'bookings', errors, bookingLabel);
+
+  const hotelsTotalCard = errors.hotels_total
+    ? card('Hotels previewed', '—')
+    : card('Hotels previewed (total)', (d.hotels_previewed && d.hotels_previewed.total) || 0);
+
+  const topCards = errors.users
+    ? `<div class="adm-overview-grid">${hotelsTotalCard}</div><p class="acct-sub">Users unavailable — ${esc(errors.users)}</p>`
+    : `<div class="adm-overview-grid">
+        ${card('Active users', d.users.total_active)}
+        ${card('Logged in', d.users.identified)}
+        ${card('Anonymous', d.users.anonymous)}
+        ${hotelsTotalCard}
+      </div>`;
+
+  $('#analytics-root').innerHTML = `
+    <div class="adm-form-row" style="justify-content:space-between; align-items:center; margin-bottom:14px;">
+      <p class="acct-sub" style="margin:0;">Live from PostHog · refreshes every 60s</p>
+      <div style="display:flex; gap:8px;">${rangeBtnsHtml()}</div>
+    </div>
+    ${topCards}
+    ${workflows}
+    <div class="adm-overview-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+      ${regions}
+      ${subregions}
+      ${vibes}
+    </div>
+    <div class="adm-overview-grid" style="grid-template-columns: 1fr 1fr;">
+      ${blogsByDest}
+      ${blogsBySurf}
+    </div>
+    <div class="adm-overview-grid" style="grid-template-columns: 1fr 1fr;">
+      ${hotelsByCity}
+      ${prebookings}
+    </div>
+    ${bookings}`;
 
   wireRangeBtns();
 }
