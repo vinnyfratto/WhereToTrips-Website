@@ -115,12 +115,13 @@ function wireRangeBtns() {
   });
 }
 function bucketCol() { return currentRange === 'today' ? 'Hour' : currentRange === '30d' ? 'Week' : 'Day'; }
+const DASH_TZ = 'America/Chicago';
 function formatBucket(iso) {
   if (!iso) return '—';
   const d = new Date(iso);
-  if (currentRange === 'today') return d.toLocaleTimeString('en-US', { hour: 'numeric', timeZone: 'UTC' }) + ' UTC';
-  if (currentRange === '30d') return 'Week of ' + d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
-  return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' });
+  if (currentRange === 'today') return d.toLocaleTimeString('en-US', { hour: 'numeric', timeZone: DASH_TZ }) + ' CT';
+  if (currentRange === '30d') return 'Week of ' + d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: DASH_TZ });
+  return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: DASH_TZ });
 }
 function bar(pct) {
   return `<div style="background:var(--wg200); border-radius:6px; overflow:hidden; height:10px;"><div style="width:${pct}%; background:var(--rust); height:100%;"></div></div>`;
@@ -259,6 +260,24 @@ function tallyTable(title, tally, errKey, errors, labelFn) {
     </div>`;
 }
 
+function destTallyTable(title, tally, errKey, errors) {
+  if (errors && errors[errKey]) {
+    return `<div class="adm-card"><h3>${esc(title)}</h3><p class="acct-sub">Unavailable — ${esc(errors[errKey])}</p></div>`;
+  }
+  const rows = (tally || []).map((t) => {
+    const label = t.name ? `${esc(t.name)} (${esc(t.code)})` : esc(t.code);
+    return `<tr><td>${label}</td><td class="num">${t.count}</td></tr>`;
+  }).join('');
+  return `
+    <div class="adm-card">
+      <h3>${esc(title)}</h3>
+      <div class="adm-wrap-scroll"><table class="adm-table">
+        <thead><tr><th>Destination</th><th class="num">Count</th></tr></thead>
+        <tbody>${rows || '<tr><td colspan="2">No data yet.</td></tr>'}</tbody>
+      </table></div>
+    </div>`;
+}
+
 function renderTravelMetrics(d) {
   const errors = d.errors || {};
   const identity = (k) => (k === null || k === undefined || k === '') ? '(none)' : String(k);
@@ -267,7 +286,7 @@ function renderTravelMetrics(d) {
   const regions     = tallyTable('Selected Regions', d.regions, 'regions', errors, identity);
   const subregions  = tallyTable('Selected Sub-Regions', d.subregions, 'subregions', errors, identity);
   const vibes       = tallyTable('Selected Vibes', d.vibes, 'vibes', errors, eventLabel);
-  const blogsByDest = tallyTable('Blogs Loaded — by destination', d.blogs && d.blogs.by_destination, 'blog_destinations', errors, identity);
+  const blogsByDest = destTallyTable('Blogs Loaded — by destination', d.blogs && d.blogs.by_destination, 'blog_destinations', errors);
   const blogsBySurf = tallyTable('Blogs Loaded — by surface', d.blogs && d.blogs.by_surface, 'blog_surfaces', errors, eventLabel);
   const hotelsByCity = tallyTable('Hotels Previewed — by city', d.hotels_previewed && d.hotels_previewed.by_city, 'hotels_by_city', errors, identity);
   const prebookings  = tallyTable('Pre-Bookings', d.prebookings, 'prebookings', errors, eventLabel);
