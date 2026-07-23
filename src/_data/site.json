@@ -6,6 +6,10 @@
   "url": "https://wheretotrips.com",
   "contactEmail": "ccupero@vcinnovationsgroup.com",
   "launchMode": "pre",
+  "analytics": {
+    "posthogKey": "phc_kFkCtGbaD92SVz895WwsRCr2gFn9ip6hqiR4X67EqkqL",
+    "posthogHost": "https://us.i.posthog.com"
+  },
   "cta": {
     "pre": { "label": "Join Early Access", "href": "/app/" },
     "post": { "label": "Get the App", "href": "/app/" }
