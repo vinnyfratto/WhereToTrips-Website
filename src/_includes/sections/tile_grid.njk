@@ -10,7 +10,7 @@
     <div class="tile-grid reveal reveal-delay-1" style="--cols: {{ s.columns or 3 }};">
       {% for t in s.tiles %}
       {% if t.href %}<a class="tile" href="{{ t.href }}">{% else %}<div class="tile">{% endif %}
-        {% if t.image %}<img class="tile-img" src="{{ t.image }}" alt="{{ t.label }}" loading="lazy" />{% elif t.icon %}<div class="tile-icon">{{ t.icon }}</div>{% endif %}
+        {% if t.image %}<img class="tile-img" src="{{ t.image }}" alt="{{ t.label }}" loading="lazy" />{% elif t.icon %}<div class="tile-icon">{% icon t.icon %}</div>{% endif %}
         <h3>{{ t.label }}</h3>
         {% if t.blurb %}<p>{{ t.blurb }}</p>{% endif %}
       {% if t.href %}</a>{% else %}</div>{% endif %}

@@ -88,6 +88,9 @@ h1, h2, h3 { font-family: var(--serif); font-weight: 400; color: var(--navy); le
 .btn-amber { background: var(--amber); color: #fff; border-color: var(--amber); }
 .btn-amber:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(230,152,0,0.3); }
 
+/* ── Solar icons ─────────────────────────────── */
+.ico { display: inline-block; width: 1em; height: 1em; line-height: 1; vertical-align: -0.125em; fill: currentColor; flex-shrink: 0; }
+
 /* ── Header ─────────────────────────────── */
 header {
   position: sticky; top: 0; z-index: 100;
@@ -267,29 +270,48 @@ header.menu-open .nav-toggle span:nth-child(3) { transform: translateY(-7px) rot
 .hero-slide {
   position: absolute; inset: 0;
   background-size: cover; background-position: center;
-  opacity: 0; transform: scale(1.06);
+  display: flex; align-items: center;
+  opacity: 0; transform: scale(1.06); pointer-events: none;
   transition: opacity 1.2s ease, transform 7s ease;
   will-change: opacity, transform;
 }
-.hero-slide.active { opacity: 1; transform: scale(1); }
+.hero-slide.active { opacity: 1; transform: scale(1); pointer-events: auto; }
 /* Charcoal wash so the caption stays readable over any photo */
-.hero-slider-overlay {
+.hero-slide-overlay {
   position: absolute; inset: 0; pointer-events: none;
   background:
     linear-gradient(90deg, rgba(25,25,25,0.72) 0%, rgba(25,25,25,0.42) 48%, rgba(25,25,25,0.15) 100%),
     linear-gradient(0deg, rgba(25,25,25,0.5) 0%, transparent 45%);
 }
-.hero-slider-inner { position: relative; z-index: 2; width: 100%; }
-.hero-slider-copy { max-width: 720px; }
-.hero-slider-copy .eyebrow { color: #7FC7EE; font-size: clamp(18px, 1.8vw, 22px); }
-.hero-slider-copy h1 {
+.hero-caption-wrap { position: relative; z-index: 2; width: 100%; }
+.slide-caption { max-width: 720px; overflow: hidden; }
+.slide-caption .eyebrow { color: #7FC7EE; font-size: clamp(18px, 1.8vw, 22px); }
+.slide-caption h1 {
   font-size: clamp(46px, 7.2vw, 92px); line-height: 1.05;
   color: #fff; margin: 14px 0 22px; white-space: pre-line;
   text-shadow: 0 2px 30px rgba(0,0,0,0.3);
 }
-.hero-slider-copy .italic { color: #7FC7EE; }
-.hero-slider-copy .lede { color: rgba(255,255,255,0.88); font-size: clamp(16px, 1.6vw, 20px); max-width: 54ch; }
-.hero-slider-copy .cta { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 38px; }
+.slide-caption .italic { color: #7FC7EE; }
+.slide-caption .lede { color: rgba(255,255,255,0.88); font-size: clamp(16px, 1.6vw, 20px); max-width: 54ch; }
+.slide-caption .btns { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 38px; }
+
+/* Caption slide-in — matches Varaus exactly: fadeInLeft 1.5s both, ease,
+   staggered delays (title 0.5s / subtitle 1s / buttons 1.5s), only on the
+   active slide; inactive slides hold the fadeOutLeft end-state. */
+.slide-caption > * { animation: fadeOutLeft 1.5s both; }
+.hero-slide.active .slide-caption > * { animation-name: fadeInLeft; }
+.hero-slide.active .slide-caption > .slide-eyebrow  { animation-delay: 0.2s; }
+.hero-slide.active .slide-caption > .slide-title    { animation-delay: 0.5s; }
+.hero-slide.active .slide-caption > .slide-subtitle { animation-delay: 1s; }
+.hero-slide.active .slide-caption > .btns           { animation-delay: 1.5s; }
+@keyframes fadeInLeft {
+  from { opacity: 0; transform: translate3d(-100%, 0, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@keyframes fadeOutLeft {
+  from { opacity: 1; transform: translate3d(0, 0, 0); }
+  to   { opacity: 0; transform: translate3d(-100%, 0, 0); }
+}
 .btn-hero-ghost {
   background: rgba(255,255,255,0.08); color: #fff;
   border-color: rgba(255,255,255,0.5);
@@ -361,15 +383,11 @@ header.menu-open .nav-toggle span:nth-child(3) { transform: translateY(-7px) rot
 .video-play {
   width: 84px; height: 84px; border-radius: 50%; margin: 0 auto 26px;
   display: grid; place-items: center; background: var(--azure);
+  color: #fff; font-size: 40px;
   box-shadow: 0 0 0 0 rgba(32,156,224,0.5); animation: pulse 2.4s infinite;
   transition: background .2s ease, transform .2s ease;
 }
 .video-play:hover { background: var(--azure-press); transform: scale(1.06); }
-.video-play-tri {
-  width: 0; height: 0; margin-left: 5px;
-  border-top: 13px solid transparent; border-bottom: 13px solid transparent;
-  border-left: 21px solid #fff;
-}
 .video-banner .eyebrow { color: #7FC7EE; }
 .video-banner h2 { color: #fff; font-size: clamp(30px, 4.5vw, 50px); line-height: 1.12; margin: 6px auto 14px; max-width: 20ch; }
 .video-banner .italic { color: #7FC7EE; }
@@ -450,7 +468,7 @@ section.block.tint { background: var(--tint); }
   font-size: 15px; color: var(--wg600);
 }
 .feature-list .fi {
-  font-size: 14px; color: var(--rust); flex-shrink: 0;
+  font-size: 18px; color: var(--rust); flex-shrink: 0;
   width: 32px; height: 32px; border-radius: 50%;
   background: rgba(32,156,224,0.1); display: grid; place-items: center;
   margin-top: 1px;
@@ -771,5 +789,7 @@ footer { background: var(--footer); padding: 72px 0 40px; }
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; transition: none; }
   .bubble { animation: none; }
+  .slide-caption > * { animation: none !important; opacity: 1 !important; transform: none !important; }
+  .hero-slide { transition: opacity .4s ease; }
   html { scroll-behavior: auto; }
 }

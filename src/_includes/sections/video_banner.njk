@@ -4,7 +4,7 @@
   <div class="video-banner-overlay"></div>
   <div class="wrap video-banner-inner reveal">
     <a class="video-play" href="{{ s.href or '/app/' }}" aria-label="{{ s.playLabel or 'Watch how it works' }}">
-      <span class="video-play-tri"></span>
+      {% icon "play" %}
     </a>
     {% if s.eyebrow %}<span class="eyebrow">{{ s.eyebrow }}</span>{% endif %}
     {% if s.title %}<h2>{{ s.title.pre }}<span class="italic">{{ s.title.accent }}</span>{{ s.title.post }}</h2>{% endif %}

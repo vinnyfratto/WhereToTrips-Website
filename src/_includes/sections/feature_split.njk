@@ -30,7 +30,7 @@
         {% if s.features %}
         <ul class="feature-list">
           {% for item in s.features %}
-          <li><span class="fi">{{ item.icon }}</span><span>{{ item.label }}</span></li>
+          <li><span class="fi">{% icon item.icon %}</span><span>{{ item.label }}</span></li>
           {% endfor %}
         </ul>
         {% endif %}

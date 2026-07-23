@@ -15,7 +15,6 @@
       <a class="tile card-photo" href="{{ item.url }}">
         <div class="card-photo-img">
           <img src="{{ cardImg }}" alt="{{ item.data.heroAlt or item.data.title }}" loading="lazy" />
-          {% if item.data.icon %}<span class="card-photo-badge">{{ item.data.icon }}</span>{% endif %}
         </div>
         <div class="card-photo-body">
           <h3>{{ item.data.tileLabel or item.data.title }}</h3>

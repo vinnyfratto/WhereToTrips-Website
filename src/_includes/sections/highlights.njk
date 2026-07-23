@@ -5,7 +5,7 @@
     <div class="highlights reveal">
       {% for item in s.items %}
       <div class="highlight">
-        <span class="highlight-icon">{{ item.icon }}</span>
+        <span class="highlight-icon">{% icon item.icon %}</span>
         <div class="highlight-text">
           <h4>{{ item.title }}</h4>
           {% if item.text %}<p>{{ item.text }}</p>{% endif %}

@@ -29,16 +29,16 @@ sections:
         alt: Golden sand dunes rolling to the horizon
   - type: highlights
     items:
-      - icon: 💸
+      - icon: wallet-money
         title: Budget-first
         text: Your number drives the trip, not the other way around.
-      - icon: 🧭
+      - icon: compass
         title: 150+ Vibes
         text: Match a feeling to real destinations worldwide.
-      - icon: ✈️
+      - icon: plane
         title: Real flights
         text: Live pricing on routes you'd never have searched.
-      - icon: 👥
+      - icon: users-group-rounded
         title: Group travel
         text: Plan and decide together with Wander Together.
   - type: steps
@@ -91,16 +91,16 @@ sections:
     tiles:
       - label: Travel More
         blurb: Start from what you can spend and discover trips you'd never have searched.
-        icon: 🌍
+        icon: global
       - label: Stay On Budget
         blurb: Budget-first means your number drives the matches, not the other way around.
-        icon: 💸
+        icon: wallet-money
       - label: Discover Hidden Gems
         blurb: Surface under-the-radar places with better value and fewer crowds.
-        icon: 💎
+        icon: map-point-favourite
       - label: Easy Group Travel
         blurb: Plan with friends and family in one shared flow with Wander Together.
-        icon: 👥
+        icon: users-group-rounded
   - type: collection_grid
     eyebrow: Featured Travel Vibes
     title:
@@ -129,13 +129,13 @@ sections:
     background: true
     body: Create a trip, invite your crew, and let everyone weigh in on destinations, dates, and budgets — all in one place. When you're ready, book as a group with a single flow. No spreadsheets. No 47-message threads.
     features:
-      - icon: ✓
+      - icon: check-circle
         label: Invite your crew to a shared trip
-      - icon: ✓
+      - icon: check-circle
         label: Everyone sets their own budget & vibe
-      - icon: ✓
+      - icon: check-circle
         label: The AI finds where your group overlaps
-      - icon: ✓
+      - icon: check-circle
         label: Vote, decide, and book together
     cta:
       label: Explore Wander Together
