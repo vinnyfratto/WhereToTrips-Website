@@ -101,37 +101,9 @@ header {
 }
 .brand-logo-light { display: none; }
 
-/* Transparent header floating over a full-bleed hero (home) */
-body.has-hero-overlay header {
-  position: fixed; top: 0; left: 0; right: 0;
-  background: transparent; border-bottom-color: transparent;
-  backdrop-filter: none; -webkit-backdrop-filter: none;
-}
-body.has-hero-overlay header .brand-logo-dark { display: none; }
-body.has-hero-overlay header .brand-logo-light { display: block; }
-body.has-hero-overlay header .nav-links a,
-body.has-hero-overlay header .nav-dropdown > button { color: rgba(255,255,255,0.88); }
-body.has-hero-overlay header .nav-links a:hover,
-body.has-hero-overlay header .nav-dropdown > button:hover { color: #fff; }
-body.has-hero-overlay header .nav-toggle span { background: #fff; }
-
-/* Once scrolled past the hero, it re-solidifies */
-body.has-hero-overlay header.scrolled {
-  background: rgba(255,255,255,0.95); border-bottom-color: var(--wg200);
-  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 6px 24px rgba(20,30,40,0.08);
-}
-body.has-hero-overlay header.scrolled .brand-logo-dark { display: block; }
-body.has-hero-overlay header.scrolled .brand-logo-light { display: none; }
-body.has-hero-overlay header.scrolled .nav-links a,
-body.has-hero-overlay header.scrolled .nav-dropdown > button { color: var(--wg600); }
-body.has-hero-overlay header.scrolled .nav-links a:hover,
-body.has-hero-overlay header.scrolled .nav-dropdown > button:hover { color: var(--rust); }
-body.has-hero-overlay header.scrolled .nav-toggle span { background: var(--navy); }
-@keyframes headerDrop {
-  from { opacity: 0; transform: translateY(-100%); }
-  to   { opacity: 1; transform: none; }
-}
+/* Solid header (Varaus header-style-3): light bar with charcoal labels.
+   Picks up a soft shadow once the page is scrolled. */
+header.scrolled { box-shadow: 0 4px 20px rgba(20,30,40,0.08); }
 .nav { display: flex; align-items: center; justify-content: space-between; height: 84px; }
 .nav-links { flex: 1; justify-content: center; }
 .brand { display: flex; align-items: center; gap: 11px; }
@@ -163,8 +135,8 @@ footer .brand-logo { height: 32px; }
   background: var(--card); border: 1px solid var(--wg200);
   border-radius: var(--radius-md); box-shadow: var(--shadow-md);
   padding: 8px; min-width: 230px;
-  opacity: 0; visibility: hidden; transform: translateY(-6px);
-  transition: opacity .18s ease, transform .18s ease, visibility .18s;
+  opacity: 0; visibility: hidden;
+  transition: opacity .15s ease, visibility .15s;
 }
 /* invisible bridge so the menu survives the gap between button and menu */
 .nav-dropdown-menu::before {
@@ -177,8 +149,18 @@ footer .brand-logo { height: 32px; }
 .nav-dropdown-menu a {
   display: block; padding: 10px 14px; border-radius: var(--radius-sm);
   font-size: 13px; color: var(--navy); letter-spacing: 0.2px; text-transform: none;
+  opacity: 0; transition: background .15s ease, color .15s ease;
 }
+/* Each item slides up into place independently on open (staggered) */
+.nav-dropdown:hover .nav-dropdown-menu a,
+.nav-dropdown:focus-within .nav-dropdown-menu a { animation: ddItemIn .4s ease forwards; }
+.nav-dropdown:hover .nav-dropdown-menu a:nth-child(1), .nav-dropdown:focus-within .nav-dropdown-menu a:nth-child(1) { animation-delay: .04s; }
+.nav-dropdown:hover .nav-dropdown-menu a:nth-child(2), .nav-dropdown:focus-within .nav-dropdown-menu a:nth-child(2) { animation-delay: .10s; }
+.nav-dropdown:hover .nav-dropdown-menu a:nth-child(3), .nav-dropdown:focus-within .nav-dropdown-menu a:nth-child(3) { animation-delay: .16s; }
+.nav-dropdown:hover .nav-dropdown-menu a:nth-child(4), .nav-dropdown:focus-within .nav-dropdown-menu a:nth-child(4) { animation-delay: .22s; }
+.nav-dropdown:hover .nav-dropdown-menu a:nth-child(5), .nav-dropdown:focus-within .nav-dropdown-menu a:nth-child(5) { animation-delay: .28s; }
 .nav-dropdown-menu a:hover { background: rgba(32,156,224,0.08); color: var(--rust); }
+@keyframes ddItemIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 .nav-cta .btn { padding: 11px 22px; font-size: 11px; }
 
 /* Hamburger (mobile only) */
@@ -788,5 +770,8 @@ footer { background: var(--footer); padding: 72px 0 40px; }
   .bubble { animation: none; }
   .slide-caption > * { animation: none !important; opacity: 1 !important; transform: none !important; }
   .hero-slide { transition: opacity .4s ease; }
+  .nav-dropdown-menu a { opacity: 1; }
+  .nav-dropdown:hover .nav-dropdown-menu a,
+  .nav-dropdown:focus-within .nav-dropdown-menu a { animation: none; opacity: 1; }
   html { scroll-behavior: auto; }
 }
