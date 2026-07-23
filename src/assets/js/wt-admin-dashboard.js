@@ -1,7 +1,8 @@
 // ───────────────────────────────────────────────────────────────────
-//  wt-admin-dashboard.js — site analytics, backed by PostHog via the
-//  `admin` edge fn's analytics_overview action (same admins-table gate
-//  as the affiliate/submissions admin). Requires the edge fn to have
+//  wt-admin-dashboard.js — analytics for both PostHog-tracked channels
+//  (WhereToTrips.com website + the WhereTo app), via the `admin` edge
+//  fn's analytics_overview action (same admins-table gate as the
+//  affiliate/submissions admin). Requires the edge fn to have
 //  POSTHOG_PROJECT_ID + POSTHOG_PERSONAL_API_KEY secrets set — if not,
 //  the fn returns ok:false and this page shows that plainly instead of
 //  a blank dashboard.
@@ -20,6 +21,7 @@ const ADMIN_FN = cfg.url + '/functions/v1/admin';
 const REFRESH_MS = 60_000;
 
 let TOKEN = null;
+let currentChannel = 'website';
 let currentRange = 'today';
 let pollTimer = null;
 const RANGES = [['today', 'Today'], ['week', 'This week'], ['30d', 'Last 30 days']];
@@ -61,6 +63,15 @@ async function init() {
   $('#adm-root').style.display = 'block';
   $('#adm-logout').addEventListener('click', async () => { await supabase.auth.signOut(); window.location.href = '/account/login/'; });
 
+  document.querySelectorAll('[data-channel]').forEach((b) => {
+    b.addEventListener('click', () => {
+      if (b.dataset.channel === currentChannel) return;
+      currentChannel = b.dataset.channel;
+      document.querySelectorAll('[data-channel]').forEach((t) => t.classList.toggle('is-active', t.dataset.channel === currentChannel));
+      loadAnalytics();
+    });
+  });
+
   await loadAnalytics();
   pollTimer = setInterval(() => { if (document.visibilityState === 'visible') loadAnalytics(true); }, REFRESH_MS);
 }
@@ -70,7 +81,7 @@ async function loadAnalytics(silent = false) {
   const root = $('#analytics-root');
   if (!silent) root.innerHTML = `<div class="adm-card">Loading…</div>`;
 
-  const d = await callAdmin('analytics_overview', { range: currentRange });
+  const d = await callAdmin('analytics_overview', { range: currentRange, channel: currentChannel });
 
   if (!d.ok) {
     const hint = d.error === 'posthog_not_configured'
@@ -85,25 +96,46 @@ async function loadAnalytics(silent = false) {
     return;
   }
 
-  renderAnalytics(d);
+  if (d.channel === 'app') renderAppAnalytics(d);
+  else renderWebsiteAnalytics(d);
 }
 
-function renderAnalytics(d) {
-  const card = (label, val) => `<div class="stat-card"><p class="label">${label}</p><p class="value">${val}</p></div>`;
-  const rangeBtns = RANGES.map(([key, label]) =>
+function rangeBtnsHtml() {
+  return RANGES.map(([key, label]) =>
     `<button type="button" class="btn btn-xs ${key === currentRange ? 'btn-primary' : 'btn-ghost'}" data-range="${key}">${label}</button>`).join('');
+}
+function wireRangeBtns() {
+  $('#analytics-root').querySelectorAll('[data-range]').forEach((b) => {
+    b.addEventListener('click', () => {
+      if (b.dataset.range === currentRange) return;
+      currentRange = b.dataset.range;
+      loadAnalytics();
+    });
+  });
+}
+function bucketCol() { return currentRange === 'today' ? 'Hour' : currentRange === '30d' ? 'Week' : 'Day'; }
+function formatBucket(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  if (currentRange === 'today') return d.toLocaleTimeString('en-US', { hour: 'numeric', timeZone: 'UTC' }) + ' UTC';
+  if (currentRange === '30d') return 'Week of ' + d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
+  return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' });
+}
+function bar(pct) {
+  return `<div style="background:var(--wg200); border-radius:6px; overflow:hidden; height:10px;"><div style="width:${pct}%; background:var(--rust); height:100%;"></div></div>`;
+}
+const card = (label, val) => `<div class="stat-card"><p class="label">${label}</p><p class="value">${val}</p></div>`;
 
+// ── WhereToTrips.com ────────────────────────────────────────────────
+function renderWebsiteAnalytics(d) {
   const maxCount = Math.max(1, ...(d.series || []).map((r) => r.pageviews));
-  const seriesRows = (d.series || []).map((r) => {
-    const label = formatBucket(r.bucket, currentRange);
-    const pct = Math.round((r.pageviews / maxCount) * 100);
-    return `<tr>
-      <td>${esc(label)}</td>
+  const seriesRows = (d.series || []).map((r) => `
+    <tr>
+      <td>${esc(formatBucket(r.bucket))}</td>
       <td class="num">${r.pageviews}</td>
       <td class="num">${r.visitors}</td>
-      <td style="width:40%;"><div style="background:var(--wg200); border-radius:6px; overflow:hidden; height:10px;"><div style="width:${pct}%; background:var(--rust); height:100%;"></div></div></td>
-    </tr>`;
-  }).join('');
+      <td style="width:40%;">${bar(Math.round((r.pageviews / maxCount) * 100))}</td>
+    </tr>`).join('');
 
   const pageRows = (d.top_pages || []).map((p) => `<tr><td>${esc(p.path)}</td><td class="num">${p.views}</td></tr>`).join('');
   const refRows = (d.top_referrers || []).map((r) => `<tr><td>${esc(r.domain)}</td><td class="num">${r.visits}</td></tr>`).join('');
@@ -111,7 +143,7 @@ function renderAnalytics(d) {
   $('#analytics-root').innerHTML = `
     <div class="adm-form-row" style="justify-content:space-between; align-items:center; margin-bottom:14px;">
       <p class="acct-sub" style="margin:0;">Live from PostHog · refreshes every 60s</p>
-      <div style="display:flex; gap:8px;">${rangeBtns}</div>
+      <div style="display:flex; gap:8px;">${rangeBtnsHtml()}</div>
     </div>
     <div class="adm-overview-grid">
       ${card('Pageviews', d.totals.pageviews)}
@@ -120,7 +152,7 @@ function renderAnalytics(d) {
     <div class="adm-card">
       <h3>Traffic over time</h3>
       <div class="adm-wrap-scroll"><table class="adm-table">
-        <thead><tr><th>${currentRange === 'today' ? 'Hour' : currentRange === '30d' ? 'Week' : 'Day'}</th><th class="num">Pageviews</th><th class="num">Visitors</th><th></th></tr></thead>
+        <thead><tr><th>${bucketCol()}</th><th class="num">Pageviews</th><th class="num">Visitors</th><th></th></tr></thead>
         <tbody>${seriesRows || '<tr><td colspan="4">No data yet.</td></tr>'}</tbody>
       </table></div>
     </div>
@@ -141,21 +173,72 @@ function renderAnalytics(d) {
       </div>
     </div>`;
 
-  $('#analytics-root').querySelectorAll('[data-range]').forEach((b) => {
-    b.addEventListener('click', () => {
-      if (b.dataset.range === currentRange) return;
-      currentRange = b.dataset.range;
-      loadAnalytics();
-    });
-  });
+  wireRangeBtns();
 }
 
-function formatBucket(iso, range) {
-  if (!iso) return '—';
-  const d = new Date(iso);
-  if (range === 'today') return d.toLocaleTimeString('en-US', { hour: 'numeric', timeZone: 'UTC' }) + ' UTC';
-  if (range === '30d') return 'Week of ' + d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
-  return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' });
+// ── App ─────────────────────────────────────────────────────────────
+function eventLabel(name) {
+  return String(name || '').split('_').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') || 'Unknown';
+}
+
+function renderAppAnalytics(d) {
+  const maxCount = Math.max(1, ...(d.series || []).map((r) => r.active_users));
+  const seriesRows = (d.series || []).map((r) => `
+    <tr>
+      <td>${esc(formatBucket(r.bucket))}</td>
+      <td class="num">${r.active_users}</td>
+      <td class="num">${r.events}</td>
+      <td style="width:40%;">${bar(Math.round((r.active_users / maxCount) * 100))}</td>
+    </tr>`).join('');
+
+  const eventRows = (d.top_events || []).map((e) => `<tr><td>${esc(eventLabel(e.name))}</td><td class="num">${e.count}</td></tr>`).join('');
+
+  const funnelCards = (d.funnels || []).map((f) => {
+    const rows = f.steps.map((s, i) => `
+      <tr>
+        <td>${i + 1}. ${esc(eventLabel(s.event))}</td>
+        <td class="num">${s.count}</td>
+        <td class="num">${i === 0 ? '100%' : s.pct + '%'}</td>
+        <td style="width:30%;">${bar(s.pct)}</td>
+      </tr>`).join('');
+    return `
+      <div class="adm-card">
+        <h3>${esc(f.label)}</h3>
+        <div class="adm-wrap-scroll"><table class="adm-table">
+          <thead><tr><th>Step</th><th class="num">Count</th><th class="num">% of step 1</th><th></th></tr></thead>
+          <tbody>${rows || '<tr><td colspan="4">No data yet.</td></tr>'}</tbody>
+        </table></div>
+      </div>`;
+  }).join('');
+
+  $('#analytics-root').innerHTML = `
+    <div class="adm-form-row" style="justify-content:space-between; align-items:center; margin-bottom:14px;">
+      <p class="acct-sub" style="margin:0;">Live from PostHog · refreshes every 60s</p>
+      <div style="display:flex; gap:8px;">${rangeBtnsHtml()}</div>
+    </div>
+    <div class="adm-overview-grid">
+      ${card('Active users', d.totals.active_users)}
+      ${card('New signups', d.totals.signups)}
+      ${card('Flights booked', d.totals.bookings)}
+      ${card('Total events', d.totals.events)}
+    </div>
+    <div class="adm-card">
+      <h3>Active users over time</h3>
+      <div class="adm-wrap-scroll"><table class="adm-table">
+        <thead><tr><th>${bucketCol()}</th><th class="num">Active users</th><th class="num">Events</th><th></th></tr></thead>
+        <tbody>${seriesRows || '<tr><td colspan="4">No data yet.</td></tr>'}</tbody>
+      </table></div>
+    </div>
+    <div class="adm-card">
+      <h3>Top events</h3>
+      <div class="adm-wrap-scroll"><table class="adm-table">
+        <thead><tr><th>Event</th><th class="num">Count</th></tr></thead>
+        <tbody>${eventRows || '<tr><td colspan="2">No data yet.</td></tr>'}</tbody>
+      </table></div>
+    </div>
+    ${funnelCards}`;
+
+  wireRangeBtns();
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
