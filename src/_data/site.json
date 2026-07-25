@@ -23,7 +23,12 @@
     "accessKey": "a7729135-d5f2-4fb2-a4cd-9a99f3801393"
   },
   "nav": [
-    { "label": "How It Works", "href": "/how-it-works/" },
+    { "label": "How It Works", "href": "/how-it-works/", "children": [
+      { "label": "How It Works", "href": "/how-it-works/" },
+      { "label": "Travel Vibes", "href": "/travel-vibes/" },
+      { "label": "Destinations", "href": "/destinations/" },
+      { "label": "Insights", "href": "/insights/" }
+    ] },
     { "label": "WhereTo", "href": "/whereto/", "children": [
       { "label": "WhereTo", "href": "/whereto/" },
       { "label": "Discover", "href": "/whereto/discover/" },
@@ -35,10 +40,7 @@
       { "label": "Wander", "href": "/wander/" },
       { "label": "Wander Together", "href": "/wander/together/" },
       { "label": "Wander as a Group", "href": "/wander/as-a-group/" }
-    ] },
-    { "label": "Travel Vibes", "href": "/travel-vibes/" },
-    { "label": "Destinations", "href": "/destinations/" },
-    { "label": "Insights", "href": "/insights/" }
+    ] }
   ],
   "partnerNav": [
     { "label": "For Creators & Influencers", "href": "/partners/creators/" },
