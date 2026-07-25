@@ -3,7 +3,8 @@ title: "Nightlife"
 order: 10
 icon: "🌃"
 summary: "Late dinners, rooftop bars, and cities that only get going after dark."
-tagline: "For travelers whose best memories happen well after sunset."
+tagline: "The trip that starts after dark."
+ctaLabel: "Get the App to Discover Nightlife Destinations"
 heroImage: "/media/together.jpg"
 heroAlt: "Friends out together as the city lights come on"
 characteristics:

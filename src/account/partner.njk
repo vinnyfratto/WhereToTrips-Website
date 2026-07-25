@@ -1,0 +1,86 @@
+---
+layout: layouts/account.njk
+title: "Partner dashboard — WhereTo"
+description: "Manage your WhereTo partner account: downloads, bookings, commissions, and referral links."
+eleventyExcludeFromCollections: true
+acctWide: true
+---
+<div id="wt-gate" class="gate-msg">Loading your partner dashboard…</div>
+
+<div id="wt-partner" class="acct-card" data-wt-page="partner" style="display:none;">
+  <div class="acct-toprow">
+    <div>
+      <p class="eyebrow">Partner account</p>
+      <h1>Partner Dashboard</h1>
+    </div>
+    <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+      <a href="/account/profile/" class="btn btn-ghost">Account settings</a>
+      <button id="wt-logout" type="button" class="btn btn-ghost">Log out</button>
+    </div>
+  </div>
+
+  <div id="wt-alert" class="alert" role="status" aria-live="polite"></div>
+
+  <h2 class="acct-section-title">Downloads</h2>
+  <p class="acct-sub">App installs attributed to your referral link.</p>
+  <div class="field-row">
+    <div class="field">
+      <label>Total downloads</label>
+      <input type="text" id="wt-p-downloads" disabled value="0" />
+    </div>
+    <div class="field">
+      <label>Downloads (last 30 days)</label>
+      <input type="text" id="wt-p-downloads-30" disabled value="0" />
+    </div>
+  </div>
+
+  <h2 class="acct-section-title">Bookings</h2>
+  <p class="acct-sub">Trips booked in the WhereTo app by travelers you referred.</p>
+  <div class="field-row">
+    <div class="field">
+      <label>Total bookings</label>
+      <input type="text" id="wt-p-bookings" disabled value="0" />
+    </div>
+    <div class="field">
+      <label>Bookings (last 30 days)</label>
+      <input type="text" id="wt-p-bookings-30" disabled value="0" />
+    </div>
+  </div>
+
+  <h2 class="acct-section-title">Commissions</h2>
+  <p class="acct-sub">What you've earned, and where it stands in the payout cycle.</p>
+  <div class="field-row">
+    <div class="field">
+      <label>Owed <span class="hint">(confirmed, not yet due)</span></label>
+      <input type="text" id="wt-p-comm-owed" disabled value="$0.00" />
+    </div>
+    <div class="field">
+      <label>Pending <span class="hint">(awaiting booking completion)</span></label>
+      <input type="text" id="wt-p-comm-pending" disabled value="$0.00" />
+    </div>
+    <div class="field">
+      <label>Paid <span class="hint">(lifetime)</span></label>
+      <input type="text" id="wt-p-comm-paid" disabled value="$0.00" />
+    </div>
+  </div>
+
+  <h2 class="acct-section-title">Referral link</h2>
+  <p class="acct-sub">Share this link — every download and booking through it is credited to you.</p>
+  <div class="field">
+    <label for="wt-p-link">Your referral link</label>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      <input id="wt-p-link" type="text" disabled value="https://wheretotrips.com/?ref=--------" style="flex:1; min-width:220px;" />
+      <button id="wt-p-copy" type="button" class="btn btn-ghost">Copy link</button>
+    </div>
+  </div>
+  <div class="field">
+    <label for="wt-p-vanity">Custom vanity slug <span class="hint">(optional, subject to approval)</span></label>
+    <input id="wt-p-vanity" type="text" placeholder="e.g. yourname" />
+  </div>
+
+  <button id="wt-p-save" type="button" class="btn btn-primary">Save changes</button>
+
+  <p class="acct-sub" style="margin-top: 20px;">
+    <em>Production note: confirm payout cycle cadence and minimum payout threshold with finance before this page ships — those numbers need to be stated here so partners aren't guessing.</em>
+  </p>
+</div>

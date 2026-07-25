@@ -9,7 +9,7 @@ sections:
       pre: "Reach travelers "
       accent: "earlier"
       post: "."
-    lede: "Most channels compete for travelers after they've already chosen a destination. WhereTo engages them before that decision — when your inventory can still shape the trip."
+    lede: "Most channels compete for travelers after they've already chosen a destination. WhereTo puts your inventory in front of travelers at the single most influential moment in trip planning — the decision itself."
     primaryBtn:
       label: "Become a partner"
       href: "#contact"
@@ -37,13 +37,13 @@ sections:
   - type: tile_grid
     eyebrow: "The platform"
     title:
-      pre: "What partners plug "
-      accent: "into"
+      pre: "Six modules, one funnel into "
+      accent: "your inventory"
       post: "."
     columns: 3
     tiles:
-      - { label: "AI Discovery Engine", icon: "🧭", blurb: "Budget- and vibe-first matching that surfaces destinations and supply." }
-      - { label: "Wander Together", icon: "👥", blurb: "Group trips — higher-value, multi-traveler bookings." }
+      - { label: "WhereTo", icon: "🧭", blurb: "Discover, Explore, Chat, and Direct — budget- and vibe-first matching that surfaces destinations and supply." }
+      - { label: "Wander", icon: "👥", blurb: "Together and as a Group — higher-value, multi-traveler bookings." }
       - { label: "Booking Integration", icon: "🔗", blurb: "Travelers book flights, stays, and activities in-app." }
 
   - type: tile_grid

@@ -3,7 +3,8 @@ title: "Adventure"
 order: 1
 icon: "🧗"
 summary: "Adrenaline, big landscapes, and the trips you brag about for years."
-tagline: "For travelers who measure a trip by the story they bring home — not the square footage of the pool."
+tagline: "For the trip that should scare you a little."
+ctaLabel: "Get the App to Discover Adventure Destinations"
 heroImage: "/media/hero.jpg"
 heroAlt: "Rugged sun-drenched hillside terrain"
 characteristics:

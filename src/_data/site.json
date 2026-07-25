@@ -23,16 +23,26 @@
     "accessKey": "a7729135-d5f2-4fb2-a4cd-9a99f3801393"
   },
   "nav": [
-    { "label": "How It Works", "href": "/how-it-works/", "children": [
-      { "label": "How It Works", "href": "/how-it-works/" },
-      { "label": "Travel Vibes", "href": "/travel-vibes/" },
-      { "label": "Destinations", "href": "/destinations/" },
-      { "label": "Wander Together", "href": "/wander-together/" }
+    { "label": "How It Works", "href": "/how-it-works/" },
+    { "label": "WhereTo", "href": "/whereto/", "children": [
+      { "label": "WhereTo", "href": "/whereto/" },
+      { "label": "Discover", "href": "/whereto/discover/" },
+      { "label": "Explore", "href": "/whereto/explore/" },
+      { "label": "Chat", "href": "/whereto/chat/" },
+      { "label": "Direct", "href": "/whereto/direct/" }
     ] },
+    { "label": "Wander", "href": "/wander/", "children": [
+      { "label": "Wander", "href": "/wander/" },
+      { "label": "Wander Together", "href": "/wander/together/" },
+      { "label": "Wander as a Group", "href": "/wander/as-a-group/" }
+    ] },
+    { "label": "Travel Vibes", "href": "/travel-vibes/" },
+    { "label": "Destinations", "href": "/destinations/" },
     { "label": "Insights", "href": "/insights/" }
   ],
   "partnerNav": [
     { "label": "For Creators & Influencers", "href": "/partners/creators/" },
+    { "label": "Creator Directory", "href": "/partners/creators/directory/" },
     { "label": "For Travel Industry Partners", "href": "/partners/industry/" }
   ],
   "social": [
@@ -52,9 +62,10 @@
     {
       "heading": "Explore",
       "links": [
+        { "label": "WhereTo", "href": "/whereto/" },
+        { "label": "Wander", "href": "/wander/" },
         { "label": "Travel Vibes", "href": "/travel-vibes/" },
         { "label": "Destinations", "href": "/destinations/" },
-        { "label": "Wander Together", "href": "/wander-together/" },
         { "label": "Insights", "href": "/insights/" }
       ]
     },
@@ -64,8 +75,7 @@
         { "label": "About Us", "href": "/about/" },
         { "label": "Press & Media", "href": "/press/" },
         { "label": "Contact", "href": "/contact/" },
-        { "label": "FAQ", "href": "/faq/" },
-        { "label": "Log In", "href": "/account/login/" }
+        { "label": "FAQ", "href": "/faq/" }
       ]
     },
     {

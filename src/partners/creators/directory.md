@@ -6,10 +6,10 @@ sections:
   - type: hero
     eyebrow: "Creator Directory"
     title:
-      pre: "The creators behind the "
-      accent: "trips"
+      pre: "The voices sending people to "
+      accent: "WhereTo"
       post: "."
-    lede: "Featured WhereTo creator partners and their destination collections will live here. We're onboarding our first partners now."
+    lede: "A running directory of our creator partners — who they are, what they cover, and where to find them. We're onboarding our first partners now."
     primaryBtn:
       label: "Apply to be featured"
       href: "/partners/creators/#apply"

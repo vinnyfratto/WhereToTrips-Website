@@ -3,7 +3,8 @@ title: "Beach Escape"
 order: 2
 icon: "🏝️"
 summary: "Warm water, slow mornings, and nowhere you have to be."
-tagline: "For when the only itinerary you want is sand, sun, and the sound of the surf."
+tagline: "Sand, salt water, and a book you'll pretend to read."
+ctaLabel: "Get the App to Discover Beach Escape Destinations"
 heroImage: "/media/vibes.jpg"
 heroAlt: "Turquoise lagoon ringed by white sand"
 characteristics:

@@ -3,7 +3,8 @@ title: "Luxury"
 order: 7
 icon: "✨"
 summary: "Effortless, polished, and worth every dollar — the trip that takes care of you."
-tagline: "For when the point of the trip is to be looked after, beautifully."
+tagline: "The trip that doesn't apologize for itself."
+ctaLabel: "Get the App to Discover Luxury Destinations"
 heroImage: "/media/vibes.jpg"
 heroAlt: "A serene high-end resort setting over clear water"
 characteristics:

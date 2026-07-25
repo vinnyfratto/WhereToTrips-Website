@@ -9,7 +9,7 @@ sections:
       pre: "Ideas to help you "
       accent: "wander"
       post: "."
-    lede: "Travel inspiration, budget tips, group-travel advice, and a look at how AI is changing the way we plan trips."
+    lede: "The research, the strategy, and the occasional rabbit hole — all in one place."
     primaryBtn:
       label: "Read the latest"
       href: "#posts"
@@ -20,9 +20,24 @@ sections:
       src: "/media/chat.jpg"
       alt: "Reading travel ideas"
 
+  - type: tile_grid
+    background: true
+    eyebrow: "Browse by topic"
+    title:
+      pre: "Ideas for the trip you haven't "
+      accent: "planned yet"
+      post: "."
+    columns: 3
+    tiles:
+      - { label: "Travel Inspiration", icon: "🌍", blurb: "Destinations and trip ideas worth chasing." }
+      - { label: "Budget Travel", icon: "💸", blurb: "How to stretch a trip budget without shrinking the trip." }
+      - { label: "Group Travel", icon: "🧳", blurb: "Planning strategy for friends, family, and who's paying for what." }
+      - { label: "Hidden Gems", icon: "🗺️", blurb: "The places worth knowing about before everyone else does." }
+      - { label: "Travel Trends", icon: "📈", blurb: "What's changing in how people plan and book trips." }
+      - { label: "AI & Travel", icon: "🧭", blurb: "How tools like WhereTo's Vibe Engine are changing destination discovery." }
+
   - type: collection_grid
     id: "posts"
-    background: true
     eyebrow: "Latest"
     title:
       pre: "From the "

@@ -4,6 +4,10 @@ updated: "June 25, 2026"
 description: "How the WhereTo website collects and uses information submitted through its forms, and how that relates to the WhereTo app's privacy policy."
 ---
 
+*Production note: this is a legal document, not a marketing content block — draft with counsel. Recommended framing paragraph below, consistent with the trust language used elsewhere in the product.*
+
+WhereTo collects the information needed to build your trip recommendations and manage your account (budget inputs, travel preferences, departure location, group participation), discloses how booking partner data-sharing works, and never sells personal travel data. Full legal language follows below.
+
 This policy explains how the WhereTo **website** (wheretotrips.com) handles information you provide here. It is separate from the **WhereTo app**, which has its own privacy policy covering accounts, travel preferences, and booking data.
 
 ## Information this website collects

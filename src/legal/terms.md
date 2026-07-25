@@ -4,6 +4,8 @@ updated: "June 25, 2026"
 description: "Terms for using the WhereTo website. The website is informational only; no purchases or bookings occur here — all booking is governed by the WhereTo app's terms."
 ---
 
+*Production note: legal document — draft with counsel. Should explicitly cover: booking partner relationship and liability (WhereTo is not the merchant of record for flights, hotels, or rental cars), estimated vs. live pricing disclosure, affiliate/commission disclosure, and group trip participant terms (organizer vs. participant responsibilities).*
+
 These terms govern your use of the WhereTo **website** (wheretotrips.com). By using this site, you agree to them.
 
 ## The website is informational only

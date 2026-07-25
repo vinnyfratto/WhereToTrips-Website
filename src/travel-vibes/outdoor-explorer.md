@@ -3,7 +3,8 @@ title: "Outdoor Explorer"
 order: 8
 icon: "🥾"
 summary: "Trails, parks, and wide-open country — nature as the whole itinerary."
-tagline: "For travelers who feel best with a trailhead in the morning and stars at night."
+tagline: "Trailheads, summits, and cold beer after."
+ctaLabel: "Get the App to Discover Outdoor Explorer Destinations"
 heroImage: "/media/hero.jpg"
 heroAlt: "Open country under a wide sky"
 characteristics:

@@ -29,7 +29,8 @@
       </div>
     </nav>
     <div class="nav-cta">
-      <a class="btn btn-primary" href="/account/login/" data-wt-account>Log In</a>
+      <a class="btn btn-ghost" href="/account/login/" data-wt-account>Log In</a>
+      <a class="btn btn-primary" href="/app/">{{ navCta.label }}</a>
     </div>
     <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
       <span></span><span></span><span></span>
@@ -50,6 +51,7 @@
     {%- for link in site.partnerNav %}
     <a class="mobile-sub" href="{{ link.href }}">{{ link.label }}</a>
     {%- endfor %}
-    <a class="btn btn-primary mobile-cta" href="/account/login/" data-wt-account>Log In</a>
+    <a class="btn btn-ghost mobile-cta" href="/account/login/" data-wt-account>Log In</a>
+    <a class="btn btn-primary mobile-cta" href="/app/">{{ navCta.label }}</a>
   </div>
 </header>

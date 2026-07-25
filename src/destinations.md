@@ -9,7 +9,7 @@ sections:
       pre: "Travel that fits your "
       accent: "constraints"
       post: "."
-    lede: "Got a number or a home airport in mind? These curated lists start from real-world limits — budget, departure city, and season — instead of a blank map."
+    lede: "Browse by what you actually have to work with — your budget, your home airport, or your travel window. Constraints first. Destination second."
     primaryBtn:
       label: "Browse the lists"
       href: "#lists"

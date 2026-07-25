@@ -3,7 +3,8 @@ title: "Family Fun"
 order: 6
 icon: "🎡"
 summary: "Trips that work for the eight-year-old and the grandparents alike."
-tagline: "For the trips where everyone, somehow, needs to have a good time."
+tagline: "Something for every age in the group text."
+ctaLabel: "Get the App to Discover Family Fun Destinations"
 heroImage: "/media/together.jpg"
 heroAlt: "A multi-generational group enjoying a day out together"
 characteristics:

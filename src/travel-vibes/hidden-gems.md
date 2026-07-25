@@ -3,7 +3,8 @@ title: "Hidden Gems"
 order: 5
 icon: "💎"
 summary: "The places your feed hasn't ruined yet — fewer crowds, better value."
-tagline: "For travelers who would rather discover than check a box off a list."
+tagline: "The place your friends haven't been yet."
+ctaLabel: "Get the App to Discover Hidden Gems Destinations"
 heroImage: "/media/hero.jpg"
 heroAlt: "A quiet hillside village away from the crowds"
 characteristics:

@@ -3,7 +3,8 @@ title: "Romantic"
 order: 4
 icon: "🥂"
 summary: "Slow, intimate, and a little indulgent — just the two of you."
-tagline: "For honeymoons, anniversaries, and the kind of trip you take to remember why."
+tagline: "Built for two."
+ctaLabel: "Get the App to Discover Romantic Destinations"
 heroImage: "/media/chat.jpg"
 heroAlt: "A quiet terrace with a sweeping view at golden hour"
 characteristics:

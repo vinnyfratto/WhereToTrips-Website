@@ -3,7 +3,8 @@ title: "Foodie"
 order: 3
 icon: "🍽️"
 summary: "Plan the trip around the table — markets, classics, and one unforgettable meal."
-tagline: "For travelers who book the restaurant first and the flight second."
+tagline: "The itinerary is the menu."
+ctaLabel: "Get the App to Discover Foodie Destinations"
 heroImage: "/media/together.jpg"
 heroAlt: "Friends sharing a meal at an outdoor table"
 characteristics:

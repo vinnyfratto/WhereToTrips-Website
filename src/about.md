@@ -6,10 +6,10 @@ sections:
   - type: hero
     eyebrow: "About Us"
     title:
-      pre: "Reimagining how the world plans "
-      accent: "travel"
+      pre: "We think travel planning starts at the "
+      accent: "wrong step"
       post: "."
-    lede: "Travel search hasn't really changed in decades — it still asks you to name a place before you've even decided what you want. We think that's backwards."
+    lede: "Every trip should start with what you know — not with a question you can't answer yet."
     primaryBtn:
       label: "See how it works"
       href: "/how-it-works/"
@@ -20,30 +20,27 @@ sections:
       src: "/media/hero.jpg"
       alt: "A wide-open travel horizon"
 
-  - type: feature_split
+  - type: rich_text
     background: true
-    eyebrow: "Our story"
     title:
-      pre: "Start with "
-      accent: "possibility"
+      pre: "Our "
+      accent: "story"
       post: "."
-    lede: "Traditional travel search makes you commit to a destination first, then work backward to a budget. Most people actually know the opposite — what they can spend and how they want to feel."
-    body: "WhereTo was built to flip that. We start with possibility — your budget, your dates, your vibe — and let an AI discovery engine find where it all leads. The result is trips you'd never have thought to search for, at prices that actually work."
-    image:
-      src: "/media/vibes.jpg"
-      alt: "A destination revealed by starting with possibility"
+    body: |
+      <p style="text-align:center;"><em>PRODUCTION NOTE: Founder-informed narrative — origin of the budget-first, vibe-first approach and the gap WhereTo saw between how travel search works and how people actually decide to travel. Draft with founders once source material is available; not present in the MVP strategy document.</em></p>
 
   - type: tile_grid
     eyebrow: "What we believe"
     title:
-      pre: "Our "
-      accent: "principles"
+      pre: "What we "
+      accent: "believe"
       post: "."
-    columns: 3
+    columns: 4
     tiles:
-      - { label: "Budget-first", icon: "💸", blurb: "Your number drives the trip — not the other way around." }
-      - { label: "Experience-led", icon: "🧭", blurb: "Start from the feeling you want, and let the place follow." }
-      - { label: "Honest by default", icon: "🤝", blurb: "Clear about what's discovery and what's booking." }
+      - { label: "The answer, not the question", icon: "🧭", blurb: "The destination should be the answer, not the starting question." }
+      - { label: "Explainable recommendations", icon: "✦", blurb: "You deserve to know why, not just what." }
+      - { label: "Honest pricing", icon: "💸", blurb: "Cost estimates should be honest, and live pricing should come from the people actually handling your booking." }
+      - { label: "No project manager required", icon: "🤝", blurb: "Group trips shouldn't require a project manager." }
 
   - type: rich_text
     background: true

@@ -379,7 +379,7 @@ collections:
                   - { name: formLabel, widget: string, required: false }
 
       - { name: how_it_works, label: "How It Works", file: src/how-it-works.md, fields: *page_fields }
-      - { name: wander_together, label: "Wander Together", file: src/wander-together.md, fields: *page_fields }
+      - { name: wander_together, label: "Wander Together", file: src/wander/together.md, fields: *page_fields }
       - { name: get_the_app, label: "Get the App", file: src/app.md, fields: *page_fields }
       - { name: travel_vibes_hub, label: "Travel Vibes (hub)", file: src/travel-vibes.md, fields: *page_fields }
       - { name: destinations_hub, label: "Destinations (hub)", file: src/destinations.md, fields: *page_fields }

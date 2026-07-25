@@ -9,7 +9,7 @@ sections:
       pre: "Start with a "
       accent: "feeling"
       post: "."
-    lede: "Most travel search starts with a place. WhereTo starts with the experience you're craving — then finds the destinations that deliver it."
+    lede: "Before you know the destination, you know the mood. Start there — ten starting vibes, each linking to matching destinations and the WhereTo module built to find it."
     primaryBtn:
       label: "Explore the vibes"
       href: "#vibes"

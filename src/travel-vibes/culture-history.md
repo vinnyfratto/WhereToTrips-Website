@@ -3,7 +3,8 @@ title: "Culture & History"
 order: 9
 icon: "🏛️"
 summary: "Ruins, museums, and old cities where every street has a story."
-tagline: "For travelers who plan around what a place remembers."
+tagline: "The world's best stories, in person."
+ctaLabel: "Get the App to Discover Culture & History Destinations"
 heroImage: "/media/chat.jpg"
 heroAlt: "A historic old-town street at golden hour"
 characteristics:

@@ -9,7 +9,7 @@ sections:
       pre: "Turn inspiration into "
       accent: "trips"
       post: "."
-    lede: "Your audience trusts you for where to go. WhereTo turns that inspiration into a booked trip — and shares the upside with you."
+    lede: "Your audience already trusts you for travel inspiration. Let's make it trackable — partner with the WhereTo and Wander product family to turn “where should I go” content into real, attributable trips."
     primaryBtn:
       label: "Apply to partner"
       href: "#apply"
@@ -27,8 +27,8 @@ sections:
       pre: "Your taste, made "
       accent: "bookable"
       post: "."
-    lede: "Most creator travel content ends at inspiration. WhereTo closes the loop — your followers go from your post to a real, budget-matched trip in the app."
-    body: "You bring the audience and the point of view. We bring the discovery engine, the booking, and a revenue share that rewards the trips you actually inspire."
+    lede: "Not a single destination — the feeling behind the trip. WhereTo and Wander give your audience a way to act on inspiration immediately."
+    body: "A vibe, a budget theme, a season, a group-trip idea, routed straight into the app through your tracking link. You bring the audience and the point of view; we bring the discovery engine, the booking, and a revenue share that rewards the trips you actually inspire."
     image:
       src: "/media/vibes.jpg"
       alt: "A destination a creator might feature"

@@ -4,14 +4,14 @@ description: WhereTo is a travel discovery app for iOS and Android. Tell it your
 layout: layouts/page.njk
 sections:
   - type: hero
-    eyebrow: Free on iOS & Android
+    eyebrow: The travel app that works backward (in the best way)
     title:
-      pre: Discover Your Next
-      accent: Destination
-      post: .
-    lede: 'Most travel platforms ask a simple question: "Where do you want to go?" WhereTo asks a better one: "What kind of experience do you want to have?"'
+      pre: '"Where do you want to go?"'
+      accent: Wrong question.
+      post: ''
+    lede: You already know your budget. Your dates. The vibe you're craving. WhereTo turns what you already know into the trip you didn't know you wanted — then gets you there.
     primaryBtn:
-      label: Download Free
+      label: Get the App
       href: '#download'
     ghostBtn:
       label: See how it works
@@ -41,66 +41,74 @@ sections:
       - icon: users-group-rounded
         title: Group travel
         text: Plan and decide together with Wander Together.
+  - type: rich_text
+    id: problem
+    title:
+      pre: "Everyone else hands you a blank search bar and calls it a "
+      accent: "day"
+      post: "."
+    body: |
+      <p style="text-align:center;">Most travel sites expect the hardest part — the destination — to just appear in your head first. WhereTo flips the order. Tell us your budget, your dates, who's coming, and the kind of trip you're craving — moody European alleyways, a sun-drenched beach nap, a food crawl that ends in a nap on someone's balcony — and we'll tell you exactly where that trip exists in the real world, for real money.</p>
+
   - type: steps
     eyebrow: How it works
     title:
       pre: |-
-        You know your budget.
-        We know the
-      accent: destination
-      post: .
+        Budget in. Vibe in.
+      accent: Destination
+      post: out.
     lede: You usually know four things — what you can spend, when you can go, who's coming, and the vibe you want. WhereTo turns those into where.
     id: how
     steps:
-      - title: Set your budget
-        body: Tell WhereTo what you can spend — total, not per night.
-      - title: Choose your vibe
-        body: Beach, adventure, foodie, romantic — pick the feeling.
-      - title: Discover matches
-        body: The engine surfaces destinations that actually fit.
-      - title: Book in the app
-        body: Plan and book flights, stays, and activities together.
+      - title: Tell us what you know
+        body: Budget, dates, trip length, who's coming.
+      - title: Pick your vibe
+        body: An engine built on hundreds of travel styles, not ten generic tags.
+      - title: Get a ranked shortlist
+        body: Real destinations, each with a plain-English reason why it fits.
   - type: feature_split
-    eyebrow: The Vibes Engine
+    eyebrow: WhereTo Family Teaser
     title:
-      pre: |-
-        Your vibe.
-        Your
-      accent: trip
-      post: .
-    lede: We built a two-tier destination engine unlike anything in travel. 150+ vibes mapped to real places, real flights, and real prices. Pick a vibe. See where it takes you.
+      pre: "Four ways to search. "
+      accent: One engine
+      post: " underneath."
+    lede: Starting from zero, narrowing down a region you already love, want to talk it out, or already know your destination — there's a WhereTo mode built for exactly how much you already know.
     image:
       src: /media/vibes.jpg
       alt: Aerial view of a turquoise lagoon surrounded by white sand
     id: vibes
-    body: Whether you're craving sun-bleached cobblestones, midnight city energy, or a mountain hut with zero WiFi, WhereTo knows the difference. Our Vibes Engine layers destination character, seasonal context, and price intelligence to surface flights you'd never have thought to search.
-    stats:
-      - value: 150+
-        label: destination vibes
-      - value: 550+
-        label: cities worldwide
+    cta:
+      label: Explore the WhereTo Family
+      href: /whereto/
+
   - type: tile_grid
     eyebrow: Why travelers love WhereTo
     title:
-      pre: A better way to
-      accent: go
+      pre: This isn't a mood board. It's a
+      accent: shortlist you can book
       post: .
     background: true
     center: true
-    columns: 4
+    columns: 3
     tiles:
-      - label: Travel More
-        blurb: Start from what you can spend and discover trips you'd never have searched.
+      - label: Real recommendations
+        blurb: Not inspiration — every destination comes with a fit score, a reason why, and an honest trade-off.
         icon: global
-      - label: Stay On Budget
-        blurb: Budget-first means your number drives the matches, not the other way around.
-        icon: wallet-money
-      - label: Discover Hidden Gems
-        blurb: Surface under-the-radar places with better value and fewer crowds.
+      - label: A serious Vibe Engine
+        blurb: Hundreds of travel vibes, tiered and scored under the hood, simple to use on top.
+        icon: compass
+      - label: Global, not a shortlist
+        blurb: We don't limit you to fifty "curated" cities. If it's a real place worth visiting, it's in play.
         icon: map-point-favourite
-      - label: Easy Group Travel
-        blurb: Plan with friends and family in one shared flow with Wander Together.
+      - label: Straight to booking
+        blurb: Once you find it, book flights, hotels, and a rental car right in the app.
+        icon: wallet-money
+      - label: Group-proof
+        blurb: Everyone's vibe and budget, reconciled into one recommendation the whole trip can live with.
         icon: users-group-rounded
+      - label: No pressure, no games
+        blurb: Estimated costs are always labeled as estimates; final pricing is confirmed by our booking partners, plainly disclosed.
+        icon: plane
   - type: collection_grid
     eyebrow: Featured Travel Vibes
     title:
@@ -113,33 +121,30 @@ sections:
     limit: 6
     collection: vibe
   - type: feature_split
-    eyebrow: Wander Together
+    eyebrow: Wander Family Teaser
     title:
-      pre: |-
-        Plan as one.
-        Travel
-      accent: together
+      pre: "Traveling with someone? We'll get you "
+      accent: both to yes
       post: .
-    lede: Group travel starts with chaos. Competing schedules, endless group chats, someone who never books. WhereTo fixes that.
+    lede: Two travelers, one shared vibe. A group of ten, a hundred opinions and a group chat that's gone quiet for three weeks. Wander reconciles everyone's budget, vibe, and calendar into a trip the whole group actually agrees on — no spiral required.
     image:
       src: /media/together.jpg
       alt: Group of friends laughing together at an outdoor table
     id: together
     flip: true
     background: true
-    body: Create a trip, invite your crew, and let everyone weigh in on destinations, dates, and budgets — all in one place. When you're ready, book as a group with a single flow. No spreadsheets. No 47-message threads.
     features:
       - icon: check-circle
         label: Invite your crew to a shared trip
       - icon: check-circle
         label: Everyone sets their own budget & vibe
       - icon: check-circle
-        label: The AI finds where your group overlaps
+        label: The engine finds where your group overlaps
       - icon: check-circle
         label: Vote, decide, and book together
     cta:
-      label: Explore Wander Together
-      href: /wander-together/
+      label: Explore Wander
+      href: /wander/
   - type: chat
     eyebrow: Conversational Search
     title:
