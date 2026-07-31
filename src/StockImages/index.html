@@ -701,17 +701,22 @@ async function saveGallery(d){
   d.status = classify(d.images);
   d.hero = d.images[0] ? (d.images[0].thumb || d.images[0].url) : null;
   var hero = d.images[0] || null;
-  await fetch(_SUPA_URL+'/rest/v1/destination_image_edits?dest_id=eq.'+d.id, {
-    method:'PATCH', headers: Object.assign({'Content-Type':'application/json', Prefer:'return=minimal'}, _H),
-    body: JSON.stringify({ images: d.images }),
+  // Upsert, NOT a plain PATCH — a PATCH silently matches zero rows (no error,
+  // nothing written) for any destination that never had a gallery row before,
+  // which was every "no images yet" destination this tool exists to fill in.
+  var editsRes = await fetch(_SUPA_URL+'/rest/v1/destination_image_edits?on_conflict=dest_id', {
+    method:'POST', headers: Object.assign({'Content-Type':'application/json', Prefer:'resolution=merge-duplicates,return=minimal'}, _H),
+    body: JSON.stringify({ dest_id: d.id, images: d.images }),
   });
-  await fetch(_SUPA_URL+'/rest/v1/destinations?id=eq.'+d.id, {
+  if (!editsRes.ok) { var t=''; try{t=await editsRes.text();}catch(e){} console.error('[saveGallery] destination_image_edits upsert failed', editsRes.status, t); }
+  var destRes = await fetch(_SUPA_URL+'/rest/v1/destinations?id=eq.'+d.id, {
     method:'PATCH', headers: Object.assign({'Content-Type':'application/json', Prefer:'return=minimal'}, _H),
     body: JSON.stringify({
       image_url: hero ? hero.url : null,
       image_attribution: hero ? [hero.photographer, hero.license].filter(Boolean).join(' — ') : null,
     }),
   });
+  if (!destRes.ok) { var t2=''; try{t2=await destRes.text();}catch(e){} console.error('[saveGallery] destinations update failed', destRes.status, t2); }
 }
 
 /* ── Manual upload ── */
