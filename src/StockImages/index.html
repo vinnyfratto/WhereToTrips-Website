@@ -146,6 +146,9 @@
   .img-source-stamp.envato { background:var(--green); }
   .img-source-stamp.other { background:var(--amber); }
   .img-caption { padding:8px 0 0; font-size:11px; color:var(--wg600); }
+  .img-caption a { color:var(--rust); text-decoration:none; font-weight:700; }
+  .img-caption a:hover { text-decoration:underline; }
+  .img-desc { padding:8px 0 0; font-size:12px; font-weight:600; color:var(--navy); line-height:1.4; }
   .gallery-empty { font-size:13px; color:var(--wg500); font-style:italic; padding:8px 0 20px; }
   .img-add-card { display:flex; flex-direction:column; align-items:center; justify-content:center; height:175px; border-radius:var(--r-md); border:2px dashed var(--wg300); background:var(--wg100); cursor:pointer; transition:border-color .14s,background .14s; color:var(--wg400); gap:6px; }
   .img-add-card:hover { border-color:var(--rust); background:#fdf8f6; color:var(--rust); }
@@ -701,6 +704,11 @@ function renderGallery(d){
     var hostedHere = (img.url||'').indexOf(STOCK_MARKER) >= 0;
     var srcLabel = img.source ? (img.source.charAt(0).toUpperCase() + img.source.slice(1)) : (hostedHere ? 'Uploaded' : 'Other');
     var credit = [img.photographer, img.license].filter(Boolean).join(' · ');
+    var titleTxt = (img.title || '').trim();
+    var altTxt = (img.alt || '').trim();
+    var descTxt = titleTxt && altTxt && titleTxt !== altTxt ? (titleTxt + ' — ' + altTxt) : (titleTxt || altTxt);
+    var sourceLink = img.photographer_url || img.license_url
+      ? '<a href="'+esc(img.photographer_url || img.license_url)+'" target="_blank" rel="noopener">View source &#8599;</a>' : '';
     return '<div>'
       + '<div class="img-thumb" draggable="true" data-idx="'+i+'" '
       + 'ondragstart="onDragStart(event)" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)" ondragend="onDragEnd(event)" '
@@ -710,7 +718,9 @@ function renderGallery(d){
       + '<span class="img-source-stamp '+(hostedHere?'envato':'other')+'">'+esc(srcLabel)+'</span>'
       + '<button class="img-trash-btn" onclick="event.stopPropagation(); removeImage('+i+')" title="Remove image">&times;</button>'
       + '</div>'
+      + (descTxt ? '<div class="img-desc">'+esc(descTxt)+'</div>' : '')
       + (credit ? '<div class="img-caption">'+esc(credit)+'</div>' : '')
+      + (sourceLink ? '<div class="img-caption">'+sourceLink+'</div>' : '')
       + '</div>';
   }).join('');
   var addCard = '<div class="img-add-card" onclick="openAddImageModal()">'
@@ -1134,7 +1144,7 @@ async function runFetchForAllInSubregion(){
           var path = d.id + '/fetched-' + safeName;
           var publicUrl = await _authedUploadBucket(path, blob, 'image/jpeg');
           d.images.push({
-            url: publicUrl, thumb: publicUrl, alt: im.alt || (d.city + ' photo'),
+            url: publicUrl, thumb: publicUrl, alt: im.alt || (d.city + ' photo'), title: im.title || '',
             source: im.source || 'fetched', photographer: im.photographer || '', photographer_url: im.photographer_url || '',
             license: im.license || '', license_url: im.license_url || '',
           });
@@ -1210,7 +1220,7 @@ async function confirmReviewSelection(){
       var path = d.id + '/fetched-' + safeName;
       var publicUrl = await _authedUploadBucket(path, blob, 'image/jpeg');
       d.images.push({
-        url: publicUrl, thumb: publicUrl, alt: im.alt || (d.city + ' photo'),
+        url: publicUrl, thumb: publicUrl, alt: im.alt || (d.city + ' photo'), title: im.title || '',
         source: im.source || 'fetched', photographer: im.photographer || '', photographer_url: im.photographer_url || '',
         license: im.license || '', license_url: im.license_url || '',
       });
