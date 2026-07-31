@@ -281,10 +281,13 @@
         <h1 class="section-title" id="grid-title">Loading…</h1>
         <p class="section-sub" id="grid-sub">Fetching destinations from Supabase.</p>
       </div>
-      <div class="legend">
-        <span class="legend-item"><span class="dot envato"></span> Uploaded / self-hosted (Envato, Pexels, Pixabay, Openverse, Wikipedia, manual)</span>
-        <span class="legend-item"><span class="dot other"></span> Has images from elsewhere</span>
-        <span class="legend-item"><span class="dot none"></span> No images yet</span>
+      <div class="curate-btn-col">
+        <button class="curate-btn ghost" id="fetch-all-btn" onclick="runFetchForAllInSubregion()">&#x26A1; Fetch For All (no images)</button>
+        <div class="legend">
+          <span class="legend-item"><span class="dot envato"></span> Uploaded / self-hosted (Envato, Pexels, Pixabay, Openverse, Wikipedia, manual)</span>
+          <span class="legend-item"><span class="dot other"></span> Has images from elsewhere</span>
+          <span class="legend-item"><span class="dot none"></span> No images yet</span>
+        </div>
       </div>
     </div>
     <div class="dgrid" id="dest-grid"></div>
@@ -904,7 +907,7 @@ function _cOpen(title){
 }
 function _cSetStatus(msg, pct){ document.getElementById('curate-progress-status').textContent = msg; if (pct != null) document.getElementById('curate-progress-bar').style.width = pct + '%'; }
 function _cClose(){ document.getElementById('curate-overlay').classList.add('hidden'); }
-function _cSetBtns(busy){ ['ai-curate-btn','fetch-only-btn'].forEach(function(id){ var b = document.getElementById(id); if (b) b.disabled = busy; }); }
+function _cSetBtns(busy){ ['ai-curate-btn','fetch-only-btn','fetch-all-btn'].forEach(function(id){ var b = document.getElementById(id); if (b) b.disabled = busy; }); }
 
 /* ── Review modal — user picks which fetched photos to keep ──────────────── */
 var _reviewPool = [];   // [{url, thumb, alt, source, photographer, photographer_url, license, license_url, _checked, ai}]
@@ -1012,6 +1015,80 @@ async function runFetchOnly(){
     setTimeout(_cClose, 2000);
   }
   _cSetBtns(false);
+}
+
+/* ── Fetch For All (no images) — bulk, unattended version of Fetch only ────
+   For every destination in the current sub-region with status 'none':
+   1. Fetch candidates (same engine as Fetch only).
+   2. Drop any that fail to load (dead/blocked source link).
+   3. Drop any whose title/alt/filename doesn't actually name the destination
+      (guards against generic "beach"/"skyline" stock that isn't this place).
+   4. Resize + upload everything that survives, straight to the gallery —
+      no review modal, since steps 2-3 are the filter. ── */
+async function _isImageReachable(url){
+  try { var r = await fetch(url); return r.ok; } catch (e) { return false; }
+}
+function _matchesDestinationName(img, city){
+  var needle = _norm(city);
+  if (!needle) return true;
+  var haystack = _norm([img.title, img.alt, img.url].filter(Boolean).join(' '));
+  return haystack.indexOf(needle) !== -1;
+}
+async function runFetchForAllInSubregion(){
+  var list = (DATA[currentRegion] && DATA[currentRegion][currentSub]) || [];
+  var targets = list.filter(function(d){ return d.status === 'none'; });
+  if (!targets.length) { alert('Every destination in ' + currentSub + ' already has images.'); return; }
+  if (!confirm('Fetch For All will run unattended for ' + targets.length + ' destination(s) with no images in ' + currentSub + ':\n\n' + targets.map(function(d){ return d.city; }).join(', ') + '\n\nEach photo is auto-checked for a broken link and for actually naming the destination before it\'s uploaded — no review modal. Continue?')) return;
+
+  _cSetBtns(true);
+  _cOpen('Fetch For All — ' + currentSub);
+  var summary = [];
+  for (var t = 0; t < targets.length; t++) {
+    var d = targets[t];
+    var pct = Math.round((t / targets.length) * 100);
+    try {
+      _cSetStatus('(' + (t + 1) + '/' + targets.length + ') ' + d.city + ' — fetching…', pct);
+      var pool = await _sFetchDest(d, _CFG.fetch_max_images);
+
+      _cSetStatus('(' + (t + 1) + '/' + targets.length + ') ' + d.city + ' — checking ' + pool.length + ' link(s)…', pct);
+      var reachable = [];
+      for (var i = 0; i < pool.length; i++) { if (await _isImageReachable(pool[i].url)) reachable.push(pool[i]); }
+
+      var named = reachable.filter(function(im){ return _matchesDestinationName(im, d.city); });
+
+      if (!named.length) {
+        summary.push(d.city + ': 0 kept (found ' + pool.length + ', ' + reachable.length + ' reachable, 0 named the destination)');
+        continue;
+      }
+
+      _cSetStatus('(' + (t + 1) + '/' + targets.length + ') ' + d.city + ' — uploading ' + named.length + '…', pct);
+      var uploaded = 0;
+      for (var j = 0; j < named.length; j++) {
+        var im = named[j];
+        try {
+          var blob = await _resizeToBlob(im.url);
+          var safeName = (d.city + '-' + (im.source || 'fetch') + '-' + Date.now() + '-' + j).toLowerCase().replace(/[^a-z0-9.]+/g, '-') + '.jpg';
+          var path = d.id + '/fetched-' + safeName;
+          var publicUrl = await _authedUploadBucket(path, blob, 'image/jpeg');
+          d.images.push({
+            url: publicUrl, thumb: publicUrl, alt: im.alt || (d.city + ' photo'),
+            source: im.source || 'fetched', photographer: im.photographer || '', photographer_url: im.photographer_url || '',
+            license: im.license || '', license_url: im.license_url || '',
+          });
+          uploaded++;
+        } catch (upErr) { console.error('[fetch-all] upload failed', d.city, im.url, upErr); }
+      }
+      if (uploaded) await saveGallery(d);
+      summary.push(d.city + ': ' + uploaded + ' uploaded (found ' + pool.length + ', ' + reachable.length + ' reachable, ' + named.length + ' named)');
+    } catch (e) {
+      summary.push(d.city + ': error — ' + e.message);
+    }
+  }
+  _cSetStatus('Done — ' + targets.length + ' destination(s) processed.', 100);
+  setTimeout(_cClose, 1500);
+  _cSetBtns(false);
+  showGrid();
+  alert('Fetch For All — ' + currentSub + '\n\n' + summary.join('\n'));
 }
 
 /* ── AI Curate — fetch a wide pool, let Claude vision pre-select the best ── */
