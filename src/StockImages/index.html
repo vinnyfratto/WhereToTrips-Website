@@ -477,39 +477,35 @@ function waitForAuthedClient(){
   });
 }
 
-// Upload straight via fetch with an EXPLICIT Bearer token from the current
-// session, rather than the storage-js SDK's upload() helper — this makes the
-// exact Authorization header sent unambiguous and surfaces the real server
-// error text (not just a generic RLS message) if something is still wrong.
+// Uploads go through the upload-stock-image edge function (service-role key,
+// server-side) instead of hitting Storage directly from the browser — direct
+// browser uploads kept getting denied by a Postgres "row-level security
+// policy" error on storage.objects that persisted even with a maximally
+// permissive public-role policy and a full project restart, while the exact
+// same upload always worked from the Node ingest script (service-role key).
+// This routes through that same proven-working path instead of chasing what
+// looks like a platform-level anomaly. The function re-checks admin
+// membership server-side, so this isn't a security downgrade.
 async function _authedUploadBucket(path, blob, contentType){
   var client = await waitForAuthedClient();
-  // Force a guaranteed-fresh token right before the write. A cached in-memory
-  // token can go stale relative to what Supabase now considers current —
-  // most commonly from another tab of the site rotating the session — which
-  // reads as a generic RLS denial even though the account is a real admin.
-  var { data: refreshed, error: refreshErr } = await client.auth.refreshSession();
-  var sessData = refreshErr ? (await client.auth.getSession()).data : refreshed;
+  var { data: sessData } = await client.auth.getSession();
   var token = sessData && sessData.session && sessData.session.access_token;
-  var uid = sessData && sessData.session && sessData.session.user && sessData.session.user.id;
   if (!token) throw new Error('Not logged in (no active session) — refresh and log in again.');
-  var r = await fetch(_SUPA_URL + '/storage/v1/object/' + BUCKET + '/' + path, {
+
+  var slash = path.indexOf('/');
+  var destId = path.slice(0, slash);
+  var fileName = path.slice(slash + 1);
+
+  var r = await fetch(_SUPA_URL + '/functions/v1/upload-stock-image?destId=' + encodeURIComponent(destId) + '&fileName=' + encodeURIComponent(fileName), {
     method: 'POST',
-    headers: { apikey: _SUPA_ANON, Authorization: 'Bearer ' + token, 'Content-Type': contentType || 'image/jpeg', 'x-upsert': 'true' },
+    headers: { apikey: _SUPA_ANON, Authorization: 'Bearer ' + token, 'Content-Type': contentType || 'image/jpeg' },
     body: blob,
   });
-  if (!r.ok) {
-    var bodyText = ''; try { bodyText = await r.text(); } catch (e) {}
-    // Diagnostic: re-check admin membership with this exact token, right now,
-    // so the error tells us definitively WHY — stale/wrong session vs. a real
-    // policy problem — instead of us guessing again.
-    var diag = ' [uid=' + (uid || 'none') + ']';
-    try {
-      var { data: adm } = await client.from('admins').select('user_id').eq('user_id', uid || '').maybeSingle();
-      diag += adm ? ' [admins: found]' : ' [admins: NOT FOUND for this uid]';
-    } catch (diagErr) { diag += ' [admins check errored: ' + diagErr.message + ']'; }
-    throw new Error('Upload HTTP ' + r.status + (bodyText ? ': ' + bodyText.slice(0, 200) : '') + diag);
+  var data = null; try { data = await r.json(); } catch (e) {}
+  if (!r.ok || !data || !data.ok) {
+    throw new Error('Upload HTTP ' + r.status + (data && data.error ? ': ' + data.error : ''));
   }
-  return _SUPA_URL + '/storage/v1/object/public/' + BUCKET + '/' + path;
+  return data.url;
 }
 
 function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
