@@ -282,7 +282,7 @@
     try {
       const { data: sess } = await supabase.auth.getSession();
       if (!sess.session) {
-        window.location.href = '/account/login/?next=' + encodeURIComponent(window.location.pathname);
+        window.location.href = '/account/login/?next=' + encodeURIComponent(window.location.pathname + window.location.search);
         return;
       }
       const { data: adm } = await supabase.from('admins').select('user_id').eq('user_id', sess.session.user.id).maybeSingle();

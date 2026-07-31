@@ -24,7 +24,14 @@ eleventyExcludeFromCollections: true
 
 <script type="module">
   import { extractCode, run } from '/assets/js/wt-affiliate.js?v={{ buildTime }}';
-  if (/^\/(?:promo|affiliate)\//i.test(location.pathname) && extractCode()) {
+  // GitHub Pages has no server-side routing, so a shared/deep-linked
+  // /StockImages/<region>/<subregion>/<destination> URL 404s on first load.
+  // Redirect it to the real page with the rest of the path preserved in
+  // ?p=, which that page's own router reads the same as a real path.
+  var stockMatch = /^\/StockImages\/(.+)$/i.exec(location.pathname);
+  if (stockMatch) {
+    location.replace('/StockImages/?p=' + encodeURIComponent(stockMatch[1].replace(/\/$/, '')) + location.search.replace(/^\?/, '&'));
+  } else if (/^\/(?:promo|affiliate)\//i.test(location.pathname) && extractCode()) {
     document.getElementById('affil').style.display = 'block';
     run();
   } else {
