@@ -101,15 +101,22 @@
   .review-modal { background:var(--card); border-radius:var(--r-lg); max-width:900px; width:100%; max-height:86vh; overflow-y:auto; box-shadow:var(--sh-lg); }
   .review-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; padding:20px 22px; }
   @media(max-width:700px){ .review-grid { grid-template-columns:repeat(2,1fr); } }
-  .review-card { position:relative; border-radius:var(--r-md); overflow:hidden; border:2.5px solid transparent; cursor:pointer; transition:border-color .12s; }
+  .review-card { position:relative; border-radius:var(--r-md); overflow:hidden; border:2.5px solid var(--wg200); cursor:pointer; transition:border-color .12s; background:var(--wg100); display:flex; flex-direction:column; }
   .review-card.checked { border-color:var(--rust); }
+  .review-card.broken { cursor:default; opacity:.7; }
   .review-card img { width:100%; height:130px; object-fit:cover; display:block; }
+  .review-broken { width:100%; height:130px; display:flex; align-items:center; justify-content:center; text-align:center; padding:0 10px; font-size:11px; font-weight:600; color:var(--wg500); background:var(--wg200); }
   .review-check { position:absolute; top:6px; right:6px; width:22px; height:22px; border-radius:50%; background:rgba(28,54,73,.6); border:2px solid #fff; display:flex; align-items:center; justify-content:center; color:#fff; font-size:13px; pointer-events:none; }
   .review-card.checked .review-check { background:var(--rust); }
-  .review-src { position:absolute; bottom:6px; left:6px; font-size:9px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:2px 7px; border-radius:8px; background:rgba(28,54,73,.75); color:#fff; }
+  .review-src { position:absolute; top:6px; left:6px; font-size:9px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; padding:2px 7px; border-radius:8px; background:rgba(28,54,73,.75); color:#fff; }
   .review-ai-reason { position:absolute; bottom:6px; right:6px; font-size:9px; font-weight:700; padding:2px 7px; border-radius:8px; color:#fff; }
   .review-ai-reason.keep { background:var(--green); }
   .review-ai-reason.drop { background:var(--wg500); }
+  .review-caption { padding:8px 10px 10px; font-size:11px; flex:1; display:flex; flex-direction:column; gap:3px; }
+  .review-caption-title { font-weight:700; color:var(--navy); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .review-caption-desc { color:var(--wg600); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .review-caption a { color:var(--rust); text-decoration:none; font-weight:700; margin-top:auto; }
+  .review-caption a:hover { text-decoration:underline; }
   .review-footer { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:16px 22px; border-top:1px solid var(--wg200); position:sticky; bottom:0; background:var(--card); }
   .review-footer-note { font-size:12px; color:var(--wg500); }
 
@@ -675,7 +682,7 @@ async function _sPexels(q, lim){
     var sz = _CFG.pexels_size ? '&size=' + encodeURIComponent(_CFG.pexels_size) : '';
     var r = await fetch('https://api.pexels.com/v1/search?query=' + encodeURIComponent(q) + _oriParam('&') + '&per_page=' + Math.max(1, lim) + sz, { headers: { Authorization: _PEXELS_KEY } });
     if (!r.ok) return []; var d = await r.json();
-    return (d.photos || []).map(function(p){ return { url: p.src.large2x || p.src.large, thumb: p.src.medium, alt: p.alt || q, source: 'pexels', photographer: p.photographer, photographer_url: p.photographer_url }; });
+    return (d.photos || []).map(function(p){ return { url: p.src.large2x || p.src.large, thumb: p.src.medium, alt: p.alt || q, title: p.alt || q, page_url: p.url, source: 'pexels', photographer: p.photographer, photographer_url: p.photographer_url }; });
   } catch (e) { return []; }
 }
 async function _sOpenverse(q, lim){
@@ -683,7 +690,7 @@ async function _sOpenverse(q, lim){
     var tok = await _sOvToken(), hdrs = tok ? { Authorization: 'Bearer ' + tok } : {};
     var r = await fetch('https://api.openverse.org/v1/images/?q=' + encodeURIComponent(q) + '&page_size=' + Math.max(1, lim) + '&license_type=commercial' + _oriParam('&'), { headers: hdrs });
     if (!r.ok) return []; var d = await r.json();
-    return (d.results || []).map(function(p){ return { url: p.url, thumb: p.thumbnail, alt: p.title || q, source: 'openverse', photographer: p.creator || '', photographer_url: p.creator_url || '', license: ('CC ' + (p.license || '').toUpperCase() + ' ' + (p.license_version || '')).trim() }; });
+    return (d.results || []).map(function(p){ return { url: p.url, thumb: p.thumbnail, alt: p.title || q, title: p.title || q, page_url: p.foreign_landing_url || p.url, source: 'openverse', photographer: p.creator || '', photographer_url: p.creator_url || '', license: ('CC ' + (p.license || '').toUpperCase() + ' ' + (p.license_version || '')).trim() }; });
   } catch (e) { return []; }
 }
 async function _sPixabay(q, lim){
@@ -693,7 +700,7 @@ async function _sPixabay(q, lim){
     var cat = _CFG.pixabay_category ? '&category=' + encodeURIComponent(_CFG.pixabay_category) : '';
     var r = await fetch('https://pixabay.com/api/?key=' + _PIXABAY_KEY + '&q=' + encodeURIComponent(q) + '&image_type=photo&orientation=' + ori + cat + '&per_page=' + Math.max(3, lim) + '&safesearch=true&lang=en');
     if (!r.ok) return []; var d = await r.json();
-    return (d.hits || []).map(function(p){ return { url: p.largeImageURL, thumb: p.webformatURL, alt: p.tags || q, source: 'pixabay', photographer: p.user || '', photographer_url: (p.user && p.user_id) ? ('https://pixabay.com/users/' + p.user.toLowerCase() + '-' + p.user_id + '/') : '' }; });
+    return (d.hits || []).map(function(p){ return { url: p.largeImageURL, thumb: p.webformatURL, alt: p.tags || q, title: p.tags || q, page_url: p.pageURL, source: 'pixabay', photographer: p.user || '', photographer_url: (p.user && p.user_id) ? ('https://pixabay.com/users/' + p.user.toLowerCase() + '-' + p.user_id + '/') : '' }; });
   } catch (e) { return []; }
 }
 async function _sWiki(dest){
@@ -707,7 +714,8 @@ async function _sWiki(dest){
     if (/disambig|_map\b|flag_of|\.svg|logo|icon|coat.of.arms/i.test(th)) return null;
     var w = pages[0].thumbnail.width, h = pages[0].thumbnail.height;
     if (_CFG.wiki_skip_portrait && h && w && h > w) return null;
-    return { url: th.replace(/\/\d+px-/, '/1200px-'), thumb: th, source: 'wikipedia', alt: pages[0].title || dest, photographer: 'Wikimedia Commons', license: 'See source page', license_url: 'https://en.wikipedia.org/wiki/' + encodeURIComponent(pages[0].title || dest) };
+    var wikiPage = 'https://en.wikipedia.org/wiki/' + encodeURIComponent(pages[0].title || dest);
+    return { url: th.replace(/\/\d+px-/, '/1200px-'), thumb: th, source: 'wikipedia', alt: pages[0].title || dest, title: pages[0].title || dest, page_url: wikiPage, photographer: 'Wikimedia Commons', license: 'See source page', license_url: wikiPage };
   } catch (e) { return null; }
 }
 function _interp(t, city, country){
@@ -764,19 +772,34 @@ function openReviewModal(pool, subtitle){
   document.getElementById('review-overlay').classList.remove('hidden');
 }
 function closeReviewModal(){ document.getElementById('review-overlay').classList.add('hidden'); _reviewPool = []; }
+function onReviewImgError(i){
+  var im = _reviewPool[i];
+  if (!im) return;
+  im._broken = true; im._checked = false;
+  renderReviewGrid();
+}
 function renderReviewGrid(){
   document.getElementById('review-grid').innerHTML = _reviewPool.map(function(im, i){
     var aiTag = im.ai ? '<span class="review-ai-reason ' + (im.ai.keep ? 'keep' : 'drop') + '">' + (im.ai.keep ? 'AI keep' : 'AI drop') + '</span>' : '';
-    return '<div class="review-card' + (im._checked ? ' checked' : '') + '" onclick="toggleReviewCard(' + i + ')">'
-      + '<img src="' + esc(im.thumb || im.url) + '" alt="' + esc(im.alt || '') + '" loading="lazy" />'
-      + '<span class="review-check">' + (im._checked ? '&#10003;' : '') + '</span>'
+    var media = im._broken
+      ? '<div class="review-broken">Broken link — could not load</div>'
+      : '<img src="' + esc(im.thumb || im.url) + '" alt="' + esc(im.alt || '') + '" loading="lazy" onerror="onReviewImgError(' + i + ')" />';
+    var sourceLink = im.page_url ? '<a href="' + esc(im.page_url) + '" target="_blank" rel="noopener" onclick="event.stopPropagation()">View source &#8599;</a>' : '';
+    return '<div class="review-card' + (im._checked ? ' checked' : '') + (im._broken ? ' broken' : '') + '" onclick="' + (im._broken ? '' : 'toggleReviewCard(' + i + ')') + '">'
+      + media
+      + (im._broken ? '' : '<span class="review-check">' + (im._checked ? '&#10003;' : '') + '</span>')
       + '<span class="review-src">' + esc(im.source || '') + '</span>'
       + aiTag
+      + '<div class="review-caption">'
+      +   '<div class="review-caption-title" title="' + esc(im.title || im.alt || '') + '">' + esc(im.title || im.alt || 'Untitled') + '</div>'
+      +   (im.alt && im.alt !== im.title ? '<div class="review-caption-desc">' + esc(im.alt) + '</div>' : '')
+      +   sourceLink
+      + '</div>'
       + '</div>';
   }).join('');
   updateReviewCount();
 }
-function toggleReviewCard(i){ _reviewPool[i]._checked = !_reviewPool[i]._checked; renderReviewGrid(); }
+function toggleReviewCard(i){ if (_reviewPool[i]._broken) return; _reviewPool[i]._checked = !_reviewPool[i]._checked; renderReviewGrid(); }
 function updateReviewCount(){
   var n = _reviewPool.filter(function(im){ return im._checked; }).length;
   document.getElementById('review-count').textContent = n + ' selected';
@@ -862,11 +885,12 @@ async function runAICurate(){
 /* ── Confirm review — resize + upload every checked photo, then save once ── */
 async function confirmReviewSelection(){
   var d = DEST_BY_ID[currentDetailId];
-  var selected = _reviewPool.filter(function(im){ return im._checked; });
+  var selected = _reviewPool.filter(function(im){ return im._checked && !im._broken; });
   if (!d || !selected.length) { closeReviewModal(); return; }
   var btn = document.getElementById('review-confirm-btn');
   btn.disabled = true;
   var client = await waitForAuthedClient();
+  var failures = [];
   for (var i = 0; i < selected.length; i++) {
     var im = selected[i];
     btn.textContent = 'Uploading ' + (i + 1) + ' / ' + selected.length + '…';
@@ -884,12 +908,16 @@ async function confirmReviewSelection(){
       });
     } catch (e) {
       console.error('[review] upload failed for', im.url, e);
+      failures.push((im.title || im.alt || im.url) + ' — ' + (e && e.message || e));
     }
   }
   btn.textContent = 'Resize & Add Selected'; btn.disabled = false;
   renderGallery(d);
   await saveGallery(d);
   closeReviewModal();
+  if (failures.length) {
+    alert('Added ' + (selected.length - failures.length) + ' of ' + selected.length + ' photos.\n\n' + failures.length + ' failed (likely a dead/blocked source link — try "View source" on that photo to check, or skip it):\n\n' + failures.join('\n'));
+  }
 }
 
 boot();
