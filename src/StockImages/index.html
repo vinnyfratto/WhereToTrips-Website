@@ -303,7 +303,10 @@ function resolveEngine(d){
   if (byIata) return byIata;
   var byName = ENGINE_BY_NAME[_norm(d.city)+'|'+_norm(d.country)];
   if (byName) return byName;
-  return { region: CODE_REGION[d.region] || 'Other', subregion: d.subregion || 'other' };
+  // Not covered by any Vibe Engine ranking file yet — a real content gap, not a
+  // duplicate sub-region. Group these separately so they never look like a
+  // second copy of a real sub-region name (e.g. "mediterranean" next to "Mediterranean").
+  return { region: CODE_REGION[d.region] || 'Other', subregion: '⚠ Not yet in Vibe Engine' };
 }
 
 function classify(images){
