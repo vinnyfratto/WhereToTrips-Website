@@ -181,6 +181,9 @@
         msg.innerHTML = 'You don\'t have access to this page.<br/><br/><a href="/" style="color:#B85C38;font-weight:600">Return home</a>';
         return;
       }
+      window.__wtSupabase = supabase;
+      window.__wtAdminUser = sess.session.user;
+      document.dispatchEvent(new CustomEvent('wt-admin-ready'));
       overlay.remove();
     } catch (e) {
       msg.textContent = 'Could not verify access — please refresh.';
