@@ -244,6 +244,11 @@
     </div>
     <div class="modal-body">
       <div class="add-img-field">
+        <label>Image URL <span style="font-weight:400;text-transform:none">(or leave blank to upload a file below)</span></label>
+        <input type="url" id="add-img-url" placeholder="https://..." oninput="onAddImgUrlInput()" />
+      </div>
+      <img id="add-img-preview" src="" alt="" style="width:100%;height:130px;object-fit:cover;border-radius:var(--r-sm);margin-bottom:12px;display:none" />
+      <div class="add-img-field">
         <label>Photographer / Source</label>
         <input type="text" id="add-img-photographer" placeholder="e.g. Jane Doe, Envato Elements" />
       </div>
@@ -252,6 +257,7 @@
         <input type="text" id="add-img-license" placeholder="e.g. Envato Elements license" />
       </div>
       <button class="add-img-submit" id="add-img-submit-btn" onclick="submitUpload()">Upload &amp; Add to Gallery</button>
+      <div id="add-img-hint" style="font-size:11px;color:var(--wg500);margin-top:8px">With a URL filled in, that image is fetched and uploaded into our bucket (not linked externally). Leave it blank and click the button to pick a file from your computer instead.</div>
     </div>
   </div>
 </div>
@@ -478,35 +484,75 @@ function closeAddImageModal(){
   document.getElementById('add-img-overlay').classList.add('hidden');
   document.getElementById('add-img-photographer').value = '';
   document.getElementById('add-img-license').value = '';
+  document.getElementById('add-img-url').value = '';
+  var p = document.getElementById('add-img-preview'); p.style.display = 'none'; p.src = '';
+}
+function onAddImgUrlInput(){
+  var url = document.getElementById('add-img-url').value.trim();
+  var p = document.getElementById('add-img-preview');
+  if (!url) { p.style.display = 'none'; return; }
+  p.src = url; p.style.display = 'block';
+  p.onerror = function(){ p.style.display = 'none'; };
+}
+async function _uploadBlobToBucket(blob, contentType, fileNameHint){
+  var client = await waitForAuthedClient();
+  var d = DEST_BY_ID[currentDetailId];
+  var safeName = (fileNameHint || 'image').toLowerCase().replace(/[^a-z0-9.]+/g, '-');
+  var path = d.id + '/manual-' + Date.now() + '-' + safeName;
+  var { error: upErr } = await client.storage.from(BUCKET).upload(path, blob, { contentType: contentType || blob.type || 'image/jpeg', upsert: true });
+  if (upErr) throw upErr;
+  var { data: pub } = client.storage.from(BUCKET).getPublicUrl(path);
+  return pub.publicUrl;
+}
+async function _finishAddImage(publicUrl){
+  var d = DEST_BY_ID[currentDetailId];
+  var photographer = document.getElementById('add-img-photographer').value.trim();
+  var license = document.getElementById('add-img-license').value.trim();
+  d.images.push({
+    url: publicUrl, thumb: publicUrl,
+    alt: d.city + ' photo', source: 'manual',
+    photographer: photographer, photographer_url: '',
+    license: license, license_url: '',
+  });
+  renderGallery(d);
+  await saveGallery(d);
 }
 async function submitUpload(){
+  var btn = document.getElementById('add-img-submit-btn');
+  var status = document.getElementById('upload-status');
+  var url = document.getElementById('add-img-url').value.trim();
+
+  if (url) {
+    btn.disabled = true;
+    status.textContent = 'Fetching image…';
+    try {
+      var res = await fetch(url);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      var blob = await res.blob();
+      status.textContent = 'Uploading…';
+      var fileName = url.split('?')[0].split('/').pop() || 'image.jpg';
+      var publicUrl = await _uploadBlobToBucket(blob, blob.type, fileName);
+      await _finishAddImage(publicUrl);
+      status.textContent = 'Uploaded.';
+      closeAddImageModal();
+    } catch (err) {
+      status.textContent = 'Could not fetch that URL (likely blocked by CORS) — try downloading it and using the file picker instead.';
+    } finally {
+      btn.disabled = false;
+    }
+    return;
+  }
+
   var fileInput = document.getElementById('file-input');
   fileInput.value = '';
   fileInput.onchange = async function(){
     var file = fileInput.files[0];
     if (!file) return;
-    var btn = document.getElementById('add-img-submit-btn');
-    var status = document.getElementById('upload-status');
     btn.disabled = true;
     status.textContent = 'Uploading…';
     try {
-      var client = await waitForAuthedClient();
-      var d = DEST_BY_ID[currentDetailId];
-      var safeName = file.name.toLowerCase().replace(/[^a-z0-9.]+/g, '-');
-      var path = d.id + '/manual-' + Date.now() + '-' + safeName;
-      var { error: upErr } = await client.storage.from(BUCKET).upload(path, file, { contentType: file.type, upsert: true });
-      if (upErr) throw upErr;
-      var { data: pub } = client.storage.from(BUCKET).getPublicUrl(path);
-      var photographer = document.getElementById('add-img-photographer').value.trim();
-      var license = document.getElementById('add-img-license').value.trim();
-      d.images.push({
-        url: pub.publicUrl, thumb: pub.publicUrl,
-        alt: d.city + ' photo', source: 'manual',
-        photographer: photographer, photographer_url: '',
-        license: license, license_url: '',
-      });
-      renderGallery(d);
-      await saveGallery(d);
+      var publicUrl = await _uploadBlobToBucket(file, file.type, file.name);
+      await _finishAddImage(publicUrl);
       status.textContent = 'Uploaded.';
       closeAddImageModal();
     } catch (err) {
