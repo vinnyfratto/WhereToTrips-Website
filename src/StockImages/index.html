@@ -478,10 +478,15 @@ function waitForAuthedClient(){
 // error text (not just a generic RLS message) if something is still wrong.
 async function _authedUploadBucket(path, blob, contentType){
   var client = await waitForAuthedClient();
-  var { data: sessData, error: sessErr } = await client.auth.getSession();
+  // Force a guaranteed-fresh token right before the write. A cached in-memory
+  // token can go stale relative to what Supabase now considers current —
+  // most commonly from another tab of the site rotating the session — which
+  // reads as a generic RLS denial even though the account is a real admin.
+  var { data: refreshed, error: refreshErr } = await client.auth.refreshSession();
+  var sessData = refreshErr ? (await client.auth.getSession()).data : refreshed;
   var token = sessData && sessData.session && sessData.session.access_token;
   var uid = sessData && sessData.session && sessData.session.user && sessData.session.user.id;
-  if (sessErr || !token) throw new Error('Not logged in (no active session) — refresh and log in again.');
+  if (!token) throw new Error('Not logged in (no active session) — refresh and log in again.');
   var r = await fetch(_SUPA_URL + '/storage/v1/object/' + BUCKET + '/' + path, {
     method: 'POST',
     headers: { apikey: _SUPA_ANON, Authorization: 'Bearer ' + token, 'Content-Type': contentType || 'image/jpeg', 'x-upsert': 'true' },
