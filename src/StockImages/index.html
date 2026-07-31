@@ -257,8 +257,8 @@
   <span class="sr-arrow">&rsaquo;</span>
   <select class="sr-select" id="status-select" onchange="onStatusChange()">
     <option value="all">All destinations</option>
-    <option value="envato">Uploaded (Envato)</option>
-    <option value="other">Has images, not Envato</option>
+    <option value="envato">Uploaded (self-hosted)</option>
+    <option value="other">Has images, not uploaded</option>
     <option value="none">No images</option>
   </select>
 </div>
@@ -280,7 +280,7 @@
         <p class="section-sub" id="grid-sub">Fetching destinations from Supabase.</p>
       </div>
       <div class="legend">
-        <span class="legend-item"><span class="dot envato"></span> Uploaded via Envato ingest</span>
+        <span class="legend-item"><span class="dot envato"></span> Uploaded / self-hosted (Envato, Pexels, Pixabay, Openverse, Wikipedia, manual)</span>
         <span class="legend-item"><span class="dot other"></span> Has images from elsewhere</span>
         <span class="legend-item"><span class="dot none"></span> No images yet</span>
       </div>
@@ -601,7 +601,7 @@ function showGrid(){
   document.getElementById('bc-region').textContent = currentRegion || '';
   document.getElementById('bc-subregion').textContent = currentSub || '';
   var envatoCount = list.filter(function(d){ return d.status === 'envato'; }).length;
-  document.getElementById('bc-aside').innerHTML = list.length + ' destinations · <b>' + envatoCount + '</b> uploaded via Envato';
+  document.getElementById('bc-aside').innerHTML = list.length + ' destinations · <b>' + envatoCount + '</b> uploaded / self-hosted';
 
   document.getElementById('grid-title').textContent = currentSub || '';
   document.getElementById('grid-sub').textContent = filtered.length + ' shown (filter: ' + currentStatus + ')';
@@ -609,7 +609,7 @@ function showGrid(){
   document.getElementById('dest-grid').innerHTML = filtered.map(function(d){
     var thumbStyle = d.hero ? 'background-image:url(\''+esc(d.hero)+'\')' : '';
     var badgeCls = d.status;
-    var badgeLabel = d.status === 'envato' ? 'Envato' : (d.status === 'other' ? 'Other' : 'None');
+    var badgeLabel = d.status === 'envato' ? 'Uploaded' : (d.status === 'other' ? 'Other' : 'None');
     return '<div class="dcard" onclick="openDetail(\''+d.id+'\')">'
       + '<div class="dcard-thumb'+(d.hero?'':' empty')+'" style="'+thumbStyle+'">'
       + (d.hero ? '' : '<span class="dcard-none">No Image</span>')
@@ -635,8 +635,8 @@ function openDetail(id){
 
 function renderGallery(d){
   var thumbs = d.images.map(function(img, i){
-    var isEnvato = (img.url||'').indexOf(STOCK_MARKER) >= 0;
-    var srcLabel = isEnvato ? 'Envato' : (img.source || 'other');
+    var hostedHere = (img.url||'').indexOf(STOCK_MARKER) >= 0;
+    var srcLabel = img.source ? (img.source.charAt(0).toUpperCase() + img.source.slice(1)) : (hostedHere ? 'Uploaded' : 'Other');
     var credit = [img.photographer, img.license].filter(Boolean).join(' · ');
     return '<div>'
       + '<div class="img-thumb" draggable="true" data-idx="'+i+'" '
@@ -644,7 +644,7 @@ function renderGallery(d){
       + 'onclick="openLightbox(\''+esc(img.url)+'\')">'
       + '<img src="'+esc(img.thumb||img.url)+'" alt="'+esc(img.alt||'')+'" loading="lazy" />'
       + (i===0 ? '<span class="img-hero-badge">Hero</span>' : '')
-      + '<span class="img-source-stamp '+(isEnvato?'envato':'other')+'">'+esc(srcLabel)+'</span>'
+      + '<span class="img-source-stamp '+(hostedHere?'envato':'other')+'">'+esc(srcLabel)+'</span>'
       + '</div>'
       + (credit ? '<div class="img-caption">'+esc(credit)+'</div>' : '')
       + '</div>';
