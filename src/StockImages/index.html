@@ -139,6 +139,8 @@
   .img-thumb img { width:100%; height:100%; object-fit:cover; display:block; pointer-events:none; }
   .img-thumb.drag-over { outline:2.5px dashed var(--rust); outline-offset:-3px; }
   .img-thumb.dragging { opacity:.4; }
+  .img-trash-btn { position:absolute; top:7px; right:7px; width:28px; height:28px; border-radius:50%; background:rgba(180,30,30,.82); backdrop-filter:blur(3px); border:none; cursor:pointer; color:#fff; font-size:14px; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .14s; z-index:10; pointer-events:auto; }
+  .img-thumb:hover .img-trash-btn { opacity:1; }
   .img-hero-badge { position:absolute; top:8px; left:8px; background:var(--navy); color:var(--cream); font-size:9px; font-weight:700; letter-spacing:1.3px; text-transform:uppercase; padding:3px 8px; border-radius:10px; pointer-events:none; }
   .img-source-stamp { position:absolute; bottom:8px; left:8px; font-size:9px; font-weight:700; letter-spacing:1.3px; text-transform:uppercase; padding:3px 8px; border-radius:10px; pointer-events:none; white-space:nowrap; color:#fff; }
   .img-source-stamp.envato { background:var(--green); }
@@ -645,6 +647,7 @@ function renderGallery(d){
       + '<img src="'+esc(img.thumb||img.url)+'" alt="'+esc(img.alt||'')+'" loading="lazy" />'
       + (i===0 ? '<span class="img-hero-badge">Hero</span>' : '')
       + '<span class="img-source-stamp '+(hostedHere?'envato':'other')+'">'+esc(srcLabel)+'</span>'
+      + '<button class="img-trash-btn" onclick="event.stopPropagation(); removeImage('+i+')" title="Remove image">&times;</button>'
       + '</div>'
       + (credit ? '<div class="img-caption">'+esc(credit)+'</div>' : '')
       + '</div>';
@@ -652,6 +655,20 @@ function renderGallery(d){
   var addCard = '<div class="img-add-card" onclick="openAddImageModal()">'
     + '<span class="img-add-icon">+</span><span class="img-add-label">Upload Image</span></div>';
   document.getElementById('gallery').innerHTML = (thumbs || '<div class="gallery-empty">No images for this destination yet.</div>') + addCard;
+}
+
+/* ── Remove an image — drops it from the gallery (and hero if it was #1) ──
+   Only removes the destination_image_edits reference; the underlying file
+   is left in the bucket (no client-side Storage delete — this tool's uploads
+   already went through enough RLS pain; an orphaned file costs nothing and
+   isn't referenced or served anywhere once removed here). ── */
+async function removeImage(i){
+  var d = DEST_BY_ID[currentDetailId];
+  if (!d || !d.images[i]) return;
+  if (!confirm('Remove this image from the gallery?' + (i === 0 ? ' It is the current hero — the next image becomes the new hero.' : ''))) return;
+  d.images.splice(i, 1);
+  renderGallery(d);
+  await saveGallery(d);
 }
 
 /* ── Drag-to-reorder — dropped position becomes the new order; index 0 is always the hero ── */
