@@ -203,6 +203,32 @@
 </style>
 </head>
 <body>
+<div id="admin-gate-overlay" style="position:fixed;inset:0;z-index:99999;background:#1C3649;color:#F0EBE0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;font-family:system-ui,sans-serif;text-align:center;padding:24px;">
+  <div id="admin-gate-msg" style="font-size:15px;">Checking access&hellip;</div>
+</div>
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+  const supabase = createClient("https://pvqwxphrmcvmztlkzhsg.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2cXd4cGhybWN2bXp0bGt6aHNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzIxMjIsImV4cCI6MjA5NTMwODEyMn0.uz1WFZqymop5mhIUx6bxW8qofMQuGo-ltyRA8f0P1lk", { auth: { persistSession: true, autoRefreshToken: true } });
+  const overlay = document.getElementById('admin-gate-overlay');
+  const msg = document.getElementById('admin-gate-msg');
+  (async () => {
+    try {
+      const { data: sess } = await supabase.auth.getSession();
+      if (!sess.session) {
+        window.location.href = '/account/login/?next=' + encodeURIComponent(window.location.pathname);
+        return;
+      }
+      const { data: adm } = await supabase.from('admins').select('user_id').eq('user_id', sess.session.user.id).maybeSingle();
+      if (!adm) {
+        msg.innerHTML = 'You don\'t have access to this page.<br/><br/><a href="/" style="color:#B85C38;font-weight:600">Return home</a>';
+        return;
+      }
+      overlay.remove();
+    } catch (e) {
+      msg.textContent = 'Could not verify access — please refresh.';
+    }
+  })();
+</script>
 
 <header class="hdr">
   <div class="hdr-left">
