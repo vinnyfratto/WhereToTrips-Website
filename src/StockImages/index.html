@@ -480,6 +480,7 @@ async function _authedUploadBucket(path, blob, contentType){
   var client = await waitForAuthedClient();
   var { data: sessData, error: sessErr } = await client.auth.getSession();
   var token = sessData && sessData.session && sessData.session.access_token;
+  var uid = sessData && sessData.session && sessData.session.user && sessData.session.user.id;
   if (sessErr || !token) throw new Error('Not logged in (no active session) — refresh and log in again.');
   var r = await fetch(_SUPA_URL + '/storage/v1/object/' + BUCKET + '/' + path, {
     method: 'POST',
@@ -488,7 +489,15 @@ async function _authedUploadBucket(path, blob, contentType){
   });
   if (!r.ok) {
     var bodyText = ''; try { bodyText = await r.text(); } catch (e) {}
-    throw new Error('Upload HTTP ' + r.status + (bodyText ? ': ' + bodyText.slice(0, 200) : ''));
+    // Diagnostic: re-check admin membership with this exact token, right now,
+    // so the error tells us definitively WHY — stale/wrong session vs. a real
+    // policy problem — instead of us guessing again.
+    var diag = ' [uid=' + (uid || 'none') + ']';
+    try {
+      var { data: adm } = await client.from('admins').select('user_id').eq('user_id', uid || '').maybeSingle();
+      diag += adm ? ' [admins: found]' : ' [admins: NOT FOUND for this uid]';
+    } catch (diagErr) { diag += ' [admins check errored: ' + diagErr.message + ']'; }
+    throw new Error('Upload HTTP ' + r.status + (bodyText ? ': ' + bodyText.slice(0, 200) : '') + diag);
   }
   return _SUPA_URL + '/storage/v1/object/public/' + BUCKET + '/' + path;
 }
