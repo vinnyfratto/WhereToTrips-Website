@@ -240,6 +240,8 @@ async function initProfile() {
       if (subLink) subLink.style.display = 'inline-block';
       const analyticsLink = document.getElementById('wt-analytics-admin-link');
       if (analyticsLink) analyticsLink.style.display = 'inline-block';
+      const imageCurationLink = document.getElementById('wt-image-curation-admin-link');
+      if (imageCurationLink) imageCurationLink.style.display = 'inline-block';
     }
   } catch (_e) { /* not an admin */ }
 }
