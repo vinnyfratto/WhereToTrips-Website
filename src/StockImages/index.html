@@ -472,6 +472,27 @@ function waitForAuthedClient(){
   });
 }
 
+// Upload straight via fetch with an EXPLICIT Bearer token from the current
+// session, rather than the storage-js SDK's upload() helper — this makes the
+// exact Authorization header sent unambiguous and surfaces the real server
+// error text (not just a generic RLS message) if something is still wrong.
+async function _authedUploadBucket(path, blob, contentType){
+  var client = await waitForAuthedClient();
+  var { data: sessData, error: sessErr } = await client.auth.getSession();
+  var token = sessData && sessData.session && sessData.session.access_token;
+  if (sessErr || !token) throw new Error('Not logged in (no active session) — refresh and log in again.');
+  var r = await fetch(_SUPA_URL + '/storage/v1/object/' + BUCKET + '/' + path, {
+    method: 'POST',
+    headers: { apikey: _SUPA_ANON, Authorization: 'Bearer ' + token, 'Content-Type': contentType || 'image/jpeg', 'x-upsert': 'true' },
+    body: blob,
+  });
+  if (!r.ok) {
+    var bodyText = ''; try { bodyText = await r.text(); } catch (e) {}
+    throw new Error('Upload HTTP ' + r.status + (bodyText ? ': ' + bodyText.slice(0, 200) : ''));
+  }
+  return _SUPA_URL + '/storage/v1/object/public/' + BUCKET + '/' + path;
+}
+
 function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function _norm(s){ return String(s==null?'':s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim(); }
 
@@ -675,14 +696,10 @@ function onAddImgUrlInput(){
   p.onerror = function(){ p.style.display = 'none'; };
 }
 async function _uploadBlobToBucket(blob, contentType, fileNameHint){
-  var client = await waitForAuthedClient();
   var d = DEST_BY_ID[currentDetailId];
   var safeName = (fileNameHint || 'image').toLowerCase().replace(/[^a-z0-9.]+/g, '-');
   var path = d.id + '/manual-' + Date.now() + '-' + safeName;
-  var { error: upErr } = await client.storage.from(BUCKET).upload(path, blob, { contentType: contentType || blob.type || 'image/jpeg', upsert: true });
-  if (upErr) throw upErr;
-  var { data: pub } = client.storage.from(BUCKET).getPublicUrl(path);
-  return pub.publicUrl;
+  return _authedUploadBucket(path, blob, contentType || blob.type || 'image/jpeg');
 }
 async function _finishAddImage(publicUrl){
   var d = DEST_BY_ID[currentDetailId];
@@ -983,7 +1000,6 @@ async function confirmReviewSelection(){
   if (!d || !selected.length) { closeReviewModal(); return; }
   var btn = document.getElementById('review-confirm-btn');
   btn.disabled = true;
-  var client = await waitForAuthedClient();
   var failures = [];
   for (var i = 0; i < selected.length; i++) {
     var im = selected[i];
@@ -992,11 +1008,9 @@ async function confirmReviewSelection(){
       var blob = await _resizeToBlob(im.url);
       var safeName = (d.city + '-' + im.source + '-' + Date.now() + '-' + i).toLowerCase().replace(/[^a-z0-9.]+/g, '-') + '.jpg';
       var path = d.id + '/fetched-' + safeName;
-      var upRes = await client.storage.from(BUCKET).upload(path, blob, { contentType: 'image/jpeg', upsert: true });
-      if (upRes.error) throw upRes.error;
-      var pub = client.storage.from(BUCKET).getPublicUrl(path).data;
+      var publicUrl = await _authedUploadBucket(path, blob, 'image/jpeg');
       d.images.push({
-        url: pub.publicUrl, thumb: pub.publicUrl, alt: im.alt || (d.city + ' photo'),
+        url: publicUrl, thumb: publicUrl, alt: im.alt || (d.city + ' photo'),
         source: im.source || 'fetched', photographer: im.photographer || '', photographer_url: im.photographer_url || '',
         license: im.license || '', license_url: im.license_url || '',
       });
