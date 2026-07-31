@@ -878,7 +878,9 @@ function _cSetBtns(busy){ ['ai-curate-btn','fetch-only-btn'].forEach(function(id
 var _reviewPool = [];   // [{url, thumb, alt, source, photographer, photographer_url, license, license_url, _checked, ai}]
 function openReviewModal(pool, subtitle){
   _reviewPool = pool;
-  document.getElementById('review-sub').textContent = subtitle || (pool.length + ' photos found');
+  var d = DEST_BY_ID[currentDetailId];
+  var loc = d ? ('&#128205; Searched for ' + esc(d.city) + ', ' + esc(d.country) + ' — none of these sources expose verified per-photo location, so double-check with "View source" if unsure.') : '';
+  document.getElementById('review-sub').innerHTML = esc(subtitle || (pool.length + ' photos found')) + (loc ? '<br/>' + loc : '');
   renderReviewGrid();
   document.getElementById('review-overlay').classList.remove('hidden');
 }
