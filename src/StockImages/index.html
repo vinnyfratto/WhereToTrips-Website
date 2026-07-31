@@ -150,6 +150,39 @@
   #lightbox img { max-width:90vw; max-height:88vh; object-fit:contain; border-radius:var(--r-md); box-shadow:0 32px 80px rgba(0,0,0,.6); pointer-events:none; }
   .lb-close { position:absolute; top:14px; right:14px; background:rgba(255,255,255,.12); border:none; cursor:pointer; color:#fff; font-size:22px; width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
 
+  .hdr-gear { background:rgba(255,255,255,.14); border:none; color:var(--cream); cursor:pointer; font-size:15px; width:34px; height:34px; border-radius:8px; display:flex; align-items:center; justify-content:center; }
+  .hdr-gear:hover { background:rgba(255,255,255,.26); }
+  .set-section-title { font-size:11px; font-weight:800; letter-spacing:1.4px; text-transform:uppercase; color:var(--rust); margin:18px 0 10px; }
+  .set-section-title:first-child { margin-top:0; }
+  .set-head { display:flex; gap:6px; align-items:center; margin-bottom:5px; padding:0 1px; }
+  .set-head span { font-size:9px; font-weight:700; letter-spacing:.8px; text-transform:uppercase; color:var(--wg400); }
+  .set-head .sh-src { flex:0 0 108px; }
+  .set-head .sh-q { flex:1; }
+  .set-head .sh-l { flex:0 0 50px; }
+  .set-head .sh-actions { flex:0 0 96px; }
+  .set-step { display:flex; gap:6px; align-items:center; margin-bottom:6px; }
+  .set-step select { flex:0 0 108px; }
+  .set-step .sq { flex:1; min-width:0; }
+  .set-step .sl { flex:0 0 50px; }
+  .set-step select, .set-step input { padding:6px 8px; border:1.5px solid var(--wg200); border-radius:6px; font-family:var(--sans); font-size:12px; color:var(--navy); background:var(--cream); }
+  .set-step button { flex:0 0 28px; height:30px; border:1.5px solid var(--wg200); background:var(--card); border-radius:6px; cursor:pointer; color:var(--wg600); font-size:12px; padding:0; }
+  .set-step button:hover { background:var(--wg100); }
+  .set-add { margin:2px 0 14px; font-size:11px; font-weight:700; letter-spacing:.5px; padding:7px 12px; border:1.5px dashed var(--wg300); background:var(--wg100); color:var(--rust); border-radius:6px; cursor:pointer; }
+  .set-add:hover { border-color:var(--rust); }
+  .set-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:14px 0 10px; }
+  .set-fld label { font-size:10px; font-weight:700; letter-spacing:.7px; text-transform:uppercase; color:var(--wg500); display:block; margin-bottom:3px; }
+  .set-fld input, .set-fld select { width:100%; padding:6px 8px; border:1.5px solid var(--wg200); border-radius:6px; font-size:12px; color:var(--navy); background:var(--cream); font-family:var(--sans); }
+  .set-fld.chk { display:flex; align-items:center; gap:7px; align-self:end; padding-bottom:6px; }
+  .set-fld.chk input { width:auto; }
+  .set-fld.chk label { margin:0; text-transform:none; letter-spacing:0; font-size:12px; font-weight:600; color:var(--navy); }
+  .set-actions { display:flex; justify-content:space-between; margin-top:16px; gap:10px; }
+  .set-actions button { font-size:12px; font-weight:700; padding:8px 16px; border-radius:8px; cursor:pointer; font-family:var(--sans); }
+  .set-reset, .set-cancel { border:1.5px solid var(--wg300); background:var(--card); color:var(--wg600); }
+  .set-reset:hover, .set-cancel:hover { background:var(--wg100); }
+  .set-save { border:none; background:var(--rust); color:#fff; }
+  .set-save:hover { opacity:.88; }
+  #set-status { font-size:11px; color:var(--rust); min-height:16px; margin-top:8px; }
+
   .overlay { position:fixed; inset:0; z-index:300; background:rgba(28,54,73,.55); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; padding:20px; }
   .modal { background:var(--card); border-radius:var(--r-lg); max-width:420px; width:100%; box-shadow:var(--sh-lg); }
   .modal-head { background:var(--navy); padding:16px 20px; border-radius:var(--r-lg) var(--r-lg) 0 0; display:flex; align-items:center; justify-content:space-between; }
@@ -207,6 +240,7 @@
     </nav>
   </div>
   <div class="hdr-right">
+    <button class="hdr-gear" onclick="openSettings()" title="Fetch &amp; AI curation settings">&#9881;</button>
     <span class="hdr-badge">Internal</span>
   </div>
 </header>
@@ -305,6 +339,49 @@
   </div>
 </div>
 
+<div id="settings-overlay" class="overlay hidden">
+  <div class="modal" role="dialog" aria-modal="true" onclick="event.stopPropagation()" style="max-width:640px">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title">Fetch &amp; AI Curation Settings</div>
+        <div class="modal-sub">Saved to this browser — applies to Fetch only and AI Curate</div>
+      </div>
+      <button class="modal-close" onclick="closeSettings()" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="set-section-title">Fetch Settings</div>
+      <div class="set-head"><span class="sh-src">Source</span><span class="sh-q">Query</span><span class="sh-l">Limit</span><span class="sh-actions"></span></div>
+      <div id="set-steps"></div>
+      <button class="set-add" onclick="settingsAddStep()">+ Add step</button>
+      <div style="font-size:10px;color:var(--wg500);margin:-6px 0 12px;line-height:1.5">Tokens: <b>{city}</b>, <b>{country}</b>. Blank or unknown tokens are dropped automatically.</div>
+      <div class="set-grid">
+        <div class="set-fld"><label>Max images shown (Fetch only)</label><input id="set-max" type="number" min="1" max="24" /></div>
+        <div class="set-fld"><label>Delay between calls (ms)</label><input id="set-delay" type="number" min="0" max="2000" /></div>
+        <div class="set-fld"><label>Orientation</label><select id="set-ori"><option value="landscape">landscape</option><option value="portrait">portrait</option><option value="square">square</option><option value="any">any</option></select></div>
+        <div class="set-fld"><label>Pexels size</label><select id="set-psize"><option value="large2x">large2x</option><option value="large">large</option><option value="medium">medium</option><option value="small">small</option><option value="">(default)</option></select></div>
+        <div class="set-fld"><label>Pixabay category</label><input id="set-pcat" type="text" placeholder="places, travel, buildings…" /></div>
+        <div class="set-fld chk"><input id="set-wiki" type="checkbox" /><label for="set-wiki">Skip Wikipedia portrait images</label></div>
+      </div>
+      <div class="set-fld"><label>Block terms &mdash; comma-separated; empty keeps everything</label><input id="set-block" type="text" placeholder="portrait, selfie, model" /></div>
+
+      <div class="set-section-title">AI Curation Settings</div>
+      <div class="set-grid">
+        <div class="set-fld"><label>Candidate pool sent to Claude</label><input id="set-ai-pool" type="number" min="4" max="30" /></div>
+        <div class="set-fld"><label>Max photos Claude recommends keeping</label><input id="set-ai-keep" type="number" min="1" max="20" /></div>
+      </div>
+
+      <div id="set-status"></div>
+      <div class="set-actions">
+        <button class="set-reset" onclick="settingsReset()">Reset to defaults</button>
+        <div style="display:flex;gap:10px">
+          <button class="set-cancel" onclick="closeSettings()">Cancel</button>
+          <button class="set-save" onclick="settingsSave()">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="add-img-overlay" class="overlay hidden" onclick="if(event.target===this)closeAddImageModal()">
   <div class="modal" role="dialog" aria-modal="true" onclick="event.stopPropagation()">
     <div class="modal-head">
@@ -353,10 +430,10 @@ const _OV_ID       = 'hRpg360HAjxAcvlvDJkdzUTQR8mzYkeDOsRGU2SZ';
 const _OV_SEC      = 'UBKgXjU8tDxOlPoGtayZ37EGf3cQVE94yhV3X96BSt84ZpFuzTcgTGTpgS0VwsimOZca2mqD11Jkzj6VoAyfrxR66acxfQnBSDA2WLUH27AAY6jM8ch39ZzIakFjOwmn';
 const MAX_LONGEST_SIDE = 1600;   // matches the Photoshop pass convention — cap, never upscale
 const JPEG_QUALITY = 0.8;
-const FETCH_MAX_IMAGES = 12;     // candidate pool size shown in the review modal
-const AI_POOL = 14;
+const STOCK_CFG_KEY = 'stock_images_fetch_cfg';   // localStorage — settings are per-browser, scoped to this tool
 
-var _CFG = {
+var _DEFAULT_CFG = {
+  fetch_max_images: 12,     // candidate pool size shown in the review modal for Fetch-only
   steps: [
     { source: 'wikipedia', query: '{city}',            limit: 1 },
     { source: 'wikipedia', query: '{city}, {country}', limit: 1 },
@@ -366,7 +443,18 @@ var _CFG = {
     { source: 'pixabay',   query: '{city} {country}',  limit: 5 },
   ],
   orientation: 'landscape', pexels_size: 'large2x', pixabay_category: '', wiki_skip_portrait: true, delay_ms: 380,
+  block_terms: [],
+  ai_pool: 14,        // candidates sent to Claude for AI Curate
+  ai_max_keep: 8,     // how many Claude is told to recommend keeping
 };
+var _CFG = JSON.parse(JSON.stringify(_DEFAULT_CFG));
+function _loadStockCfg(){
+  try {
+    var saved = JSON.parse(localStorage.getItem(STOCK_CFG_KEY) || 'null');
+    if (saved && saved.steps && saved.steps.length) _CFG = Object.assign({}, _DEFAULT_CFG, saved);
+  } catch (e) { /* keep default */ }
+}
+_loadStockCfg();
 
 var DATA = {}, DEST_BY_ID = {}, currentRegion = null, currentSub = null, currentStatus = 'all', currentDetailId = null;
 var _dragFromIndex = null;
@@ -723,6 +811,12 @@ function _interp(t, city, country){
     .replace(/\{[a-z0-9_]+\}/gi, '').replace(/\s*,\s*,+/g, ', ').replace(/\s+,/g, ',').replace(/\s{2,}/g, ' ').replace(/^[\s,]+|[\s,]+$/g, '').trim();
 }
 function _shuffle(a){ for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+function _blocked(img){
+  if (!_CFG.block_terms || !_CFG.block_terms.length) return false;
+  var t = ((img.alt || '') + ' ' + (img.title || '')).toLowerCase();
+  for (var i = 0; i < _CFG.block_terms.length; i++) { if (t.indexOf(_CFG.block_terms[i]) !== -1) return true; }
+  return false;
+}
 async function _runStep(step, city, country){
   var q = _interp(step.query, city, country);
   var pool = Math.max(15, (step.limit || 3) * 4);
@@ -733,14 +827,14 @@ async function _runStep(step, city, country){
   return [];
 }
 async function _sFetchDest(d, max){
-  max = max || FETCH_MAX_IMAGES;
+  max = max || _CFG.fetch_max_images;
   var collected = [], seenU = new Set();
   function add(imgs, lim){
     var added = 0;
     for (var i = 0; i < imgs.length; i++) {
       if (collected.length >= max || added >= (lim == null ? Infinity : lim)) break;
       var img = imgs[i];
-      if (!img || !img.url || seenU.has(img.url)) continue;
+      if (!img || !img.url || seenU.has(img.url) || _blocked(img)) continue;
       seenU.add(img.url); collected.push(img); added++;
     }
   }
@@ -828,7 +922,7 @@ async function runFetchOnly(){
   if (!d) return;
   _cSetBtns(true); _cOpen('Fetching: ' + d.city);
   try {
-    var pool = await _sFetchDest(d, FETCH_MAX_IMAGES);
+    var pool = await _sFetchDest(d, _CFG.fetch_max_images);
     _cSetStatus('Found ' + pool.length + ' photos.', 100);
     pool.forEach(function(im){ im._checked = true; });
     setTimeout(function(){
@@ -847,7 +941,7 @@ async function runFetchOnly(){
 async function _aiCurate(dest, candidates){
   var payload = {
     destination: { city: dest.city, country: dest.country, region: dest.region || '' },
-    max_keep: FETCH_MAX_IMAGES,
+    max_keep: _CFG.ai_max_keep,
     images: candidates.map(function(im){ return { url: (im.thumb || im.url), alt: im.alt || '', source: im.source || '' }; }),
   };
   var r = await fetch(_SUPA_URL + '/functions/v1/curate-image', { method: 'POST', headers: { 'Content-Type': 'application/json', apikey: _SUPA_ANON, Authorization: 'Bearer ' + _SUPA_ANON }, body: JSON.stringify(payload) });
@@ -862,7 +956,7 @@ async function runAICurate(){
   _cSetBtns(true); _cOpen('AI curating: ' + d.city);
   try {
     _cSetStatus('Fetching candidate photos…', 20);
-    var pool = await _sFetchDest(d, AI_POOL);
+    var pool = await _sFetchDest(d, _CFG.ai_pool);
     if (!pool.length) { _cSetStatus('No candidate photos found.', 100); setTimeout(_cClose, 1800); _cSetBtns(false); return; }
     _cSetStatus('Claude is reviewing ' + pool.length + ' images…', 60);
     var verdicts = await _aiCurate(d, pool);
@@ -917,6 +1011,81 @@ async function confirmReviewSelection(){
   closeReviewModal();
   if (failures.length) {
     alert('Added ' + (selected.length - failures.length) + ' of ' + selected.length + ' photos.\n\n' + failures.length + ' failed (likely a dead/blocked source link — try "View source" on that photo to check, or skip it):\n\n' + failures.join('\n'));
+  }
+}
+
+/* ── Fetch & AI Curation settings panel ───────────────────────────────────── */
+var _setSteps = [];
+var SRC_LIST = ['wikipedia','pexels','openverse','pixabay'];
+function openSettings(){
+  _setSteps = JSON.parse(JSON.stringify(_CFG.steps || []));
+  document.getElementById('set-max').value = _CFG.fetch_max_images;
+  document.getElementById('set-delay').value = _CFG.delay_ms;
+  document.getElementById('set-ori').value = _CFG.orientation || 'landscape';
+  document.getElementById('set-psize').value = _CFG.pexels_size || '';
+  document.getElementById('set-pcat').value = _CFG.pixabay_category || '';
+  document.getElementById('set-wiki').checked = _CFG.wiki_skip_portrait !== false;
+  document.getElementById('set-block').value = (_CFG.block_terms || []).join(', ');
+  document.getElementById('set-ai-pool').value = _CFG.ai_pool;
+  document.getElementById('set-ai-keep').value = _CFG.ai_max_keep;
+  document.getElementById('set-status').textContent = '';
+  renderSettingsSteps();
+  document.getElementById('settings-overlay').classList.remove('hidden');
+}
+function closeSettings(){ document.getElementById('settings-overlay').classList.add('hidden'); }
+function renderSettingsSteps(){
+  document.getElementById('set-steps').innerHTML = _setSteps.map(function(s, i){
+    var opts = SRC_LIST.map(function(o){ return '<option value="' + o + '"' + (s.source === o ? ' selected' : '') + '>' + o + '</option>'; }).join('');
+    return '<div class="set-step">'
+      + '<select onchange="_setSteps[' + i + '].source=this.value">' + opts + '</select>'
+      + '<input class="sq" type="text" value="' + esc(s.query || '') + '" oninput="_setSteps[' + i + '].query=this.value" placeholder="{city} {country}" />'
+      + '<input class="sl" type="number" min="1" max="10" value="' + (s.limit || 3) + '" oninput="_setSteps[' + i + '].limit=parseInt(this.value)||1" title="images from this step" />'
+      + '<button onclick="settingsMove(' + i + ',-1)" title="move up">&#8593;</button>'
+      + '<button onclick="settingsMove(' + i + ',1)" title="move down">&#8595;</button>'
+      + '<button onclick="settingsDel(' + i + ')" title="remove">&times;</button>'
+      + '</div>';
+  }).join('') || '<div style="font-size:12px;color:var(--wg500);font-style:italic;margin-bottom:8px">No steps — add one below.</div>';
+}
+function settingsAddStep(){ _setSteps.push({ source: 'pexels', query: '{city} {country}', limit: 3 }); renderSettingsSteps(); }
+function settingsDel(i){ _setSteps.splice(i, 1); renderSettingsSteps(); }
+function settingsMove(i, dir){ var j = i + dir; if (j < 0 || j >= _setSteps.length) return; var t = _setSteps[i]; _setSteps[i] = _setSteps[j]; _setSteps[j] = t; renderSettingsSteps(); }
+function settingsReset(){
+  _setSteps = JSON.parse(JSON.stringify(_DEFAULT_CFG.steps));
+  document.getElementById('set-max').value = _DEFAULT_CFG.fetch_max_images;
+  document.getElementById('set-delay').value = _DEFAULT_CFG.delay_ms;
+  document.getElementById('set-ori').value = _DEFAULT_CFG.orientation;
+  document.getElementById('set-psize').value = _DEFAULT_CFG.pexels_size;
+  document.getElementById('set-pcat').value = '';
+  document.getElementById('set-wiki').checked = true;
+  document.getElementById('set-block').value = '';
+  document.getElementById('set-ai-pool').value = _DEFAULT_CFG.ai_pool;
+  document.getElementById('set-ai-keep').value = _DEFAULT_CFG.ai_max_keep;
+  document.getElementById('set-status').textContent = 'Defaults loaded — click Save to apply.';
+  renderSettingsSteps();
+}
+function settingsSave(){
+  var block = document.getElementById('set-block').value.split(',').map(function(t){ return t.trim().toLowerCase(); }).filter(Boolean);
+  var steps = _setSteps.filter(function(s){ return s.source && s.query; });
+  var st = document.getElementById('set-status');
+  if (!steps.length) { st.textContent = 'Add at least one step with a source and query.'; return; }
+  _CFG = {
+    fetch_max_images: parseInt(document.getElementById('set-max').value) || 12,
+    steps: steps,
+    delay_ms: parseInt(document.getElementById('set-delay').value) || 380,
+    orientation: document.getElementById('set-ori').value,
+    pexels_size: document.getElementById('set-psize').value,
+    pixabay_category: document.getElementById('set-pcat').value.trim(),
+    wiki_skip_portrait: document.getElementById('set-wiki').checked,
+    block_terms: block,
+    ai_pool: parseInt(document.getElementById('set-ai-pool').value) || 14,
+    ai_max_keep: parseInt(document.getElementById('set-ai-keep').value) || 8,
+  };
+  try {
+    localStorage.setItem(STOCK_CFG_KEY, JSON.stringify(_CFG));
+    st.textContent = 'Saved — applies to your next Fetch or AI Curate.';
+    setTimeout(closeSettings, 1200);
+  } catch (e) {
+    st.textContent = 'Applied for this session (localStorage save failed: ' + e.message + ').';
   }
 }
 
