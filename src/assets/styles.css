@@ -752,15 +752,22 @@ footer { background: var(--footer); padding: 72px 0 40px; }
   .hero-caption-wrap, .slide-caption { display: contents; }
   .hero-slides { order: 1; position: relative; inset: auto; height: clamp(240px, 68vw, 380px); }
   .hero-arrow { display: none; }
+  /* Kill the slow Ken Burns zoom on mobile — the fade gradient below is
+     tuned to this framing, and the image drifting under it as the 7s
+     scale(1.06 -> 1) animation runs made the fade look mismatched against
+     the photo (worst right after a slide becomes active). */
+  .hero-slide { transform: none; transition: opacity 1.2s ease; }
+  .hero-slide.active { transform: none; }
   /* extra top-down wash (on top of the base overlay) so the overlaid eyebrow
-     stays legible even over a bright sky; bottom wash now reaches all the
-     way to the image's bottom edge instead of fading to nothing partway up,
-     which was leaving a bright, untinted seam right above the caption. */
+     stays legible even over a bright sky; bottom wash reaches all the way to
+     the image's bottom edge instead of fading to nothing partway up, which
+     was leaving a bright, untinted seam right above the caption. Kept light
+     overall so the photo itself still reads through. */
   .hero-slide-overlay {
     background:
-      linear-gradient(180deg, rgba(20,30,40,0.5) 0%, transparent 32%),
-      linear-gradient(90deg, rgba(25,25,25,0.65) 0%, rgba(25,25,25,0.36) 38%, rgba(25,25,25,0.1) 58%, rgba(25,25,25,0) 68%),
-      linear-gradient(0deg, rgba(20,30,40,0.55) 0%, rgba(20,30,40,0.22) 35%, transparent 78%);
+      linear-gradient(180deg, rgba(20,30,40,0.38) 0%, transparent 32%),
+      linear-gradient(90deg, rgba(25,25,25,0.48) 0%, rgba(25,25,25,0.26) 38%, rgba(25,25,25,0.08) 58%, rgba(25,25,25,0) 68%),
+      linear-gradient(0deg, rgba(20,30,40,0.4) 0%, rgba(20,30,40,0.15) 35%, transparent 78%);
   }
 
   .slide-eyebrow {
