@@ -739,27 +739,36 @@ footer { background: var(--footer); padding: 72px 0 40px; }
   .nav-links { display: none; }
   .nav-cta { display: none; }
   .nav-toggle { display: flex; }
-  /* Stacked layout: eyebrow above the photo, headline overlaid on its lower-
-     left corner, lede + buttons below in the solid section — a full-bleed
-     cover crop on a tall narrow viewport was chopping the sides off
-     landscape hero photos, so the image now gets a shorter, truer-aspect
-     band instead of the full-height background treatment. */
+  /* Stacked layout: eyebrow overlaid on the photo's top edge, headline left-
+     aligned in normal flow directly below it, lede + buttons continuing
+     below that in the solid section — a full-bleed cover crop on a tall
+     narrow viewport was chopping the sides off landscape hero photos, so
+     the image now gets a shorter, truer-aspect band instead of the
+     full-height background treatment. */
   .hero-slider { height: auto; display: flex; flex-direction: column; align-items: stretch; margin: 0 clamp(0px, 2.8vw, 40px) 28px; }
   .hero-caption-wrap, .slide-caption { display: contents; }
-  .hero-slides { order: 2; position: relative; inset: auto; height: clamp(240px, 68vw, 380px); }
+  .hero-slides { order: 1; position: relative; inset: auto; height: clamp(240px, 68vw, 380px); }
   .hero-arrow { display: none; }
-
-  .slide-eyebrow { order: 1; padding-inline: 24px; margin-bottom: 12px; }
-  .slide-caption .eyebrow { color: var(--azure); margin-bottom: 0; }
-
-  .slide-title { order: 3; position: relative; z-index: 3; margin-top: -118px; max-width: 68%; padding-inline: 24px; }
-  .slide-caption h1 {
-    font-size: clamp(26px, 7.4vw, 34px); line-height: 1.15; margin: 0;
-    text-shadow: 0 2px 16px rgba(0,0,0,0.45);
+  /* extra top-down wash (on top of the base overlay) so the overlaid eyebrow
+     stays legible even over a bright sky */
+  .hero-slide-overlay {
+    background:
+      linear-gradient(180deg, rgba(20,30,40,0.55) 0%, transparent 32%),
+      linear-gradient(90deg, rgba(25,25,25,0.72) 0%, rgba(25,25,25,0.42) 38%, rgba(25,25,25,0.12) 58%, rgba(25,25,25,0) 68%),
+      linear-gradient(0deg, rgba(25,25,25,0.5) 0%, transparent 45%);
   }
 
-  .slide-subtitle { order: 4; padding: 20px 24px 0; }
-  .btns { order: 5; padding: 22px 24px 0; }
+  .slide-eyebrow {
+    position: absolute; z-index: 3; top: 18px; left: 0; right: 0;
+    max-width: 70%; padding-inline: 24px;
+  }
+  .slide-caption .eyebrow { color: #fff; text-shadow: 0 1px 10px rgba(0,0,0,0.55); }
+
+  .slide-title { order: 2; padding: 24px 24px 0; }
+  .slide-caption h1 { font-size: clamp(28px, 8vw, 38px); text-shadow: none; }
+
+  .slide-subtitle { order: 3; padding: 20px 24px 0; }
+  .btns { order: 4; padding: 22px 24px 0; }
   header.menu-open .mobile-menu {
     display: flex; flex-direction: column;
     padding: 4px 24px 26px; background: var(--cream);
