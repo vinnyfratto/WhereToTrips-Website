@@ -29,6 +29,7 @@ const SECTIONS = [
   { key: "state", title: "Current State", order: 1, match: (p) => p === "docs/STATE.md" },
   { key: "stack", title: "Tech Stack", order: 2, match: (p) => p === "docs/tech-stack.md" },
   { key: "architecture", title: "Architecture", order: 3, match: (p) => p.startsWith("docs/architecture/") },
+  { key: "vibes-engine", title: "Vibe Engine", order: 3.5, match: (p) => p.startsWith("docs/vibes-engine/") },
   { key: "decisions", title: "Decisions (ADRs)", order: 4, match: (p) => p.startsWith("docs/decisions/") },
   { key: "liteapi", title: "LiteAPI Integration", order: 4.5, match: (p) => p.startsWith("docs/liteapi/") },
   { key: "process", title: "Process", order: 5, match: (p) => p.startsWith("docs/process/") },
