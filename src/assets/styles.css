@@ -250,7 +250,7 @@ header.menu-open .nav-toggle span:nth-child(3) { transform: translateY(-7px) rot
   display: flex; align-items: center;
   background: var(--navy);
 }
-.hero-slides { position: absolute; inset: 0; }
+.hero-slides { position: absolute; inset: 0; overflow: hidden; }
 .hero-slide {
   position: absolute; inset: 0;
   background-size: cover; background-position: center;
@@ -750,14 +750,8 @@ footer { background: var(--footer); padding: 72px 0 40px; }
      its own for this to never matter. */
   .hero-slider { height: auto; display: flex; flex-direction: column; align-items: stretch; margin: 0 clamp(0px, 2.8vw, 40px) 64px; }
   .hero-caption-wrap, .slide-caption { display: contents; }
-  .hero-slides { order: 1; position: relative; inset: auto; height: clamp(240px, 68vw, 380px); }
+  .hero-slides { order: 1; position: relative; inset: auto; height: clamp(240px, 68vw, 380px); overflow: hidden; }
   .hero-arrow { display: none; }
-  /* Kill the slow Ken Burns zoom on mobile — the fade gradient below is
-     tuned to this framing, and the image drifting under it as the 7s
-     scale(1.06 -> 1) animation runs made the fade look mismatched against
-     the photo (worst right after a slide becomes active). */
-  .hero-slide { transform: none; transition: opacity 1.2s ease; }
-  .hero-slide.active { transform: none; }
   /* extra top-down wash (on top of the base overlay) so the overlaid eyebrow
      stays legible even over a bright sky; bottom wash reaches all the way to
      the image's bottom edge instead of fading to nothing partway up, which
