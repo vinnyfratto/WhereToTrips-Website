@@ -17,7 +17,7 @@ sections:
       label: See how it works
       href: '#how'
     slides:
-      - src: /media/hero/beach.jpg
+      - src: /media/WhereTo_Hero_Beach.jpg
         alt: Turquoise water lapping a wide tropical beach from above
       - src: /media/hero/mountains.jpg
         alt: Dramatic mountain range under shifting light
@@ -42,19 +42,16 @@ sections:
         title: Group travel
         text: Plan and decide together with Wander Together.
   - type: rich_text
-    id: problem
     title:
-      pre: "Everyone else hands you a blank search bar and calls it a "
-      accent: "day"
-      post: "."
-    body: |
-      <p style="text-align:center;">Most travel sites expect the hardest part — the destination — to just appear in your head first. WhereTo flips the order. Tell us your budget, your dates, who's coming, and the kind of trip you're craving — moody European alleyways, a sun-drenched beach nap, a food crawl that ends in a nap on someone's balcony — and we'll tell you exactly where that trip exists in the real world, for real money.</p>
-
+      pre: Everyone else hands you a blank search bar and calls it a
+      accent: day
+      post: .
+    id: problem
+    body: <p style="text-align:center;">Most travel sites expect the hardest part — the destination — to just appear in your head first. WhereTo flips the order. Tell us your budget, your dates, who's coming, and the kind of trip you're craving — moody European alleyways, a sun-drenched beach nap, a food crawl that ends in a nap on someone's balcony — and we'll tell you exactly where that trip exists in the real world, for real money.</p>
   - type: steps
     eyebrow: How it works
     title:
-      pre: |-
-        Budget in. Vibe in.
+      pre: Budget in. Vibe in.
       accent: Destination
       post: out.
     lede: You usually know four things — what you can spend, when you can go, who's coming, and the vibe you want. WhereTo turns those into where.
@@ -69,9 +66,9 @@ sections:
   - type: feature_split
     eyebrow: WhereTo Family Teaser
     title:
-      pre: "Four ways to search. "
+      pre: Four ways to search.
       accent: One engine
-      post: " underneath."
+      post: underneath.
     lede: Starting from zero, narrowing down a region you already love, want to talk it out, or already know your destination — there's a WhereTo mode built for exactly how much you already know.
     image:
       src: /media/vibes.jpg
@@ -80,7 +77,6 @@ sections:
     cta:
       label: Explore the WhereTo Family
       href: /whereto/
-
   - type: tile_grid
     eyebrow: Why travelers love WhereTo
     title:
@@ -115,15 +111,15 @@ sections:
       pre: Start with a
       accent: feeling
       post: .
-    intro: Browse by the experience you want. Each vibe maps to real destinations and typical budgets.
     center: true
+    intro: Browse by the experience you want. Each vibe maps to real destinations and typical budgets.
     columns: 3
-    limit: 6
     collection: vibe
+    limit: 6
   - type: feature_split
     eyebrow: Wander Family Teaser
     title:
-      pre: "Traveling with someone? We'll get you "
+      pre: Traveling with someone? We'll get you
       accent: both to yes
       post: .
     lede: Two travelers, one shared vibe. A group of ten, a hundred opinions and a group chat that's gone quiet for three weeks. Wander reconciles everyone's budget, vibe, and calendar into a trip the whole group actually agrees on — no spiral required.
@@ -168,12 +164,11 @@ sections:
       pre: A trip planned in
       accent: minutes
       post: .
-    body: Tell WhereTo your budget and your vibe. Watch it surface destinations, flights, and stays that actually fit.
     image:
       src: /media/hero/mountains.jpg
+    body: Tell WhereTo your budget and your vibe. Watch it surface destinations, flights, and stays that actually fit.
     href: /app/
     playLabel: Get the app
-  # NOTE: placeholder testimonials — replace with real quotes in the CMS before launch.
   - type: testimonial
     eyebrow: What travelers say
     title:
@@ -196,12 +191,12 @@ sections:
       pre: Travel smarter with our
       accent: Insights
       post: .
-    intro: Budgeting, group trips, and getting more out of every mile.
     background: true
     center: true
+    intro: Budgeting, group trips, and getting more out of every mile.
     columns: 3
-    limit: 3
     collection: insight
+    limit: 3
   - type: cta_band
     eyebrow: Ready to wander?
     title:
