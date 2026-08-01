@@ -86,7 +86,7 @@
   .det-region { font-size:10px; font-weight:600; letter-spacing:1.8px; text-transform:uppercase; color:var(--rust); margin-bottom:6px; }
   .det-label { font-family:var(--serif); font-size:34px; line-height:1.2; margin-bottom:6px; }
   .det-meta { font-size:13px; color:var(--wg600); }
-  .det-vibes { display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:10px; }
+  .det-vibes { display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:24px; }
   .det-vibes:empty { display:none; }
   .det-vibes-label { font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--wg500); margin-right:2px; }
   .vibe-chip { font-size:11px; font-weight:600; color:var(--navy); background:var(--wg100); border:1px solid var(--wg200); border-radius:20px; padding:3px 10px; }
@@ -317,8 +317,6 @@
         <div class="det-region" id="det-region"></div>
         <div class="det-label" id="det-label"></div>
         <div class="det-meta" id="det-meta"></div>
-        <div class="det-vibes" id="det-vibes"></div>
-        <div class="det-intro" id="det-intro"></div>
       </div>
       <div class="curate-btn-col">
         <button class="curate-btn ai" id="ai-curate-btn" onclick="runAICurate()">&#10024; AI Curate</button>
@@ -331,6 +329,8 @@
       <span id="upload-status"></span>
     </div>
     <div class="gallery" id="gallery"></div>
+    <div class="det-vibes" id="det-vibes"></div>
+    <div class="det-intro" id="det-intro"></div>
   </div>
 </main>
 
