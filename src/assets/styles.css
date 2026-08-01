@@ -739,12 +739,15 @@ footer { background: var(--footer); padding: 72px 0 40px; }
   .nav-links { display: none; }
   .nav-cta { display: none; }
   .nav-toggle { display: flex; }
-  .hero-slider { height: clamp(520px, 82vh, 720px); }
+  /* Stacked layout: image band on top, caption in normal flow below it —
+     full-bleed cover crop on a tall narrow viewport was chopping the sides
+     off landscape hero photos. */
+  .hero-slider { height: auto; display: block; margin: 0 clamp(0px, 2.8vw, 40px) 28px; }
+  .hero-slides { position: relative; inset: auto; height: clamp(240px, 68vw, 380px); }
   .hero-arrow { display: none; }
-  .hero-slider-overlay {
-    background:
-      linear-gradient(0deg, rgba(20,30,40,0.72) 0%, rgba(20,30,40,0.3) 55%, rgba(20,30,40,0.4) 100%);
-  }
+  .hero-caption-wrap { position: relative; z-index: auto; padding: 26px 0 6px; }
+  .slide-caption { max-width: none; }
+  .slide-caption h1 { text-shadow: none; }
   header.menu-open .mobile-menu {
     display: flex; flex-direction: column;
     padding: 4px 24px 26px; background: var(--cream);

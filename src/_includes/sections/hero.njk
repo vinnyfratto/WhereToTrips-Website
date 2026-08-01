@@ -14,10 +14,20 @@
          aria-label="{{ slide.alt }}"
          style="background-image:url('{{ slide.src }}')"></div>
     {%- endfor %}
+    <div class="hero-slide-overlay"></div>
+    {% if s.slides.length > 1 %}
+    <button class="hero-arrow hero-prev" type="button" aria-label="Previous slide" data-hero-prev>&#8249;</button>
+    <button class="hero-arrow hero-next" type="button" aria-label="Next slide" data-hero-next>&#8250;</button>
+    <div class="hero-dots" role="tablist" aria-label="Choose slide">
+      {%- for slide in s.slides %}
+      <button class="hero-dot{% if loop.first %} active{% endif %}" type="button"
+              role="tab" aria-label="Slide {{ loop.index }}" data-hero-dot="{{ loop.index0 }}"></button>
+      {%- endfor %}
+    </div>
+    {% endif %}
   </div>
-  <div class="hero-slide-overlay"></div>
 
-  {#- Single caption, animates in ONCE on load; the images cycle behind it. -#}
+  {#- Single caption, animates in ONCE on load; the images cycle behind it (below it on mobile). -#}
   <div class="wrap hero-caption-wrap">
     <div class="slide-caption">
       {% if s.eyebrow %}<div class="slide-eyebrow"><span class="eyebrow">{{ s.eyebrow }}</span></div>{% endif %}
@@ -31,17 +41,6 @@
       {% endif %}
     </div>
   </div>
-
-  {% if s.slides.length > 1 %}
-  <button class="hero-arrow hero-prev" type="button" aria-label="Previous slide" data-hero-prev>&#8249;</button>
-  <button class="hero-arrow hero-next" type="button" aria-label="Next slide" data-hero-next>&#8250;</button>
-  <div class="hero-dots" role="tablist" aria-label="Choose slide">
-    {%- for slide in s.slides %}
-    <button class="hero-dot{% if loop.first %} active{% endif %}" type="button"
-            role="tab" aria-label="Slide {{ loop.index }}" data-hero-dot="{{ loop.index0 }}"></button>
-    {%- endfor %}
-  </div>
-  {% endif %}
 </section>
 {% else %}
 <section class="hero">
