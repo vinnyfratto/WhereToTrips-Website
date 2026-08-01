@@ -263,7 +263,7 @@ header.menu-open .nav-toggle span:nth-child(3) { transform: translateY(-7px) rot
 .hero-slide-overlay {
   position: absolute; inset: 0; pointer-events: none;
   background:
-    linear-gradient(90deg, rgba(25,25,25,0.72) 0%, rgba(25,25,25,0.42) 48%, rgba(25,25,25,0.15) 100%),
+    linear-gradient(90deg, rgba(25,25,25,0.72) 0%, rgba(25,25,25,0.42) 38%, rgba(25,25,25,0.12) 58%, rgba(25,25,25,0) 68%),
     linear-gradient(0deg, rgba(25,25,25,0.5) 0%, transparent 45%);
 }
 .hero-caption-wrap { position: relative; z-index: 2; width: 100%; }
@@ -739,15 +739,27 @@ footer { background: var(--footer); padding: 72px 0 40px; }
   .nav-links { display: none; }
   .nav-cta { display: none; }
   .nav-toggle { display: flex; }
-  /* Stacked layout: image band on top, caption in normal flow below it —
-     full-bleed cover crop on a tall narrow viewport was chopping the sides
-     off landscape hero photos. */
-  .hero-slider { height: auto; display: block; margin: 0 clamp(0px, 2.8vw, 40px) 28px; }
-  .hero-slides { position: relative; inset: auto; height: clamp(240px, 68vw, 380px); }
+  /* Stacked layout: eyebrow above the photo, headline overlaid on its lower-
+     left corner, lede + buttons below in the solid section — a full-bleed
+     cover crop on a tall narrow viewport was chopping the sides off
+     landscape hero photos, so the image now gets a shorter, truer-aspect
+     band instead of the full-height background treatment. */
+  .hero-slider { height: auto; display: flex; flex-direction: column; align-items: stretch; margin: 0 clamp(0px, 2.8vw, 40px) 28px; }
+  .hero-caption-wrap, .slide-caption { display: contents; }
+  .hero-slides { order: 2; position: relative; inset: auto; height: clamp(240px, 68vw, 380px); }
   .hero-arrow { display: none; }
-  .hero-caption-wrap { position: relative; z-index: auto; padding: 26px 0 6px; }
-  .slide-caption { max-width: none; }
-  .slide-caption h1 { text-shadow: none; }
+
+  .slide-eyebrow { order: 1; padding-inline: 24px; margin-bottom: 12px; }
+  .slide-caption .eyebrow { color: var(--azure); margin-bottom: 0; }
+
+  .slide-title { order: 3; position: relative; z-index: 3; margin-top: -118px; max-width: 68%; padding-inline: 24px; }
+  .slide-caption h1 {
+    font-size: clamp(26px, 7.4vw, 34px); line-height: 1.15; margin: 0;
+    text-shadow: 0 2px 16px rgba(0,0,0,0.45);
+  }
+
+  .slide-subtitle { order: 4; padding: 20px 24px 0; }
+  .btns { order: 5; padding: 22px 24px 0; }
   header.menu-open .mobile-menu {
     display: flex; flex-direction: column;
     padding: 4px 24px 26px; background: var(--cream);
@@ -762,6 +774,7 @@ footer { background: var(--footer); padding: 72px 0 40px; }
 @media (max-width: 480px) {
   .wrap { padding: 0 18px; }
   .hero-badge { left: 0; }
+  .slide-eyebrow, .slide-title, .slide-subtitle, .btns { padding-inline: 18px; }
   .feature-stat { display: none; }
   .steps-grid, .tile-grid { grid-template-columns: 1fr; }
 }
