@@ -745,17 +745,22 @@ footer { background: var(--footer); padding: 72px 0 40px; }
      narrow viewport was chopping the sides off landscape hero photos, so
      the image now gets a shorter, truer-aspect band instead of the
      full-height background treatment. */
-  .hero-slider { height: auto; display: flex; flex-direction: column; align-items: stretch; margin: 0 clamp(0px, 2.8vw, 40px) 28px; }
+  /* Bottom margin clears the highlights bar's -40px overlap (below) so it
+     doesn't ride up over the buttons — the hero used to be tall enough on
+     its own for this to never matter. */
+  .hero-slider { height: auto; display: flex; flex-direction: column; align-items: stretch; margin: 0 clamp(0px, 2.8vw, 40px) 64px; }
   .hero-caption-wrap, .slide-caption { display: contents; }
   .hero-slides { order: 1; position: relative; inset: auto; height: clamp(240px, 68vw, 380px); }
   .hero-arrow { display: none; }
   /* extra top-down wash (on top of the base overlay) so the overlaid eyebrow
-     stays legible even over a bright sky */
+     stays legible even over a bright sky; bottom wash now reaches all the
+     way to the image's bottom edge instead of fading to nothing partway up,
+     which was leaving a bright, untinted seam right above the caption. */
   .hero-slide-overlay {
     background:
-      linear-gradient(180deg, rgba(20,30,40,0.55) 0%, transparent 32%),
-      linear-gradient(90deg, rgba(25,25,25,0.72) 0%, rgba(25,25,25,0.42) 38%, rgba(25,25,25,0.12) 58%, rgba(25,25,25,0) 68%),
-      linear-gradient(0deg, rgba(25,25,25,0.5) 0%, transparent 45%);
+      linear-gradient(180deg, rgba(20,30,40,0.5) 0%, transparent 32%),
+      linear-gradient(90deg, rgba(25,25,25,0.65) 0%, rgba(25,25,25,0.36) 38%, rgba(25,25,25,0.1) 58%, rgba(25,25,25,0) 68%),
+      linear-gradient(0deg, rgba(20,30,40,0.55) 0%, rgba(20,30,40,0.22) 35%, transparent 78%);
   }
 
   .slide-eyebrow {
@@ -768,7 +773,7 @@ footer { background: var(--footer); padding: 72px 0 40px; }
   .slide-caption h1 { font-size: clamp(28px, 8vw, 38px); text-shadow: none; }
 
   .slide-subtitle { order: 3; padding: 20px 24px 0; }
-  .btns { order: 4; padding: 22px 24px 0; }
+  .btns { order: 4; padding: 22px 24px 8px; }
   header.menu-open .mobile-menu {
     display: flex; flex-direction: column;
     padding: 4px 24px 26px; background: var(--cream);
