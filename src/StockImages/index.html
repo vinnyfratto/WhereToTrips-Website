@@ -1074,7 +1074,7 @@ async function fetchMoreInReview(){
     var added = 0;
     fresh.forEach(function(im){
       if (seen.has(im.url)) return;
-      im._checked = true;
+      im._checked = false;
       _reviewPool.push(im);
       seen.add(im.url);
       added++;
@@ -1108,7 +1108,7 @@ async function _resizeToBlob(sourceUrl){
   });
 }
 
-/* ── Fetch only (no AI) — every candidate pre-checked, admin deselects unwanted ── */
+/* ── Fetch only (no AI) — every candidate unchecked, admin selects the ones wanted ── */
 async function runFetchOnly(){
   var d = DEST_BY_ID[currentDetailId];
   if (!d) return;
@@ -1116,7 +1116,7 @@ async function runFetchOnly(){
   try {
     var pool = await _sFetchDest(d, _CFG.fetch_max_images);
     _cSetStatus('Found ' + pool.length + ' photos.', 100);
-    pool.forEach(function(im){ im._checked = true; });
+    pool.forEach(function(im){ im._checked = false; });
     setTimeout(function(){
       _cClose();
       if (!pool.length) { alert('No photos found for ' + d.city + '.'); return; }
