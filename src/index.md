@@ -19,11 +19,11 @@ sections:
     slides:
       - src: /media/WhereTo_Hero_Beach.jpg
         alt: Turquoise water lapping a wide tropical beach from above
-      - src: /media/hero/mountains.jpg
+      - src: /media/WhereTo_Hero_Drinks.jpg
         alt: Dramatic mountain range under shifting light
-      - src: /media/hero/city.jpg
+      - src: /media/WhereTo_Hero_GreatWall.jpg
         alt: A glittering city skyline at dusk
-      - src: /media/hero/island.jpg
+      - src: /media/WhereTo_Hero_Mountain.jpg
         alt: A palm-fringed island lagoon
       - src: /media/hero/desert.jpg
         alt: Golden sand dunes rolling to the horizon
