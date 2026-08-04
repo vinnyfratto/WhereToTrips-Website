@@ -139,6 +139,11 @@
   .admin-bar button { font-size:11px; font-family:var(--sans); font-weight:600; padding:5px 12px; border-radius:6px; border:1.5px solid var(--wg200); background:var(--card); color:var(--navy); cursor:pointer; transition:background .12s; }
   .admin-bar button:hover { background:var(--wg100); }
   #upload-status { font-size:11px; color:var(--wg500); }
+  .admin-bar-actions { margin-left:auto; display:flex; gap:8px; flex-shrink:0; }
+  .admin-bar button.select-active { background:var(--navy); border-color:var(--navy); color:#fff; }
+  .admin-bar button.select-active:hover { background:var(--navy); opacity:.85; }
+  .admin-bar button.delete-selected-btn { background:rgba(180,30,30,.88); border-color:rgba(180,30,30,.88); color:#fff; }
+  .admin-bar button.delete-selected-btn:hover { background:rgba(160,20,20,.95); }
 
   .gallery { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:28px; }
   @media(max-width:900px){ .gallery { grid-template-columns:repeat(3,1fr); } }
@@ -151,6 +156,10 @@
   .img-thumb.dragging { opacity:.4; }
   .img-trash-btn { position:absolute; top:7px; right:7px; width:28px; height:28px; border-radius:50%; background:rgba(180,30,30,.82); backdrop-filter:blur(3px); border:none; cursor:pointer; color:#fff; font-size:14px; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .14s; z-index:10; pointer-events:auto; }
   .img-thumb:hover .img-trash-btn { opacity:1; }
+  .img-select-check { position:absolute; top:7px; right:7px; width:26px; height:26px; border-radius:50%; background:rgba(49,49,49,.5); border:2px solid #fff; display:flex; align-items:center; justify-content:center; color:#fff; font-size:13px; z-index:10; pointer-events:none; }
+  .img-thumb.select-mode { cursor:pointer; }
+  .img-thumb.selected { outline:3px solid var(--rust); outline-offset:-3px; }
+  .img-thumb.selected .img-select-check { background:var(--rust); border-color:var(--rust); }
   .img-hero-badge { position:absolute; top:8px; left:8px; background:var(--navy); color:var(--cream); font-size:9px; font-weight:700; letter-spacing:1.3px; text-transform:uppercase; padding:3px 8px; border-radius:10px; pointer-events:none; }
   .img-source-stamp { position:absolute; bottom:8px; left:8px; font-size:9px; font-weight:700; letter-spacing:1.3px; text-transform:uppercase; padding:3px 8px; border-radius:10px; pointer-events:none; white-space:nowrap; color:#fff; }
   .img-source-stamp.envato { background:var(--green); }
@@ -325,8 +334,12 @@
     </div>
     <div class="admin-bar">
       <span class="admin-bar-label">&#x270E; Admin</span>
-      <span>Drag a photo to reorder — #1 is always the hero shown in the app.</span>
+      <span id="admin-bar-hint">Drag a photo to reorder — #1 is always the hero shown in the app.</span>
       <span id="upload-status"></span>
+      <div class="admin-bar-actions">
+        <button id="select-mode-btn" onclick="toggleSelectMode()">Select Images to Delete</button>
+        <button id="delete-selected-btn" class="delete-selected-btn hidden" onclick="deleteSelectedImages()">Delete Selected (<span id="selected-count">0</span>)</button>
+      </div>
     </div>
     <div class="gallery" id="gallery"></div>
     <div class="det-vibes" id="det-vibes"></div>
@@ -491,6 +504,8 @@ _loadStockCfg();
 
 var DATA = {}, DEST_BY_ID = {}, currentRegion = null, currentSub = null, currentStatus = 'all', currentDetailId = null;
 var _dragFromIndex = null;
+var _selectMode = false;
+var _selectedImgIdx = new Set();
 
 // The gate script (admin-nav.js) sets window.__wtSupabase once login + admin
 // check succeed. Storage writes need that AUTHENTICATED client (not the anon
@@ -706,15 +721,21 @@ function openDetail(id, skipHistory){
   var d = DEST_BY_ID[id];
   if (!d) return;
   currentDetailId = id;
+  _selectMode = false;
+  _selectedImgIdx.clear();
   document.getElementById('grid-view').classList.add('hidden');
   document.getElementById('detail-view').classList.remove('hidden');
   document.getElementById('det-region').textContent = d.region + ' · ' + d.subregion;
   document.getElementById('det-label').textContent = d.city;
-  document.getElementById('det-meta').textContent = d.country + ' · ' + (d.iata||'') + ' · ' + d.images.length + ' image(s) · status: ' + d.status;
+  _updateDetMeta(d);
   renderVibes(d);
   renderIntro(d);
   renderGallery(d);
+  updateSelectUI();
   if (!skipHistory) history.pushState({ r: d.region, s: d.subregion, d: d.id }, '', buildPath(d.region, d.subregion, d.city));
+}
+function _updateDetMeta(d){
+  document.getElementById('det-meta').textContent = d.country + ' · ' + (d.iata||'') + ' · ' + d.images.length + ' image(s) · status: ' + d.status;
 }
 
 /* ── Vibe chips — deep-link into the Vibes Engine for the destination's matched sub-region ── */
@@ -748,21 +769,27 @@ function renderGallery(d){
     var descTxt = titleTxt && altTxt && titleTxt !== altTxt ? (titleTxt + ' — ' + altTxt) : (titleTxt || altTxt);
     var sourceLink = img.photographer_url || img.license_url
       ? '<a href="'+esc(img.photographer_url || img.license_url)+'" target="_blank" rel="noopener">View source &#8599;</a>' : '';
+    var selected = _selectedImgIdx.has(i);
+    var thumbCls = 'img-thumb' + (_selectMode ? ' select-mode' : '') + (selected ? ' selected' : '');
+    var cornerBtn = _selectMode
+      ? '<span class="img-select-check">'+(selected ? '&#10003;' : '')+'</span>'
+      : '<button class="img-trash-btn" onclick="event.stopPropagation(); removeImage('+i+')" title="Remove image">&times;</button>';
+    var thumbClick = _selectMode ? 'toggleImageSelect('+i+')' : 'openLightbox(\''+esc(img.url)+'\')';
     return '<div>'
-      + '<div class="img-thumb" draggable="true" data-idx="'+i+'" '
+      + '<div class="'+thumbCls+'" draggable="'+(_selectMode?'false':'true')+'" data-idx="'+i+'" '
       + 'ondragstart="onDragStart(event)" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)" ondragend="onDragEnd(event)" '
-      + 'onclick="openLightbox(\''+esc(img.url)+'\')">'
+      + 'onclick="'+thumbClick+'">'
       + '<img src="'+esc(img.thumb||img.url)+'" alt="'+esc(img.alt||'')+'" loading="lazy" />'
       + (i===0 ? '<span class="img-hero-badge">Hero</span>' : '')
       + '<span class="img-source-stamp '+(hostedHere?'envato':'other')+'">'+esc(srcLabel)+'</span>'
-      + '<button class="img-trash-btn" onclick="event.stopPropagation(); removeImage('+i+')" title="Remove image">&times;</button>'
+      + cornerBtn
       + '</div>'
       + (descTxt ? '<div class="img-desc">'+esc(descTxt)+'</div>' : '')
       + (credit ? '<div class="img-caption">'+esc(credit)+'</div>' : '')
       + (sourceLink ? '<div class="img-caption">'+sourceLink+'</div>' : '')
       + '</div>';
   }).join('');
-  var addCard = '<div class="img-add-card" onclick="openAddImageModal()">'
+  var addCard = _selectMode ? '' : '<div class="img-add-card" onclick="openAddImageModal()">'
     + '<span class="img-add-icon">+</span><span class="img-add-label">Upload Image</span></div>';
   document.getElementById('gallery').innerHTML = (thumbs || '<div class="gallery-empty">No images for this destination yet.</div>') + addCard;
 }
@@ -779,6 +806,50 @@ async function removeImage(i){
   d.images.splice(i, 1);
   renderGallery(d);
   await saveGallery(d);
+  _updateDetMeta(d);
+}
+
+/* ── Bulk select-and-delete — "Select Images to Delete" toggles select mode;
+   clicking photos selects them (in place of the lightbox); the delete button
+   only appears once at least one is selected. ── */
+function toggleSelectMode(){
+  _selectMode = !_selectMode;
+  _selectedImgIdx.clear();
+  var d = DEST_BY_ID[currentDetailId];
+  if (d) renderGallery(d);
+  updateSelectUI();
+}
+function toggleImageSelect(i){
+  if (_selectedImgIdx.has(i)) _selectedImgIdx.delete(i); else _selectedImgIdx.add(i);
+  var d = DEST_BY_ID[currentDetailId];
+  if (d) renderGallery(d);
+  updateSelectUI();
+}
+function updateSelectUI(){
+  var selectBtn = document.getElementById('select-mode-btn');
+  var deleteBtn = document.getElementById('delete-selected-btn');
+  var hint = document.getElementById('admin-bar-hint');
+  selectBtn.textContent = _selectMode ? 'Cancel' : 'Select Images to Delete';
+  selectBtn.classList.toggle('select-active', _selectMode);
+  deleteBtn.classList.toggle('hidden', _selectedImgIdx.size === 0);
+  document.getElementById('selected-count').textContent = _selectedImgIdx.size;
+  hint.textContent = _selectMode
+    ? 'Click photos to select them for deletion.'
+    : 'Drag a photo to reorder — #1 is always the hero shown in the app.';
+}
+async function deleteSelectedImages(){
+  var d = DEST_BY_ID[currentDetailId];
+  if (!d || !_selectedImgIdx.size) return;
+  var n = _selectedImgIdx.size;
+  var hasHero = _selectedImgIdx.has(0);
+  if (!confirm('Delete ' + n + ' selected image' + (n === 1 ? '' : 's') + ' from the gallery?' + (hasHero ? ' This includes the current hero — the next remaining image becomes the new hero.' : ''))) return;
+  d.images = d.images.filter(function(img, i){ return !_selectedImgIdx.has(i); });
+  _selectMode = false;
+  _selectedImgIdx.clear();
+  renderGallery(d);
+  updateSelectUI();
+  await saveGallery(d);
+  _updateDetMeta(d);
 }
 
 /* ── Drag-to-reorder — dropped position becomes the new order; index 0 is always the hero ── */
