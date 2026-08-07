@@ -254,7 +254,7 @@ function renderDeviceSection(d) {
     </p>
     <div class="adm-grid-2">
       ${deviceTable('Platform', dev.os, 'device_os', errors, sessionsAndEvents)}
-      ${deviceTable('Device type', dev.types, 'device_types', errors, sessionsAndEvents)}
+      ${deviceTable('Screen size', dev.screens, 'device_screens', errors, sessionsAndEvents)}
     </div>
     <div class="adm-grid-2">
       ${deviceTable('OS version', dev.os_versions, 'device_os_versions', errors, sessions)}
