@@ -203,6 +203,69 @@ function eventLabel(name) {
   return String(name || '').split('_').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') || 'Unknown';
 }
 
+// ── Device breakdowns (App tab) ─────────────────────────────────────
+// Every devices.* list from the admin fn is the same {key, users, sessions,
+// events?} shape, so one table renders all of them. `extra` picks which of the
+// optional numeric columns to show; share is computed client-side off the rows
+// we got back, so a LIMIT-truncated list still adds up to a sensible 100%.
+function deviceTable(title, rows, errKey, errors, extra) {
+  if (errors && errors[errKey]) {
+    return `<div class="adm-card"><h3>${esc(title)}</h3><p class="acct-sub">Unavailable — ${esc(errors[errKey])}</p></div>`;
+  }
+  const list = rows || [];
+  const cols = extra || [];
+  const total = list.reduce((sum, r) => sum + (Number(r.users) || 0), 0);
+  const head = cols.map((c) => `<th class="num">${esc(c.label)}</th>`).join('');
+  const body = list.map((r) => {
+    const users = Number(r.users) || 0;
+    const pct = total > 0 ? Math.round((users / total) * 100) : 0;
+    const cells = cols.map((c) => `<td class="num">${Number(r[c.field]) || 0}</td>`).join('');
+    return `
+      <tr>
+        <td>${esc(r.key)}</td>
+        <td class="num">${users}</td>
+        ${cells}
+        <td class="num">${pct}%</td>
+        <td style="width:22%;">${bar(pct)}</td>
+      </tr>`;
+  }).join('');
+  const span = 4 + cols.length;
+  return `
+    <div class="adm-card">
+      <h3>${esc(title)}</h3>
+      <div class="adm-wrap-scroll"><table class="adm-table">
+        <thead><tr><th></th><th class="num">Users</th>${head}<th class="num">Share</th><th></th></tr></thead>
+        <tbody>${body || `<tr><td colspan="${span}">No data yet.</td></tr>`}</tbody>
+      </table></div>
+    </div>`;
+}
+
+function renderDeviceSection(d) {
+  const errors = d.errors || {};
+  const dev = d.devices || {};
+  const sessions = [{ label: 'Sessions', field: 'sessions' }];
+  const sessionsAndEvents = [{ label: 'Sessions', field: 'sessions' }, { label: 'Events', field: 'events' }];
+
+  return `
+    <h2 class="adm-section-h">Devices</h2>
+    <p class="acct-sub" style="margin:-4px 0 16px;">
+      Captured on every app event by PostHog. Events sent before device capture was
+      added show up as "(unknown)".
+    </p>
+    <div class="adm-grid-2">
+      ${deviceTable('Platform', dev.os, 'device_os', errors, sessionsAndEvents)}
+      ${deviceTable('Device type', dev.types, 'device_types', errors, sessionsAndEvents)}
+    </div>
+    <div class="adm-grid-2">
+      ${deviceTable('OS version', dev.os_versions, 'device_os_versions', errors, sessions)}
+      ${deviceTable('Device model', dev.models, 'device_models', errors, sessions)}
+    </div>
+    <div class="adm-grid-2">
+      ${deviceTable('App version', dev.app_versions, 'device_app_versions', errors, sessionsAndEvents)}
+      ${deviceTable('Real device vs simulator', dev.environment, 'device_environment', errors, sessionsAndEvents)}
+    </div>`;
+}
+
 function renderAppAnalytics(d) {
   const errors = d.errors || {};
   const maxCount = Math.max(1, ...(d.series || []).map((r) => r.active_users));
@@ -240,6 +303,7 @@ function renderAppAnalytics(d) {
     ? `<div class="adm-card"><h3>Totals</h3><p class="acct-sub">Unavailable — ${esc(errors.totals)}</p></div>`
     : `<div class="adm-overview-grid">
         ${card('Active users', d.totals.active_users)}
+        ${card('Sessions', d.totals.sessions ?? 0)}
         ${card('New signups', d.totals.signups)}
         ${card('Flights booked', d.totals.bookings)}
         ${card('Total events', d.totals.events)}
@@ -271,7 +335,8 @@ function renderAppAnalytics(d) {
     ${totalsCards}
     ${seriesCard}
     ${topEventsCard}
-    ${funnelCards}`;
+    ${funnelCards}
+    ${renderDeviceSection(d)}`;
 
   wireRangeBtns();
 }
