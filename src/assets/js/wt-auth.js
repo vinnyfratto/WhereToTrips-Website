@@ -228,20 +228,16 @@ async function initProfile() {
     }
   } catch (_e) { /* not an affiliate */ }
 
-  // Reveal the Affiliate Admin link if this user is an admin (own-row RLS read).
-  // Authorization is still enforced server-side in the `admin` edge fn.
+  // Reveal the Admin dashboard link if this user is an admin (own-row RLS
+  // read). /admin-dashboard/ is the single jump-off hub to every admin
+  // surface, so one link here is enough — authorization for each surface
+  // it links to is still enforced server-side in the `admin` edge fn.
   try {
     const { data: adm } = await supabase
       .from('admins').select('user_id').eq('user_id', user.id).maybeSingle();
     if (adm) {
       const link = document.getElementById('wt-admin-link');
       if (link) link.style.display = 'inline-block';
-      const subLink = document.getElementById('wt-submissions-admin-link');
-      if (subLink) subLink.style.display = 'inline-block';
-      const analyticsLink = document.getElementById('wt-analytics-admin-link');
-      if (analyticsLink) analyticsLink.style.display = 'inline-block';
-      const imageCurationLink = document.getElementById('wt-image-curation-admin-link');
-      if (imageCurationLink) imageCurationLink.style.display = 'inline-block';
     }
   } catch (_e) { /* not an admin */ }
 }

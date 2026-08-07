@@ -1,8 +1,10 @@
 // ───────────────────────────────────────────────────────────────────
-//  wt-admin-dashboard.js — analytics for both PostHog-tracked channels
+//  wt-analytics.js — analytics for both PostHog-tracked channels
 //  (WhereToTrips.com website + the WhereTo app), via the `admin` edge
 //  fn's analytics_overview action (same admins-table gate as the
-//  affiliate/submissions admin). Requires the edge fn to have
+//  affiliate/submissions admin). Lives at /analytics/ — /admin-dashboard/
+//  is the separate jump-off hub linking to this and every other admin
+//  surface. Requires the edge fn to have
 //  POSTHOG_PROJECT_ID + POSTHOG_PERSONAL_API_KEY secrets set — if not,
 //  the fn returns ok:false and this page shows that plainly instead of
 //  a blank dashboard.

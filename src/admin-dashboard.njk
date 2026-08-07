@@ -1,8 +1,8 @@
 ---
 layout: layouts/base.njk
 permalink: /admin-dashboard/index.html
-title: "Site Analytics — WhereTo"
-description: "Internal PostHog-backed website analytics dashboard."
+title: "Admin — WhereTo"
+description: "Jump-off point for every WhereTo internal admin tool."
 eleventyExcludeFromCollections: true
 ---
 <link rel="stylesheet" href="/assets/account.css?v={{ buildTime }}" />
@@ -23,24 +23,66 @@ eleventyExcludeFromCollections: true
     <div class="dash-head">
       <div>
         <p class="eyebrow">Internal · admin</p>
-        <h1>Site analytics</h1>
+        <h1>Admin dashboard</h1>
       </div>
       <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-        <a href="/admin-affiliates/" class="btn btn-ghost">Affiliate Admin</a>
-        <a href="/admin-submissions/" class="btn btn-ghost">Submission Admin</a>
         <button id="adm-logout" type="button" class="btn btn-ghost">Log out</button>
       </div>
     </div>
 
-    <div class="adm-tabs" role="tablist">
-      <button class="adm-tab is-active" data-channel="website">WhereToTrips.com</button>
-      <button class="adm-tab" data-channel="app">App</button>
-      <button class="adm-tab" data-channel="travel">Travel Metrics</button>
-    </div>
-
     <div id="adm-msg" class="alert" role="status" aria-live="polite"></div>
 
-    <section id="analytics-root"></section>
+    <h2 class="adm-section-h" style="margin-top:0; padding-top:0; border-top:0;">Analytics &amp; growth</h2>
+    <div class="adm-tile-grid">
+      <a class="adm-tile" href="/analytics/">
+        <h3>Site Analytics</h3>
+        <p>PostHog traffic, app usage, funnels, devices, location.</p>
+      </a>
+      <a class="adm-tile" href="/admin-affiliates/">
+        <h3>Affiliate Admin</h3>
+        <p>Invites, affiliates, commissions, payouts.</p>
+      </a>
+      <a class="adm-tile" href="/admin-submissions/">
+        <h3>Submission Admin</h3>
+        <p>Early access and contact form submissions.</p>
+      </a>
+    </div>
+
+    <h2 class="adm-section-h">Destinations &amp; images</h2>
+    <div class="adm-tile-grid">
+      <a class="adm-tile" href="/DestImages/">
+        <h3>Destination Images</h3>
+        <p>Per-destination photo galleries.</p>
+      </a>
+      <a class="adm-tile" href="/vibesimages/">
+        <h3>Vibe Images</h3>
+        <p>Per-vibe photo galleries.</p>
+      </a>
+      <a class="adm-tile" href="/vibes-engine/">
+        <h3>Vibes Engine</h3>
+        <p>Sub-region blogs and rankings.</p>
+      </a>
+      <a class="adm-tile" href="/vibes-engine/dashboard.html">
+        <h3>Vibe Engine Tester</h3>
+        <p>Preview the ranking algorithm.</p>
+      </a>
+      <a class="adm-tile" href="/DashboardHero/">
+        <h3>Dashboard Hero</h3>
+        <p>Pick rotating hero destinations.</p>
+      </a>
+      <a class="adm-tile" href="/StockImages/">
+        <h3>Stock Image Ingest</h3>
+        <p>AI-curated stock photo pipeline.</p>
+      </a>
+    </div>
+
+    <h2 class="adm-section-h">Content</h2>
+    <div class="adm-tile-grid">
+      <a class="adm-tile" href="/admin/">
+        <h3>WhereTo CMS</h3>
+        <p>Sveltia git-based content editor.</p>
+      </a>
+    </div>
   </div>
 </main>
-<script type="module" src="/assets/js/wt-admin-dashboard.js?v={{ buildTime }}"></script>
+<script type="module" src="/assets/js/wt-admin-home.js?v={{ buildTime }}"></script>
