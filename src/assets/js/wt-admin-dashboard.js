@@ -254,15 +254,33 @@ function renderDeviceSection(d) {
     </p>
     <div class="adm-grid-2">
       ${deviceTable('Platform', dev.os, 'device_os', errors, sessionsAndEvents)}
-      ${deviceTable('Screen size', dev.screens, 'device_screens', errors, sessionsAndEvents)}
-    </div>
-    <div class="adm-grid-2">
       ${deviceTable('OS version', dev.os_versions, 'device_os_versions', errors, sessions)}
-      ${deviceTable('Device model', dev.models, 'device_models', errors, sessions)}
     </div>
     <div class="adm-grid-2">
+      ${deviceTable('Device model', dev.models, 'device_models', errors, sessions)}
       ${deviceTable('App version', dev.app_versions, 'device_app_versions', errors, sessionsAndEvents)}
-      ${deviceTable('Real device vs simulator', dev.environment, 'device_environment', errors, sessionsAndEvents)}
+    </div>
+    ${deviceTable('Real device vs simulator', dev.environment, 'device_environment', errors, sessionsAndEvents)}`;
+}
+
+// ── Where users are (App tab) ───────────────────────────────────────
+// Same table component and payload shape as the device breakdowns; PostHog
+// resolves these from the request IP, so the app sends nothing for them.
+function renderLocationSection(d) {
+  const errors = d.errors || {};
+  const loc = d.location || {};
+  const sessions = [{ label: 'Sessions', field: 'sessions' }];
+  const sessionsAndEvents = [{ label: 'Sessions', field: 'sessions' }, { label: 'Events', field: 'events' }];
+
+  return `
+    <h2 class="adm-section-h">Location</h2>
+    <p class="acct-sub" style="margin:-4px 0 16px;">
+      Where users opened the app, resolved from their IP. Mobile carrier IPs often
+      do not resolve to a city, so those rows are grouped by country.
+    </p>
+    <div class="adm-grid-2">
+      ${deviceTable('Country', loc.countries, 'location_countries', errors, sessionsAndEvents)}
+      ${deviceTable('City', loc.cities, 'location_cities', errors, sessions)}
     </div>`;
 }
 
@@ -336,7 +354,8 @@ function renderAppAnalytics(d) {
     ${seriesCard}
     ${topEventsCard}
     ${funnelCards}
-    ${renderDeviceSection(d)}`;
+    ${renderDeviceSection(d)}
+    ${renderLocationSection(d)}`;
 
   wireRangeBtns();
 }
