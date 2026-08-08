@@ -135,7 +135,7 @@
 
 .gate-msg { text-align: center; color: var(--wg600); padding: 40px 0; }
 
-/* ── Affiliate dashboard ─────────────────────────────────────────── */
+/* ── Partner dashboard ───────────────────────────────────────────── */
 .dash { max-width: 1080px; margin: 0 auto; padding: 56px 24px 96px; }
 .dash-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; flex-wrap: wrap; margin-bottom: 28px; }
 .dash-head h1 { font-family: var(--serif); color: var(--navy); font-size: clamp(1.8rem, 4vw, 2.4rem); margin: 4px 0 0; }

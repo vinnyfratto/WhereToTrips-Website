@@ -1,8 +1,9 @@
 // ───────────────────────────────────────────────────────────────────
-//  wt-dashboard.js — affiliate dashboard (Step 4).
-//  Gated: requires a logged-in user with an affiliates row. Pulls all
+//  wt-partner-dashboard.js — partner dashboard (Step 4).
+//  Gated: requires a logged-in user with an affiliates row (the program's
+//  internal/DB name for a partner — see get-affiliate-stats). Pulls all
 //  numbers from the get-affiliate-stats edge fn (server-side, caller-scoped
-//  — no cross-affiliate data). Renders identity + cards + charts + funnel,
+//  — no cross-partner data). Renders identity + cards + charts + funnel,
 //  and embeds the shared profile editor (wt-profile.js).
 // ───────────────────────────────────────────────────────────────────
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';

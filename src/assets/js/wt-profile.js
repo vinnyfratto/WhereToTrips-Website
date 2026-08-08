@@ -2,7 +2,8 @@
 //  wt-profile.js — shared profile editor (Step 2 + Step 4).
 //  initProfileForm(supabase, user, opts) loads the profile into the form,
 //  wires Save + Logout. Used by both /account/profile (wt-auth.js) and the
-//  affiliate /dashboard (wt-dashboard.js) so there's ONE editor, ONE client.
+//  /partner-dashboard (wt-partner-dashboard.js) so there's ONE editor, ONE
+//  client.
 //  Assumes the standard field ids: wt-first/last/phone/photo/marketing/email
 //  + flight prefs (wt-airport/seat/airlines/stops/budgetflex/dateflex).
 // ───────────────────────────────────────────────────────────────────

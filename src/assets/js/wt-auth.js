@@ -212,13 +212,14 @@ async function initProfile() {
   }
   const user = sess.session.user;
 
-  // Shared editor (same one the affiliate dashboard embeds).
+  // Shared editor (same one the partner dashboard embeds).
   await initProfileForm(supabase, user);
 
   if (gate) gate.style.display = 'none';
   root.style.display = 'block';
 
-  // Reveal the affiliate dashboard link if this user is an affiliate.
+  // Reveal the partner dashboard link if this user is an affiliate (the
+  // program's internal/DB name for a partner — see get-affiliate-stats).
   try {
     const { data: aff } = await supabase
       .from('affiliates').select('id').eq('user_id', user.id).maybeSingle();
