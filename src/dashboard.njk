@@ -81,6 +81,46 @@ eleventyExcludeFromCollections: true
       </div>
     </div>
 
+    {# Content submissions #}
+    <div class="acct-card" id="content-submissions" style="margin-top:10px;">
+      <h2 class="acct-section-title" style="margin-top:0;">Submit your content</h2>
+      <p class="acct-sub">Posted a blog, video, or social post about WhereTo? Log it here so we can track it.</p>
+      <div id="content-sub-alert" class="alert" role="status" aria-live="polite"></div>
+
+      <form id="content-sub-form" novalidate>
+        <div class="field-row">
+          <div class="field">
+            <label for="cs-platform">Platform</label>
+            <select id="cs-platform" name="platform">
+              <option value="instagram">Instagram</option>
+              <option value="tiktok">TikTok</option>
+              <option value="youtube">YouTube</option>
+              <option value="facebook">Facebook</option>
+              <option value="twitter">X / Twitter</option>
+              <option value="blog">Blog / Website</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="cs-url">Content link</label>
+            <input id="cs-url" name="content_url" type="url" placeholder="https://…" required />
+          </div>
+        </div>
+        <div class="field">
+          <label for="cs-title">Title / caption <span class="hint">(optional)</span></label>
+          <input id="cs-title" name="title" type="text" placeholder="e.g. Our Iceland trip with WhereTo" />
+        </div>
+        <div class="field">
+          <label for="cs-notes">Notes <span class="hint">(optional)</span></label>
+          <textarea id="cs-notes" name="notes" rows="3" placeholder="Anything else we should know?"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit content</button>
+      </form>
+
+      <h2 class="acct-section-title">Your submissions</h2>
+      <div id="content-sub-list" class="adm-wrap-scroll">Loading…</div>
+    </div>
+
     {# Embedded profile editor (shared with /account/profile) #}
     <div class="acct-card" id="profile" style="margin-top:10px;">
       <h2 class="acct-section-title" style="margin-top:0;">Account &amp; travel preferences</h2>

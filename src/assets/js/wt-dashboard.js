@@ -7,6 +7,7 @@
 // ───────────────────────────────────────────────────────────────────
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { initProfileForm } from './wt-profile.js';
+import { initContentSubmissions } from './wt-content-submissions.js';
 import Chart from 'https://esm.sh/chart.js@4/auto';
 
 const cfg = window.WT_SUPABASE || {};
@@ -83,6 +84,8 @@ async function init() {
   renderIdentity(stats.affiliate);
   renderCards(stats.totals);
   renderCharts(stats.series, stats.funnel, stats.totals.currency);
+
+  await initContentSubmissions(supabase, user);
 
   // Embedded profile editor (shared with /account/profile).
   await initProfileForm(supabase, user, { alertId: 'wt-prof-alert' });

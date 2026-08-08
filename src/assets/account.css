@@ -50,7 +50,8 @@
 .field input[type="password"],
 .field input[type="tel"],
 .field input[type="url"],
-.field select {
+.field select,
+.field textarea {
   width: 100%;
   font-family: var(--sans);
   font-size: 1rem;
@@ -61,8 +62,10 @@
   padding: 12px 14px;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
+.field textarea { resize: vertical; }
 .field input:focus,
-.field select:focus {
+.field select:focus,
+.field textarea:focus {
   outline: none;
   border-color: var(--rust);
   box-shadow: 0 0 0 3px rgba(184, 92, 56, 0.15);
