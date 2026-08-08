@@ -5,6 +5,7 @@
 //  the affiliate via the create-affiliate edge function.
 // ───────────────────────────────────────────────────────────────────
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { initPasswordToggles } from './wt-password-toggle.js';
 
 const cfg = window.WT_SUPABASE || {};
 const supabase = createClient(cfg.url, cfg.anonKey, {
@@ -61,6 +62,7 @@ const ERRORS = {
 async function init() {
   const root = $('wt-affsignup');
   if (!root) return;
+  initPasswordToggles();
 
   const token = new URLSearchParams(location.search).get('invite');
   const loadingEl = $('aff-loading');

@@ -8,6 +8,7 @@
 // ───────────────────────────────────────────────────────────────────
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { initProfileForm } from './wt-profile.js';
+import { initPasswordToggles } from './wt-password-toggle.js';
 
 const cfg = window.WT_SUPABASE || {};
 export const supabase = createClient(cfg.url, cfg.anonKey, {
@@ -251,6 +252,7 @@ async function initAccountIndex() {
 
 // ── Router ──────────────────────────────────────────────────────────
 function boot() {
+  initPasswordToggles();
   const root = document.querySelector('[data-wt-page]');
   const page = root ? root.getAttribute('data-wt-page') : null;
   switch (page) {

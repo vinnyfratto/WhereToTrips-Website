@@ -45,7 +45,10 @@ eleventyExcludeFromCollections: true
         </div>
         <div class="field">
           <label for="aff-password">Password <span class="hint">(min. 8 characters)</span></label>
-          <input id="aff-password" name="password" type="password" autocomplete="new-password" minlength="8" />
+          <div class="pw-field">
+            <input id="aff-password" name="password" type="password" autocomplete="new-password" minlength="8" />
+            <button type="button" class="pw-toggle" aria-label="Show password"></button>
+          </div>
         </div>
       </div>
 
