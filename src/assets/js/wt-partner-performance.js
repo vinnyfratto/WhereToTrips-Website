@@ -98,22 +98,32 @@ function renderCards(t) {
 function renderCharts(series, funnel, currency) {
   const navy = cssVar('--navy', '#313131');
   const rust = cssVar('--rust', '#209CE0');
+  const amber = cssVar('--amber', '#E69800');
   const grid = 'rgba(28,54,73,0.08)';
   Chart.defaults.font.family = cssVar('--sans', 'system-ui, sans-serif');
   Chart.defaults.color = '#5C616A';
 
-  // 1) Referred signups over time (line).
+  // 1) Referred signups + first logins over time (line).
   new Chart($('chart-signups'), {
     type: 'line',
     data: {
       labels: series.labels,
-      datasets: [{
-        label: 'Referred signups',
-        data: series.signups,
-        borderColor: rust,
-        backgroundColor: 'rgba(32,156,224,0.12)',
-        fill: true, tension: 0.3, pointRadius: 0, borderWidth: 2,
-      }],
+      datasets: [
+        {
+          label: 'Referred signups',
+          data: series.signups,
+          borderColor: rust,
+          backgroundColor: 'rgba(32,156,224,0.12)',
+          fill: true, tension: 0.3, pointRadius: 0, borderWidth: 2,
+        },
+        {
+          label: 'First logins',
+          data: series.first_logins,
+          borderColor: amber,
+          backgroundColor: 'rgba(230,152,0,0.12)',
+          fill: true, tension: 0.3, pointRadius: 0, borderWidth: 2,
+        },
+      ],
     },
     options: chartOpts(grid),
   });
@@ -141,11 +151,11 @@ function renderCharts(series, funnel, currency) {
   new Chart($('chart-funnel'), {
     type: 'bar',
     data: {
-      labels: ['Clicks', 'Signups', 'Bookings'],
+      labels: ['Clicks', 'Signups', 'First Logins', 'Bookings'],
       datasets: [{
         label: 'Count',
-        data: [funnel.clicks, funnel.signups, funnel.bookings],
-        backgroundColor: [navy, '#4A4A4A', rust],
+        data: [funnel.clicks, funnel.signups, funnel.app_signins, funnel.bookings],
+        backgroundColor: [navy, '#4A4A4A', amber, rust],
         borderRadius: 4,
       }],
     },
