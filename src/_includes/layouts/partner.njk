@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% include "partials/meta.njk" %}
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      /* ── App "Azure / Amber / Charcoal" palette — same tokens as
+         layouts/base.njk, duplicated here because this layout deliberately
+         does NOT chain through base.njk (that's what swaps out the header). ── */
+      --cream:      #FFFFFF;
+      --tint:       #F2F5F7;
+      --card:       #FFFFFF;
+      --navy:       #313131;
+      --navy-light: #4A4A4A;
+      --ink-soft:   #5C616A;
+      --ink-muted:  #8A9098;
+      --rust:        #209CE0;
+      --azure:       #209CE0;
+      --azure-press: #1B86C2;
+      --azure-tint:  #E6F4FC;
+      --amber:       #E69800;
+      --amber-tint:  #FBEFD6;
+      --footer:      #262626;
+      --footer-low:  #1C1C1C;
+      --wg100: #F7F9FA;
+      --wg200: #E2E7EB;
+      --wg300: #D2D8DD;
+      --wg400: #AEB4BB;
+      --wg500: #8A9098;
+      --wg600: #5C616A;
+      --serif: 'RCL Morland', Georgia, 'Times New Roman', serif;
+      --sans:  'Noto Sans', system-ui, -apple-system, sans-serif;
+      --max: 1200px;
+      --wide: 1425px;
+      --radius-lg: 20px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --shadow-sm: 0 2px 12px rgba(20,30,40,0.06);
+      --shadow-md: 0 10px 40px rgba(50,50,50,0.10);
+      --shadow-lg: 0 20px 60px rgba(20,30,40,0.14);
+      --shadow-xl: 0 30px 80px rgba(20,30,40,0.18);
+    }
+  </style>
+  <link rel="stylesheet" href="/assets/styles.css?v={{ buildTime }}" />
+  <link rel="stylesheet" href="/assets/account.css?v={{ buildTime }}" />
+  {#- Public Supabase config (anon key — RLS-gated, safe to expose). Consumed by /assets/js/wt-partner-*.js -#}
+  <script>window.WT_SUPABASE = { url: "{{ supabase.url }}", anonKey: "{{ supabase.anonKey }}" };</script>
+  <script>
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    posthog.init('{{ site.analytics.posthogKey }}', {
+      api_host: '{{ site.analytics.posthogHost }}',
+      person_profiles: 'identified_only',
+    });
+    posthog.register({ platform: 'website' });
+  </script>
+</head>
+<body>
+{% include "partials/partner-header.njk" %}
+
+<a id="top"></a>
+{{ content | safe }}
+
+</body>
+</html>

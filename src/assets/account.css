@@ -199,6 +199,32 @@
 .chart-card.full { grid-column: 1 / -1; }
 .chart-card.full .canvas-wrap { height: 180px; }
 
+/* Partner portal header — deliberately separate from the marketing
+   site header (partials/header.njk): same logo + palette, its own nav.
+   Loaded by layouts/partner.njk, not layouts/base.njk. */
+.pnr-header { border-bottom: 1px solid var(--wg200); background: var(--card); }
+.pnr-nav { display: flex; align-items: center; gap: 22px; height: 72px; }
+.pnr-nav .brand { flex: 0 0 auto; display: flex; align-items: center; }
+.pnr-tag {
+  font-family: var(--sans); font-weight: 600; font-size: 0.7rem;
+  letter-spacing: 1.2px; text-transform: uppercase; color: var(--wg500);
+  border-left: 1px solid var(--wg300); padding-left: 20px; white-space: nowrap;
+}
+.pnr-links { display: flex; gap: 4px; margin-left: auto; }
+.pnr-links a {
+  font-family: var(--sans); font-weight: 600; font-size: 0.86rem;
+  color: var(--wg600); padding: 8px 16px; border-radius: 999px;
+  transition: color .15s ease, background .15s ease;
+}
+.pnr-links a:hover { color: var(--navy); background: var(--wg100); }
+.pnr-links a.is-active { color: var(--rust); background: var(--azure-tint, var(--wg100)); }
+.pnr-logout { flex: 0 0 auto; }
+@media (max-width: 760px) {
+  .pnr-nav { height: auto; flex-wrap: wrap; padding: 14px 0; gap: 12px; }
+  .pnr-tag { display: none; }
+  .pnr-links { margin-left: 0; order: 3; width: 100%; overflow-x: auto; }
+}
+
 /* ── Admin panel ─────────────────────────────────────────────────── */
 .adm-tabs { display: flex; gap: 6px; flex-wrap: wrap; border-bottom: 1px solid var(--wg200); margin-bottom: 22px; }
 .adm-tab {

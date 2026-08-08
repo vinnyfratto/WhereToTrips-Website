@@ -1,0 +1,75 @@
+---
+layout: layouts/partner.njk
+permalink: /partner-dashboard/content/index.html
+title: "Submit Content — Partner Portal — WhereTo"
+description: "Submit promotional content as a WhereTo partner."
+eleventyExcludeFromCollections: true
+navActive: content
+---
+<main id="wt-dash-page">
+
+  {# Loading / gate #}
+  <div id="wt-dash-gate" class="gate-msg">Loading…</div>
+
+  {# Not a partner #}
+  <div id="wt-dash-notaff" class="acct" style="display:none;">
+    <div class="acct-card" style="text-align:center;">
+      <p class="eyebrow">Partner program</p>
+      <h1>You're not a partner yet</h1>
+      <p class="acct-sub">This page is for WhereTo partners. Partner accounts are invitation-only.</p>
+      <p><a class="btn btn-primary" href="/account/profile/">Back to my account</a></p>
+      <p class="acct-links"><a href="/partners/creators/">Learn about the creator program</a></p>
+    </div>
+  </div>
+
+  {# Submit Content #}
+  <div id="wt-dash-root" class="dash" style="display:none;">
+
+    <div class="dash-head">
+      <div>
+        <p class="eyebrow">Submit content</p>
+        <h1>Your content</h1>
+      </div>
+    </div>
+
+    <div class="acct-card" id="content-submissions">
+      <p class="acct-sub">Posted a blog, video, or social post about WhereTo? Log it here so we can track it.</p>
+      <div id="content-sub-alert" class="alert" role="status" aria-live="polite"></div>
+
+      <form id="content-sub-form" novalidate>
+        <div class="field-row">
+          <div class="field">
+            <label for="cs-platform">Platform</label>
+            <select id="cs-platform" name="platform">
+              <option value="instagram">Instagram</option>
+              <option value="tiktok">TikTok</option>
+              <option value="youtube">YouTube</option>
+              <option value="facebook">Facebook</option>
+              <option value="twitter">X / Twitter</option>
+              <option value="blog">Blog / Website</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="cs-url">Content link</label>
+            <input id="cs-url" name="content_url" type="url" placeholder="https://…" required />
+          </div>
+        </div>
+        <div class="field">
+          <label for="cs-title">Title / caption <span class="hint">(optional)</span></label>
+          <input id="cs-title" name="title" type="text" placeholder="e.g. Our Iceland trip with WhereTo" />
+        </div>
+        <div class="field">
+          <label for="cs-notes">Notes <span class="hint">(optional)</span></label>
+          <textarea id="cs-notes" name="notes" rows="3" placeholder="Anything else we should know?"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit content</button>
+      </form>
+
+      <h2 class="acct-section-title">Your submissions</h2>
+      <div id="content-sub-list" class="adm-wrap-scroll">Loading…</div>
+    </div>
+
+  </div>
+</main>
+<script type="module" src="/assets/js/wt-partner-content.js?v={{ buildTime }}"></script>

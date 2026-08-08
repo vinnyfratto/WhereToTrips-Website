@@ -1,0 +1,18 @@
+{#- Partner portal header — intentionally separate from partials/header.njk
+    (the marketing site nav). Same logo + palette, own nav: Performance /
+    Submit Content / Settings, each a real URL (navActive set per-page in
+    frontmatter drives the active state below). -#}
+<header class="pnr-header">
+  <div class="wrap pnr-nav">
+    <a class="brand" href="/" aria-label="{{ site.brandName }} home">
+      <img class="brand-logo" src="/assets/whereto-logo-azure.svg?v={{ buildTime }}" alt="{{ site.brandName }}" width="171" height="34" />
+    </a>
+    <span class="pnr-tag">Partner Portal</span>
+    <nav class="pnr-links" aria-label="Partner">
+      <a href="/partner-dashboard/" class="{{ 'is-active' if navActive == 'performance' else '' }}">Performance</a>
+      <a href="/partner-dashboard/content/" class="{{ 'is-active' if navActive == 'content' else '' }}">Submit Content</a>
+      <a href="/partner-dashboard/settings/" class="{{ 'is-active' if navActive == 'settings' else '' }}">Settings</a>
+    </nav>
+    <button id="wt-logout" type="button" class="btn btn-ghost btn-xs pnr-logout">Log out</button>
+  </div>
+</header>

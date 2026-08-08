@@ -1,9 +1,10 @@
 // ───────────────────────────────────────────────────────────────────
 //  wt-profile.js — shared profile editor (Step 2 + Step 4).
 //  initProfileForm(supabase, user, opts) loads the profile into the form,
-//  wires Save + Logout. Used by both /account/profile (wt-auth.js) and the
-//  /partner-dashboard (wt-partner-dashboard.js) so there's ONE editor, ONE
-//  client.
+//  wires Save + Logout. Used by both /account/profile (wt-auth.js) and
+//  /partner-dashboard/settings/ (wt-partner-settings.js) so there's ONE
+//  editor, ONE client. The partner-settings caller passes a non-existent
+//  logoutId — its shared header already wires #wt-logout once itself.
 //  Assumes the standard field ids: wt-first/last/phone/photo/marketing/email
 //  + flight prefs (wt-airport/seat/airlines/stops/budgetflex/dateflex).
 // ───────────────────────────────────────────────────────────────────
