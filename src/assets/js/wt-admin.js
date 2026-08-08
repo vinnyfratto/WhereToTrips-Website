@@ -237,6 +237,7 @@ function renderAffiliatesTable() {
       <td><strong>${esc(a.code)}</strong></td>
       <td>${esc(a.display_name || '—')}</td>
       <td><span class="adm-pill ${a.status}">${a.status}</span></td>
+      <td class="num">${a.clicks}</td>
       <td class="num">${a.referrals}</td>
       <td class="num">${a.app_signins}</td>
       <td class="num">${a.searches}</td>
@@ -245,12 +246,12 @@ function renderAffiliatesTable() {
       <td><button class="btn btn-ghost btn-xs" data-edit="${a.id}">${affExpanded.has(a.id) ? 'Close' : 'Edit'}</button></td>
     </tr>`;
     const editor = affExpanded.has(a.id)
-      ? `<tr class="adm-detail"><td colspan="9">${affEditorHtml(a)}</td></tr>` : '';
+      ? `<tr class="adm-detail"><td colspan="10">${affEditorHtml(a)}</td></tr>` : '';
     return main + editor;
   }).join('');
   $('#aff-list').innerHTML = `<table class="adm-table">
-    <thead><tr><th>Code</th><th>Name</th><th>Status</th><th class="num">Signups</th><th class="num">App Sign-Ins</th><th class="num">Searches</th><th class="num">Bookings</th><th class="num">Commission</th><th></th></tr></thead>
-    <tbody>${rows || '<tr><td colspan="9">No affiliates yet.</td></tr>'}</tbody></table>`;
+    <thead><tr><th>Code</th><th>Name</th><th>Status</th><th class="num">Clicks</th><th class="num">Signups</th><th class="num">App Sign-Ins</th><th class="num">Searches</th><th class="num">Bookings</th><th class="num">Commission</th><th></th></tr></thead>
+    <tbody>${rows || '<tr><td colspan="10">No affiliates yet.</td></tr>'}</tbody></table>`;
 
   $('#aff-list').querySelectorAll('[data-edit]').forEach((b) => {
     b.addEventListener('click', () => {
