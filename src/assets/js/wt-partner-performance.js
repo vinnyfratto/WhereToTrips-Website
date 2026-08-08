@@ -87,6 +87,7 @@ function renderCommissionStructure(a) {
 function renderCards(t) {
   $('card-clicks').textContent = t.clicks;
   $('card-referrals').textContent = t.referrals;
+  $('card-first-logins').textContent = t.app_signins;
   $('card-bookings').textContent = t.bookings;
   $('card-commission').textContent = money(t.commission.earned_total, t.currency);
   $('comm-pending').textContent = money(t.commission.pending, t.currency);
