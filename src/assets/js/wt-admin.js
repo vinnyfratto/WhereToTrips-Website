@@ -113,6 +113,10 @@ function renderOverview(d) {
       ${card('Approved', money(t.commission_approved))}
       ${card('Paid', money(t.commission_paid))}
     </div>
+    <div class="adm-grid-2" style="margin-bottom:22px;">
+      ${card('App sign-ins', t.app_signins)}
+      ${card('Searches', t.searches)}
+    </div>
     <div class="adm-card">
       <h3>Top performers</h3>
       <div class="adm-wrap-scroll"><table class="adm-table">
@@ -234,17 +238,19 @@ function renderAffiliatesTable() {
       <td>${esc(a.display_name || '—')}</td>
       <td><span class="adm-pill ${a.status}">${a.status}</span></td>
       <td class="num">${a.referrals}</td>
+      <td class="num">${a.app_signins}</td>
+      <td class="num">${a.searches}</td>
       <td class="num">${a.bookings}</td>
       <td class="num">${money(a.pending + a.approved + a.paid)}</td>
       <td><button class="btn btn-ghost btn-xs" data-edit="${a.id}">${affExpanded.has(a.id) ? 'Close' : 'Edit'}</button></td>
     </tr>`;
     const editor = affExpanded.has(a.id)
-      ? `<tr class="adm-detail"><td colspan="7">${affEditorHtml(a)}</td></tr>` : '';
+      ? `<tr class="adm-detail"><td colspan="9">${affEditorHtml(a)}</td></tr>` : '';
     return main + editor;
   }).join('');
   $('#aff-list').innerHTML = `<table class="adm-table">
-    <thead><tr><th>Code</th><th>Name</th><th>Status</th><th class="num">Signups</th><th class="num">Bookings</th><th class="num">Commission</th><th></th></tr></thead>
-    <tbody>${rows || '<tr><td colspan="7">No affiliates yet.</td></tr>'}</tbody></table>`;
+    <thead><tr><th>Code</th><th>Name</th><th>Status</th><th class="num">Signups</th><th class="num">App Sign-Ins</th><th class="num">Searches</th><th class="num">Bookings</th><th class="num">Commission</th><th></th></tr></thead>
+    <tbody>${rows || '<tr><td colspan="9">No affiliates yet.</td></tr>'}</tbody></table>`;
 
   $('#aff-list').querySelectorAll('[data-edit]').forEach((b) => {
     b.addEventListener('click', () => {
