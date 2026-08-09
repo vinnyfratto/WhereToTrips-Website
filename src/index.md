@@ -4,20 +4,20 @@ description: WhereTo is a travel discovery app for iOS and Android. Tell it your
 layout: layouts/page.njk
 sections:
   - type: hero
-    eyebrow: It's about time the travel app industry got disrupted buy someone with the travelers best interests
+    eyebrow: Finally, a travel app built for travelers!
     title:
       pre: Where will your vibes
       accent: take you?
       post: ''
     lede: |-
-      The only travel app on the map that is truly interesting in you and what you want to experience. 
+      WhereTo is the only travel app on the map that is truly interested in you and what you want to experience. 
       Not just what airport you want to fly to.
     primaryBtn:
       label: Become a Beta Tester
-      href: '/beta-signup/'
+      href: /beta-signup/
     ghostBtn:
       label: Notify me when Launched
-      href: '/notify-launch/'
+      href: /notify-launch/
     slides:
       - src: /media/WhereTo_Hero_Beach.jpg
         alt: Turquoise water lapping a wide tropical beach from above
@@ -43,13 +43,22 @@ sections:
         text: |-
           Imagine being able to plan and book together.
           Now you can!
-  - type: rich_text
+  - type: feature_split
+    eyebrow: WhereTo Family Teaser
     title:
-      pre: Everyone else hands you a blank search bar and calls it a
-      accent: day
-      post: .
-    id: problem
-    body: <p style="text-align:center;">Most travel sites expect the hardest part — the destination — to just appear in your head first. WhereTo flips the order. Tell us your budget, your dates, who's coming, and the kind of trip you're craving — moody European alleyways, a sun-drenched beach nap, a food crawl that ends in a nap on someone's balcony — and we'll tell you exactly where that trip exists in the real world, for real money.</p>
+      pre: Four ways to search.
+      accent: One engine
+      post: underneath.
+    lede: Starting from zero, narrowing down a region you already love, want to talk it out, or already know your destination — there's a WhereTo mode built for exactly how much you already know.
+    image:
+      src: /media/oniPhone_2.png
+      alt: Phone mockup showing the WhereTo Explore screen
+      transparent: true
+    id: vibes
+    body: ''
+    cta:
+      label: Explore the WhereTo Family
+      href: /whereto/
   - type: steps
     eyebrow: How it works
     title:
@@ -65,46 +74,38 @@ sections:
         body: An engine built on hundreds of travel styles, not ten generic tags.
       - title: Get a ranked shortlist
         body: Real destinations, each with a plain-English reason why it fits.
-  - type: feature_split
-    eyebrow: WhereTo Family Teaser
-    title:
-      pre: Four ways to search.
-      accent: One engine
-      post: underneath.
-    lede: Starting from zero, narrowing down a region you already love, want to talk it out, or already know your destination — there's a WhereTo mode built for exactly how much you already know.
-    image:
-      src: /media/vibes.jpg
-      alt: Aerial view of a turquoise lagoon surrounded by white sand
-      transparent: true
-    id: vibes
-    cta:
-      label: Explore the WhereTo Family
-      href: /whereto/
   - type: tile_grid
     eyebrow: Why travelers love WhereTo
     title:
       pre: This isn't a mood board. It's a
       accent: shortlist you can book
       post: .
+    id: ''
     background: true
     center: true
+    intro: ''
     columns: 3
     tiles:
       - label: Real recommendations
         blurb: Not inspiration — every destination comes with a fit score, a reason why, and an honest trade-off.
         icon: global
+        href: ''
       - label: A serious Vibe Engine
         blurb: Hundreds of travel vibes, tiered and scored under the hood, simple to use on top.
         icon: compass
+        href: ''
       - label: Global, not a shortlist
         blurb: We don't limit you to fifty "curated" cities. If it's a real place worth visiting, it's in play.
         icon: map-point-favourite
+        href: ''
       - label: Straight to booking
         blurb: Once you find it, book flights, hotels, and a rental car right in the app.
         icon: wallet-money
+        href: ''
       - label: Group-proof
         blurb: Everyone's vibe and budget, reconciled into one recommendation the whole trip can live with.
         icon: users-group-rounded
+        href: ''
       - label: No pressure, no games
         blurb: Estimated costs are always labeled as estimates; final pricing is confirmed by our booking partners, plainly disclosed.
         icon: plane
