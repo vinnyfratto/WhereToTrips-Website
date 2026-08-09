@@ -13,10 +13,10 @@ sections:
       The only travel app on the map that is truly interesting in you and what you want to experience. 
       Not just what airport you want to fly to.
     primaryBtn:
-      label: Get the App
+      label: Become a Beta Tester
       href: '#download'
     ghostBtn:
-      label: See how it works
+      label: Notify me when Launched
       href: '#how'
     slides:
       - src: /media/WhereTo_Hero_Beach.jpg
