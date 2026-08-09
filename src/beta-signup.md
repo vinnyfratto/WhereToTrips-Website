@@ -6,19 +6,17 @@ sections:
   - type: hero
     eyebrow: Beta program
     title:
-      pre: Help us build
-      accent: WhereTo
+      pre: Limited Beta
+      accent: Availability
       post: .
-    lede: Get early access before launch. Real feedback from real travelers is what makes this app worth using.
+    lede: Looking for beta testers of all levels of beta testing experience. Real feedback from real travelers is what makes this app worth using. Your feedback is as important to us as it is to you.
     primaryBtn: null
     ghostBtn: null
     image:
       src: /media/oniPhone_2.png
       alt: WhereTo App on Iphone + Andriod
       transparent: true
-    badge:
-      title: Limited Beta Availability
-      subtitle: Get in before all spots are filled
+    badge: null
   - type: beta_signup_form
     eyebrow: Beta signup
     title:
