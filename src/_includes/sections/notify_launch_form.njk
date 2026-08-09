@@ -1,0 +1,57 @@
+<section class="block{% if s.background %} tint{% endif %}" id="{{ s.id or 'notify-launch' }}">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      {% if s.eyebrow %}<span class="eyebrow">{{ s.eyebrow }}</span>{% endif %}
+      {% if s.title %}<h2>{{ s.title.pre }} <span class="italic">{{ s.title.accent }}</span>{{ s.title.post }}</h2>{% endif %}
+      {% if s.body %}<p class="lede">{{ s.body }}</p>{% endif %}
+    </div>
+
+    <form class="contact-form reveal reveal-delay-1" id="notify-launch-form" action="https://api.web3forms.com/submit" method="POST">
+      <input type="hidden" name="access_key" value="{{ site.forms.accessKey }}" />
+      <input type="hidden" name="subject" value="Notify at launch — WhereTo" />
+      <input type="hidden" name="intent" value="notify_launch" />
+      <input type="hidden" name="message" id="notify-message" value="" />
+      <input type="text" name="hp_field" style="position:absolute; left:-9999px;" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+      <input type="text" name="name" placeholder="Your name" aria-label="Your name" required />
+      <input type="email" name="email" placeholder="you@email.com" aria-label="Email address" required />
+
+      <select name="device" aria-label="Device" required>
+        <option value="" disabled selected>Which device do you use?</option>
+        <option value="Apple (iPhone/iPad)">Apple (iPhone/iPad)</option>
+        <option value="Android">Android</option>
+        <option value="Both">Both</option>
+      </select>
+
+      <select name="source" aria-label="Where did you hear about WhereTo" required>
+        <option value="" disabled selected>Where did you hear about WhereTo?</option>
+        <option value="Social media">Social media</option>
+        <option value="Friend or family">Friend or family</option>
+        <option value="App Store / Google Play">App Store / Google Play</option>
+        <option value="Search engine">Search engine</option>
+        <option value="Press or blog">Press or blog</option>
+        <option value="Other">Other</option>
+      </select>
+
+      <textarea name="comments" id="notify-comments" rows="4" placeholder="Any comments you'd like to share? (optional)" aria-label="Comments"></textarea>
+
+      <button type="submit" class="btn btn-primary">{{ s.buttonLabel or 'Notify me at launch' }}</button>
+    </form>
+  </div>
+</section>
+
+<script>
+(function () {
+  var form = document.getElementById('notify-launch-form');
+  if (!form) return;
+  form.addEventListener('submit', function () {
+    var fd = new FormData(form);
+    var parts = [
+      'Device: ' + (fd.get('device') || ''),
+      'Heard about WhereTo via: ' + (fd.get('source') || ''),
+      'Comments: ' + (fd.get('comments') || '(none)')
+    ];
+    document.getElementById('notify-message').value = parts.join(' | ');
+  });
+})();
+</script>

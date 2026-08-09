@@ -14,10 +14,10 @@ sections:
       Not just what airport you want to fly to.
     primaryBtn:
       label: Become a Beta Tester
-      href: '#download'
+      href: '/beta-signup/'
     ghostBtn:
       label: Notify me when Launched
-      href: '#how'
+      href: '/notify-launch/'
     slides:
       - src: /media/WhereTo_Hero_Beach.jpg
         alt: Turquoise water lapping a wide tropical beach from above
