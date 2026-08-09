@@ -6,10 +6,10 @@ sections:
   - type: hero
     eyebrow: Beta program
     title:
-      pre: Limited Beta
+      pre: Limited
       accent: Availability
       post: .
-    lede: Looking for beta testers of all levels of beta testing experience. Real feedback from real travelers is what makes this app worth using. Your feedback is as important to us as it is to you.
+    lede: We are looking for beta testers of all levels of beta testing experience. Real feedback from real travelers is what makes this app worth using. Your feedback is as important to us as it is to you.
     primaryBtn: null
     ghostBtn: null
     image:
