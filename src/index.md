@@ -25,8 +25,6 @@ sections:
         alt: A glittering city skyline at dusk
       - src: /media/WhereTo_Hero_Mountain.jpg
         alt: A palm-fringed island lagoon
-      - src: /media/hero/desert.jpg
-        alt: Golden sand dunes rolling to the horizon
   - type: highlights
     items:
       - icon: wallet-money
