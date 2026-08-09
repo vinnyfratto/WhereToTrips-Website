@@ -30,17 +30,17 @@ sections:
   - type: highlights
     items:
       - icon: wallet-money
-        title: Budget-first
-        text: Your number drives the trip, not the other way around.
+        title: You first
+        text: Your drive the trip, not the other way around.
       - icon: compass
-        title: 150+ Vibes
-        text: Match a feeling to real destinations worldwide.
+        title: 800+ Vibes
+        text: We'll match your vibes to real destinations.
       - icon: plane
-        title: Real flights
-        text: Live pricing on routes you'd never have searched.
+        title: All major airlines
+        text: Book flights on all major airlines and all major hotels
       - icon: users-group-rounded
         title: Group travel
-        text: Plan and decide together with Wander Together.
+        text: Imagine being able to plain and book together. Now you can!
   - type: rich_text
     title:
       pre: Everyone else hands you a blank search bar and calls it a
