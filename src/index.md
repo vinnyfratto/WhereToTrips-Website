@@ -35,7 +35,7 @@ sections:
       - icon: compass
         title: 800+ Vibes
         text: We'll match your vibes to real destinations worldwide.
-      - icon: globe
+      - icon: plane
         title: All major airlines
         text: Book flights on all major airlines and all major hotels
       - icon: users-group-rounded
