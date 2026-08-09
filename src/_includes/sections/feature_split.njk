@@ -2,7 +2,7 @@
   <div class="wrap">
     <div class="feature-split{% if s.flip %} flip{% endif %}">
       <div class="feature-img-wrap reveal{% if s.flip %} reveal-delay-1{% endif %}">
-        <img class="feature-img"{% if s.chips %} data-chip-target{% endif %} src="{{ s.image.src }}" alt="{{ s.image.alt }}" loading="lazy" />
+        <img class="feature-img{% if s.image.transparent %} img-transparent{% endif %}"{% if s.chips %} data-chip-target{% endif %} src="{{ s.image.src }}" alt="{{ s.image.alt }}" loading="lazy" />
         {% if s.stats %}
         {% for st in s.stats %}
         <div class="feature-stat" style="{% if loop.first %}top: 28px; right: -20px;{% else %}bottom: 40px; right: -20px;{% endif %}">
@@ -12,7 +12,7 @@
         {% endfor %}
         {% endif %}
         {% if s.image2 %}
-        <img class="feature-img-2 reveal reveal-delay-2" src="{{ s.image2.src }}" alt="{{ s.image2.alt }}" loading="lazy" />
+        <img class="feature-img-2 reveal reveal-delay-2{% if s.image2.transparent %} img-transparent{% endif %}" src="{{ s.image2.src }}" alt="{{ s.image2.alt }}" loading="lazy" />
         {% endif %}
       </div>
       <div class="feature-text reveal{% if not s.flip %} reveal-delay-1{% endif %}">

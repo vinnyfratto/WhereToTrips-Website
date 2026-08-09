@@ -79,6 +79,7 @@ collections:
                     fields:
                       - { name: src, widget: image }
                       - { name: alt, widget: string }
+                      - { label: "Image on Transparent (skip the white card + shadow)", name: transparent, widget: boolean, default: false, required: false }
                   - label: Floating badge
                     name: badge
                     widget: object
@@ -109,6 +110,7 @@ collections:
                     fields:
                       - { name: src, widget: image }
                       - { name: alt, widget: string }
+                      - { label: "Image on Transparent (skip the white card + shadow)", name: transparent, widget: boolean, default: false, required: false }
                   - label: "Second image (optional — overlaps the main image, bottom corner)"
                     name: image2
                     widget: object
@@ -116,6 +118,7 @@ collections:
                     fields:
                       - { name: src, widget: image }
                       - { name: alt, widget: string }
+                      - { label: "Image on Transparent (skip the white card + shadow)", name: transparent, widget: boolean, default: false, required: false }
                   - label: Stat badges
                     name: stats
                     widget: list
@@ -158,6 +161,7 @@ collections:
                     fields:
                       - { name: src, widget: image }
                       - { name: alt, widget: string }
+                      - { label: "Image on Transparent (skip the white card + shadow)", name: transparent, widget: boolean, default: false, required: false }
 
               - name: steps
                 label: Steps
@@ -205,6 +209,7 @@ collections:
                       - { name: blurb, widget: text, required: false }
                       - { label: "Icon (emoji)", name: icon, widget: string, required: false }
                       - { name: image, widget: image, required: false }
+                      - { label: "Image on Transparent (skip the white card + shadow)", name: imageTransparent, widget: boolean, default: false, required: false }
                       - { name: href, widget: string, required: false }
 
               - name: collection_grid
@@ -448,6 +453,7 @@ collections:
       - { name: tagline, widget: text }
       - { name: heroImage, widget: image }
       - { name: heroAlt, widget: string, required: false }
+      - { label: "Image on Transparent (skip the white card + shadow)", name: heroImageTransparent, widget: boolean, default: false, required: false }
       - { label: "What makes this trip", name: characteristics, widget: list, field: { name: point, widget: string } }
       - label: "Sample destinations"
         name: destinations
@@ -478,6 +484,7 @@ collections:
       - { name: tagline, widget: text }
       - { name: heroImage, widget: image }
       - { name: heroAlt, widget: string, required: false }
+      - { label: "Image on Transparent (skip the white card + shadow)", name: heroImageTransparent, widget: boolean, default: false, required: false }
       - { name: listHeading, widget: string, required: false }
       - { name: intro, widget: text, required: false }
       - label: "Picks"
@@ -522,6 +529,7 @@ collections:
       - { label: "Hub card summary", name: summary, widget: text }
       - { name: heroImage, widget: image, required: false }
       - { name: heroAlt, widget: string, required: false }
+      - { label: "Image on Transparent (skip the white card + shadow)", name: heroImageTransparent, widget: boolean, default: false, required: false }
       - { label: "Post body", name: body, widget: markdown }
 
   # ── Legal ──────────────────────────────────────────────────

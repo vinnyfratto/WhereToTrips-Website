@@ -75,6 +75,7 @@ sections:
     image:
       src: /media/vibes.jpg
       alt: Aerial view of a turquoise lagoon surrounded by white sand
+      transparent: true
     id: vibes
     cta:
       label: Explore the WhereTo Family

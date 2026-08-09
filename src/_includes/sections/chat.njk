@@ -10,7 +10,7 @@
         </div>
       </div>
       <div class="chat-img-wrap reveal reveal-delay-1">
-        <img class="chat-img" src="{{ s.image.src }}" alt="{{ s.image.alt }}" loading="lazy" />
+        <img class="chat-img{% if s.image.transparent %} img-transparent{% endif %}" src="{{ s.image.src }}" alt="{{ s.image.alt }}" loading="lazy" />
       </div>
     </div>
   </div>

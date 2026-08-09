@@ -480,6 +480,19 @@ a.tile:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border
 .tile p { font-size: 14px; color: var(--wg600); line-height: 1.65; }
 .tile-img { width: 100%; height: 160px; object-fit: cover; border-radius: var(--radius-sm); margin-bottom: 16px; }
 
+/* ── "Image on Transparent" flag ──────────────────────────
+   Photo placements (hero/feature/chat/tile/hero-img) default to a
+   cropped, rounded, drop-shadowed card. That card is page background
+   showing through the image's bounding box — fine for photos, but on
+   an image with a transparent background (device mockups, cutouts) it
+   reads as an unwanted white box with a shadow behind the graphic.
+   This flag switches those placements to floating: no crop, no
+   radius, no shadow, explicit transparent background. */
+.img-transparent {
+  border-radius: 0; box-shadow: none; background: transparent;
+  object-fit: contain;
+}
+
 /* Image-forward card with floating caption — Varaus destination card */
 .tile.card-photo {
   position: relative; padding: 0; border: 0; background: transparent;

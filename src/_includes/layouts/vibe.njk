@@ -13,7 +13,7 @@ layout: layouts/base.njk
       </div>
     </div>
     <div class="hero-media reveal reveal-delay-1">
-      <img class="hero-img" src="{{ heroImage }}" alt="{{ heroAlt or title }}" loading="eager" />
+      <img class="hero-img{% if heroImageTransparent %} img-transparent{% endif %}" src="{{ heroImage }}" alt="{{ heroAlt or title }}" loading="eager" />
     </div>
   </div>
 </section>

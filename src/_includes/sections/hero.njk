@@ -57,7 +57,7 @@
       {% endif %}
     </div>
     <div class="hero-media reveal reveal-delay-1">
-      <img class="hero-img" src="{{ s.image.src }}" alt="{{ s.image.alt }}" loading="eager" />
+      <img class="hero-img{% if s.image.transparent %} img-transparent{% endif %}" src="{{ s.image.src }}" alt="{{ s.image.alt }}" loading="eager" />
       {% if s.badge %}
       <div class="hero-badge">
         <span class="pulse"></span>
