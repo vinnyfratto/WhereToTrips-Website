@@ -6,8 +6,8 @@ sections:
   - type: hero
     eyebrow: The travel app that works backward (in the best way)
     title:
-      pre: '"Where do you want to go?"'
-      accent: Wrong question.
+      pre: Where will your <i>vibes</i>
+      accent: take you?
       post: ''
     lede: You already know your budget. Your dates. The vibe you're craving. WhereTo turns what you already know into the trip you didn't know you wanted — then gets you there.
     primaryBtn:
