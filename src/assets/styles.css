@@ -193,7 +193,7 @@ header.menu-open .nav-toggle span:nth-child(3) { transform: translateY(-7px) rot
 
 /* ── Hero ─────────────────────────────── */
 .hero {
-  padding: clamp(43px, 6vw, 72px) 0 clamp(38px, 4.8vw, 62px);
+  padding: clamp(30px, 4.2vw, 50px) 0 clamp(27px, 3.4vw, 43px);
   position: relative; overflow: hidden;
 }
 .hero::before {
@@ -350,7 +350,7 @@ header.menu-open .nav-toggle span:nth-child(3) { transform: translateY(-7px) rot
 /* ── Video banner ─────────────────────────────── */
 .video-banner {
   position: relative; background-size: cover; background-position: center;
-  padding: clamp(54px, 8.4vw, 102px) 0; text-align: center; overflow: hidden;
+  padding: clamp(38px, 5.9vw, 71px) 0; text-align: center; overflow: hidden;
 }
 .video-banner-overlay {
   position: absolute; inset: 0;
@@ -371,7 +371,7 @@ header.menu-open .nav-toggle span:nth-child(3) { transform: translateY(-7px) rot
 .video-banner p { color: rgba(255,255,255,0.8); max-width: 46ch; margin: 0 auto; }
 
 /* ── Section scaffold ─────────────────────────────── */
-section.block { padding: clamp(43px, 5.4vw, 66px) 0; }
+section.block { padding: clamp(30px, 3.8vw, 46px) 0; }
 section.block.tint { background: var(--tint); }
 .sec-head { max-width: 640px; margin-bottom: clamp(40px, 5vw, 60px); }
 .sec-head.center { margin-left: auto; margin-right: auto; text-align: center; }
@@ -482,15 +482,19 @@ a.tile:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border
 
 /* ── "Image on Transparent" flag ──────────────────────────
    Photo placements (hero/feature/chat/tile/hero-img) default to a
-   cropped, rounded, drop-shadowed card. That card is page background
-   showing through the image's bounding box — fine for photos, but on
-   an image with a transparent background (device mockups, cutouts) it
-   reads as an unwanted white box with a shadow behind the graphic.
-   This flag switches those placements to floating: no crop, no
-   radius, no shadow, explicit transparent background. */
+   cropped, rounded, drop-shadowed card sized by a tall fixed-height
+   clamp — that height exists to reserve layout space for a photo crop.
+   For a transparent-background image (device mockups, cutouts) that
+   same tall box (a) shows page background through as an unwanted white
+   card behind the graphic and (b) leaves a huge empty gap once the
+   crop/shadow is dropped, since the box is still forced photo-tall
+   while a mockup graphic doesn't need that much height. This flag
+   floats the image instead: no crop, no radius, no shadow, and a much
+   shorter fixed height (kept fixed, not "auto", so the box doesn't
+   collapse to 0 and jump the layout while the image loads). */
 .img-transparent {
   border-radius: 0; box-shadow: none; background: transparent;
-  object-fit: contain;
+  object-fit: contain; height: clamp(200px, 24vw, 300px);
 }
 
 /* Image-forward card with floating caption — Varaus destination card */
