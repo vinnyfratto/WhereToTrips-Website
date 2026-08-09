@@ -10,18 +10,14 @@ sections:
       accent: WhereTo
       post: .
     lede: Get early access before launch. Real feedback from real travelers is what makes this app worth using.
-    primaryBtn:
-      label: Sign up below
-      href: '#signup'
-    ghostBtn:
-      label: Notify me at launch instead
-      href: /notify-launch/
+    primaryBtn: null
+    ghostBtn: null
     image:
       src: /media/oniPhone_2.png
       alt: WhereTo App on Iphone + Andriod
       transparent: true
     badge:
-      title: Limited Beta
+      title: Limited Beta Availability
       subtitle: Get in before all spots are filled
   - type: beta_signup_form
     eyebrow: Beta signup
