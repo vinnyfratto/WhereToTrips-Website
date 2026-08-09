@@ -43,13 +43,21 @@ sections:
         text: |-
           Imagine being able to plan and book together.
           Now you can!
-  - type: rich_text
+  - type: feature_split
+    eyebrow: WhereTo Family Teaser
     title:
-      pre: It's about time the travel app industry got disrupted buy someone with the
-      accent: traveler's best interests
-      post: .
-    id: WhereTo
-    body: '![](/media/hero/beach.jpg)'
+      pre: Four ways to search.
+      accent: One engine
+      post: underneath.
+    lede: Starting from zero, narrowing down a region you already love, want to talk it out, or already know your destination — there's a WhereTo mode built for exactly how much you already know.
+    image:
+      src: /media/vibes.jpg
+      alt: Aerial view of a turquoise lagoon surrounded by white sand
+    id: vibes
+    body: ''
+    cta:
+      label: Explore the WhereTo Family
+      href: /whereto/
   - type: steps
     eyebrow: How it works
     title:
@@ -65,45 +73,38 @@ sections:
         body: An engine built on hundreds of travel styles, not ten generic tags.
       - title: Get a ranked shortlist
         body: Real destinations, each with a plain-English reason why it fits.
-  - type: feature_split
-    eyebrow: WhereTo Family Teaser
-    title:
-      pre: Four ways to search.
-      accent: One engine
-      post: underneath.
-    lede: Starting from zero, narrowing down a region you already love, want to talk it out, or already know your destination — there's a WhereTo mode built for exactly how much you already know.
-    image:
-      src: /media/vibes.jpg
-      alt: Aerial view of a turquoise lagoon surrounded by white sand
-    id: vibes
-    cta:
-      label: Explore the WhereTo Family
-      href: /whereto/
   - type: tile_grid
     eyebrow: Why travelers love WhereTo
     title:
       pre: This isn't a mood board. It's a
       accent: shortlist you can book
       post: .
+    id: ''
     background: true
     center: true
+    intro: ''
     columns: 3
     tiles:
       - label: Real recommendations
         blurb: Not inspiration — every destination comes with a fit score, a reason why, and an honest trade-off.
         icon: global
+        href: ''
       - label: A serious Vibe Engine
         blurb: Hundreds of travel vibes, tiered and scored under the hood, simple to use on top.
         icon: compass
+        href: ''
       - label: Global, not a shortlist
         blurb: We don't limit you to fifty "curated" cities. If it's a real place worth visiting, it's in play.
         icon: map-point-favourite
+        href: ''
       - label: Straight to booking
         blurb: Once you find it, book flights, hotels, and a rental car right in the app.
         icon: wallet-money
+        href: ''
       - label: Group-proof
         blurb: Everyone's vibe and budget, reconciled into one recommendation the whole trip can live with.
         icon: users-group-rounded
+        href: ''
       - label: No pressure, no games
         blurb: Estimated costs are always labeled as estimates; final pricing is confirmed by our booking partners, plainly disclosed.
         icon: plane
