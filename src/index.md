@@ -53,6 +53,7 @@ sections:
     image:
       src: /media/oniPhone_2.png
       alt: Aerial view of a turquoise lagoon surrounded by white sand
+      transparent: true
     id: vibes
     body: ''
     cta:
