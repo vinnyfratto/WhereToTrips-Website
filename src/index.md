@@ -49,11 +49,10 @@ sections:
       pre: Four ways to search.
       accent: One engine
       post: underneath.
-    lede: Starting from zero, narrowing down a region you already love, want to talk it out, or already know your destination — there's a WhereTo mode built for exactly how much you already know.
+    lede: It's about time the travel app industry got disrupted buy someone with the traveler's best interests.
     image:
       src: /media/oniPhone_2.png
-      alt: Phone mockup showing the WhereTo Explore screen
-      transparent: true
+      alt: Aerial view of a turquoise lagoon surrounded by white sand
     id: vibes
     body: ''
     cta:
