@@ -44,11 +44,11 @@ sections:
           Imagine being able to plan and book together.
           Now you can!
   - type: feature_split
-    eyebrow: WhereTo Family Teaser
+    eyebrow: Currently Under Development
     title:
-      pre: Four ways to search.
-      accent: One engine
-      post: underneath.
+      pre: Scheduled to launch
+      accent: October 2026
+      post: ''
     lede: It's about time the travel app industry got disrupted buy someone with the traveler's best interests.
     image:
       src: /media/oniPhone_2.png
