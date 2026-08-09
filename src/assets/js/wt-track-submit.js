@@ -1,9 +1,13 @@
 // ───────────────────────────────────────────────────────────────────
-//  wt-track-submit.js — records a durable copy of every form submission
-//  (early access + contact) and mirrors it into PostHog. This is a
-//  fire-and-forget side channel: it does NOT preventDefault, so the
-//  existing web3forms submission (which sends the email notification)
-//  proceeds exactly as before even if this call fails.
+//  wt-track-submit.js — handles every marketing-site form submission
+//  (contact, early access, beta signup, notify-launch). Intercepts the
+//  native submit, posts straight to capture-submission (durable record +
+//  branded Resend admin email), and shows an inline success/error state.
+//  Web3Forms is no longer in the loop — this used to be a fire-and-forget
+//  side channel that rode alongside a native POST to web3forms, but that
+//  meant two notification emails per submission (one plain from web3forms,
+//  one branded from Resend). Removed the web3forms leg entirely rather
+//  than ask for dashboard access to mute it.
 // ───────────────────────────────────────────────────────────────────
 const cfg = window.WT_SUPABASE || {};
 const CAPTURE_FN = cfg.url ? cfg.url + '/functions/v1/capture-submission' : null;
@@ -18,7 +22,31 @@ function utmParams() {
   return out;
 }
 
-function track(form) {
+function showSuccess(form) {
+  const note = document.createElement('p');
+  note.className = 'form-success';
+  note.textContent = "Thanks — we've got it.";
+  form.replaceWith(note);
+}
+
+function showError(form, submitBtn, originalLabel) {
+  if (submitBtn) {
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalLabel;
+  }
+  let err = form.querySelector('.form-error');
+  if (!err) {
+    err = document.createElement('p');
+    err.className = 'form-error';
+    form.appendChild(err);
+  }
+  err.textContent = 'Something went wrong — please try again in a moment.';
+}
+
+async function handleSubmit(e) {
+  const form = e.currentTarget;
+  e.preventDefault();
+
   const fd = new FormData(form);
   const intent = (fd.get('intent') || '').toString();
   if (!intent) return;
@@ -36,20 +64,36 @@ function track(form) {
     ...utmParams(),
   };
 
-  if (CAPTURE_FN) {
-    fetch(CAPTURE_FN, {
+  const submitBtn = form.querySelector('button[type="submit"]');
+  const originalLabel = submitBtn ? submitBtn.textContent : '';
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending…';
+  }
+
+  if (!CAPTURE_FN) {
+    showError(form, submitBtn, originalLabel);
+    return;
+  }
+
+  try {
+    const res = await fetch(CAPTURE_FN, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', apikey: cfg.anonKey, Authorization: 'Bearer ' + cfg.anonKey },
       body: JSON.stringify(payload),
-      keepalive: true,
-    }).catch(() => {});
-  }
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.ok) throw new Error('capture-submission failed');
 
-  if (window.posthog) {
-    window.posthog.capture('form_submitted', { intent, source_path: payload.source_path });
+    if (window.posthog) {
+      window.posthog.capture('form_submitted', { intent, source_path: payload.source_path });
+    }
+    showSuccess(form);
+  } catch {
+    showError(form, submitBtn, originalLabel);
   }
 }
 
 document.querySelectorAll('form.contact-form, form.email-capture').forEach((form) => {
-  form.addEventListener('submit', () => track(form));
+  form.addEventListener('submit', handleSubmit);
 });

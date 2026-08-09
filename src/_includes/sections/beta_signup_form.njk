@@ -73,10 +73,10 @@
     var tested = fd.get('beta_tested') || '';
     var parts = [
       'Device: ' + (fd.get('device') || ''),
-      'Heard about WhereTo via: ' + (fd.get('source') || ''),
+      'Heard about via: ' + (fd.get('source') || ''),
       'Beta tested before: ' + tested + (tested === 'Yes' ? ' — ' + (fd.get('previous_app') || '') : '')
     ];
-    document.getElementById('beta-message').value = parts.join(' | ');
+    document.getElementById('beta-message').value = parts.join('\n');
   });
 })();
 </script>

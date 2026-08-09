@@ -48,10 +48,10 @@
     var fd = new FormData(form);
     var parts = [
       'Device: ' + (fd.get('device') || ''),
-      'Heard about WhereTo via: ' + (fd.get('source') || ''),
+      'Heard about via: ' + (fd.get('source') || ''),
       'Comments: ' + (fd.get('comments') || '(none)')
     ];
-    document.getElementById('notify-message').value = parts.join(' | ');
+    document.getElementById('notify-message').value = parts.join('\n');
   });
 })();
 </script>
