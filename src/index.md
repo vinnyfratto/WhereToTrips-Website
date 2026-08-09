@@ -4,7 +4,7 @@ description: WhereTo is a travel discovery app for iOS and Android. Tell it your
 layout: layouts/page.njk
 sections:
   - type: hero
-    eyebrow: It's about time the travel app industry got disrupted buy someone with the travelers best interests
+    eyebrow: Finally, a travel app built for travelers!
     title:
       pre: Where will your vibes
       accent: take you?
