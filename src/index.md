@@ -57,8 +57,8 @@ sections:
     id: vibes
     body: ''
     cta:
-      label: Explore the WhereTo Family
-      href: /whereto/
+      label: Join the Beta
+      href: /beta-signup/
   - type: steps
     eyebrow: How it works
     title:
