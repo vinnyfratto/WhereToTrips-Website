@@ -4,7 +4,7 @@ description: WhereTo is a travel discovery app for iOS and Android. Tell it your
 layout: layouts/page.njk
 sections:
   - type: hero
-    eyebrow: The travel app that works backward (in the best way)
+    eyebrow: It's about time the travel app industry got disrupted buy someone with the travelers best interests
     title:
       pre: Where will your vibes
       accent: take you?
@@ -14,10 +14,10 @@ sections:
       Not just what airport you want to fly to.
     primaryBtn:
       label: Become a Beta Tester
-      href: '/beta-signup/'
+      href: '#download'
     ghostBtn:
       label: Notify me when Launched
-      href: '/notify-launch/'
+      href: '#how'
     slides:
       - src: /media/WhereTo_Hero_Beach.jpg
         alt: Turquoise water lapping a wide tropical beach from above
