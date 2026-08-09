@@ -10,7 +10,7 @@ sections:
       accent: take you?
       post: ''
     lede: |-
-      The only travel app on the map that is truly interesting in you and what you want to experience. 
+      WhereTo is the only travel app on the map that is truly interested in you and what you want to experience. 
       Not just what airport you want to fly to.
     primaryBtn:
       label: Become a Beta Tester
@@ -46,10 +46,10 @@ sections:
   - type: rich_text
     title:
       pre: It's about time the travel app industry got disrupted buy someone with the
-      accent: travelers best interests
+      accent: traveler's best interests
       post: .
-    id: problem
-    body: <p style="text-align:center;">Most travel sites expect the hardest part — the destination — to just appear in your head first. WhereTo flips the order. Tell us your budget, your dates, who's coming, and the kind of trip you're craving — moody European alleyways, a sun-drenched beach nap, a food crawl that ends in a nap on someone's balcony — and we'll tell you exactly where that trip exists in the real world, for real money.</p>
+    id: WhereTo
+    body: '![](/media/hero/beach.jpg)'
   - type: steps
     eyebrow: How it works
     title:
