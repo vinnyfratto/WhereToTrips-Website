@@ -9,7 +9,7 @@ sections:
       pre: Where will your vibes
       accent: take you?
       post: ''
-    lede: You already know your budget. Your dates. The vibe you're craving. WhereTo turns what you already know into the trip you didn't know you wanted — then gets you there.
+    lede: The only travel app on the map that is truly interesting in you and what you want to experience. Not just what airport you want to fly to.
     primaryBtn:
       label: Get the App
       href: '#download'
