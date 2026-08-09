@@ -348,6 +348,40 @@ collections:
                   - { name: placeholder, widget: string, required: false }
                   - { name: buttonLabel, widget: string, required: false }
 
+              - name: beta_signup_form
+                label: "Beta signup form"
+                fields:
+                  - { name: id, widget: string, required: false }
+                  - { label: "Tinted background", name: background, widget: boolean, default: false, required: false }
+                  - { name: eyebrow, widget: string, required: false }
+                  - label: Title
+                    name: title
+                    widget: object
+                    required: false
+                    fields:
+                      - { name: pre, widget: string }
+                      - { name: accent, widget: string }
+                      - { name: post, widget: string, required: false }
+                  - { name: body, widget: text, required: false }
+                  - { name: buttonLabel, widget: string, required: false }
+
+              - name: notify_launch_form
+                label: "Notify-at-launch form"
+                fields:
+                  - { name: id, widget: string, required: false }
+                  - { label: "Tinted background", name: background, widget: boolean, default: false, required: false }
+                  - { name: eyebrow, widget: string, required: false }
+                  - label: Title
+                    name: title
+                    widget: object
+                    required: false
+                    fields:
+                      - { name: pre, widget: string }
+                      - { name: accent, widget: string }
+                      - { name: post, widget: string, required: false }
+                  - { name: body, widget: text, required: false }
+                  - { name: buttonLabel, widget: string, required: false }
+
               - name: rich_text
                 label: Rich text
                 fields:
@@ -391,6 +425,8 @@ collections:
       - { name: about, label: "About", file: src/about.md, fields: *page_fields }
       - { name: press, label: "Press & Media", file: src/press.md, fields: *page_fields }
       - { name: contact, label: "Contact", file: src/contact.md, fields: *page_fields }
+      - { name: beta_signup, label: "Beta Signup", file: src/beta-signup.md, fields: *page_fields }
+      - { name: notify_launch, label: "Notify at Launch", file: src/notify-launch.md, fields: *page_fields }
 
   # ── Travel Vibes (add / remove leaf pages) ─────────────────
   - name: vibes
