@@ -51,7 +51,7 @@ sections:
       post: underneath.
     lede: Starting from zero, narrowing down a region you already love, want to talk it out, or already know your destination — there's a WhereTo mode built for exactly how much you already know.
     image:
-      src: /media/vibes.jpg
+      src: /media/oniPhone_2.png
       alt: Aerial view of a turquoise lagoon surrounded by white sand
     id: vibes
     body: ''
