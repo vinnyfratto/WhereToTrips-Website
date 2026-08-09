@@ -31,16 +31,18 @@ sections:
     items:
       - icon: wallet-money
         title: You first
-        text: Your drive the trip, not the other way around.
+        text: You drive the details of the trip, not the other way around.
       - icon: compass
         title: 800+ Vibes
-        text: We'll match your vibes to real destinations.
+        text: We'll match your vibes to real destinations worldwide.
       - icon: plane
         title: All major airlines
         text: Book flights on all major airlines and all major hotels
       - icon: users-group-rounded
         title: Group travel
-        text: Imagine being able to plain and book together. Now you can!
+        text: |-
+          Imagine being able to plain and book together.
+          Now you can!
   - type: rich_text
     title:
       pre: Everyone else hands you a blank search bar and calls it a
