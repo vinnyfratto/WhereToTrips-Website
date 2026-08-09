@@ -58,7 +58,9 @@
       "heading": "Get the App",
       "links": [
         { "label": "Download", "href": "/app/" },
-        { "label": "How It Works", "href": "/how-it-works/" }
+        { "label": "How It Works", "href": "/how-it-works/" },
+        { "label": "Become a Beta Tester", "href": "/beta-signup/" },
+        { "label": "Notify Me at Launch", "href": "/notify-launch/" }
       ]
     },
     {
