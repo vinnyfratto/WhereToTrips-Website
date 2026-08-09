@@ -35,13 +35,13 @@ sections:
       - icon: compass
         title: 800+ Vibes
         text: We'll match your vibes to real destinations worldwide.
-      - icon: plane
+      - icon: globe
         title: All major airlines
         text: Book flights on all major airlines and all major hotels
       - icon: users-group-rounded
         title: Group travel
         text: |-
-          Imagine being able to plain and book together.
+          Imagine being able to plan and book together.
           Now you can!
   - type: rich_text
     title:
