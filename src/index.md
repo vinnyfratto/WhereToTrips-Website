@@ -14,10 +14,10 @@ sections:
       Not just what airport you want to fly to.
     primaryBtn:
       label: Become a Beta Tester
-      href: '/beta-signup/'
+      href: /beta-signup/
     ghostBtn:
       label: Notify me when Launched
-      href: '/notify-launch/'
+      href: /notify-launch/
     slides:
       - src: /media/WhereTo_Hero_Beach.jpg
         alt: Turquoise water lapping a wide tropical beach from above
@@ -45,8 +45,8 @@ sections:
           Now you can!
   - type: rich_text
     title:
-      pre: Everyone else hands you a blank search bar and calls it a
-      accent: day
+      pre: It's about time the travel app industry got disrupted buy someone with the
+      accent: travelers best interests
       post: .
     id: problem
     body: <p style="text-align:center;">Most travel sites expect the hardest part — the destination — to just appear in your head first. WhereTo flips the order. Tell us your budget, your dates, who's coming, and the kind of trip you're craving — moody European alleyways, a sun-drenched beach nap, a food crawl that ends in a nap on someone's balcony — and we'll tell you exactly where that trip exists in the real world, for real money.</p>
