@@ -193,7 +193,7 @@ header.menu-open .nav-toggle span:nth-child(3) { transform: translateY(-7px) rot
 
 /* ── Hero ─────────────────────────────── */
 .hero {
-  padding: clamp(72px, 10vw, 120px) 0 clamp(64px, 8vw, 104px);
+  padding: clamp(43px, 6vw, 72px) 0 clamp(38px, 4.8vw, 62px);
   position: relative; overflow: hidden;
 }
 .hero::before {
@@ -350,7 +350,7 @@ header.menu-open .nav-toggle span:nth-child(3) { transform: translateY(-7px) rot
 /* ── Video banner ─────────────────────────────── */
 .video-banner {
   position: relative; background-size: cover; background-position: center;
-  padding: clamp(90px, 14vw, 170px) 0; text-align: center; overflow: hidden;
+  padding: clamp(54px, 8.4vw, 102px) 0; text-align: center; overflow: hidden;
 }
 .video-banner-overlay {
   position: absolute; inset: 0;
@@ -371,7 +371,7 @@ header.menu-open .nav-toggle span:nth-child(3) { transform: translateY(-7px) rot
 .video-banner p { color: rgba(255,255,255,0.8); max-width: 46ch; margin: 0 auto; }
 
 /* ── Section scaffold ─────────────────────────────── */
-section.block { padding: clamp(72px, 9vw, 110px) 0; }
+section.block { padding: clamp(43px, 5.4vw, 66px) 0; }
 section.block.tint { background: var(--tint); }
 .sec-head { max-width: 640px; margin-bottom: clamp(40px, 5vw, 60px); }
 .sec-head.center { margin-left: auto; margin-right: auto; text-align: center; }
