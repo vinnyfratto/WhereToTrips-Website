@@ -9,7 +9,9 @@ sections:
       pre: Where will your vibes
       accent: take you?
       post: ''
-    lede: The only travel app on the map that is truly interesting in you and what you want to experience. Not just what airport you want to fly to.
+    lede: |-
+      The only travel app on the map that is truly interesting in you and what you want to experience. 
+      Not just what airport you want to fly to.
     primaryBtn:
       label: Get the App
       href: '#download'
