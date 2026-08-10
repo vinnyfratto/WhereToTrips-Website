@@ -10,8 +10,15 @@
 //  a blank dashboard.
 //
 //  Not literally push-based real-time: it polls the admin fn every 60s
-//  while the tab is visible, and PostHog itself ingests events within
-//  roughly seconds to a couple minutes.
+//  while the tab is visible (or every 4s in "Go live" mode — see below),
+//  and PostHog itself ingests events within roughly seconds to a couple
+//  minutes.
+//
+//  "Go live" is an opt-in toggle next to the range buttons (Today/This
+//  week/Last 30 days stays the default view). It swaps the aggregate
+//  cards for a raw, auto-refreshing feed of the last 30 minutes of
+//  events (admin fn's analytics_live action) — for watching exactly
+//  what fires while actively testing, rather than waiting on aggregates.
 // ───────────────────────────────────────────────────────────────────
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
@@ -21,10 +28,12 @@ const supabase = createClient(cfg.url, cfg.anonKey, {
 });
 const ADMIN_FN = cfg.url + '/functions/v1/admin';
 const REFRESH_MS = 60_000;
+const LIVE_REFRESH_MS = 4_000;
 
 let TOKEN = null;
 let currentChannel = 'website';
 let currentRange = 'today';
+let liveMode = false;
 let pollTimer = null;
 const RANGES = [['today', 'Today'], ['week', 'This week'], ['30d', 'Last 30 days']];
 
@@ -70,12 +79,98 @@ async function init() {
       if (b.dataset.channel === currentChannel) return;
       currentChannel = b.dataset.channel;
       document.querySelectorAll('[data-channel]').forEach((t) => t.classList.toggle('is-active', t.dataset.channel === currentChannel));
-      loadAnalytics();
+      tick();
     });
   });
 
-  await loadAnalytics();
-  pollTimer = setInterval(() => { if (document.visibilityState === 'visible') loadAnalytics(true); }, REFRESH_MS);
+  await tick();
+  scheduleNext();
+}
+
+// Single dispatcher so the same poll loop can serve either mode — a plain
+// setInterval can't change its own delay, so this reschedules itself each
+// time with whatever delay the current mode wants.
+async function tick(silent) {
+  if (liveMode) return loadLive(silent);
+  return loadAnalytics(silent);
+}
+function scheduleNext() {
+  if (pollTimer) clearTimeout(pollTimer);
+  pollTimer = setTimeout(async () => {
+    if (document.visibilityState === 'visible') await tick(true);
+    scheduleNext();
+  }, liveMode ? LIVE_REFRESH_MS : REFRESH_MS);
+}
+function toggleLive() {
+  liveMode = !liveMode;
+  tick();
+  scheduleNext();
+}
+
+// ── Live feed ───────────────────────────────────────────────────────
+async function loadLive(silent = false) {
+  const root = $('#analytics-root');
+  if (!silent) root.innerHTML = `<div class="adm-card">Loading…</div>`;
+
+  const d = await callAdmin('analytics_live', { channel: currentChannel });
+
+  if (!d.ok) {
+    root.innerHTML = `
+      <div class="acct-card">
+        <p class="eyebrow">Not available</p>
+        <h1 style="font-size:1.5rem;">Live feed unavailable</h1>
+        <p class="acct-sub">PostHog query failed (${esc(d.error || 'unknown error')}).</p>
+      </div>`;
+    return;
+  }
+  renderLiveFeed(d.events || []);
+}
+
+function relTime(ms) {
+  const diff = Math.max(0, Date.now() - ms);
+  if (diff < 1000) return 'just now';
+  if (diff < 60_000) return Math.floor(diff / 1000) + 's ago';
+  if (diff < 3_600_000) return Math.floor(diff / 60_000) + 'm ago';
+  return Math.floor(diff / 3_600_000) + 'h ago';
+}
+// A curated subset — properties vary a lot event to event, so this picks
+// whichever of the generally-useful ones are actually present rather than
+// dumping the full (often huge) properties blob into every row.
+const LIVE_PROP_KEYS = [
+  'destination_code', 'destination_id', 'booking_id', 'search_id',
+  'click_type', 'product_type', 'entry_point', 'module_source',
+  'price', 'value', 'currency', 'passenger_count', '$pathname', 'surface',
+];
+function summarizeProps(p) {
+  if (!p) return '';
+  const bits = [];
+  for (const k of LIVE_PROP_KEYS) {
+    if (p[k] !== undefined && p[k] !== null && p[k] !== '') bits.push(`${k}: ${p[k]}`);
+  }
+  return bits.slice(0, 4).join('  ·  ');
+}
+function renderLiveFeed(events) {
+  const rows = events.map((e) => `
+    <tr>
+      <td style="white-space:nowrap;">${esc(relTime(e.ms))}</td>
+      <td>${esc(eventLabel(e.event))}</td>
+      <td class="acct-sub" style="font-size:.85em;">${esc(summarizeProps(e.properties))}</td>
+      <td class="acct-sub" style="font-size:.8em; white-space:nowrap;">${esc(String(e.distinct_id || '').slice(0, 8))}</td>
+    </tr>`).join('');
+
+  $('#analytics-root').innerHTML = `
+    <div class="adm-form-row" style="justify-content:space-between; align-items:center; margin-bottom:14px;">
+      <p class="acct-sub" style="margin:0;">🔴 Live — last 30 minutes, refreshes every 4s</p>
+      ${controlsHtml()}
+    </div>
+    <div class="adm-card">
+      <div class="adm-wrap-scroll"><table class="adm-table">
+        <thead><tr><th>When</th><th>Event</th><th>Details</th><th>Who</th></tr></thead>
+        <tbody>${rows || '<tr><td colspan="4">No events in the last 30 minutes yet — go do something in the app.</td></tr>'}</tbody>
+      </table></div>
+    </div>`;
+
+  wireControls();
 }
 
 // ── Analytics ───────────────────────────────────────────────────────
@@ -115,6 +210,22 @@ function wireRangeBtns() {
       loadAnalytics();
     });
   });
+}
+// Range buttons don't apply in live mode (it's always "the last 30 minutes"),
+// so they're swapped out for the toggle alone rather than shown disabled.
+function controlsHtml() {
+  return `
+    <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+      ${liveMode ? '' : rangeBtnsHtml()}
+      <button type="button" id="adm-live-btn" class="btn btn-xs ${liveMode ? 'btn-primary' : 'btn-ghost'}">
+        ${liveMode ? '⏹ Stop live' : '🔴 Go live'}
+      </button>
+    </div>`;
+}
+function wireControls() {
+  if (!liveMode) wireRangeBtns();
+  const btn = $('#adm-live-btn');
+  if (btn) btn.addEventListener('click', toggleLive);
 }
 function bucketCol() { return currentRange === 'today' ? 'Hour' : currentRange === '30d' ? 'Week' : 'Day'; }
 const DASH_TZ = 'America/Chicago';
@@ -188,7 +299,7 @@ function renderWebsiteAnalytics(d) {
   $('#analytics-root').innerHTML = `
     <div class="adm-form-row" style="justify-content:space-between; align-items:center; margin-bottom:14px;">
       <p class="acct-sub" style="margin:0;">Live from PostHog · refreshes every 60s</p>
-      <div style="display:flex; gap:8px;">${rangeBtnsHtml()}</div>
+      ${controlsHtml()}
     </div>
     ${totalsCards}
     ${trafficCard}
@@ -197,7 +308,7 @@ function renderWebsiteAnalytics(d) {
       ${topRefCard}
     </div>`;
 
-  wireRangeBtns();
+  wireControls();
 }
 
 // ── App ─────────────────────────────────────────────────────────────
@@ -350,7 +461,7 @@ function renderAppAnalytics(d) {
   $('#analytics-root').innerHTML = `
     <div class="adm-form-row" style="justify-content:space-between; align-items:center; margin-bottom:14px;">
       <p class="acct-sub" style="margin:0;">Live from PostHog · refreshes every 60s</p>
-      <div style="display:flex; gap:8px;">${rangeBtnsHtml()}</div>
+      ${controlsHtml()}
     </div>
     ${totalsCards}
     ${seriesCard}
@@ -359,7 +470,7 @@ function renderAppAnalytics(d) {
     ${renderDeviceSection(d)}
     ${renderLocationSection(d)}`;
 
-  wireRangeBtns();
+  wireControls();
 }
 
 // ── Travel Metrics ──────────────────────────────────────────────────
@@ -428,7 +539,7 @@ function renderTravelMetrics(d) {
   $('#analytics-root').innerHTML = `
     <div class="adm-form-row" style="justify-content:space-between; align-items:center; margin-bottom:14px;">
       <p class="acct-sub" style="margin:0;">Live from PostHog · refreshes every 60s</p>
-      <div style="display:flex; gap:8px;">${rangeBtnsHtml()}</div>
+      ${controlsHtml()}
     </div>
     ${topCards}
     ${workflows}
@@ -447,7 +558,7 @@ function renderTravelMetrics(d) {
     </div>
     ${bookings}`;
 
-  wireRangeBtns();
+  wireControls();
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
