@@ -500,7 +500,8 @@ function renderAppAnalytics(d) {
         ${card('Active users', d.totals.active_users)}
         ${card('Sessions', d.totals.sessions ?? 0)}
         ${card('New signups', d.totals.signups)}
-        ${card('Flights booked', d.totals.bookings)}
+        ${card('Flights booked', d.totals.flight_bookings)}
+        ${card('Hotels booked', d.totals.hotel_bookings)}
         ${card('Total events', d.totals.events)}
       </div>`;
 
