@@ -14,11 +14,12 @@
 //  and PostHog itself ingests events within roughly seconds to a couple
 //  minutes.
 //
-//  "Go live" is an opt-in toggle next to the range buttons (Today/This
-//  week/Last 30 days stays the default view). It swaps the aggregate
-//  cards for a raw, auto-refreshing feed of the last 30 minutes of
-//  events (admin fn's analytics_live action) — for watching exactly
-//  what fires while actively testing, rather than waiting on aggregates.
+//  "Go live" is an opt-in toggle next to the range buttons (Last hour/6
+//  hours/Today/This week/Last 30 days — Today stays the default view). It
+//  swaps the aggregate cards for a raw, auto-refreshing feed of the last
+//  30 minutes of events (admin fn's analytics_live action) — for watching
+//  exactly what fires while actively testing, rather than waiting on
+//  aggregates.
 // ───────────────────────────────────────────────────────────────────
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
@@ -35,7 +36,10 @@ let currentChannel = 'website';
 let currentRange = 'today';
 let liveMode = false;
 let pollTimer = null;
-const RANGES = [['today', 'Today'], ['week', 'This week'], ['30d', 'Last 30 days']];
+const RANGES = [
+  ['hour', 'Last hour'], ['6h', '6 hours'],
+  ['today', 'Today'], ['week', 'This week'], ['30d', 'Last 30 days'],
+];
 
 const $ = (s, r = document) => r.querySelector(s);
 function esc(s) {
@@ -281,12 +285,18 @@ function wireControls() {
   const btn = $('#adm-live-btn');
   if (btn) btn.addEventListener('click', toggleLive);
 }
-function bucketCol() { return currentRange === 'today' ? 'Hour' : currentRange === '30d' ? 'Week' : 'Day'; }
+function bucketCol() {
+  if (currentRange === 'hour') return 'Time';
+  if (currentRange === '6h' || currentRange === 'today') return 'Hour';
+  if (currentRange === '30d') return 'Week';
+  return 'Day';
+}
 const DASH_TZ = 'America/Chicago';
 function formatBucket(iso) {
   if (!iso) return '—';
   const d = new Date(iso);
-  if (currentRange === 'today') return d.toLocaleTimeString('en-US', { hour: 'numeric', timeZone: DASH_TZ }) + ' CT';
+  if (currentRange === 'hour') return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: DASH_TZ }) + ' CT';
+  if (currentRange === '6h' || currentRange === 'today') return d.toLocaleTimeString('en-US', { hour: 'numeric', timeZone: DASH_TZ }) + ' CT';
   if (currentRange === '30d') return 'Week of ' + d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: DASH_TZ });
   return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: DASH_TZ });
 }
