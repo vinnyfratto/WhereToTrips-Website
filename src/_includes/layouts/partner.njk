@@ -56,7 +56,7 @@
       api_host: '{{ site.analytics.posthogHost }}',
       person_profiles: 'identified_only',
     });
-    posthog.register({ platform: 'website' });
+    posthog.register({ platform: 'website', surface: 'whereto_trips_web' });
   </script>
 </head>
 <body>
