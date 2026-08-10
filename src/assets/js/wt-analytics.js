@@ -305,6 +305,34 @@ function bar(pct) {
 }
 const card = (label, val) => `<div class="stat-card"><p class="label">${label}</p><p class="value">${val}</p></div>`;
 
+const fmtMoney = (n, ccy) => {
+  const amount = Number(n || 0);
+  try { return new Intl.NumberFormat('en-US', { style: 'currency', currency: ccy || 'USD' }).format(amount); }
+  catch { return '$' + amount.toFixed(2); }
+};
+// Flight ancillaries only — commission-bearing bags/seats. No hotel
+// equivalent exists yet: LiteAPI/Nuitee's board type (breakfast, etc.) is
+// baked into the room rate, not a separately purchasable service. Shared
+// between the App tab (right next to the booking funnels) and Travel
+// Metrics (alongside the other commerce cards) — same data, same card,
+// two spots someone might reasonably look for it.
+function addonsCardHtml(d, errors) {
+  if (errors.addons) {
+    return `<div class="adm-card"><h3>Flight Add-ons (bags &amp; seats)</h3><p class="acct-sub">Unavailable — ${esc(errors.addons)}</p></div>`;
+  }
+  const a = d.addons || { bags: { count: 0, revenue: 0 }, seats: { count: 0, revenue: 0 }, currency: null };
+  return `
+    <div class="adm-card">
+      <h3>Flight Add-ons (bags &amp; seats)</h3>
+      <div class="adm-overview-grid">
+        ${card('Bags sold', a.bags.count)}
+        ${card('Bag revenue', fmtMoney(a.bags.revenue, a.currency))}
+        ${card('Seats sold', a.seats.count)}
+        ${card('Seat revenue', fmtMoney(a.seats.revenue, a.currency))}
+      </div>
+    </div>`;
+}
+
 // Renders `body` normally, or an "Unavailable" card if `errors[key]` is set —
 // used so one bad HogQL query degrades just its own card, not the whole tab.
 function errCard(title, body, key, errors) {
@@ -532,6 +560,7 @@ function renderAppAnalytics(d) {
     ${seriesCard}
     ${topEventsCard}
     ${funnelCards}
+    ${addonsCardHtml(d, errors)}
     ${renderDeviceSection(d)}
     ${renderLocationSection(d)}`;
 
@@ -588,29 +617,7 @@ function renderTravelMetrics(d) {
   const bookingLabel = (k) => ({ flight_booked: 'Flights', hotel_booked: 'Hotels', together_booking_confirmed: 'Together (group)' }[k] || eventLabel(k));
   const bookings     = tallyTable('Bookings', d.bookings, 'bookings', errors, bookingLabel);
 
-  // Flight ancillaries only — commission-bearing bags/seats. No hotel
-  // equivalent exists yet: LiteAPI/Nuitee's board type (breakfast, etc.)
-  // is baked into the room rate, not a separately purchasable service.
-  const fmtMoney = (n, ccy) => {
-    const amount = Number(n || 0);
-    try { return new Intl.NumberFormat('en-US', { style: 'currency', currency: ccy || 'USD' }).format(amount); }
-    catch { return '$' + amount.toFixed(2); }
-  };
-  const addonsCard = errors.addons
-    ? `<div class="adm-card"><h3>Flight Add-ons (bags &amp; seats)</h3><p class="acct-sub">Unavailable — ${esc(errors.addons)}</p></div>`
-    : (() => {
-      const a = d.addons || { bags: { count: 0, revenue: 0 }, seats: { count: 0, revenue: 0 }, currency: null };
-      return `
-        <div class="adm-card">
-          <h3>Flight Add-ons (bags &amp; seats)</h3>
-          <div class="adm-overview-grid">
-            ${card('Bags sold', a.bags.count)}
-            ${card('Bag revenue', fmtMoney(a.bags.revenue, a.currency))}
-            ${card('Seats sold', a.seats.count)}
-            ${card('Seat revenue', fmtMoney(a.seats.revenue, a.currency))}
-          </div>
-        </div>`;
-    })();
+  const addonsCard = addonsCardHtml(d, errors);
 
   const hotelsTotalCard = errors.hotels_total
     ? card('Hotels previewed', '—')
