@@ -133,44 +133,98 @@ function relTime(ms) {
   if (diff < 3_600_000) return Math.floor(diff / 60_000) + 'm ago';
   return Math.floor(diff / 3_600_000) + 'h ago';
 }
-// A curated subset — properties vary a lot event to event, so this picks
-// whichever of the generally-useful ones are actually present rather than
-// dumping the full (often huge) properties blob into every row.
+// Candidate property columns — properties vary a lot event to event, so
+// these are whichever generally-useful ones tend to show up, not the full
+// (often huge) properties blob. Which ones actually render as columns is
+// picked live via the ⚙ Columns button (liveColumns below) — session-only,
+// nothing here persists yet. A "save this view" step is the natural next
+// thing to add once it's clear which columns people actually want kept.
 const LIVE_PROP_KEYS = [
   'destination_code', 'destination_id', 'booking_id', 'search_id',
   'click_type', 'product_type', 'entry_point', 'module_source',
   'price', 'value', 'currency', 'passenger_count', '$pathname', 'surface',
 ];
-function summarizeProps(p) {
-  if (!p) return '';
-  const bits = [];
-  for (const k of LIVE_PROP_KEYS) {
-    if (p[k] !== undefined && p[k] !== null && p[k] !== '') bits.push(`${k}: ${p[k]}`);
-  }
-  return bits.slice(0, 4).join('  ·  ');
+let liveColumns = new Set(['destination_code', 'booking_id', 'search_id', 'product_type', 'price']);
+let columnsPickerOpen = false;
+let lastLiveEvents = [];
+
+function columnsPickerHtml() {
+  const options = LIVE_PROP_KEYS.map((k) => `
+    <label style="display:flex; align-items:center; gap:7px; padding:4px 2px; font-size:.85em; cursor:pointer; white-space:nowrap;">
+      <input type="checkbox" data-live-col="${esc(k)}" ${liveColumns.has(k) ? 'checked' : ''} />
+      ${esc(k)}
+    </label>`).join('');
+  return `
+    <div style="position:relative; display:inline-block;">
+      <button type="button" id="adm-cols-btn" class="btn btn-xs btn-ghost">⚙ Columns</button>
+      ${columnsPickerOpen ? `
+        <div id="adm-cols-panel" style="position:absolute; right:0; top:calc(100% + 6px); z-index:20;
+             background:var(--card); border:1px solid var(--wg200); border-radius:var(--radius-md);
+             box-shadow:var(--shadow-sm); padding:10px 14px; min-width:190px;">
+          <p class="acct-sub" style="margin:0 0 6px; font-size:.75em; text-transform:uppercase; letter-spacing:.5px;">Show columns</p>
+          ${options}
+        </div>` : ''}
+    </div>`;
 }
+function wireColumnsPicker() {
+  const btn = $('#adm-cols-btn');
+  if (btn) btn.addEventListener('click', (ev) => {
+    ev.stopPropagation();
+    columnsPickerOpen = !columnsPickerOpen;
+    renderLiveFeed(lastLiveEvents);
+  });
+  const panel = $('#adm-cols-panel');
+  if (panel) {
+    panel.addEventListener('click', (ev) => ev.stopPropagation());
+    panel.querySelectorAll('[data-live-col]').forEach((cb) => {
+      cb.addEventListener('change', () => {
+        const key = cb.dataset.liveCol;
+        if (cb.checked) liveColumns.add(key); else liveColumns.delete(key);
+        renderLiveFeed(lastLiveEvents);
+      });
+    });
+  }
+}
+// Closes the columns panel on an outside click — re-registered every
+// render since the panel itself is torn down and rebuilt each time.
+document.addEventListener('click', () => {
+  if (columnsPickerOpen) { columnsPickerOpen = false; if (liveMode) renderLiveFeed(lastLiveEvents); }
+});
+
 function renderLiveFeed(events) {
-  const rows = events.map((e) => `
+  lastLiveEvents = events;
+  const cols = LIVE_PROP_KEYS.filter((k) => liveColumns.has(k));
+  const rows = events.map((e) => {
+    const p = e.properties || {};
+    const cells = cols.map((k) => `<td class="acct-sub" style="font-size:.85em;">${esc(p[k] ?? '')}</td>`).join('');
+    return `
     <tr>
       <td style="white-space:nowrap;">${esc(relTime(e.ms))}</td>
       <td>${esc(eventLabel(e.event))}</td>
-      <td class="acct-sub" style="font-size:.85em;">${esc(summarizeProps(e.properties))}</td>
+      ${cells}
       <td class="acct-sub" style="font-size:.8em; white-space:nowrap;">${esc(String(e.distinct_id || '').slice(0, 8))}</td>
-    </tr>`).join('');
+    </tr>`;
+  }).join('');
+  const colHeads = cols.map((k) => `<th>${esc(k)}</th>`).join('');
+  const span = 3 + cols.length;
 
   $('#analytics-root').innerHTML = `
     <div class="adm-form-row" style="justify-content:space-between; align-items:center; margin-bottom:14px;">
       <p class="acct-sub" style="margin:0;">🔴 Live — last 30 minutes, refreshes every 4s</p>
-      ${controlsHtml()}
+      <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+        ${columnsPickerHtml()}
+        ${controlsHtml()}
+      </div>
     </div>
     <div class="adm-card">
       <div class="adm-wrap-scroll"><table class="adm-table">
-        <thead><tr><th>When</th><th>Event</th><th>Details</th><th>Who</th></tr></thead>
-        <tbody>${rows || '<tr><td colspan="4">No events in the last 30 minutes yet — go do something in the app.</td></tr>'}</tbody>
+        <thead><tr><th>When</th><th>Event</th>${colHeads}<th>Who</th></tr></thead>
+        <tbody>${rows || `<tr><td colspan="${span}">No events in the last 30 minutes yet — go do something in the app.</td></tr>`}</tbody>
       </table></div>
     </div>`;
 
   wireControls();
+  wireColumnsPicker();
 }
 
 // ── Analytics ───────────────────────────────────────────────────────
