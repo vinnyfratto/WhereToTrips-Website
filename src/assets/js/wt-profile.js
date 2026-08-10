@@ -92,6 +92,15 @@ export async function initProfileForm(supabase, user, opts = {}) {
   const out = document.getElementById(logoutId);
   if (out) {
     out.addEventListener('click', async () => {
+      if (window.posthog) {
+        window.posthog.capture('logout', { surface: 'whereto_trips_web' });
+        // Clears registered super properties (platform/surface) — re-register
+        // immediately so the next anonymous visitor on this device doesn't
+        // silently lose its reporting category. Mirrors the app-side fix in
+        // Wander_App/src/utils/analytics.ts (2026-08-09).
+        window.posthog.reset();
+        window.posthog.register({ platform: 'website', surface: 'whereto_trips_web' });
+      }
       await supabase.auth.signOut();
       window.location.href = '/account/login/';
     });

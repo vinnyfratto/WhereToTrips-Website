@@ -111,6 +111,11 @@ function initSignup() {
     clearCookie('wt_ref');
     clearCookie('wt_ref_click');
 
+    if (window.posthog) {
+      window.posthog.capture('sign_up', { method: 'email', surface: 'whereto_trips_web' });
+      if (data.user) window.posthog.identify(data.user.id, { email: data.user.email });
+    }
+
     if (data.session) {
       // Email confirmation disabled → already signed in.
       window.location.href = '/account/profile/';
@@ -139,12 +144,24 @@ function initLogin() {
     hide(alertEl);
     const fd = new FormData(form);
     busy(btn, true, 'Signing in…');
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email: (fd.get('email') || '').toString().trim(),
       password: (fd.get('password') || '').toString(),
     });
     busy(btn, false);
-    if (error) { show(alertEl, 'error', friendly(error)); return; }
+    if (error) {
+      if (window.posthog) {
+        window.posthog.capture('login_failed', {
+          method: 'email', failure_reason: error.message, surface: 'whereto_trips_web',
+        });
+      }
+      show(alertEl, 'error', friendly(error));
+      return;
+    }
+    if (window.posthog) {
+      window.posthog.capture('login', { method: 'email', surface: 'whereto_trips_web' });
+      if (data.user) window.posthog.identify(data.user.id, { email: data.user.email });
+    }
     window.location.href = nextTarget('/account/profile/');
   });
 }
