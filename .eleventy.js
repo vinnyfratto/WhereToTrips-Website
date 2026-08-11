@@ -9,6 +9,7 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy("src/DestImages");
   eleventyConfig.addPassthroughCopy("src/vibesimages");
   eleventyConfig.addPassthroughCopy("src/DashboardHero");
+  eleventyConfig.addPassthroughCopy("src/VibeSelection");
 
   // Admin is copied verbatim (Sveltia CMS) — keep it out of template processing.
   eleventyConfig.ignores.add("src/admin/**");
@@ -28,6 +29,10 @@ module.exports = function (eleventyConfig) {
   // Dashboard Hero admin tool — same treatment: copied verbatim, kept out of
   // collections/sitemap.
   eleventyConfig.ignores.add("src/DashboardHero/**");
+
+  // Vibe Selection tester — same treatment: copied verbatim, kept out of
+  // collections/sitemap.
+  eleventyConfig.ignores.add("src/VibeSelection/**");
 
   // Markdown filter — renders doc strings to HTML for the (internal) TechDocs page.
   const md = require("markdown-it")({ html: true, linkify: true, breaks: false });

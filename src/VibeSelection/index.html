@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Vibe Selection · WhereTo Admin</title>
+<link rel="icon" href="/favicon.svg" />
+<style>
+:root{
+  --azure:#209CE0; --azure-pressed:#1B86C2; --azure-tint:#E6F4FC;
+  --amber:#E69800; --amber-tint:#FBEFD6;
+  --charcoal:#313131; --navy:#313131; --cream:#F2F5F7; --card:#FFFFFF;
+  --gray200:#E2E7EB; --gray300:#D2D8DD; --gray500:#8A9098; --gray600:#5C616A;
+  --success:#3DA96E; --error:#DE4C4C;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --serif:Georgia,"Times New Roman",serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:var(--sans);background:#DDE3E8;color:var(--charcoal);min-height:100vh}
+
+/* header (shared admin nav) */
+.hdr{background:var(--navy);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:60}
+.hdr-left{display:flex;align-items:center;gap:22px}
+.hdr-logo-link{display:flex;align-items:center}
+.hdr-logo-img{height:22px;width:auto;display:block}
+.hdr-nav{display:flex;align-items:center;gap:4px}
+.hdr-tab{font-family:var(--sans);font-size:13px;font-weight:600;color:rgba(240,235,224,0.6);text-decoration:none;padding:6px 13px;border-radius:7px;transition:background .14s,color .14s;white-space:nowrap}
+.hdr-tab:hover{color:var(--cream);background:rgba(255,255,255,0.08)}
+.hdr-tab.active{color:var(--cream);background:rgba(255,255,255,0.13)}
+
+/* page chrome */
+.wrap{max-width:1400px;margin:0 auto;padding:20px 18px 48px}
+.pageTitle{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.pageTitle h1{font-family:var(--serif);font-size:26px}
+.pageTitle .sub{font-size:13px;color:var(--gray600)}
+.controls{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;background:#fff;border:1px solid var(--gray200);border-radius:14px;padding:14px 16px;margin:14px 0 12px}
+.ctl{display:flex;flex-direction:column;gap:5px}
+.ctl label{font-size:10.5px;font-weight:800;letter-spacing:.7px;color:var(--gray500)}
+.ctl select{font-family:var(--sans);font-size:14px;font-weight:600;color:var(--charcoal);background:#fff;border:1.5px solid var(--gray300);border-radius:10px;padding:9px 12px;min-width:230px;cursor:pointer}
+.ctl select:focus{outline:none;border-color:var(--azure)}
+.ctlBtn{font-family:var(--sans);font-size:13px;font-weight:700;color:var(--gray600);background:#fff;border:1.5px solid var(--gray300);border-radius:10px;padding:10px 14px;cursor:pointer}
+.ctlBtn:hover{border-color:var(--azure);color:var(--azure-pressed)}
+.ctlSpacer{flex:1}
+.ctlNote{font-size:11.5px;color:var(--gray500);max-width:280px;line-height:1.45}
+
+.vs-stats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.vs-stat{background:#fff;border:1px solid var(--gray200);border-radius:12px;padding:9px 14px;min-width:96px}
+.vs-stat .v{font-family:var(--serif);font-size:19px;color:var(--azure-pressed)}
+.vs-stat .k{font-size:9px;font-weight:800;letter-spacing:.6px;color:var(--gray500);margin-top:2px;text-transform:uppercase}
+
+.cols{display:flex;gap:22px;align-items:flex-start;flex-wrap:wrap}
+.colPhone{flex:0 0 auto}
+.colInsp{flex:1;min-width:420px}
+
+/* phone */
+.phone{width:393px;height:800px;background:var(--cream);border-radius:34px;overflow:hidden;
+  box-shadow:0 18px 50px rgba(0,0,0,.28),0 0 0 10px #1c1f22,0 0 0 12px #3a3e44;
+  display:flex;flex-direction:column;position:relative}
+.appBar{background:var(--azure);color:#fff;padding:14px 16px 12px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.appBar .logo{font-family:var(--serif);font-size:21px;font-style:italic;font-weight:700;letter-spacing:.3px}
+.appBar .burger{font-size:20px;opacity:.9}
+.scroller{flex:1;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;position:relative}
+.scroller::-webkit-scrollbar{width:4px}
+.scroller::-webkit-scrollbar-thumb{background:var(--gray300);border-radius:4px}
+
+.intro{padding:18px 16px 4px}
+.intro h2{font-family:var(--serif);font-size:24px;line-height:1.15;margin-bottom:8px}
+.intro h2 em{color:var(--azure)}
+.intro p{font-size:12.5px;color:var(--gray600);line-height:1.45}
+.intro p b.n{color:var(--amber)}
+
+.ctaWrap{flex-shrink:0;padding:8px 14px 16px;background:linear-gradient(transparent,var(--cream) 30%);position:relative;z-index:5}
+.selTray{display:flex;gap:6px;overflow-x:auto;padding:2px 2px 8px;scrollbar-width:none}
+.selTray::-webkit-scrollbar{display:none}
+.selTray:empty{display:none}
+.selChip{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;background:#fff;border:1.5px solid var(--azure);color:var(--azure-pressed);border-radius:999px;padding:3px 10px 3px 4px;font-size:11.5px;font-weight:600;cursor:pointer;animation:chipIn .2s ease}
+@keyframes chipIn{from{opacity:0;transform:scale(.85)}}
+.selChip .d{width:22px;height:22px;border-radius:50%;background-size:cover;background-position:center;background-color:var(--gray200)}
+.selChip .x{opacity:.55;font-size:12px}
+.meterRow{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:7px}
+.dots{display:flex;gap:4px}
+.dots i{width:8px;height:8px;border-radius:50%;background:var(--gray300);transition:all .2s}
+.dots i.f{background:var(--azure)}
+.dots i.sweet{background:var(--success)}
+.dots i.over{background:var(--amber)}
+.meterTxt{font-size:11.5px;color:var(--gray500)}
+.meterTxt.inRange{color:var(--success);font-weight:600}
+.meterTxt.over{color:var(--amber);font-weight:600}
+.cta{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--azure);color:#fff;border:none;width:100%;padding:15px;border-radius:14px;font-size:16.5px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(32,156,224,.4);font-family:var(--sans)}
+.cta:active{background:var(--azure-pressed)}
+.cta .count{background:rgba(255,255,255,.25);border-radius:999px;min-width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;font-size:13.5px;padding:0 8px}
+
+/* badges that sit ON photos — solid chips, readable over anything */
+.ring{width:23px;height:23px;border-radius:50%;border:2px solid #fff;background:rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;font-size:12px;color:transparent;flex-shrink:0;transition:all .15s;box-shadow:0 1px 4px rgba(0,0,0,.25)}
+.sel .ring{background:var(--amber);border-color:var(--amber);color:#fff}
+.pk{background:var(--amber);color:#fff;font-size:11px;font-weight:800;min-width:23px;height:23px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;padding:0 7px;box-shadow:0 2px 6px rgba(0,0,0,.25);animation:chipIn .2s}
+.explored{background:var(--success);color:#fff;font-size:9px;font-weight:800;padding:3px 8px;border-radius:999px;letter-spacing:.3px;animation:chipIn .25s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.minis{display:flex}
+.minis i{width:25px;height:25px;border-radius:50%;background-size:cover;background-position:center;border:2px solid #fff;margin-left:-8px;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.minis i:first-child{margin-left:0}
+
+/* caption-card DNA */
+.tick{width:22px;height:2.5px;background:var(--azure);border-radius:2px}
+.scorePill{display:inline-flex;align-items:center;gap:4px;background:var(--azure-tint);border-radius:999px;padding:3px 9px;font-size:10px;font-weight:800;color:var(--azure-pressed);letter-spacing:.3px;white-space:nowrap}
+.scorePill.amber{background:var(--amber-tint);color:#B87A00}
+.sbar{height:4px;border-radius:3px;background:var(--gray200);overflow:hidden}
+.sbar i{display:block;height:100%;border-radius:3px;background:var(--azure)}
+.guideChip{display:inline-flex;align-items:center;gap:4px;background:#fff;color:var(--gray600);border:1.5px solid var(--gray300);border-radius:999px;padding:4px 10px;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:.2px;white-space:nowrap}
+.guideChip:hover{border-color:var(--azure);color:var(--azure-pressed)}
+.ph{background-size:cover;background-position:center;position:relative;background-color:#CFD6DC}
+.ph.noimg::after{content:'no image';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;letter-spacing:.5px;color:#fff;background:repeating-linear-gradient(45deg,#B9C2C9,#B9C2C9 10px,#C6CED4 10px,#C6CED4 20px)}
+
+.homeProgress{padding:4px 16px 0;font-size:11.5px;color:var(--gray500);text-align:center}
+.homeProgress b{color:var(--azure-pressed)}
+.covers{padding:12px 14px 4px;display:flex;flex-direction:column;gap:12px}
+.cover{border-radius:16px;overflow:hidden;cursor:pointer;background:var(--card);box-shadow:0 2px 8px rgba(0,0,0,.1);transition:transform .12s}
+.cover:active{transform:scale(.985)}
+.cover .ph{height:96px}
+.cover .ph .tl{position:absolute;top:9px;left:9px}
+.cover .ph .tr{position:absolute;top:9px;right:9px;display:flex;gap:6px;align-items:center}
+.cover .cap{display:flex;align-items:center;gap:12px;padding:10px 14px 11px}
+.cover .cap .meta{flex:1;min-width:0}
+.cover .cap h3{font-family:var(--serif);font-size:17.5px;line-height:1.15}
+.cover .cap .sub{font-size:10.5px;color:var(--gray500);margin-top:3px}
+.cover .cap .go{color:var(--gray500);font-size:18px}
+
+.kicker{display:flex;align-items:center;gap:10px;padding:14px 16px 9px}
+.kicker span{font-size:10px;font-weight:800;letter-spacing:1.2px;color:var(--gray500)}
+.kicker::after{content:'';flex:1;height:1px;background:var(--gray200)}
+
+/* sheet */
+.sheet{position:absolute;inset:0;background:var(--cream);z-index:20;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .32s cubic-bezier(.32,.72,0,1)}
+.sheet.in{transform:translateY(0)}
+.sheetTop{flex-shrink:0;background:var(--card);box-shadow:0 1px 6px rgba(0,0,0,.06)}
+.sheetTop .ph{height:108px}
+.sheetTop .back{position:absolute;top:12px;left:12px;background:rgba(255,255,255,.95);border:none;border-radius:999px;width:34px;height:34px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.sheetTop .cap{padding:10px 16px 12px}
+.sheetTop .cap h3{font-family:var(--serif);font-size:20px}
+.sheetTop .cap .sub{font-size:11px;color:var(--gray600);margin-top:3px;line-height:1.4}
+.sheetBody{flex:1;overflow-y:auto;padding:0 0 10px;scrollbar-width:thin}
+.sheetBody::-webkit-scrollbar{width:4px}
+.sheetBody::-webkit-scrollbar-thumb{background:var(--gray300);border-radius:4px}
+.sheetFoot{flex-shrink:0;padding:8px 14px 16px;background:linear-gradient(transparent,var(--cream) 30%)}
+
+.sHero{margin:0 14px;border-radius:16px;overflow:hidden;cursor:pointer;background:var(--card);box-shadow:0 3px 10px rgba(0,0,0,.12);border:2.5px solid transparent;transition:border-color .15s}
+.sHero.sel{border-color:var(--amber)}
+.sHero .ph{height:148px}
+.sHero.sel .ph::before{content:'';position:absolute;inset:0;background:rgba(32,156,224,.22);z-index:1}
+.sHero .ph .tr{position:absolute;top:9px;right:9px;z-index:2}
+.sHero .cap{padding:11px 14px 13px}
+.sHero .cap .row1{display:flex;align-items:center;gap:8px}
+.sHero .cap h4{font-family:var(--serif);font-size:17px;flex:1;font-weight:400}
+.sHero .cap .quote{font-size:11px;color:var(--gray600);font-style:italic;line-height:1.5;margin-top:7px;border-left:2.5px solid var(--azure);padding-left:9px}
+.sHero .cap .row2{display:flex;align-items:center;gap:8px;margin-top:9px}
+.sHero .cap .row2 .tp{flex:1;font-size:10px;font-weight:700;color:var(--gray500)}
+
+.quad{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 14px}
+.qcard{border-radius:14px;overflow:hidden;cursor:pointer;background:var(--card);box-shadow:0 2px 7px rgba(0,0,0,.1);border:2px solid transparent;transition:border-color .15s;animation:tileIn .3s both;animation-delay:calc(var(--i) * 40ms)}
+@keyframes tileIn{from{opacity:0;transform:translateY(8px)}}
+.qcard.sel{border-color:var(--amber)}
+.qcard .ph{height:88px}
+.qcard.sel .ph::before{content:'';position:absolute;inset:0;background:rgba(32,156,224,.22);z-index:1}
+.qcard .ph .tr{position:absolute;top:7px;right:7px;z-index:2}
+.qcard .cap{padding:8px 8px 10px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px}
+.qcard .cap h5{font-family:var(--serif);font-size:12.5px;line-height:1.25;font-weight:400;min-height:31px;display:flex;align-items:center}
+.qcard .cap .mrow{display:flex;align-items:center;gap:6px}
+.qcard .cap .mrow .gc{font-size:9px;padding:3px 8px}
+
+.field{padding:0 14px;display:flex;flex-direction:column;gap:7px}
+.frow{display:flex;align-items:center;gap:11px;background:var(--card);border-radius:13px;padding:8px 12px 8px 8px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.07);border:2px solid transparent;transition:all .13s}
+.frow.sel{border-color:var(--azure);background:var(--azure-tint)}
+.frow .thumb{width:46px;height:46px;border-radius:10px;background-size:cover;background-position:center;flex-shrink:0;background-color:#CFD6DC}
+.frow .meta{flex:1;min-width:0}
+.frow .meta .t{font-size:13px;font-weight:600;line-height:1.2}
+.frow .meta .barRow{display:flex;align-items:center;gap:7px;margin-top:4px}
+.frow .meta .sbar{flex:1}
+.frow .meta .sc{font-size:10px;font-weight:800;color:var(--gray600)}
+.frow .info{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--gray300);background:#fff;color:var(--gray500);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;font-family:var(--serif);font-style:italic}
+.box{width:22px;height:22px;border-radius:7px;border:2px solid var(--gray300);background:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;color:transparent;flex-shrink:0;transition:all .12s}
+.sel .box{background:var(--azure);border-color:var(--azure);color:#fff}
+
+/* guide sheet */
+.gsheetWrap{position:absolute;inset:0;z-index:30;pointer-events:none}
+.gsheetWrap.up{pointer-events:auto}
+.gscrimBg{position:absolute;inset:0;background:rgba(12,22,30,0);transition:background .28s}
+.gsheetWrap.up .gscrimBg{background:rgba(12,22,30,.45)}
+.gsheet{position:absolute;left:0;right:0;bottom:0;max-height:88%;background:var(--cream);border-radius:22px 22px 0 0;transform:translateY(105%);transition:transform .32s cubic-bezier(.32,.72,0,1);display:flex;flex-direction:column;overflow:hidden}
+.gsheetWrap.up .gsheet{transform:translateY(0)}
+.gsHero{height:118px;flex-shrink:0}
+.gsHero .grab{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:40px;height:4px;border-radius:3px;background:rgba(255,255,255,.9);box-shadow:0 1px 3px rgba(0,0,0,.2);z-index:2}
+.gsHero .close{position:absolute;top:12px;right:12px;background:rgba(255,255,255,.95);border:none;border-radius:999px;width:30px;height:30px;font-size:13px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.2);z-index:2}
+.gsTitle{flex-shrink:0;background:var(--card);padding:11px 16px 12px;box-shadow:0 1px 6px rgba(0,0,0,.05)}
+.gsTitle h3{font-family:var(--serif);font-size:20px}
+.gsTitle .tick{margin-top:7px}
+.gsBody{flex:1;overflow-y:auto;padding:13px 16px 6px;scrollbar-width:thin}
+.gsBody::-webkit-scrollbar{width:4px}
+.gsBody::-webkit-scrollbar-thumb{background:var(--gray300);border-radius:4px}
+.gsStats{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+.stat{background:#fff;border:1px solid var(--gray200);border-radius:11px;padding:7px 11px;text-align:center;flex:1;min-width:72px}
+.stat .v{font-family:var(--serif);font-size:16px;color:var(--azure-pressed)}
+.stat .v.amber{color:var(--amber)}
+.stat .k{font-size:8.5px;font-weight:800;letter-spacing:.6px;color:var(--gray500);margin-top:2px}
+.gsHook{font-size:13px;line-height:1.55;color:var(--charcoal);border-left:3px solid var(--azure);padding-left:11px;font-style:italic;margin-bottom:14px}
+.gsHook.muted{color:var(--gray500);border-left-color:var(--gray300)}
+.gsSub{font-size:10.5px;font-weight:800;letter-spacing:1px;color:var(--gray500);margin-bottom:8px}
+.destRows{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.drow{display:flex;align-items:center;gap:8px;font-size:11.5px}
+.drow .dr{width:14px;font-weight:800;color:var(--gray500);font-size:10px}
+.drow .dn{flex:0 0 auto;font-weight:600}
+.drow .dc{color:var(--gray500);font-size:10.5px;white-space:nowrap}
+.drow .sbar{flex:1;min-width:24px}
+.drow .ds{font-weight:800;font-size:10.5px;color:var(--azure-pressed)}
+.ekeys{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+.ekey{display:inline-flex;align-items:center;gap:5px;background:#fff;border:1px solid var(--gray200);border-radius:999px;padding:3px 9px;font-size:10px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--gray600)}
+.ekey b{color:var(--azure-pressed)}
+.gsFoot{flex-shrink:0;padding:10px 16px 16px;background:linear-gradient(transparent,var(--cream) 30%)}
+.selBtn{width:100%;border:none;border-radius:11px;padding:12px;font-size:13.5px;font-weight:700;cursor:pointer;background:var(--azure);color:#fff;font-family:var(--sans)}
+.selBtn.on{background:var(--amber)}
+.readLink{text-align:center;font-size:12px;font-weight:700;color:var(--azure-pressed);padding:6px 0 4px;cursor:pointer}
+
+.spacer{height:8px}
+.endnote{text-align:center;font-size:11px;color:var(--gray500);padding:10px 0 14px}
+.vs-state{padding:60px 24px;text-align:center;font-size:13.5px;color:var(--gray500)}
+.vs-state.small{padding:24px}
+.vs-state.err{color:var(--error);font-weight:600;line-height:1.5}
+
+/* inspector */
+.vs-warn{background:#fff;border:1px solid var(--gray200);border-left:4px solid var(--error);border-radius:12px;padding:11px 14px;margin-bottom:10px;font-size:12.5px;line-height:1.55;color:var(--gray600)}
+.vs-warn.amber{border-left-color:var(--amber)}
+.vs-warn.info{border-left-color:var(--azure)}
+.vs-warn b{color:var(--charcoal)}
+.vs-warn code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;background:var(--gray200);padding:1px 5px;border-radius:4px}
+.vs-warn-list{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.vs-table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--gray200);border-radius:12px;overflow:hidden;font-size:12.5px}
+.vs-table th{text-align:left;font-size:9.5px;font-weight:800;letter-spacing:.7px;color:var(--gray500);text-transform:uppercase;padding:9px 12px;background:var(--cream);border-bottom:1px solid var(--gray200);white-space:nowrap}
+.vs-table td{padding:9px 12px;border-bottom:1px solid var(--gray200);vertical-align:top}
+.vs-table tbody tr{cursor:pointer}
+.vs-table tbody tr:hover{background:var(--azure-tint)}
+.vs-table tbody tr.on{background:var(--amber-tint)}
+.vs-table tbody tr:last-child td{border-bottom:none}
+.vs-table .sc{font-family:var(--serif);font-size:16px;color:var(--azure-pressed);width:52px}
+.vs-table .vl{font-weight:600;color:var(--charcoal)}
+.vs-table .vk{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;color:var(--gray500);margin-top:3px;line-height:1.4}
+.vs-table .cat{color:var(--gray600);white-space:nowrap}
+.vs-table .im{font-size:11px;font-weight:700;white-space:nowrap}
+.vs-table .im.curated{color:var(--success)}
+.vs-table .im.canonical{color:var(--gray500)}
+.vs-table .im.none{color:var(--error)}
+.vs-table .gd,.vs-table .dc{color:var(--gray600);white-space:nowrap;font-variant-numeric:tabular-nums}
+
+@media (max-width:900px){
+  .cols{flex-direction:column}
+  .colInsp{min-width:0;width:100%}
+  .phone{width:100%;max-width:393px}
+}
+</style>
+</head>
+<body>
+<div id="admin-gate-overlay" style="position:fixed;inset:0;z-index:99999;background:#313131;color:#FFFFFF;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;font-family:system-ui,sans-serif;text-align:center;padding:24px;">
+  <div id="admin-gate-msg" style="font-size:15px;">Checking access&hellip;</div>
+</div>
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+  const supabase = createClient("https://pvqwxphrmcvmztlkzhsg.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2cXd4cGhybWN2bXp0bGt6aHNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzIxMjIsImV4cCI6MjA5NTMwODEyMn0.uz1WFZqymop5mhIUx6bxW8qofMQuGo-ltyRA8f0P1lk", { auth: { persistSession: true, autoRefreshToken: true } });
+  const overlay = document.getElementById('admin-gate-overlay');
+  const msg = document.getElementById('admin-gate-msg');
+  (async () => {
+    try {
+      const { data: sess } = await supabase.auth.getSession();
+      if (!sess.session) {
+        window.location.href = '/account/login/?next=' + encodeURIComponent(window.location.pathname + window.location.search);
+        return;
+      }
+      const { data: adm } = await supabase.from('admins').select('user_id').eq('user_id', sess.session.user.id).maybeSingle();
+      if (!adm) {
+        msg.innerHTML = 'You don\'t have access to this page.<br/><br/><a href="/" style="color:#209CE0;font-weight:600">Return home</a>';
+        return;
+      }
+      window.__wtSupabase = supabase;
+      window.__wtAdminUser = sess.session.user;
+      document.dispatchEvent(new CustomEvent('wt-admin-ready'));
+      overlay.remove();
+    } catch (e) {
+      msg.textContent = 'Could not verify access — please refresh.';
+    }
+  })();
+</script>
+
+<header class="hdr">
+  <div class="hdr-left">
+    <a href="/" class="hdr-logo-link" aria-label="WhereTo home"><img class="hdr-logo-img" src="/assets/whereto-logo-white.svg" alt="WhereTo" /></a>
+    <nav class="hdr-nav">
+      <a href="/admin-dashboard/" class="hdr-tab">Admin Home</a>
+      <a href="/DestImages/" class="hdr-tab">Destination Images</a>
+      <a href="/vibesimages/" class="hdr-tab">Vibe Images</a>
+      <a href="/vibes-engine/" class="hdr-tab">Vibes Engine</a>
+      <a href="/vibes-engine/dashboard.html" class="hdr-tab">Vibe Engine Tester</a>
+      <a href="/DashboardHero/" class="hdr-tab">Dashboard Hero</a>
+      <a href="/StockImages/" class="hdr-tab">Stock Image Ingest</a>
+      <a href="/VibeSelection/" class="hdr-tab active">Vibe Selection</a>
+    </nav>
+  </div>
+  <div class="hdr-right"></div>
+</header>
+
+<div class="wrap">
+  <div class="pageTitle">
+    <h1>Vibe Selection</h1>
+    <span class="sub">The traveller's vibe picker, running on live Vibe Engine data.</span>
+  </div>
+
+  <div class="controls">
+    <div class="ctl">
+      <label for="vs-region">Region</label>
+      <select id="vs-region" autocomplete="off"></select>
+    </div>
+    <div class="ctl">
+      <label for="vs-sub">Sub-Region</label>
+      <select id="vs-sub" autocomplete="off"></select>
+    </div>
+    <button type="button" class="ctlBtn" data-act="reset">Reset picks</button>
+    <div class="ctlSpacer"></div>
+    <div class="ctlNote">Scores, guides, images and destinations are read live from Supabase — no rebuild needed when content changes.</div>
+  </div>
+
+  <div class="vs-stats" id="vs-stats"></div>
+
+  <div class="cols">
+    <div class="colPhone">
+      <div class="phone">
+        <div class="appBar"><span class="logo">WhereTo</span><span class="burger">&#9776;</span></div>
+        <div class="scroller" id="vs-scroller">
+          <div id="vs-body"></div>
+        </div>
+        <div class="ctaWrap">
+          <div class="selTray" id="vs-tray"></div>
+          <div class="meterRow"><div class="dots" id="vs-dots"></div><span class="meterTxt" id="vs-meter"></span></div>
+          <button class="cta">Show My Destinations <span class="count" id="vs-cta-count">0</span></button>
+        </div>
+        <div id="vs-sheet-host"></div>
+        <div class="gsheetWrap" id="vs-guide-wrap">
+          <div class="gscrimBg" data-act="guide-scrim"></div>
+          <div class="gsheet" id="vs-guide"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="colInsp">
+      <div id="vs-inspector"></div>
+    </div>
+  </div>
+</div>
+
+<script>window.__VS_BOOT = {"supabaseUrl":"https://pvqwxphrmcvmztlkzhsg.supabase.co","anonKey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2cXd4cGhybWN2bXp0bGt6aHNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzIxMjIsImV4cCI6MjA5NTMwODEyMn0.uz1WFZqymop5mhIUx6bxW8qofMQuGo-ltyRA8f0P1lk","canonicalVibes":[{"key":"architecture_design","label":"Architecture & Design","category":"Cities & Urban","engineKeys":["architecture_design","nordic_design"]},{"key":"broadway_theater","label":"Broadway & Theater","category":"Cities & Urban","engineKeys":["broadway_theater","hollywood_entertainment","shows_entertainment"]},{"key":"capital_cosmopolitan_cities","label":"Capital & Cosmopolitan Cities","category":"Cities & Urban","engineKeys":["addis_ababa_culture","kigali_urban","art_culture_cities","capital_cities","panama_city_cosmopolitan","canal_cities","cosmopolitan_dining","nairobi_urban","denver_city_culture","buenos_aires_cosmopolitan","santiago_capital","lima_capital_culture","medellin_reinvention","sao_paulo_culture_dining","bogota_capital"]},{"key":"iconic_skylines_landmarks","label":"Iconic Skylines & Landmarks","category":"Cities & Urban","engineKeys":["iconic_monuments","iconic_cityscapes","futuristic_tech_districts","iconic_landmarks","futuristic_skylines","iconic_skylines_landmarks","iconic_city_skylines","iconic_landmarks_cityscapes","vancouver_cityscapes","rio_landmarks_skyline"]},{"key":"live_music_scenes","label":"Live Music Scenes","category":"Cities & Urban","engineKeys":["classical_music_opera","mindelo_morna_music","pub_trad_music","mariachi_folklore","reggae_rastafari","blues_delta_heritage","live_music_scene","music_heritage","red_rocks_live_music","salsa_dancing","samba_live_music","tango_milongas"]},{"key":"mega_shopping_souks","label":"Mega Shopping & Souks","category":"Cities & Urban","engineKeys":["bazaars_handicrafts","mega_malls_shopping","souks_bazaars","souks_markets","mega_shopping_districts","medinas_souks"]},{"key":"nightlife_clubs","label":"Nightlife & Clubs","category":"Cities & Urban","engineKeys":["nightlife_clubbing","nightlife_parties","nightlife_beach_clubs","nightlife_entertainment","nightlife_clubs","nordic_nightlife","nightlife_cantinas","nightlife_pool_clubs","nightlife_live_music","nightlife_rooftops","nightlife_rumba"]},{"key":"sports_stadiums","label":"Sports & Stadiums","category":"Cities & Urban","engineKeys":["sports_culture","cowboy_rodeo_culture","sports_stadiums","lucha_libre_spectacle","football_stadium_culture"]},{"key":"theme_parks_coasters","label":"Theme Parks & Coasters","category":"Cities & Urban","engineKeys":["theme_parks_family","theme_parks_coasters","family_waterpark_resorts","theme_parks"]},{"key":"world_class_museums","label":"World-Class Museums","category":"Cities & Urban","engineKeys":["city_culture_museums","world_class_museums","antiquities_museums","museums_galleries","northwest_coast_museums"]},{"key":"ancient_ruins_archaeology","label":"Ancient Ruins & Archaeology","category":"History & Heritage","engineKeys":["roman_greco_ruins","petra_nabataean","pyramids_sphinx","roman_ruins","royal_tombs","ancient_cities_ruins","ancient_temples_shrines","ancient_temples_ruins","ancient_ruins","ancient_neolithic_sites","roman_ancient_sites","ancient_ethiopia","ancient_roman_sites","indigenous_maya_culture","ancient_mesoamerica","maya_ruins","northern_kingdoms","archaeology_ancient_cultures","ancestral_puebloan_ruins","ancient_sites_archaeology","machu_picchu","sacred_valley","nazca_lines"]},{"key":"castles_forts","label":"Castles & Forts","category":"History & Heritage","engineKeys":["rajasthan_forts_palaces","castle_country_house_stays","fairytale_castles","castles_stately_homes","castle_schloss_stays","castles_fortresses","castles_manors","medieval_castles_fortresses","historic_sites_forts","cartagena_walled_city"]},{"key":"cathedrals_abbeys","label":"Cathedrals & Abbeys","category":"History & Heritage","engineKeys":["cathedrals_abbeys","cathedrals_basilicas"]},{"key":"colonial_old_quarters","label":"Colonial & Old Quarters","category":"History & Heritage","engineKeys":["forts_heritage_quarters","colonial_heritage_cities","cusco_imperial_city","colonial_old_towns","colonial_cities","spanish_colonial_missions","arequipa_white_city","colonial_towns","cuenca_colonial","sucre_potosi_colonial","colonial_historic_towns"]},{"key":"cultural_heritage_religious_ethnic","label":"Cultural Heritage (Religious/Ethnic)","category":"History & Heritage","engineKeys":["swahili_coast_heritage","heritage_old_towns","heritage_railways","jewish_heritage","buddhist_heritage","ottoman_heritage","communist_heritage","old_quebec_french_heritage","celtic_acadian_culture","inca_trail_trek","kathmandu_valley_heritage","viking_heritage","native_ancestral_heritage"]},{"key":"gold_rush_frontier_history","label":"Gold Rush & Frontier History","category":"History & Heritage","engineKeys":["gold_rush_missions","ghost_towns_mining","gold_rush_history","wild_west_ghost_towns"]},{"key":"historic_grand_hotels","label":"Historic & Grand Hotels","category":"History & Heritage","engineKeys":["alpine_grand_hotels","historic_grand_hotels","grand_railway_hotels","historic_southwest_inns","grand_resorts_inns","andean_haciendas"]},{"key":"historic_old_towns","label":"Historic Old Towns","category":"History & Heritage","engineKeys":["historic_old_towns","grand_old_towns","historic_towns_homes","quito_old_town"]},{"key":"medieval_walled_towns","label":"Medieval & Walled Towns","category":"History & Heritage","engineKeys":["medieval_walled_towns","medieval_saxon_towns","medieval_old_towns"]},{"key":"mosques_islamic_heritage","label":"Mosques & Islamic Heritage","category":"History & Heritage","engineKeys":["grand_mosques_islamic","imperial_medinas","islamic_architecture","moorish_andalusia"]},{"key":"palaces_stately_homes","label":"Palaces & Stately Homes","category":"History & Heritage","engineKeys":["imperial_palaces","royal_palaces_chateaux","palace_heritage_hotels","chateau_villa_stays","gilded_age_mansions"]},{"key":"sacred_pilgrimage_sites","label":"Sacred & Pilgrimage Sites","category":"History & Heritage","engineKeys":["sinai_st_catherine","holy_land_sacred_sites","sacred_cities_rituals","pilgrimage_sacred_sites"]},{"key":"small_town_roadside_americana","label":"Small-Town & Roadside Americana","category":"History & Heritage","engineKeys":["charming_small_towns","amish_country_small_towns","texas_hill_country","roadside_americana","mother_road_americana"]},{"key":"storybook_villages","label":"Storybook Villages","category":"History & Heritage","engineKeys":["storybook_towns","storybook_villages","lighthouses_fishing_villages","chiloe_island_churches"]},{"key":"temples_shrines","label":"Temples & Shrines","category":"History & Heritage","engineKeys":["pharaonic_temples","himalayan_monasteries","hindu_temple_architecture","living_temples_spiritual","orthodox_monasteries"]},{"key":"war_modern_history","label":"War & Modern History","category":"History & Heritage","engineKeys":["wwii_cold_war_history","wartime_memory","balkan_war_history","partition_independence_history","kigali_genocide_memorial","wwi_wwii_history","civil_rights_trail","revolutionary_history","atomic_age_history","civil_war_history","civil_rights_history","colonial_revolution","wwii_history"]},{"key":"all_inclusive_beach_resorts","label":"All-Inclusive & Beach Resorts","category":"Coast & Sea","engineKeys":["red_sea_resorts","canary_resort_sun","all_inclusive_resorts","family_resorts","private_island_resorts"]},{"key":"beaches_beach_towns","label":"Beaches & Beach Towns","category":"Coast & Sea","engineKeys":["beach_resorts","zanzibar_beaches","tropical_beaches","iconic_beaches","canary_beaches","black_sea_beaches","coves_beach_hopping","island_beaches","cape_verde_beaches","bohemian_beach_towns","caribbean_beaches","luxury_beach_escapes","pacific_beach_resorts","gulf_coast_beaches","pacific_beaches","beaches_islands","beaches_boardwalks","great_lakes_beaches_dunes","rio_beach_lifestyle","honolulu_waikiki","northeast_brazil_beaches","florianopolis_coast"]},{"key":"coastal_drives_cliffs","label":"Coastal Drives & Cliffs","category":"Coast & Sea","engineKeys":["coastal_cliff_walks","coastal_towns","coastal_cliff_hiking","scenic_coastal_drives","luxury_coastal_resorts","lighthouses_scenic_drives","lighthouses_harbors","coastal_wildlife","coastal_rainforest","lakeshore_cliffs_sea_caves","pch_coastal_drives","coastal_towns_lighthouses"]},{"key":"expedition_small_ship_cruising","label":"Expedition & Small-Ship Cruising","category":"Coast & Sea","engineKeys":["inside_passage_cruising","galapagos_cruises"]},{"key":"fishing","label":"Fishing","category":"Coast & Sea","engineKeys":["sport_fishing","fly_fishing","fishing_gulf_coast"]},{"key":"fjords_sea_channels","label":"Fjords & Sea Channels","category":"Coast & Sea","engineKeys":["norwegian_fjords","fiords_glaciers","patagonian_fjords_cruises"]},{"key":"island_hopping","label":"Island Hopping","category":"Coast & Sea","engineKeys":["island_hopping_boats","archipelago_islands","island_escapes","key_island_stops","san_andres_providencia","galapagos_island_hopping","atlantic_islands"]},{"key":"marine_wildlife_turtles","label":"Marine Wildlife & Turtles","category":"Coast & Sea","engineKeys":["marine_wildlife","sea_turtle_nesting","sea_of_cortez_marine","sea_turtle_encounters","marine_wildlife_coast","paracas_ballestas"]},{"key":"rafting_kayaking_river_sports","label":"Rafting, Kayaking & River Sports","category":"Coast & Sea","engineKeys":["white_water_rafting_nile","whitewater_rafting","canoe_kayak_wilderness","white_water_rafting","sea_kayaking","north_woods_canoeing","ozarks_river_escapes","river_water_sports"]},{"key":"sailing_yacht_charters","label":"Sailing & Yacht Charters","category":"Coast & Sea","engineKeys":["dhow_sailing","island_hopping_sailing","sailing_island_hopping","musandam_fjords_dhow","lagoon_motu_cruises","sailing_yacht_charters"]},{"key":"scuba_reef_diving","label":"Scuba & Reef Diving","category":"Coast & Sea","engineKeys":["swahili_coast_diving","atlantic_diving","red_sea_diving","diving_snorkeling","scuba_diving","reef_diving","wreck_cave_diving","reef_diving_snorkeling","great_barrier_reef","galapagos_diving"]},{"key":"sea_caves_blue_lagoons","label":"Sea Caves & Blue Lagoons","category":"Coast & Sea","engineKeys":["sea_caves_blue_lagoons","bioluminescent_bays","altiplano_lagoons_flamingos"]},{"key":"snorkeling","label":"Snorkeling","category":"Coast & Sea","engineKeys":["snorkeling_marine_life","reef_snorkeling","keys_springs","snorkeling_reefs","galapagos_snorkeling"]},{"key":"surf_kitesurf","label":"Surf & Kitesurf","category":"Coast & Sea","engineKeys":["surf_windsurf_kite","atlantic_surf","surfing","kitesurf_windsurf","cold_water_surf","windsurf_kitesurf","north_coast_surf","kite_windsurfing","kitesurfing_northeast","kitesurfing","pacific_surf","surfing_pichilemu","surfing_brazil"]},{"key":"whale_dolphin_watching","label":"Whale & Dolphin Watching","category":"Coast & Sea","engineKeys":["azores_whale_watching","whale_dolphin_watching","whale_watching","pacific_whale_watching","whale_swimming"]},{"key":"alpine_lakes_lake_districts","label":"Alpine Lakes & Lake Districts","category":"Nature & Outdoors","engineKeys":["rift_valley_lakes","alpine_lakes","lakes_cottage_country","alpine_glacial_lakes","italian_alpine_lakes","lakes_cabins","lake_titicaca","lake_titicaca_bolivia","lake_district","houseboating_lakes"]},{"key":"arctic_polar_journeys","label":"Arctic & Polar Journeys","category":"Nature & Outdoors","engineKeys":["arctic_lapland","iceberg_alley","dog_sledding"]},{"key":"canyons_rock_formations","label":"Canyons & Rock Formations","category":"Nature & Outdoors","engineKeys":["adventure_canyoning_zipline","badlands_black_hills","copper_canyon","colca_canyon","slot_canyons","scenic_red_rock_drives"]},{"key":"caves_caverns","label":"Caves & Caverns","category":"Nature & Outdoors","engineKeys":["karst_landscapes","caves_underground","caves_karst","cenote_swimming","caves_caverns","ozarks_caves_springs"]},{"key":"deserts_dunes","label":"Deserts & Dunes","category":"Nature & Outdoors","engineKeys":["desert_luxury_camps","sahara_dunes","desert_oases","wadi_rum_desertscapes","steppe_desert_expeditions","la_paz_altiplano_city","desert_national_parks","desert_golf","desert_spa_resorts","desert_glamping","huacachina_dunes","uyuni_salt_flats","atacama_desert","desert_landscapes"]},{"key":"glaciers_icefields","label":"Glaciers & Icefields","category":"Nature & Outdoors","engineKeys":["glaciers_ice_caves","tidewater_glaciers","glacier_flightseeing","patagonia_glaciers"]},{"key":"gorilla_primate_trekking","label":"Gorilla & Primate Trekking","category":"Nature & Outdoors","engineKeys":["gorilla_trekking","chimpanzee_trekking"]},{"key":"hiking_trekking","label":"Hiking & Trekking","category":"Nature & Outdoors","engineKeys":["hiking_national_parks","santo_antao_hiking","highland_trekking","volcano_summit_treks","volcano_hiking","himalayan_trekking","atlas_trekking","kilimanjaro_trekking","rice_terraces_trekking","mountain_hiking","hiking_trekking","madeira_levada_walks","national_park_hiking","hiking_backpacking","alpine_park_hiking","desert_canyon_hiking","hiking_waterfalls","icefield_glacier_walks","torres_del_paine","cordillera_blanca","andean_hiking","lost_city_trek","patagonia_trekking"]},{"key":"hot_springs_onsen","label":"Hot Springs & Onsen","category":"Nature & Outdoors","engineKeys":["onsen_hot_springs","thermal_spas","thermal_springs_spas","thermal_baths","hot_springs","desert_hot_springs","hot_springs_wellness","mountain_hot_springs","thermal_hot_springs"]},{"key":"mountain_biking","label":"Mountain Biking","category":"Nature & Outdoors","engineKeys":["cycling_routes","mountain_biking","death_road_yungas"]},{"key":"mountain_peaks_summits","label":"Mountain Peaks & Summits","category":"Nature & Outdoors","engineKeys":["sacred_scenic_mountains","mountains_wadis","mountain_scenery_hill_stations","alpine_peaks_railways","madeira_mountain_peaks","alpine_peaks","fourteeners_peak_bagging"]},{"key":"national_parks_scenery","label":"National Parks & Scenery","category":"Nature & Outdoors","engineKeys":["highlands_glens","redwoods_sequoias","blue_ridge_smokies","high_sierra_yosemite","outback_red_centre","canadian_rockies","chapada_diamantina"]},{"key":"natural_wonders_phenomena","label":"Natural Wonders & Phenomena","category":"Nature & Outdoors","engineKeys":["dead_sea_floating","bay_of_fundy_tides","salalah_dhofar","bonito_freshwater","cano_cristales","lencois_maranhenses","rainbow_mountain"]},{"key":"rainforest_jungle","label":"Rainforest & Jungle","category":"Nature & Outdoors","engineKeys":["cloud_forest","eco_jungle_lodges","amazon_jungle_lodges","mindo_cloudforest","amazon_jungle"]},{"key":"river_cruises_journeys","label":"River Cruises & Journeys","category":"Nature & Outdoors","engineKeys":["nile_cruise","river_cruising","kerala_backwaters","amazon_riverboat_journeys","madidi_amazon","amazon_indigenous_community","amazon_river_communities","amazon_tambopata","amazon_manu","amazon_riverboats"]},{"key":"rock_climbing_canyoneering","label":"Rock Climbing & Canyoneering","category":"Nature & Outdoors","engineKeys":["rock_climbing","rock_climbing_canyoneering","volcano_climbing"]},{"key":"safari_big_game","label":"Safari & Big Game","category":"Nature & Outdoors","engineKeys":["walking_safari","luxury_safari_camps","great_migration","hot_air_balloon_safari","desert_safari_dunes","wildlife_tiger_safari","big_five_safari","llanos_safari","pantanal_wildlife"]},{"key":"stargazing_dark_skies","label":"Stargazing & Dark Skies","category":"Nature & Outdoors","engineKeys":["canary_stargazing","northern_lights","dark_sky_stargazing","stargazing_astrotourism","stargazing_dark_skies"]},{"key":"volcanoes_geothermal","label":"Volcanoes & Geothermal","category":"Nature & Outdoors","engineKeys":["danakil_volcanic_extremes","azores_volcanic_lakes","teide_volcano_park","volcanic_sea_pools","island_volcanic_wine","lanzarote_volcanic_art","volcanoes_hot_springs","sauna_geothermal_bathing","volcanic_geothermal_landscapes","volcano_adventures","yellowstone_geothermal","quilotoa_crater_lake","volcanoes_craters","cotopaxi_volcano"]},{"key":"waterfalls_gorges","label":"Waterfalls & Gorges","category":"Nature & Outdoors","engineKeys":["waterfalls_gorges","rainforest_waterfalls","niagara_waterfalls","waterfalls_canyons","waterfalls_rainforest","waterfalls_rivers_swimming","iguazu_falls"]},{"key":"wildlife_birding","label":"Wildlife & Birding","category":"Nature & Outdoors","engineKeys":["elephant_encounters","birding_east_africa","panda_wildlife","jungle_wildlife","elephant_sanctuaries","wildlife_watching","islands_wildlife","rainforest_wildlife","seabird_colonies","birding","monarch_butterflies","bayou_swamp_tours","grizzly_bear_viewing","bald_eagles_salmon_runs","denali_big_game","patagonia_wildlife","wildlife_birding","galapagos_wildlife","amazon_wildlife"]},{"key":"barbecue_grill","label":"Barbecue & Grill","category":"Food & Drink","engineKeys":["korean_bbq_table_dining","bbq_culture","bbq_soul_food","churrasco_parrilla","bbq_comfort_food"]},{"key":"cafe_aperitivo_culture","label":"Cafe & Aperitivo Culture","category":"Food & Drink","engineKeys":["coffee_origin_culture","cafe_aperitivo_culture","coffeehouse_culture","tea_culture","tea_country","coffee_highlands","coffee_region"]},{"key":"craft_beer_breweries","label":"Craft Beer & Breweries","category":"Food & Drink","engineKeys":["beer_halls_breweries","craft_beer_trail","craft_beer","craft_beer_breweries"]},{"key":"fine_dining_food_scenes","label":"Fine Dining & Food Scenes","category":"Food & Drink","engineKeys":["fine_dining_scene","michelin_fine_dining","urban_dining","food_scene_dining","celebrity_chef_dining","lima_gastronomy","colombian_food_scene"]},{"key":"regional_cuisine","label":"Regional Cuisine","category":"Food & Drink","engineKeys":["regional_cuisine_thali","north_african_cuisine","island_cuisine_seafood","sushi_kaiseki","regional_chinese_dim_sum","arabian_cuisine_food","new_nordic_cuisine","balkan_food_dining","atlantic_seafood","maple_sugar_shacks","oaxaca_cuisine","island_cuisine","supper_clubs_dairyland","southwestern_cuisine","seafood_shacks","tex_mex_cuisine","southern_food_cities","farm_to_table","island_cuisine_markets","pacific_seafood","ecuadorian_cuisine"]},{"key":"street_food_night_markets","label":"Street Food & Night Markets","category":"Food & Drink","engineKeys":["food_markets_cuisine","street_food","food_markets_dining","street_food_markets","street_food_night_markets","street_food_tacos"]},{"key":"whiskey_rum_distilleries","label":"Whiskey, Rum & Distilleries","category":"Food & Drink","engineKeys":["whisky_trails","rum_distilleries","agave_spirits","whiskey_distillery_trail","bourbon_whiskey","pisco_elqui_valley"]},{"key":"wine_country","label":"Wine Country","category":"Food & Drink","engineKeys":["wine_country","wine_cider_country","pisco_wine_country","okanagan_wine"]},{"key":"boutique_design_hotels","label":"Boutique & Design Hotels","category":"Stays & Wellness","engineKeys":["riads_boutique","iconic_nordic_stays","boutique_haciendas","boutique_pousadas"]},{"key":"eco_lodges_glamping","label":"Eco Lodges & Glamping","category":"Stays & Wellness","engineKeys":["glamping_eco_lodges","eco_lodges","north_woods_lodges","eco_lodges_sustainable","wilderness_lodges","design_wilderness_lodges"]},{"key":"family_friendly_escapes","label":"Family-Friendly Escapes","category":"Stays & Wellness","engineKeys":["family_friendly","family_coast"]},{"key":"golf","label":"Golf","category":"Stays & Wellness","engineKeys":["links_golf","golf_links_resorts","golf_resorts","golf"]},{"key":"luxury_escapes","label":"Luxury Escapes","category":"Stays & Wellness","engineKeys":["luxury_honeymoon","luxury_escapes","maldives_overwater_luxury","luxury_glamour","luxury_romance","luxury_mountain_resorts","overwater_bungalows","luxury_andean_lodges","luxury_wilderness_lodges"]},{"key":"ranch_estancia_stays","label":"Ranch & Estancia Stays","category":"Stays & Wellness","engineKeys":["dude_ranches","texas_ranch_stays"]},{"key":"ryokan_traditional_stays","label":"Ryokan & Traditional Stays","category":"Stays & Wellness","engineKeys":["ryokan_traditional_stays","unique_island_stays"]},{"key":"spa_wellness_retreats","label":"Spa & Wellness Retreats","category":"Stays & Wellness","engineKeys":["ayurveda_yoga_wellness","spa_wellness_retreats","spa_thalasso_wellness","wellness_retreats","hammam_wellness","wellness_eco","wellness_yoga_retreats","nordic_spa_wellness","ayahuasca_retreats"]},{"key":"cherry_blossoms_spring_blooms","label":"Cherry Blossoms & Spring Blooms","category":"Active & Scenic","engineKeys":["cherry_blossoms"]},{"key":"christmas_holiday_markets","label":"Christmas & Holiday Markets","category":"Active & Scenic","engineKeys":["christmas_markets","winter_carnivals_skating","holiday_towns"]},{"key":"fall_foliage","label":"Fall Foliage","category":"Active & Scenic","engineKeys":["autumn_foliage","fall_foliage","fall_aspen_foliage"]},{"key":"hot_air_ballooning","label":"Hot-Air Ballooning","category":"Active & Scenic","engineKeys":["hot_air_ballooning"]},{"key":"scenic_drives_road_trips","label":"Scenic Drives & Road Trips","category":"Active & Scenic","engineKeys":["scenic_road_trips","scenic_drives","motorbike_road_trips","scenic_drives_passes","scenic_byways","road_trips_scenic_drives","off_road_overland","carretera_austral"]},{"key":"scenic_rail_journeys","label":"Scenic Rail Journeys","category":"Active & Scenic","engineKeys":["scenic_rail_journeys"]},{"key":"skiing_winter_sports","label":"Skiing & Winter Sports","category":"Active & Scenic","engineKeys":["powder_skiing","skiing_winter_sports","ski_resorts","ski_winter_sports","skiing_snowboarding","winter_beyond_the_slopes","winter_sports","world_class_skiing","mountain_resort_towns","heli_skiing","skiing_andes"]},{"key":"ziplining_adventure_parks","label":"Ziplining & Adventure Parks","category":"Active & Scenic","engineKeys":["zip_lining_canopy","adventure_capital","winter_adventure","adventure_sports","banos_adventure"]},{"key":"casinos_glamour","label":"Casinos & Glamour","category":"Culture & Events","engineKeys":["casinos_gaming"]},{"key":"engineering_industrial_marvels","label":"Engineering & Industrial Marvels","category":"Culture & Events","engineKeys":["great_wall","panama_canal","auto_industrial_innovation"]},{"key":"festivals_carnival","label":"Festivals & Carnival","category":"Culture & Events","engineKeys":["island_carnival_festivals","cultural_festivals","festivals_events","arabian_festivals_events","festivals_music","festivals_matsuri","festivals_celebrations","carnival_festivals","dia_de_muertos","carnival_brazil","festivals_carnival","ecuadorian_festivals"]},{"key":"film_tv_pop_culture","label":"Film, TV & Pop Culture","category":"Culture & Events","engineKeys":["film_locations","pop_culture_anime_kpop","film_tv_locations","lotr_filming_locations"]},{"key":"gardens_estates","label":"Gardens & Estates","category":"Culture & Events","engineKeys":["historic_gardens","funchal_gardens_culture","gardens_parks"]},{"key":"indigenous_local_cultures","label":"Indigenous & Local Cultures","category":"Culture & Events","engineKeys":["tribal_cultural_encounters","amazigh_culture","indigenous_experiences","cajun_creole","creole_cajun_culture","polynesian_culture","native_american_nations","afro_caribbean_culture","native_american_culture","salvador_bahia_culture"]},{"key":"legends_ghosts_folklore","label":"Legends, Ghosts & Folklore","category":"Culture & Events","engineKeys":["dracula_transylvania","pirate_history","ufo_alien_lore","haunted_history"]},{"key":"markets_artisan_crafts","label":"Markets & Artisan Crafts","category":"Culture & Events","engineKeys":["river_life_floating_markets","artisan_crafts","southwestern_arts_towns","markets_street_art","valparaiso_street_art","andean_textiles_markets","otavalo_markets"]},{"key":"romance_honeymoon","label":"Romance & Honeymoon","category":"Culture & Events","engineKeys":["romance_honeymoon"]}],"canonicalPhotos":{"Architecture & Design":"https://images.pexels.com/photos/2058172/pexels-photo-2058172.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Broadway & Theater":"https://images.pexels.com/photos/34632699/pexels-photo-34632699.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Capital & Cosmopolitan Cities":"https://images.pexels.com/photos/28688868/pexels-photo-28688868.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Iconic Skylines & Landmarks":"https://images.pexels.com/photos/36847817/pexels-photo-36847817.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Live Music Scenes":"https://images.pexels.com/photos/10423281/pexels-photo-10423281.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Mega Shopping & Souks":"https://images.pexels.com/photos/17815807/pexels-photo-17815807.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Nightlife & Clubs":"https://images.pexels.com/photos/533787/pexels-photo-533787.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Sports & Stadiums":"https://images.pexels.com/photos/19875973/pexels-photo-19875973.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Theme Parks & Coasters":"https://images.pexels.com/photos/19153538/pexels-photo-19153538.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","World-Class Museums":"https://images.pexels.com/photos/13396890/pexels-photo-13396890.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Ancient Ruins & Archaeology":"https://images.pexels.com/photos/18237167/pexels-photo-18237167.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Castles & Forts":"https://images.pexels.com/photos/20407157/pexels-photo-20407157.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Cathedrals & Abbeys":"https://images.pexels.com/photos/37972696/pexels-photo-37972696.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Colonial & Old Quarters":"https://images.pexels.com/photos/32315179/pexels-photo-32315179.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Cultural Heritage (Religious/Ethnic)":"https://images.pexels.com/photos/12333657/pexels-photo-12333657.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Gold Rush & Frontier History":"https://images.pexels.com/photos/12598625/pexels-photo-12598625.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Historic & Grand Hotels":"https://images.pexels.com/photos/38949607/pexels-photo-38949607.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Historic Old Towns":"https://images.pexels.com/photos/17251349/pexels-photo-17251349.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Medieval & Walled Towns":"https://images.pexels.com/photos/38619829/pexels-photo-38619829.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Mosques & Islamic Heritage":"https://images.pexels.com/photos/17567121/pexels-photo-17567121.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Palaces & Stately Homes":"https://images.pexels.com/photos/14702568/pexels-photo-14702568.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Sacred & Pilgrimage Sites":"https://images.pexels.com/photos/38811718/pexels-photo-38811718.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Small-Town & Roadside Americana":"https://images.pexels.com/photos/5322612/pexels-photo-5322612.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Storybook Villages":"https://images.pexels.com/photos/14359270/pexels-photo-14359270.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Temples & Shrines":"https://images.pexels.com/photos/31969428/pexels-photo-31969428.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","War & Modern History":"https://images.pexels.com/photos/9269027/pexels-photo-9269027.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","All-Inclusive & Beach Resorts":"https://images.pexels.com/photos/20210512/pexels-photo-20210512.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Beaches & Beach Towns":"https://images.pexels.com/photos/14339483/pexels-photo-14339483.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Coastal Drives & Cliffs":"https://images.pexels.com/photos/26241525/pexels-photo-26241525.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Expedition & Small-Ship Cruising":"https://images.pexels.com/photos/6299739/pexels-photo-6299739.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Fishing":"https://images.pexels.com/photos/6478086/pexels-photo-6478086.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Fjords & Sea Channels":"https://images.pexels.com/photos/27429652/pexels-photo-27429652.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Island Hopping":"https://images.pexels.com/photos/13256504/pexels-photo-13256504.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Marine Wildlife & Turtles":"https://images.pexels.com/photos/36415129/pexels-photo-36415129.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Rafting, Kayaking & River Sports":"https://images.pexels.com/photos/11183384/pexels-photo-11183384.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Sailing & Yacht Charters":"https://images.pexels.com/photos/29915572/pexels-photo-29915572.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Scuba & Reef Diving":"https://images.pexels.com/photos/3098932/pexels-photo-3098932.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Sea Caves & Blue Lagoons":"https://images.pexels.com/photos/29022061/pexels-photo-29022061.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Snorkeling":"https://images.pexels.com/photos/9202651/pexels-photo-9202651.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Surf & Kitesurf":"https://images.pexels.com/photos/15875334/pexels-photo-15875334.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Whale & Dolphin Watching":"https://images.pexels.com/photos/17980729/pexels-photo-17980729.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Alpine Lakes & Lake Districts":"https://images.pexels.com/photos/35309605/pexels-photo-35309605.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Arctic & Polar Journeys":"https://images.pexels.com/photos/7405367/pexels-photo-7405367.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Canyons & Rock Formations":"https://images.pexels.com/photos/11183944/pexels-photo-11183944.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Caves & Caverns":"https://images.pexels.com/photos/17288260/pexels-photo-17288260.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Deserts & Dunes":"https://images.pexels.com/photos/16908866/pexels-photo-16908866.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Glaciers & Icefields":"https://images.pexels.com/photos/12071906/pexels-photo-12071906.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Gorilla & Primate Trekking":"https://images.pexels.com/photos/36804638/pexels-photo-36804638.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Hiking & Trekking":"https://images.pexels.com/photos/5064634/pexels-photo-5064634.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Hot Springs & Onsen":"https://images.pexels.com/photos/18696926/pexels-photo-18696926.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Mountain Biking":"https://images.pexels.com/photos/20027515/pexels-photo-20027515.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Mountain Peaks & Summits":"https://images.pexels.com/photos/13203421/pexels-photo-13203421.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","National Parks & Scenery":"https://images.pexels.com/photos/17928444/pexels-photo-17928444.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Natural Wonders & Phenomena":"https://images.pexels.com/photos/6876993/pexels-photo-6876993.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Rainforest & Jungle":"https://images.pexels.com/photos/7867865/pexels-photo-7867865.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","River Cruises & Journeys":"https://images.pexels.com/photos/10137864/pexels-photo-10137864.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Rock Climbing & Canyoneering":"https://images.pexels.com/photos/9830455/pexels-photo-9830455.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Safari & Big Game":"https://images.pexels.com/photos/19281386/pexels-photo-19281386.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Stargazing & Dark Skies":"https://images.pexels.com/photos/10792552/pexels-photo-10792552.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Volcanoes & Geothermal":"https://images.pexels.com/photos/38262907/pexels-photo-38262907.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Waterfalls & Gorges":"https://images.pexels.com/photos/34877345/pexels-photo-34877345.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Wildlife & Birding":"https://images.pexels.com/photos/68690/pexels-photo-68690.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Barbecue & Grill":"https://images.pexels.com/photos/37030068/pexels-photo-37030068.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Cafe & Aperitivo Culture":"https://images.pexels.com/photos/7102941/pexels-photo-7102941.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Craft Beer & Breweries":"https://images.pexels.com/photos/14356408/pexels-photo-14356408.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Fine Dining & Food Scenes":"https://images.pexels.com/photos/7627408/pexels-photo-7627408.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Regional Cuisine":"https://images.pexels.com/photos/10918906/pexels-photo-10918906.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Street Food & Night Markets":"https://images.pexels.com/photos/36243530/pexels-photo-36243530.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Whiskey, Rum & Distilleries":"https://images.pexels.com/photos/51365/pexels-photo-51365.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Wine Country":"https://images.pexels.com/photos/17862836/pexels-photo-17862836.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Boutique & Design Hotels":"https://images.pexels.com/photos/8386651/pexels-photo-8386651.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Eco Lodges & Glamping":"https://images.pexels.com/photos/15379823/pexels-photo-15379823.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Family-Friendly Escapes":"https://images.pexels.com/photos/38930110/pexels-photo-38930110.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Golf":"https://images.pexels.com/photos/54123/pexels-photo-54123.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Luxury Escapes":"https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Ranch & Estancia Stays":"https://images.pexels.com/photos/28266831/pexels-photo-28266831.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Ryokan & Traditional Stays":"https://images.pexels.com/photos/37067835/pexels-photo-37067835.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Spa & Wellness Retreats":"https://images.pexels.com/photos/9146381/pexels-photo-9146381.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Cherry Blossoms & Spring Blooms":"https://images.pexels.com/photos/3977183/pexels-photo-3977183.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Christmas & Holiday Markets":"https://images.pexels.com/photos/714899/pexels-photo-714899.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Fall Foliage":"https://images.pexels.com/photos/34947040/pexels-photo-34947040.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Hot-Air Ballooning":"https://images.pexels.com/photos/27869635/pexels-photo-27869635.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Scenic Drives & Road Trips":"https://images.pexels.com/photos/1647113/pexels-photo-1647113.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Scenic Rail Journeys":"https://images.pexels.com/photos/23963969/pexels-photo-23963969.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Skiing & Winter Sports":"https://images.pexels.com/photos/35988767/pexels-photo-35988767.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Ziplining & Adventure Parks":"https://images.pexels.com/photos/6454835/pexels-photo-6454835.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Casinos & Glamour":"https://images.pexels.com/photos/7594343/pexels-photo-7594343.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Engineering & Industrial Marvels":"https://images.pexels.com/photos/9242911/pexels-photo-9242911.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Festivals & Carnival":"https://images.pexels.com/photos/30354454/pexels-photo-30354454.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Film, TV & Pop Culture":"https://images.pexels.com/photos/3653770/pexels-photo-3653770.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Gardens & Estates":"https://images.pexels.com/photos/38658640/pexels-photo-38658640.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Indigenous & Local Cultures":"https://images.pexels.com/photos/33760929/pexels-photo-33760929.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Legends, Ghosts & Folklore":"https://images.pexels.com/photos/34482313/pexels-photo-34482313.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Markets & Artisan Crafts":"https://images.pexels.com/photos/5864794/pexels-photo-5864794.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600","Romance & Honeymoon":"https://images.pexels.com/photos/27671793/pexels-photo-27671793.jpeg?auto=compress&cs=tinysrgb&fit=crop&w=800&h=600"},"categories":["Cities & Urban","History & Heritage","Coast & Sea","Nature & Outdoors","Food & Drink","Stays & Wellness","Active & Scenic","Culture & Events"],"builtAt":"2026-08-11T22:37:17.029Z"};</script>
+<script>
+/* ─────────────────────────────────────────────────────────────────────────────
+   Vibe Selection tester — client logic.
+
+   Authored as a real .js file (NOT inside the generator's template literal) so
+   it can use backticks / ${} freely; build-vibe-selection-page.js inlines it
+   verbatim. Everything it needs at boot arrives on window.__VS_BOOT.
+
+   Data model (all live from Supabase):
+     vibe_destination_rankings  region, subregion, vibe_key (ENGINE key), score, …
+     vibe_blogs                 sr_key, subregion, vibe_key, body, word_count, …
+     vibe_image_edits           sr_key + vibe_key -> images[] (curated galleries)
+     vibe_featured              subregion + canonical_key -> editor-pinned order
+
+   The rollup mirrors the app exactly (src/lib/vibeRankings.ts
+   fetchSubregionCanonicalCoverage): engine vibe_keys roll up to CANONICAL vibes,
+   and a canonical vibe's score is the BEST engine score in that sub-region.
+   ───────────────────────────────────────────────────────────────────────────── */
+(function () {
+  'use strict';
+
+  const BOOT   = window.__VS_BOOT || {};
+  const SUPA   = BOOT.supabaseUrl || '';
+  const ANON   = BOOT.anonKey || '';
+  const HDRS   = { apikey: ANON, Authorization: 'Bearer ' + ANON };
+  const CANON  = BOOT.canonicalVibes || [];
+  const PHOTOS = BOOT.canonicalPhotos || {};
+  const CATS   = BOOT.categories || [];
+
+  // engine vibe_key -> canonical vibe (first match wins, same as the app)
+  const ENGINE_TO_CANON = new Map();
+  CANON.forEach(function (cv) {
+    (cv.engineKeys || []).forEach(function (ek) {
+      if (!ENGINE_TO_CANON.has(ek)) ENGINE_TO_CANON.set(ek, cv);
+    });
+  });
+
+  /* ── State ─────────────────────────────────────────────────────────────── */
+  const S = {
+    index: [],            // [{ region, subs: [{ subregion, srKey }] }]
+    region: '', subregion: '', srKey: '',
+    vibes: [],            // canonical rollups, score-desc
+    byCat: [],            // [{ cat, vibes: [] }] score-desc within/between
+    diag: null,
+    selected: new Set(),
+    explored: new Set(),
+    sheetCat: null,
+    guideKey: null,
+    loading: false,
+    ready: false,          // set by a real pointer/key gesture; gates <select> change events
+  };
+
+  /* ── Utils ─────────────────────────────────────────────────────────────── */
+  const $ = function (id) { return document.getElementById(id); };
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+  // Safe for style="background-image:url('…')" — kills quotes/parens/newlines.
+  function cssUrl(u) {
+    if (!u) return '';
+    return String(u).replace(/["'()\\\s]/g, function (c) { return encodeURIComponent(c); });
+  }
+  function q(v) { return encodeURIComponent(v); }
+
+  async function sbGet(path) {
+    const r = await fetch(SUPA + '/rest/v1/' + path, { headers: HDRS });
+    if (!r.ok) throw new Error('HTTP ' + r.status + ' — ' + path.split('?')[0] + ' — ' + (await r.text()).slice(0, 200));
+    return r.json();
+  }
+  // Paginated fetch (PostgREST caps responses at 1000 rows).
+  async function sbGetAll(path, pageSize) {
+    const size = pageSize || 1000;
+    const out = [];
+    for (let from = 0; ; from += size) {
+      const r = await fetch(SUPA + '/rest/v1/' + path, {
+        headers: Object.assign({}, HDRS, { Range: from + '-' + (from + size - 1) }),
+      });
+      if (!r.ok) throw new Error('HTTP ' + r.status + ' — ' + path.split('?')[0] + ' — ' + (await r.text()).slice(0, 200));
+      const page = await r.json();
+      out.push.apply(out, page);
+      if (page.length < size) break;
+    }
+    return out;
+  }
+
+  /* ── Blog "Quick Read" extraction (mirrors the guide's opening) ─────────── */
+  function hookFrom(body) {
+    if (!body) return '';
+    let seg = body.split(/##\s*The Quick Read/i)[1];
+    if (seg == null) {
+      // No Quick Read heading — take the first real paragraph after the H1.
+      seg = body.replace(/^---[\s\S]*?---/, '').replace(/^#\s+.*$/m, '');
+    }
+    const para = (seg.trim().split(/\n\s*\n/)[0] || '').replace(/\s*\n\s*/g, ' ').replace(/^#+\s*/, '').trim();
+    return para;
+  }
+  function firstSentence(text) {
+    if (!text) return '';
+    const m = text.match(/[^.!?]+[.!?]+/);
+    return (m ? m[0] : text).trim();
+  }
+  function twoSentences(text) {
+    if (!text) return '';
+    const m = text.match(/[^.!?]+[.!?]+/g);
+    return (m ? m.slice(0, 2).join(' ') : text).trim();
+  }
+  function readMins(wc) { return Math.max(3, Math.round((wc || 900) / 220)); }
+
+  /* ── Index: every region / sub-region in the engine ─────────────────────── */
+  async function loadIndex() {
+    // vibe_blogs carries region + subregion + sr_key together and is < 1000 rows,
+    // so one request gives the whole navigable tree plus the sr_key join value
+    // that vibe_image_edits is keyed by (folder-derived, not derivable from the
+    // display names — "North & Central America" -> "northandcentralamerica").
+    const rows = await sbGetAll('vibe_blogs?select=region,subregion,sr_key');
+    const byRegion = new Map();
+    rows.forEach(function (r) {
+      if (!r.region || !r.subregion) return;
+      if (!byRegion.has(r.region)) byRegion.set(r.region, new Map());
+      const m = byRegion.get(r.region);
+      if (!m.has(r.subregion)) m.set(r.subregion, r.sr_key || '');
+    });
+    S.index = Array.from(byRegion.keys()).sort().map(function (region) {
+      const subs = Array.from(byRegion.get(region).entries())
+        .map(function (e) { return { subregion: e[0], srKey: e[1] }; })
+        .sort(function (a, b) { return a.subregion.localeCompare(b.subregion); });
+      return { region: region, subs: subs };
+    });
+  }
+
+  /* ── Sub-region load + canonical rollup ─────────────────────────────────── */
+  async function loadSubregion(region, subregion, srKey) {
+    S.loading = true; S.sheetCat = null; S.guideKey = null;
+    S.selected = new Set(); S.explored = new Set();
+    renderAll();
+
+    const subF = 'subregion=eq.' + q(subregion);
+    const results = await Promise.all([
+      sbGetAll('vibe_destination_rankings?' + subF +
+        '&select=vibe_key,vibe_label,destination,country,iata,score,tier,confidence,best_months,note&order=score.desc'),
+      sbGetAll('vibe_blogs?' + subF + '&select=vibe_key,vibe_label,body,word_count,top_destinations,last_researched'),
+      srKey ? sbGetAll('vibe_image_edits?sr_key=eq.' + q(srKey) + '&select=vibe_key,images') : Promise.resolve([]),
+      sbGet('vibe_featured?' + subF + '&select=canonical_key,sort_order&order=sort_order.asc').catch(function () { return []; }),
+    ]);
+    const rankRows = results[0], blogRows = results[1], imgRows = results[2], featRows = results[3];
+
+    const blogByEngine = new Map();
+    blogRows.forEach(function (b) { blogByEngine.set(b.vibe_key, b); });
+    const imgsByEngine = new Map();
+    imgRows.forEach(function (i) {
+      if (Array.isArray(i.images) && i.images.length) imgsByEngine.set(i.vibe_key, i.images);
+    });
+    const featured = featRows.map(function (f) { return f.canonical_key; });
+
+    // Engine rows -> per-engine-vibe summary (best score + its ranked destinations)
+    const engine = new Map();
+    const unmapped = new Map();
+    rankRows.forEach(function (r) {
+      let e = engine.get(r.vibe_key);
+      if (!e) {
+        e = { key: r.vibe_key, label: r.vibe_label || r.vibe_key, best: 0, tier: '', dests: [] };
+        engine.set(r.vibe_key, e);
+      }
+      e.dests.push({
+        dest: r.destination, country: r.country, iata: r.iata,
+        score: r.score || 0, tier: r.tier, note: r.note,
+        confidence: r.confidence, bestMonths: r.best_months,
+      });
+      if ((r.score || 0) > e.best) { e.best = r.score || 0; e.tier = r.tier || ''; }
+      if (!ENGINE_TO_CANON.has(r.vibe_key)) {
+        unmapped.set(r.vibe_key, { key: r.vibe_key, label: r.vibe_label || r.vibe_key, rows: (unmapped.get(r.vibe_key) || { rows: 0 }).rows + 1, best: Math.max((unmapped.get(r.vibe_key) || { best: 0 }).best, r.score || 0) });
+      }
+    });
+    engine.forEach(function (e) { e.dests.sort(function (a, b) { return b.score - a.score; }); });
+
+    // Engine -> CANONICAL rollup. Canonical score = best engine score (app parity).
+    const canonMap = new Map();
+    engine.forEach(function (e) {
+      const cv = ENGINE_TO_CANON.get(e.key);
+      if (!cv) return;
+      let c = canonMap.get(cv.key);
+      if (!c) {
+        c = {
+          key: cv.key, label: cv.label, category: cv.category,
+          score: 0, tier: '', engines: [], bestEngine: null,
+          featured: featured.indexOf(cv.key) >= 0,
+        };
+        canonMap.set(cv.key, c);
+      }
+      c.engines.push(e);
+      if (e.best > c.score) { c.score = e.best; c.tier = e.tier; c.bestEngine = e; }
+    });
+
+    // Attach image + guide + destinations from the canonical vibe's BEST engine key.
+    const vibes = [];
+    canonMap.forEach(function (c) {
+      c.engines.sort(function (a, b) { return b.best - a.best; });
+      const be = c.bestEngine || c.engines[0];
+      c.engineKeysHit = c.engines.map(function (e) { return e.key; });
+
+      // Image: curated gallery for this sub-region wins, then the canonical photo.
+      let img = '', imgSrc = 'none', gallery = [];
+      for (let i = 0; i < c.engines.length && !img; i++) {
+        const g = imgsByEngine.get(c.engines[i].key);
+        if (g && g.length) {
+          gallery = g;
+          img = g[0].url || g[0].thumb || '';
+          imgSrc = 'curated';
+        }
+      }
+      if (!img && PHOTOS[c.label]) { img = PHOTOS[c.label]; imgSrc = 'canonical'; }
+      c.img = img; c.imgSrc = imgSrc; c.gallery = gallery;
+
+      // Guide: the blog for the best engine key that actually has one.
+      let blog = null;
+      for (let i = 0; i < c.engines.length && !blog; i++) blog = blogByEngine.get(c.engines[i].key) || null;
+      c.blog = blog;
+      c.hook = blog ? hookFrom(blog.body) : '';
+      c.wordCount = blog ? blog.word_count : 0;
+      c.lastResearched = blog ? blog.last_researched : null;
+
+      c.dests = be ? be.dests : [];
+      c.destCount = c.engines.reduce(function (n, e) { return n + e.dests.length; }, 0);
+      vibes.push(c);
+    });
+
+    vibes.sort(function (a, b) { return b.score - a.score || a.label.localeCompare(b.label); });
+    S.vibes = vibes;
+
+    // Group into canonical categories, each ordered by its own best vibe.
+    const catMap = new Map();
+    vibes.forEach(function (v) {
+      if (!catMap.has(v.category)) catMap.set(v.category, []);
+      catMap.get(v.category).push(v);
+    });
+    S.byCat = CATS.filter(function (c) { return catMap.has(c); })
+      .map(function (c) { return { cat: c, vibes: catMap.get(c) }; })
+      .sort(function (a, b) { return b.vibes[0].score - a.vibes[0].score; });
+
+    S.diag = {
+      engineVibes: engine.size,
+      canonicalVibes: vibes.length,
+      categories: S.byCat.length,
+      rankingRows: rankRows.length,
+      destinations: new Set(rankRows.map(function (r) { return r.iata; })).size,
+      guides: vibes.filter(function (v) { return !!v.blog; }).length,
+      curated: vibes.filter(function (v) { return v.imgSrc === 'curated'; }).length,
+      canonicalPhoto: vibes.filter(function (v) { return v.imgSrc === 'canonical'; }).length,
+      noImage: vibes.filter(function (v) { return v.imgSrc === 'none'; }),
+      noGuide: vibes.filter(function (v) { return !v.blog; }),
+      unmapped: Array.from(unmapped.values()).sort(function (a, b) { return b.best - a.best; }),
+      featured: featured,
+    };
+
+    S.loading = false;
+    renderAll();
+  }
+
+  /* ── Phone UI (Round-7 caption cards: text never sits on a photo) ───────── */
+  function pickedIn(cat) {
+    let n = 0;
+    cat.vibes.forEach(function (v) { if (S.selected.has(v.key)) n++; });
+    return n;
+  }
+  function vibeByKey(k) {
+    for (let i = 0; i < S.vibes.length; i++) if (S.vibes[i].key === k) return S.vibes[i];
+    return null;
+  }
+  function sbar(score) { return '<div class="sbar"><i style="width:' + Math.max(0, Math.min(100, score)) + '%"></i></div>'; }
+  function phBg(v) {
+    return v.img
+      ? 'style="background-image:url(\'' + cssUrl(v.img) + '\')"'
+      : 'class="ph noimg"';
+  }
+  function phDiv(v, extraCls) {
+    const cls = 'ph' + (extraCls ? ' ' + extraCls : '') + (v.img ? '' : ' noimg');
+    const st = v.img ? ' style="background-image:url(\'' + cssUrl(v.img) + '\')"' : '';
+    return '<div class="' + cls + '"' + st + '>';
+  }
+
+  function renderPhone() {
+    const body = $('vs-body');
+    if (!body) return;
+
+    if (S.loading) {
+      body.innerHTML = '<div class="vs-state">Loading the Vibe Engine&hellip;</div>';
+      return;
+    }
+    if (!S.vibes.length) {
+      body.innerHTML = '<div class="vs-state">No vibes scored for this sub-region yet.</div>';
+      return;
+    }
+
+    const intro =
+      '<div class="intro">' +
+        '<h2>' + esc(S.subregion) + ', <em>at their best</em></h2>' +
+        '<p>We’ve identified these <b class="n">' + S.vibes.length + ' vibes</b> for you to pick from for ' +
+        esc(S.subregion) + '.<br>We find the sweet spot for selection at <b class="n">4–6 vibes</b>.</p>' +
+      '</div>';
+
+    const progress = '<div class="homeProgress"><b>' + S.explored.size + ' of ' + S.byCat.length + '</b> categories explored</div>';
+
+    const covers = S.byCat.map(function (c) {
+      const best = c.vibes[0];
+      const p = pickedIn(c);
+      const minis = c.vibes.filter(function (v) { return S.selected.has(v.key) && v.img; }).slice(0, 4)
+        .map(function (v) { return '<i style="background-image:url(\'' + cssUrl(v.img) + '\')"></i>'; }).join('');
+      return '' +
+      '<div class="cover" data-act="open-cat" data-cat="' + esc(c.cat) + '">' +
+        phDiv(best) +
+          (minis ? '<div class="tl minis">' + minis + '</div>' : '') +
+          '<div class="tr">' +
+            (S.explored.has(c.cat) && !p ? '<span class="explored">EXPLORED ✓</span>' : '') +
+            (p ? '<span class="pk">' + p + '</span>' : '') +
+          '</div>' +
+        '</div>' +
+        '<div class="cap">' +
+          '<div class="meta">' +
+            '<h3>' + esc(c.cat) + '</h3>' +
+            '<div class="sub">' + c.vibes.length + ' vibe' + (c.vibes.length === 1 ? '' : 's') + ' · ' + esc(best.label) + ' leads</div>' +
+          '</div>' +
+          '<span class="scorePill amber">★ ' + best.score + '</span>' +
+          '<span class="go">›</span>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    body.innerHTML = intro + progress + '<div class="covers">' + covers + '</div><div class="endnote">' +
+      S.vibes.length + ' canonical vibes · live from the Vibe Engine</div>';
+  }
+
+  function renderSheet() {
+    const host = $('vs-sheet-host');
+    if (!host) return;
+    if (!S.sheetCat) { host.innerHTML = ''; return; }
+    const c = S.byCat.filter(function (x) { return x.cat === S.sheetCat; })[0];
+    if (!c) { host.innerHTML = ''; return; }
+
+    const keep = host.querySelector('.sheet.in') ? ' in' : '';
+    const ranked = c.vibes;
+    const hero = ranked[0], quad = ranked.slice(1, 3), field = ranked.slice(3);
+
+    const heroCap =
+      '<div class="cap">' +
+        '<div class="row1"><h4>' + esc(hero.label) + '</h4><span class="scorePill amber">★ ' + hero.score + '</span></div>' +
+        (hero.hook ? '<div class="quote">“' + esc(firstSentence(hero.hook)) + '”</div>' : '') +
+        '<div class="row2">' +
+          '<span class="tp">' + (hero.dests[0] ? 'TOP PICK: ' + esc(String(hero.dests[0].dest).toUpperCase()) : 'NO DESTINATIONS SCORED') + '</span>' +
+          (hero.blog ? '<span class="guideChip" data-act="guide" data-key="' + esc(hero.key) + '">GUIDE · ' + readMins(hero.wordCount) + ' MIN</span>' : '') +
+        '</div>' +
+      '</div>';
+
+    const quadHtml = quad.length ? (
+      '<div class="kicker"><span>ALSO STRONG HERE</span></div>' +
+      '<div class="quad">' + quad.map(function (v, i) {
+        return '' +
+        '<div class="qcard' + (S.selected.has(v.key) ? ' sel' : '') + '" style="--i:' + i + '" data-act="toggle" data-key="' + esc(v.key) + '">' +
+          phDiv(v) + '<span class="tr ring">✓</span></div>' +
+          '<div class="cap">' +
+            '<span class="tick"></span>' +
+            '<h5>' + esc(v.label) + '</h5>' +
+            '<div class="mrow">' +
+              '<span class="scorePill">' + v.score + '</span>' +
+              (v.blog ? '<span class="guideChip gc" data-act="guide" data-key="' + esc(v.key) + '">Gi</span>' : '') +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('') + '</div>'
+    ) : '';
+
+    const fieldHtml = field.length ? (
+      '<div class="kicker"><span>THE REST OF THE FIELD</span></div>' +
+      '<div class="field">' + field.map(function (v) {
+        return '' +
+        '<div class="frow' + (S.selected.has(v.key) ? ' sel' : '') + '" data-act="toggle" data-key="' + esc(v.key) + '">' +
+          '<div class="thumb"' + (v.img ? ' style="background-image:url(\'' + cssUrl(v.img) + '\')"' : ' data-noimg="1"') + '></div>' +
+          '<div class="meta"><div class="t">' + esc(v.label) + '</div>' +
+            '<div class="barRow">' + sbar(v.score) + '<span class="sc">' + v.score + '</span></div></div>' +
+          (v.blog ? '<span class="info" data-act="guide" data-key="' + esc(v.key) + '">Gi</span>' : '') +
+          '<span class="box">✓</span>' +
+        '</div>';
+      }).join('') + '</div>'
+    ) : '';
+
+    host.innerHTML =
+    '<div class="sheet' + keep + '" id="vs-sheet-el">' +
+      '<div class="sheetTop">' +
+        phDiv(hero, 'sheetPh') + '<button class="back" data-act="close-sheet">‹</button></div>' +
+        '<div class="cap"><h3>' + esc(c.cat) + '</h3>' +
+          '<div class="sub">' + c.vibes.length + ' vibes in ' + esc(S.subregion) + ' · best score ' + c.vibes[0].score + '</div></div>' +
+      '</div>' +
+      '<div class="sheetBody">' +
+        '<div class="kicker"><span>THE HEADLINER</span></div>' +
+        '<div class="sHero' + (S.selected.has(hero.key) ? ' sel' : '') + '" data-act="toggle" data-key="' + esc(hero.key) + '">' +
+          phDiv(hero) + '<span class="tr ring">✓</span></div>' + heroCap +
+        '</div>' +
+        quadHtml + fieldHtml + '<div class="spacer"></div>' +
+      '</div>' +
+      '<div class="sheetFoot">' +
+        '<button class="cta" data-act="close-sheet">Done — ' + pickedIn(c) + ' picked here ' +
+          '<span class="count">' + S.selected.size + ' total</span></button>' +
+      '</div>' +
+    '</div>';
+
+    if (!keep) {
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          const el = $('vs-sheet-el');
+          if (el) el.classList.add('in');
+        });
+      });
+    }
+  }
+
+  function renderGuide() {
+    const wrap = $('vs-guide-wrap');
+    const sheet = $('vs-guide');
+    if (!wrap || !sheet) return;
+    if (!S.guideKey) { wrap.classList.remove('up'); return; }
+    const v = vibeByKey(S.guideKey);
+    if (!v) { wrap.classList.remove('up'); return; }
+
+    const dests = v.dests.slice(0, 5).map(function (d, i) {
+      return '<div class="drow"><span class="dr">' + (i + 1) + '</span>' +
+        '<span class="dn">' + esc(d.dest) + '</span>' +
+        '<span class="dc">' + esc(d.country || '') + (d.iata ? ' · ' + esc(d.iata) : '') + '</span>' +
+        sbar(d.score) + '<span class="ds">' + d.score + '</span></div>';
+    }).join('');
+
+    const engineList = v.engines.map(function (e) {
+      return '<span class="ekey">' + esc(e.key) + ' <b>' + e.best + '</b></span>';
+    }).join('');
+
+    sheet.innerHTML =
+      phDiv(v, 'gsHero') +
+        '<div class="grab"></div><button class="close" data-act="close-guide">✕</button>' +
+      '</div>' +
+      '<div class="gsTitle"><h3>' + esc(v.label) + '</h3><div class="tick"></div></div>' +
+      '<div class="gsBody">' +
+        '<div class="gsStats">' +
+          '<div class="stat"><div class="v amber">' + v.score + '</div><div class="k">VIBE SCORE</div></div>' +
+          '<div class="stat"><div class="v">' + esc(v.tier || '—') + '</div><div class="k">TIER</div></div>' +
+          '<div class="stat"><div class="v">' + v.destCount + '</div><div class="k">DESTINATIONS</div></div>' +
+          '<div class="stat"><div class="v">' + (v.blog ? readMins(v.wordCount) + ' min' : '—') + '</div><div class="k">GUIDE READ</div></div>' +
+        '</div>' +
+        (v.hook ? '<div class="gsHook">“' + esc(twoSentences(v.hook)) + '”</div>'
+                : '<div class="gsHook muted">No guide written for this vibe in ' + esc(S.subregion) + ' yet.</div>') +
+        (dests ? '<div class="gsSub">TOP DESTINATIONS FOR THIS VIBE</div><div class="destRows">' + dests + '</div>' : '') +
+        '<div class="gsSub">ENGINE KEYS ROLLED UP</div><div class="ekeys">' + engineList + '</div>' +
+        (v.blog ? '<div class="readLink" data-act="open-engine">Open the full guide in the Vibes Engine →</div>' : '') +
+      '</div>' +
+      '<div class="gsFoot">' +
+        '<button class="selBtn' + (S.selected.has(v.key) ? ' on' : '') + '" data-act="toggle" data-key="' + esc(v.key) + '">' +
+          (S.selected.has(v.key) ? '✓ In my vibes — tap to remove' : '+ Add to my vibes') +
+        '</button>' +
+      '</div>';
+    wrap.classList.add('up');
+  }
+
+  function renderFooter() {
+    const n = S.selected.size;
+    const cnt = $('vs-cta-count');
+    if (cnt) cnt.textContent = n;
+
+    const tray = $('vs-tray');
+    if (tray) {
+      tray.innerHTML = S.vibes.filter(function (v) { return S.selected.has(v.key); }).map(function (v) {
+        return '<span class="selChip" data-act="toggle" data-key="' + esc(v.key) + '">' +
+          (v.img ? '<span class="d" style="background-image:url(\'' + cssUrl(v.img) + '\')"></span>' : '') +
+          esc(v.label) + '<span class="x">×</span></span>';
+      }).join('');
+    }
+
+    const dots = $('vs-dots');
+    if (dots) {
+      let h = '';
+      const total = Math.max(6, Math.min(n, 8));
+      for (let i = 0; i < total; i++) {
+        let cls = '';
+        if (i < n) cls = n > 6 ? 'f over' : (n >= 4 ? 'f sweet' : 'f');
+        h += '<i class="' + cls + '"></i>';
+      }
+      dots.innerHTML = h;
+    }
+
+    const mt = $('vs-meter');
+    if (mt) {
+      if (n === 0)      { mt.className = 'meterTxt';         mt.textContent = 'sweet spot is 4–6 vibes'; }
+      else if (n < 4)   { mt.className = 'meterTxt';         mt.textContent = n + ' picked — ' + (4 - n) + ' more to the sweet spot'; }
+      else if (n <= 6)  { mt.className = 'meterTxt inRange'; mt.textContent = n + ' picked — sweet spot ✓'; }
+      else              { mt.className = 'meterTxt over';    mt.textContent = n + ' picked — results may get broad'; }
+    }
+  }
+
+  /* ── Inspector panel (the "tester" half) ───────────────────────────────── */
+  function renderInspector() {
+    const stats = $('vs-stats');
+    const insp = $('vs-inspector');
+    if (!stats || !insp) return;
+
+    if (S.loading || !S.diag) {
+      stats.innerHTML = '';
+      insp.innerHTML = '<div class="vs-state small">Loading…</div>';
+      return;
+    }
+    const d = S.diag;
+    const chips = [
+      ['Canonical vibes', d.canonicalVibes],
+      ['Categories', d.categories],
+      ['Engine vibes', d.engineVibes],
+      ['Destinations', d.destinations],
+      ['Ranking rows', d.rankingRows],
+      ['Guides', d.guides + '/' + d.canonicalVibes],
+      ['Curated galleries', d.curated],
+    ];
+    stats.innerHTML = chips.map(function (c) {
+      return '<div class="vs-stat"><div class="v">' + c[1] + '</div><div class="k">' + c[0] + '</div></div>';
+    }).join('');
+
+    let warn = '';
+    if (d.unmapped.length) {
+      warn += '<div class="vs-warn"><b>' + d.unmapped.length + ' engine vibe' + (d.unmapped.length === 1 ? '' : 's') +
+        ' not mapped to any canonical vibe</b> — scored in the engine but invisible in the app. ' +
+        'Add the key to <code>src/data/vibesCanonical.ts</code> to surface it.<div class="vs-warn-list">' +
+        d.unmapped.map(function (u) { return '<span class="ekey">' + esc(u.key) + ' <b>' + u.best + '</b></span>'; }).join('') +
+        '</div></div>';
+    }
+    if (d.noImage.length) {
+      warn += '<div class="vs-warn amber"><b>' + d.noImage.length + ' vibe' + (d.noImage.length === 1 ? '' : 's') +
+        ' with no image</b> — no curated gallery and no canonical photo.<div class="vs-warn-list">' +
+        d.noImage.map(function (v) { return '<span class="ekey">' + esc(v.label) + '</span>'; }).join('') +
+        '</div></div>';
+    }
+    if (d.noGuide.length) {
+      warn += '<div class="vs-warn amber"><b>' + d.noGuide.length + ' vibe' + (d.noGuide.length === 1 ? '' : 's') +
+        ' with no guide</b> — no blog row for any of their engine keys in this sub-region.<div class="vs-warn-list">' +
+        d.noGuide.map(function (v) { return '<span class="ekey">' + esc(v.label) + '</span>'; }).join('') +
+        '</div></div>';
+    }
+    if (!d.featured.length) {
+      warn += '<div class="vs-warn info">No <code>vibe_featured</code> rows for this sub-region — ' +
+        'ordering falls back to score, which is what you see here.</div>';
+    }
+
+    const rows = S.vibes.map(function (v) {
+      return '<tr class="' + (S.selected.has(v.key) ? 'on' : '') + '" data-act="guide" data-key="' + esc(v.key) + '">' +
+        '<td class="sc">' + v.score + '</td>' +
+        '<td><div class="vl">' + esc(v.label) + '</div>' +
+          '<div class="vk">' + v.engines.map(function (e) { return esc(e.key); }).join(', ') + '</div></td>' +
+        '<td class="cat">' + esc(v.category) + '</td>' +
+        '<td class="im ' + v.imgSrc + '">' + (v.imgSrc === 'curated' ? 'curated' : v.imgSrc === 'canonical' ? 'canonical' : '—') + '</td>' +
+        '<td class="gd">' + (v.blog ? readMins(v.wordCount) + 'm' : '—') + '</td>' +
+        '<td class="dc">' + v.destCount + '</td>' +
+      '</tr>';
+    }).join('');
+
+    insp.innerHTML = warn +
+      '<table class="vs-table"><thead><tr>' +
+        '<th>Score</th><th>Canonical vibe / engine keys</th><th>Category</th><th>Image</th><th>Guide</th><th>Dests</th>' +
+      '</tr></thead><tbody>' + rows + '</tbody></table>';
+  }
+
+  function renderAll() { renderPhone(); renderSheet(); renderGuide(); renderFooter(); renderInspector(); }
+
+  /* ── Interaction (delegated — no inline handlers, so live text can't inject) */
+  function toggle(key) {
+    if (S.selected.has(key)) S.selected.delete(key); else S.selected.add(key);
+    renderAll();
+  }
+  function openCat(cat) { S.sheetCat = cat; S.explored.add(cat); renderSheet(); renderPhone(); }
+  function closeSheet() {
+    const el = $('vs-sheet-el');
+    if (el) {
+      el.classList.remove('in');
+      setTimeout(function () { S.sheetCat = null; renderAll(); }, 320);
+    } else { S.sheetCat = null; renderAll(); }
+  }
+
+  document.addEventListener('click', function (ev) {
+    const t = ev.target.closest('[data-act]');
+    if (!t) return;
+    const act = t.getAttribute('data-act');
+    const key = t.getAttribute('data-key');
+    if (act === 'toggle')          { ev.stopPropagation(); toggle(key); }
+    else if (act === 'guide')      { ev.stopPropagation(); S.guideKey = key; renderGuide(); }
+    else if (act === 'close-guide' || act === 'guide-scrim') { S.guideKey = null; renderGuide(); }
+    else if (act === 'open-cat')   { openCat(t.getAttribute('data-cat')); }
+    else if (act === 'close-sheet') { closeSheet(); }
+    else if (act === 'reset')      { S.selected = new Set(); S.explored = new Set(); renderAll(); }
+    else if (act === 'open-engine') {
+      if (S.srKey && S.guideKey) {
+        const v = vibeByKey(S.guideKey);
+        const ek = v && v.engines[0] ? v.engines[0].key : '';
+        window.open('/vibes-engine/?sr=' + q(S.srKey) + (ek ? '&vibe=' + q(ek) : ''), '_blank');
+      }
+    }
+  });
+
+  /* ── Region / sub-region selectors ─────────────────────────────────────── */
+  function fillRegions() {
+    const rs = $('vs-region'), ss = $('vs-sub');
+    if (!rs || !ss) return;
+    rs.innerHTML = S.index.map(function (r) {
+      return '<option value="' + esc(r.region) + '"' + (r.region === S.region ? ' selected' : '') + '>' + esc(r.region) + '</option>';
+    }).join('');
+    const reg = S.index.filter(function (r) { return r.region === S.region; })[0];
+    ss.innerHTML = (reg ? reg.subs : []).map(function (s) {
+      return '<option value="' + esc(s.subregion) + '"' + (s.subregion === S.subregion ? ' selected' : '') + '>' + esc(s.subregion) + '</option>';
+    }).join('');
+    // Browsers restore <select> state across a reload and can fire `change`
+    // afterwards, which would silently load a different sub-region than the one
+    // in state/the URL. Force the DOM to match state.
+    rs.value = S.region;
+    ss.value = S.subregion;
+  }
+  function currentSrKey() {
+    const reg = S.index.filter(function (r) { return r.region === S.region; })[0];
+    if (!reg) return '';
+    const s = reg.subs.filter(function (x) { return x.subregion === S.subregion; })[0];
+    return s ? s.srKey : '';
+  }
+  function syncUrl() {
+    // replaceState can throw depending on the origin (e.g. file://). Never let a
+    // failed URL sync stop the sub-region from actually loading.
+    try {
+      const u = new URL(window.location.href);
+      u.searchParams.set('region', S.region);
+      u.searchParams.set('sub', S.subregion);
+      window.history.replaceState({}, '', u.toString());
+    } catch (e) { /* deep-linking is a nicety, not a requirement */ }
+  }
+  async function go() {
+    if (!S.region || !S.subregion) return;   // nothing valid selected — don't fetch
+    S.srKey = currentSrKey();
+    syncUrl();
+    try {
+      await loadSubregion(S.region, S.subregion, S.srKey);
+    } catch (e) {
+      S.loading = false;
+      const b = $('vs-body');
+      if (b) b.innerHTML = '<div class="vs-state err">Could not load: ' + esc(e.message) + '</div>';
+      renderInspector();
+    }
+  }
+
+  /* ── Boot ──────────────────────────────────────────────────────────────── */
+  async function init() {
+    if (!SUPA || !ANON) {
+      const b = $('vs-body');
+      if (b) b.innerHTML = '<div class="vs-state err">Supabase was not configured at build time.</div>';
+      return;
+    }
+    try {
+      await loadIndex();
+    } catch (e) {
+      const b = $('vs-body');
+      if (b) b.innerHTML = '<div class="vs-state err">Could not load the engine index: ' + esc(e.message) + '</div>';
+      return;
+    }
+    const p = new URLSearchParams(window.location.search);
+    const wantR = p.get('region'), wantS = p.get('sub');
+    const hasR = S.index.filter(function (r) { return r.region === wantR; })[0];
+    if (hasR && hasR.subs.filter(function (s) { return s.subregion === wantS; }).length) {
+      S.region = wantR; S.subregion = wantS;
+    } else {
+      // Default to the sub-region the design was built against, else the first.
+      const oce = S.index.filter(function (r) { return r.region === 'Oceania'; })[0];
+      if (oce && oce.subs.filter(function (s) { return s.subregion === 'Pacific Islands'; }).length) {
+        S.region = 'Oceania'; S.subregion = 'Pacific Islands';
+      } else {
+        S.region = S.index[0].region; S.subregion = S.index[0].subs[0].subregion;
+      }
+    }
+    fillRegions();
+
+    // Browsers restore <select> state on reload and fire `change` for it, which
+    // would silently override a deep-linked ?region/&sub (loading a different
+    // sub-region than the URL says). Restoration never produces a pointer or key
+    // gesture, so require one before honouring a change; anything else just
+    // re-asserts the DOM from state. Handlers also validate against the index.
+    [$('vs-region'), $('vs-sub')].forEach(function (el) {
+      el.addEventListener('pointerdown', function () { S.ready = true; });
+      el.addEventListener('keydown', function () { S.ready = true; });
+    });
+
+    $('vs-region').addEventListener('change', function (e) {
+      const v = e.target.value;
+      const reg = S.index.filter(function (r) { return r.region === v; })[0];
+      if (!S.ready || !reg) { fillRegions(); return; }
+      S.region = v;
+      S.subregion = reg.subs[0] ? reg.subs[0].subregion : '';
+      fillRegions();
+      go();
+    });
+    $('vs-sub').addEventListener('change', function (e) {
+      const v = e.target.value;
+      const reg = S.index.filter(function (r) { return r.region === S.region; })[0];
+      const ok = reg && reg.subs.filter(function (s) { return s.subregion === v; }).length;
+      if (!S.ready || !ok) { fillRegions(); return; }
+      S.subregion = v;
+      go();
+    });
+    // Restoration can also land after load without firing change — re-assert.
+    window.addEventListener('pageshow', function () { if (S.region) fillRegions(); });
+
+    go();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+
+</script>
+</body>
+</html>
