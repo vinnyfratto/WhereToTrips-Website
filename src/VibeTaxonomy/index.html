@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Vibe Taxonomy · WhereTo Admin</title>
+<style>
+.hdr-left{display:flex;align-items:center;gap:22px}
+.hdr-logo-link{display:flex;align-items:center}
+.hdr-logo-img{height:22px;width:auto;display:block}
+.hdr-nav{display:flex;align-items:center;gap:4px}
+.hdr-tab{font-family:var(--sans);font-size:13px;font-weight:600;color:rgba(240,235,224,0.6);text-decoration:none;padding:6px 13px;border-radius:7px;transition:background .14s,color .14s;white-space:nowrap}
+.hdr-tab:hover{color:var(--cream);background:rgba(255,255,255,0.08)}
+.hdr-tab.active{color:var(--cream);background:rgba(255,255,255,0.13)}
+:root {
+  --ink: #1F3B57; --azure: #2F6FA8; --amber: #C8862B; --line: #E3E8EE;
+  --bg: #F6F8FA; --card: #FFFFFF; --muted: #6B7A8C; --bad: #B3261E; --good: #2E7D32;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+  font: 14px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+.wrap { max-width: 1240px; margin: 0 auto; padding: 22px 20px 90px; }
+h1 { font-size: 24px; margin: 0 0 4px; }
+.sub { color: var(--muted); margin: 0 0 18px; max-width: 900px; }
+.sub code { background: #EDF2F7; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+
+.tabs { display: flex; gap: 8px; margin: 0 0 16px; }
+.tabBtn { border: 1px solid var(--line); background: var(--card); color: var(--ink);
+  padding: 9px 18px; border-radius: 999px; font-size: 14px; font-weight: 600; cursor: pointer; }
+.tabBtn.on { background: var(--ink); border-color: var(--ink); color: #fff; }
+
+.lede { color: var(--muted); margin: 6px 2px 14px; max-width: 900px; }
+.lede.warn { color: var(--bad); font-weight: 600; }
+
+.row { display: flex; gap: 16px; background: var(--card); border: 1px solid var(--line);
+  border-radius: 12px; padding: 14px; margin-bottom: 10px; }
+.row.child { margin-left: 30px; border-left: 3px solid var(--azure); }
+.row.isDirty { border-color: var(--amber); box-shadow: 0 0 0 2px rgba(200,134,43,.14); }
+.rowMain { flex: 1 1 auto; min-width: 0; }
+.rowHead { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.nameIn { font-size: 16px; font-weight: 700; color: var(--ink); border: 1px solid transparent;
+  background: #F3F6F9; border-radius: 8px; padding: 7px 10px; min-width: 260px; }
+.nameIn:focus { border-color: var(--azure); background: #fff; outline: none; }
+.code { font: 12px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--muted);
+  background: #EDF2F7; border-radius: 5px; padding: 5px 7px; cursor: help; }
+.pill { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px;
+  color: var(--azure); background: #EAF2FA; border-radius: 999px; padding: 4px 9px; }
+.pill.top { color: var(--amber); background: #FBF1E2; }
+.count { font-size: 12px; color: var(--muted); }
+.count.zero { color: var(--bad); font-weight: 700; }
+.sortWrap { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+.sortIn { width: 62px; padding: 5px 7px; border: 1px solid var(--line); border-radius: 6px; }
+.saveBtn { margin-left: auto; border: 1px solid var(--azure); background: #fff; color: var(--azure);
+  padding: 7px 15px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+.saveBtn:hover { background: var(--azure); color: #fff; }
+.saveBtn:disabled { opacity: .5; cursor: default; }
+.blurbIn { width: 100%; margin: 9px 0 8px; padding: 7px 10px; border: 1px solid var(--line);
+  border-radius: 8px; font-size: 13px; color: var(--muted); }
+.vibes { display: flex; flex-wrap: wrap; gap: 5px; }
+.v { font-size: 11.5px; background: #F3F6F9; border: 1px solid var(--line); border-radius: 999px;
+  padding: 3px 9px; color: #44586C; }
+.v.none { background: #FDECEA; border-color: #F5C6C2; color: var(--bad); }
+
+.rowImgs { flex: 0 0 372px; display: flex; gap: 8px; }
+.imgSlot { flex: 1 1 0; min-width: 0; }
+.thumb { height: 74px; border-radius: 8px; background: #EDF2F7 center/cover no-repeat;
+  border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; }
+.thumb.empty span { color: #A9B7C6; font-size: 20px; font-weight: 800; }
+.imgUrl { width: 100%; margin-top: 5px; padding: 5px 7px; border: 1px solid var(--line);
+  border-radius: 6px; font-size: 11px; }
+
+.bar { position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-top: 1px solid var(--line);
+  padding: 12px 20px; display: flex; align-items: center; gap: 12px; z-index: 30; }
+.bar .inner { max-width: 1240px; margin: 0 auto; width: 100%; display: flex; align-items: center; gap: 12px; }
+.primary { background: var(--ink); color: #fff; border: 0; padding: 11px 22px; border-radius: 9px;
+  font-weight: 700; cursor: pointer; }
+.primary:disabled { background: #C3CDD8; cursor: default; }
+.ghost { background: #fff; border: 1px solid var(--line); color: var(--ink); padding: 10px 16px;
+  border-radius: 9px; font-weight: 600; cursor: pointer; }
+.barNote { color: var(--muted); font-size: 12.5px; }
+
+.loading, .err { background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+  padding: 26px; color: var(--muted); }
+.err { border-color: #F5C6C2; background: #FDECEA; color: var(--bad); }
+.err code { background: #fff; padding: 1px 5px; border-radius: 4px; }
+
+.toast { position: fixed; left: 50%; bottom: 78px; transform: translateX(-50%) translateY(14px);
+  background: var(--good); color: #fff; padding: 11px 20px; border-radius: 9px; font-weight: 600;
+  opacity: 0; pointer-events: none; transition: opacity .18s, transform .18s; z-index: 40; max-width: 80vw; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.bad { background: var(--bad); }
+
+@media (max-width: 900px) {
+  .row { flex-direction: column; }
+  .rowImgs { flex-basis: auto; }
+}
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-left">
+    <a href="/" class="hdr-logo-link" aria-label="WhereTo home"><img class="hdr-logo-img" src="/assets/whereto-logo-white.svg" alt="WhereTo" /></a>
+    <nav class="hdr-nav">
+      <a href="/DestImages/" class="hdr-tab">Destination Images</a>
+      <a href="/vibesimages/" class="hdr-tab">Vibe Images</a>
+      <a href="/vibes-engine/" class="hdr-tab">Vibes Engine</a>
+      <a href="/vibes-engine/dashboard.html" class="hdr-tab">Vibe Engine Tester</a>
+      <a href="/DashboardHero/" class="hdr-tab">Dashboard Hero</a>
+      <a href="/StockImages/" class="hdr-tab">Stock Image Ingest</a>
+      <a href="/VibeSelection/" class="hdr-tab">Vibe Selection</a>
+      <a href="/VibeTaxonomy/" class="hdr-tab active">Vibe Taxonomy</a>
+    </nav>
+  </div>
+  <div class="hdr-right"></div>
+</header>
+
+<div id="admin-gate-overlay" style="position:fixed;inset:0;z-index:99999;background:#313131;color:#FFFFFF;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;font-family:system-ui,sans-serif;text-align:center;padding:24px;">
+  <div id="admin-gate-msg" style="font-size:15px;">Checking access&hellip;</div>
+</div>
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+  const supabase = createClient("https://pvqwxphrmcvmztlkzhsg.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2cXd4cGhybWN2bXp0bGt6aHNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzIxMjIsImV4cCI6MjA5NTMwODEyMn0.uz1WFZqymop5mhIUx6bxW8qofMQuGo-ltyRA8f0P1lk", { auth: { persistSession: true, autoRefreshToken: true } });
+  const overlay = document.getElementById('admin-gate-overlay');
+  const msg = document.getElementById('admin-gate-msg');
+  (async () => {
+    try {
+      const { data: sess } = await supabase.auth.getSession();
+      if (!sess.session) {
+        window.location.href = '/account/login/?next=' + encodeURIComponent(window.location.pathname + window.location.search);
+        return;
+      }
+      const { data: adm } = await supabase.from('admins').select('user_id').eq('user_id', sess.session.user.id).maybeSingle();
+      if (!adm) {
+        msg.innerHTML = 'You don\'t have access to this page.<br/><br/><a href="/" style="color:#209CE0;font-weight:600">Return home</a>';
+        return;
+      }
+      window.__wtSupabase = supabase;
+      window.__wtAdminUser = sess.session.user;
+      document.dispatchEvent(new CustomEvent('wt-admin-ready'));
+      overlay.remove();
+    } catch (e) {
+      msg.textContent = 'Could not verify access — please refresh.';
+    }
+  })();
+</script>
+
+<div class="wrap">
+  <h1>Vibe Taxonomy</h1>
+  <p class="sub">
+    Every canonical vibe carries two groupings. <b>Category</b> is one global bucket, the same
+    everywhere on earth. <b>Shelf</b> is the picker's accordion group, a parent&nbsp;&rarr;&nbsp;child
+    tree packed per sub-region. Rename either, give either up to three images, and set the order.
+    The grey <code>code</code> beside each name is the stable id everything joins on — it never
+    changes, which is what makes renaming free. Which vibes sit in a group is decided in code and
+    shown here read-only.
+  </p>
+
+  <div class="tabs">
+    <button class="tabBtn on" type="button" data-act="tab" data-tab="categories">Categories</button>
+    <button class="tabBtn" type="button" data-act="tab" data-tab="shelves">Shelves</button>
+  </div>
+
+  <div id="vt-body"><div class="loading">Loading taxonomy…</div></div>
+</div>
+
+<div class="bar">
+  <div class="inner">
+    <button class="primary" id="vt-saveall" type="button" disabled>No changes</button>
+    <button class="ghost" type="button" data-act="reload">Reload</button>
+    <span class="barNote">Edits save straight to Supabase. Images take any public URL.</span>
+  </div>
+</div>
+
+<div class="toast" id="vt-toast"></div>
+
+<script>window.__VT_BOOT = {"supabaseUrl":"https://pvqwxphrmcvmztlkzhsg.supabase.co","anonKey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2cXd4cGhybWN2bXp0bGt6aHNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzIxMjIsImV4cCI6MjA5NTMwODEyMn0.uz1WFZqymop5mhIUx6bxW8qofMQuGo-ltyRA8f0P1lk"};</script>
+<script>
+/* ─────────────────────────────────────────────────────────────────────────────
+   Vibe Taxonomy admin — client logic for /VibeTaxonomy/
+
+   Manages the two display groupings a canonical vibe carries:
+     • Category — one global bucket per vibe (vibe_categories)
+     • Shelf    — the picker's accordion group, a parent -> child tree (vibe_shelves)
+
+   `code` is the stable id and is never editable here; everything joins on it, so
+   display_name can be changed as often as you like without touching app code.
+   Which vibe belongs to which category/shelf is decided in code (vibesCanonical.ts
+   + vibeShelves.mjs) and shown read-only — this page owns names and images only.
+   ───────────────────────────────────────────────────────────────────────────── */
+(function () {
+  'use strict';
+
+  const BOOT = window.__VT_BOOT || {};
+  const SUPA = BOOT.supabaseUrl || '';
+  const ANON = BOOT.anonKey || '';
+  const HDRS = { apikey: ANON, Authorization: 'Bearer ' + ANON };
+
+  const S = { cats: [], shelves: [], map: [], tab: 'categories', dirty: new Set(), busy: false };
+
+  const $ = function (id) { return document.getElementById(id); };
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+  // Safe for style="background-image:url('…')" — kills quotes/parens/newlines.
+  function cssUrl(u) {
+    return String(u == null ? '' : u).replace(/["'()\\\n\r]/g, '');
+  }
+  function toast(msg, bad) {
+    const t = $('vt-toast');
+    t.textContent = msg;
+    t.className = 'toast show' + (bad ? ' bad' : '');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(function () { t.className = 'toast'; }, bad ? 6000 : 2600);
+  }
+
+  /* ── Load ───────────────────────────────────────────────────────────────── */
+  function get(tableAndQuery) {
+    return fetch(SUPA + '/rest/v1/' + tableAndQuery, { headers: HDRS }).then(function (r) {
+      if (!r.ok) return r.text().then(function (t) { throw new Error(r.status + ' ' + t); });
+      return r.json();
+    });
+  }
+
+  function load() {
+    $('vt-body').innerHTML = '<div class="loading">Loading taxonomy…</div>';
+    return Promise.all([
+      get('vibe_categories?select=*&order=sort_order'),
+      get('vibe_shelves?select=*&order=sort_order'),
+      get('vibe_canonical_map?select=*&order=canonical_label'),
+    ]).then(function (res) {
+      S.cats = res[0]; S.shelves = res[1]; S.map = res[2];
+      S.dirty.clear();
+      render();
+    }).catch(function (e) {
+      $('vt-body').innerHTML =
+        '<div class="err"><b>Could not load.</b><br>' + esc(e.message) +
+        '<br><br>If the tables do not exist yet, run <code>supabase/vibe_taxonomy.sql</code> in the Supabase SQL editor first.</div>';
+    });
+  }
+
+  /* ── Row rendering ──────────────────────────────────────────────────────── */
+  function vibesFor(kind, code) {
+    return S.map.filter(function (m) {
+      return kind === 'categories' ? m.category_code === code : m.shelf_code === code;
+    });
+  }
+
+  function imgCell(row, kind, n) {
+    const key = 'image_' + n;
+    const url = row[key] || '';
+    return '' +
+      '<div class="imgSlot">' +
+      '  <div class="thumb' + (url ? '' : ' empty') + '"' +
+      (url ? ' style="background-image:url(\'' + cssUrl(url) + '\')"' : '') + '>' +
+      (url ? '' : '<span>' + n + '</span>') + '</div>' +
+      '  <input class="imgUrl" type="url" placeholder="Image ' + n + ' URL"' +
+      ' value="' + esc(url) + '" data-kind="' + kind + '" data-code="' + esc(row.code) + '" data-field="' + key + '">' +
+      '</div>';
+  }
+
+  function rowHtml(row, kind, isChild) {
+    const linked = vibesFor(kind, row.code);
+    const names = linked.map(function (m) { return m.canonical_label; });
+    const parent = row.parent_code
+      ? (S.shelves.filter(function (s) { return s.code === row.parent_code; })[0] || {}).display_name
+      : null;
+
+    return '' +
+      '<div class="row' + (isChild ? ' child' : '') + '" data-row="' + esc(row.code) + '">' +
+      '  <div class="rowMain">' +
+      '    <div class="rowHead">' +
+      '      <input class="nameIn" type="text" value="' + esc(row.display_name) + '"' +
+      ' data-kind="' + kind + '" data-code="' + esc(row.code) + '" data-field="display_name">' +
+      '      <span class="code" title="Stable id — everything joins on this. It never changes, so renaming above is free.">' + esc(row.code) + '</span>' +
+      (parent ? '      <span class="pill">under ' + esc(parent) + '</span>' : '') +
+      (kind === 'shelves' && !row.parent_code ? '      <span class="pill top">top level</span>' : '') +
+      '      <span class="count' + (linked.length ? '' : ' zero') + '">' + linked.length + ' vibe' + (linked.length === 1 ? '' : 's') + '</span>' +
+      '      <label class="sortWrap">order <input class="sortIn" type="number" value="' + esc(row.sort_order) + '"' +
+      ' data-kind="' + kind + '" data-code="' + esc(row.code) + '" data-field="sort_order"></label>' +
+      '      <button class="saveBtn" type="button" data-act="save" data-kind="' + kind + '" data-code="' + esc(row.code) + '">Save</button>' +
+      '    </div>' +
+      '    <input class="blurbIn" type="text" placeholder="Optional blurb shown under the name in the picker"' +
+      ' value="' + esc(row.blurb || '') + '" data-kind="' + kind + '" data-code="' + esc(row.code) + '" data-field="blurb">' +
+      '    <div class="vibes">' + (names.length
+        ? names.map(function (n) { return '<span class="v">' + esc(n) + '</span>'; }).join('')
+        : '<span class="v none">no vibes mapped — check vibe_canonical_map</span>') + '</div>' +
+      '  </div>' +
+      '  <div class="rowImgs">' + imgCell(row, kind, 1) + imgCell(row, kind, 2) + imgCell(row, kind, 3) + '</div>' +
+      '</div>';
+  }
+
+  function render() {
+    const kind = S.tab;
+    let html = '';
+
+    if (kind === 'categories') {
+      html += '<div class="lede">One global bucket per vibe. A vibe keeps its category everywhere on earth.</div>';
+      html += S.cats.map(function (c) { return rowHtml(c, 'categories', false); }).join('');
+    } else {
+      html += '<div class="lede">The picker\'s accordion groups, as a tree. Shelves are packed per sub-region, so a child shelf with too few vibes in a given place collapses into its parent — which is why parents get names and images too.</div>';
+      const tops = S.shelves.filter(function (s) { return !s.parent_code; });
+      tops.forEach(function (p) {
+        html += rowHtml(p, 'shelves', false);
+        S.shelves.filter(function (s) { return s.parent_code === p.code; })
+          .forEach(function (c) { html += rowHtml(c, 'shelves', true); });
+      });
+      const orphans = S.shelves.filter(function (s) {
+        return s.parent_code && !S.shelves.some(function (p) { return p.code === s.parent_code; });
+      });
+      if (orphans.length) {
+        html += '<div class="lede warn">These shelves point at a parent that no longer exists:</div>';
+        orphans.forEach(function (o) { html += rowHtml(o, 'shelves', true); });
+      }
+    }
+    $('vt-body').innerHTML = html;
+    syncDirty();
+  }
+
+  function syncDirty() {
+    const n = S.dirty.size;
+    $('vt-saveall').disabled = !n || S.busy;
+    $('vt-saveall').textContent = n ? 'Save ' + n + ' change' + (n === 1 ? '' : 's') : 'No changes';
+    Array.prototype.forEach.call(document.querySelectorAll('.row'), function (el) {
+      const k = S.tab + ':' + el.getAttribute('data-row');
+      el.classList.toggle('isDirty', S.dirty.has(k));
+    });
+  }
+
+  /* ── Edit + save ────────────────────────────────────────────────────────── */
+  const pending = {}; // "kind:code" -> { field: value }
+
+  function markEdit(kind, code, field, value) {
+    const k = kind + ':' + code;
+    pending[k] = pending[k] || {};
+    pending[k][field] = field === 'sort_order' ? Number(value) : (value === '' ? null : value);
+    S.dirty.add(k);
+    // keep local state current so re-render does not lose an unsaved edit
+    const list = kind === 'categories' ? S.cats : S.shelves;
+    const row = list.filter(function (r) { return r.code === code; })[0];
+    if (row) row[field] = pending[k][field];
+    syncDirty();
+  }
+
+  function saveOne(kind, code) {
+    const k = kind + ':' + code;
+    const body = pending[k];
+    if (!body) return Promise.resolve();
+    const table = kind === 'categories' ? 'vibe_categories' : 'vibe_shelves';
+    return fetch(SUPA + '/rest/v1/' + table + '?code=eq.' + encodeURIComponent(code), {
+      method: 'PATCH',
+      headers: Object.assign({}, HDRS, { 'Content-Type': 'application/json', Prefer: 'return=representation' }),
+      body: JSON.stringify(body),
+    }).then(function (r) {
+      if (!r.ok) return r.text().then(function (t) { throw new Error(r.status + ' ' + t); });
+      return r.json();
+    }).then(function () {
+      delete pending[k];
+      S.dirty.delete(k);
+      syncDirty();
+    });
+  }
+
+  function saveAll() {
+    const keys = Array.from(S.dirty);
+    if (!keys.length) return;
+    S.busy = true; syncDirty();
+    Promise.all(keys.map(function (k) {
+      const i = k.indexOf(':');
+      return saveOne(k.slice(0, i), k.slice(i + 1));
+    })).then(function () {
+      S.busy = false;
+      toast('Saved ' + keys.length + ' change' + (keys.length === 1 ? '' : 's'));
+      render();
+    }).catch(function (e) {
+      S.busy = false; syncDirty();
+      toast('Save failed: ' + e.message, true);
+    });
+  }
+
+  /* ── Wiring ─────────────────────────────────────────────────────────────── */
+  document.addEventListener('input', function (e) {
+    const t = e.target;
+    const field = t.getAttribute && t.getAttribute('data-field');
+    if (!field) return;
+    markEdit(t.getAttribute('data-kind'), t.getAttribute('data-code'), field, t.value);
+    if (field.indexOf('image_') === 0) {
+      const slot = t.parentNode.querySelector('.thumb');
+      if (slot) {
+        if (t.value) { slot.style.backgroundImage = "url('" + cssUrl(t.value) + "')"; slot.classList.remove('empty'); }
+        else { slot.style.backgroundImage = ''; slot.classList.add('empty'); }
+      }
+    }
+  });
+
+  document.addEventListener('click', function (e) {
+    const b = e.target.closest && e.target.closest('[data-act]');
+    if (!b) return;
+    const act = b.getAttribute('data-act');
+    if (act === 'save') {
+      b.disabled = true;
+      saveOne(b.getAttribute('data-kind'), b.getAttribute('data-code'))
+        .then(function () { b.disabled = false; toast('Saved'); })
+        .catch(function (err) { b.disabled = false; toast('Save failed: ' + err.message, true); });
+    } else if (act === 'tab') {
+      S.tab = b.getAttribute('data-tab');
+      Array.prototype.forEach.call(document.querySelectorAll('[data-act="tab"]'), function (el) {
+        el.classList.toggle('on', el.getAttribute('data-tab') === S.tab);
+      });
+      render();
+    } else if (act === 'reload') {
+      if (S.dirty.size && !confirm('You have ' + S.dirty.size + ' unsaved change(s). Reload and lose them?')) return;
+      Object.keys(pending).forEach(function (k) { delete pending[k]; });
+      load();
+    }
+  });
+
+  $('vt-saveall').addEventListener('click', saveAll);
+  window.addEventListener('beforeunload', function (e) {
+    if (S.dirty.size) { e.preventDefault(); e.returnValue = ''; }
+  });
+
+  load();
+})();
+
+</script>
+</body>
+</html>
