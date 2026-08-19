@@ -9,6 +9,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { initProfileForm } from './wt-profile.js';
 import { initPasswordToggles } from './wt-password-toggle.js';
+import { maybeOptOutInternal } from './wt-internal-accounts.js';
 
 const cfg = window.WT_SUPABASE || {};
 export const supabase = createClient(cfg.url, cfg.anonKey, {
@@ -114,6 +115,7 @@ function initSignup() {
     if (window.posthog) {
       window.posthog.capture('sign_up', { method: 'email', surface: 'whereto_trips_web' });
       if (data.user) window.posthog.identify(data.user.id, { email: data.user.email });
+      if (data.user) maybeOptOutInternal(data.user.email);
     }
 
     if (data.session) {
@@ -161,6 +163,7 @@ function initLogin() {
     if (window.posthog) {
       window.posthog.capture('login', { method: 'email', surface: 'whereto_trips_web' });
       if (data.user) window.posthog.identify(data.user.id, { email: data.user.email });
+      if (data.user) maybeOptOutInternal(data.user.email);
     }
     window.location.href = nextTarget('/account/profile/');
   });

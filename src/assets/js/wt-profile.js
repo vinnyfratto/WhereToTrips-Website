@@ -9,6 +9,8 @@
 //  + flight prefs (wt-airport/seat/airlines/stops/budgetflex/dateflex).
 // ───────────────────────────────────────────────────────────────────
 
+import { maybeOptOutInternal } from './wt-internal-accounts.js';
+
 function alertEl(id) { return document.getElementById(id); }
 function showAlert(id, type, msg) {
   const el = alertEl(id); if (!el) return;
@@ -29,6 +31,7 @@ export async function initProfileForm(supabase, user, opts = {}) {
 
   const emailEl = document.getElementById('wt-email');
   if (emailEl) emailEl.value = user.email || '';
+  maybeOptOutInternal(user.email);
 
   const { data: profile, error } = await supabase
     .from('profiles')
