@@ -13,7 +13,7 @@
     },
     "post": {
       "label": "Get the App",
-      "href": "/app/"
+      "href": "/notify-launch/"
     }
   },
   "store": {
@@ -211,7 +211,7 @@
     }
   ],
   "analytics": {
-    "posthogHost": "https://us.i.posthog.com",
-    "posthogKey": "phc_kFkCtGbaD92SVz895WwsRCr2gFn9ip6hqiR4X67EqkqL"
+    "posthogKey": "phc_kFkCtGbaD92SVz895WwsRCr2gFn9ip6hqiR4X67EqkqL",
+    "posthogHost": "https://us.i.posthog.com"
   }
 }
