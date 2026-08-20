@@ -248,7 +248,23 @@
 const _SUPA_URL  = 'https://pvqwxphrmcvmztlkzhsg.supabase.co';
 const _SUPA_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2cXd4cGhybWN2bXp0bGt6aHNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzIxMjIsImV4cCI6MjA5NTMwODEyMn0.uz1WFZqymop5mhIUx6bxW8qofMQuGo-ltyRA8f0P1lk';
 const _H = { apikey:_SUPA_ANON, Authorization:'Bearer '+_SUPA_ANON };
-const _WH = { apikey:_SUPA_ANON, Authorization:'Bearer '+_SUPA_ANON, 'Content-Type':'application/json' };
+
+function waitForAuthedClient(){
+  return new Promise(function(resolve){
+    if (window.__wtSupabase) { resolve(window.__wtSupabase); return; }
+    document.addEventListener('wt-admin-ready', function once(){
+      document.removeEventListener('wt-admin-ready', once);
+      resolve(window.__wtSupabase);
+    });
+  });
+}
+async function _authedHeaders(extra){
+  var client = await waitForAuthedClient();
+  var sessRes = await client.auth.getSession();
+  var token = sessRes && sessRes.data && sessRes.data.session && sessRes.data.session.access_token;
+  if (!token) throw new Error('Not logged in (no active session) — refresh and log in again.');
+  return Object.assign({ apikey: _SUPA_ANON, Authorization: 'Bearer ' + token }, extra || {});
+}
 const MAX_TILES = 10;
 const MAX_CARDS = 8;
 
@@ -670,7 +686,7 @@ function collectTilesPayload(){
   return out;
 }
 async function createSet(goLiveIso, status){
-  var r = await fetch(_SUPA_URL+'/rest/v1/dashboard_hero_sets', { method:'POST', headers:Object.assign({ Prefer:'return=representation' }, _WH), body:JSON.stringify({ go_live_at:goLiveIso, status:status, created_by:'admin' }) });
+  var r = await fetch(_SUPA_URL+'/rest/v1/dashboard_hero_sets', { method:'POST', headers:await _authedHeaders({ 'Content-Type':'application/json', Prefer:'return=representation' }), body:JSON.stringify({ go_live_at:goLiveIso, status:status, created_by:'admin' }) });
   if(!r.ok) throw new Error('set HTTP '+r.status+' '+(await r.text()).slice(0,140));
   var rows = await r.json();
   if(!rows || !rows[0]) throw new Error('set insert returned no row (check dashboard_hero.sql is applied)');
@@ -679,13 +695,13 @@ async function createSet(goLiveIso, status){
 async function insertTiles(setId, payload){
   for(var i=0;i<payload.length;i++){
     var tp = payload[i];
-    var tr = await fetch(_SUPA_URL+'/rest/v1/dashboard_hero_tiles', { method:'POST', headers:Object.assign({ Prefer:'return=representation' }, _WH), body:JSON.stringify({ set_id:setId, title:tp.title, copy:tp.copy, position:i+1 }) });
+    var tr = await fetch(_SUPA_URL+'/rest/v1/dashboard_hero_tiles', { method:'POST', headers:await _authedHeaders({ 'Content-Type':'application/json', Prefer:'return=representation' }), body:JSON.stringify({ set_id:setId, title:tp.title, copy:tp.copy, position:i+1 }) });
     if(!tr.ok) throw new Error('tile HTTP '+tr.status+' '+(await tr.text()).slice(0,140));
     var tRows = await tr.json();
     if(!tRows || !tRows[0]) throw new Error('tile insert returned no row (check dashboard_hero_tiles.sql is applied)');
     var tileId = tRows[0].id;
     var body = tp.destIds.map(function(id, pi){ return { tile_id:tileId, dest_id:id, position:pi+1 }; });
-    var ir = await fetch(_SUPA_URL+'/rest/v1/dashboard_hero_destinations', { method:'POST', headers:Object.assign({ Prefer:'return=minimal' }, _WH), body:JSON.stringify(body) });
+    var ir = await fetch(_SUPA_URL+'/rest/v1/dashboard_hero_destinations', { method:'POST', headers:await _authedHeaders({ 'Content-Type':'application/json', Prefer:'return=minimal' }), body:JSON.stringify(body) });
     if(!ir.ok) throw new Error('items HTTP '+ir.status+' '+(await ir.text()).slice(0,140));
   }
 }
@@ -733,7 +749,7 @@ async function cancelUpcoming(ui){
   var s = _upcoming[ui]; if(!s) return;
   if(!confirm('Cancel the go-live scheduled for '+fmtET(s.go_live_at)+'?\n\nThis removes it entirely.')) return;
   try {
-    var r = await fetch(_SUPA_URL+'/rest/v1/dashboard_hero_sets?id=eq.'+encodeURIComponent(s.id), { method:'DELETE', headers:_H });
+    var r = await fetch(_SUPA_URL+'/rest/v1/dashboard_hero_sets?id=eq.'+encodeURIComponent(s.id), { method:'DELETE', headers:await _authedHeaders() });
     if(!r.ok) throw new Error('HTTP '+r.status);
     toast('Scheduled go-live canceled.','ok');
     await loadData();

@@ -522,6 +522,13 @@ function waitForAuthedClient(){
     });
   });
 }
+async function _authedHeaders(extra){
+  var client = await waitForAuthedClient();
+  var sessRes = await client.auth.getSession();
+  var token = sessRes && sessRes.data && sessRes.data.session && sessRes.data.session.access_token;
+  if (!token) throw new Error('Not logged in (no active session) — refresh and log in again.');
+  return Object.assign({ apikey: _SUPA_ANON, Authorization: 'Bearer ' + token }, extra || {});
+}
 
 // Uploads go through the upload-stock-image edge function (service-role key,
 // server-side) instead of hitting Storage directly from the browser — direct
@@ -886,12 +893,12 @@ async function saveGallery(d){
   // nothing written) for any destination that never had a gallery row before,
   // which was every "no images yet" destination this tool exists to fill in.
   var editsRes = await fetch(_SUPA_URL+'/rest/v1/destination_image_edits?on_conflict=dest_id', {
-    method:'POST', headers: Object.assign({'Content-Type':'application/json', Prefer:'resolution=merge-duplicates,return=minimal'}, _H),
+    method:'POST', headers: await _authedHeaders({'Content-Type':'application/json', Prefer:'resolution=merge-duplicates,return=minimal'}),
     body: JSON.stringify({ dest_id: d.id, images: d.images }),
   });
   if (!editsRes.ok) { var t=''; try{t=await editsRes.text();}catch(e){} console.error('[saveGallery] destination_image_edits upsert failed', editsRes.status, t); }
   var destRes = await fetch(_SUPA_URL+'/rest/v1/destinations?id=eq.'+d.id, {
-    method:'PATCH', headers: Object.assign({'Content-Type':'application/json', Prefer:'return=minimal'}, _H),
+    method:'PATCH', headers: await _authedHeaders({'Content-Type':'application/json', Prefer:'return=minimal'}),
     body: JSON.stringify({
       image_url: hero ? hero.url : null,
       image_attribution: hero ? [hero.photographer, hero.license].filter(Boolean).join(' — ') : null,
@@ -1284,7 +1291,7 @@ async function _aiCurate(dest, candidates){
     max_keep: _CFG.ai_max_keep,
     images: candidates.map(function(im){ return { url: (im.thumb || im.url), alt: im.alt || '', source: im.source || '' }; }),
   };
-  var r = await fetch(_SUPA_URL + '/functions/v1/curate-image', { method: 'POST', headers: { 'Content-Type': 'application/json', apikey: _SUPA_ANON, Authorization: 'Bearer ' + _SUPA_ANON }, body: JSON.stringify(payload) });
+  var r = await fetch(_SUPA_URL + '/functions/v1/curate-image', { method: 'POST', headers: await _authedHeaders({ 'Content-Type': 'application/json' }), body: JSON.stringify(payload) });
   if (!r.ok) { var t = ''; try { t = await r.text(); } catch (e) {} throw new Error('HTTP ' + r.status + (t ? ': ' + t.slice(0, 140) : '')); }
   var d = await r.json();
   if (!d || d.ok === false) throw new Error((d && d.error) || 'curation failed');

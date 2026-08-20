@@ -325,6 +325,23 @@ const _SUPA_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI
 const _OV_ID = 'hRpg360HAjxAcvlvDJkdzUTQR8mzYkeDOsRGU2SZ';
 const _OV_SEC = 'UBKgXjU8tDxOlPoGtayZ37EGf3cQVE94yhV3X96BSt84ZpFuzTcgTGTpgS0VwsimOZca2mqD11Jkzj6VoAyfrxR66acxfQnBSDA2WLUH27AAY6jM8ch39ZzIakFjOwmn';
 const _H = { apikey:_SUPA_ANON, Authorization:'Bearer '+_SUPA_ANON };
+
+function waitForAuthedClient(){
+  return new Promise(function(resolve){
+    if (window.__wtSupabase) { resolve(window.__wtSupabase); return; }
+    document.addEventListener('wt-admin-ready', function once(){
+      document.removeEventListener('wt-admin-ready', once);
+      resolve(window.__wtSupabase);
+    });
+  });
+}
+async function _authedHeaders(extra){
+  var client = await waitForAuthedClient();
+  var sessRes = await client.auth.getSession();
+  var token = sessRes && sessRes.data && sessRes.data.session && sessRes.data.session.access_token;
+  if (!token) throw new Error('Not logged in (no active session) — refresh and log in again.');
+  return Object.assign({ apikey: _SUPA_ANON, Authorization: 'Bearer ' + token }, extra || {});
+}
 const ADMIN_MODE = true;
 const EDITS_KEY = 'vibe_img_edits';
 
@@ -454,7 +471,7 @@ var _SRC_LABELS = { pexels:'Pexels', wikipedia:'Wikipedia', openverse:'Openverse
 function getEditedImages(k){ var all=_loadEdits(); if(all[k]!==undefined) return all[k]; var v=VIBE_BY_KEY[k]; return (v&&v.images)?v.images:[]; }
 async function _supaSave(v, images){
   if(!_SUPA_URL||!_SUPA_ANON||!v) return;
-  try { await fetch(_SUPA_URL+'/rest/v1/vibe_image_edits?on_conflict=sr_key,vibe_key',{method:'POST',headers:{apikey:_SUPA_ANON,Authorization:'Bearer '+_SUPA_ANON,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates'},body:JSON.stringify({sr_key:v._sr.srKey,vibe_key:v.key,images:images})}); } catch(e){ console.warn('[supaSave]',e); }
+  try { await fetch(_SUPA_URL+'/rest/v1/vibe_image_edits?on_conflict=sr_key,vibe_key',{method:'POST',headers:await _authedHeaders({'Content-Type':'application/json',Prefer:'resolution=merge-duplicates'}),body:JSON.stringify({sr_key:v._sr.srKey,vibe_key:v.key,images:images})}); } catch(e){ console.warn('[supaSave]',e); }
 }
 function _persist(v, images){ var all=_loadEdits(); all[v._k]=images; localStorage.setItem(EDITS_KEY,JSON.stringify(all)); v.images=images; _supaSave(v,images); }
 function saveEdits(images){ if(currentVibe) _persist(currentVibe, images); }
@@ -582,18 +599,9 @@ async function runCurateSub(){
   if(!targets.length){ _cSetStatus('Every vibe already has images.'); setTimeout(_cClose,2200); _cBtns(false); _curating=false; return; }
   var results=[];
   for(var i=0;i<targets.length;i++){ var v=targets[i]; _cSetStatus('Fetching '+(i+1)+' of '+targets.length+': '+v.label); var res=await _sFetchVibe(v); _persist(v,res.images); results.push({label:v.label,count:res.images.length,sources:Array.from(new Set(res.images.map(function(x){return x.source;}))).join(', ')}); _cLog(v.label,res.images.length); _cSetBar(i+1,targets.length); if(currentVibe&&currentVibe._k===v._k) renderGallery(res.images); }
-  await _sendCurateEmail(currentRegion,currentSub,results);
   var tot=results.reduce(function(s,r){ return s+r.count; },0);
-  _cSetStatus('Done — '+tot+' images across '+targets.length+' vibes. Email sent.');
+  _cSetStatus('Done — '+tot+' images across '+targets.length+' vibes.');
   showGrid(); setTimeout(_cClose,3500); _cBtns(false); _curating=false;
-}
-async function _sendCurateEmail(region, subregion, results){
-  if(!_SUPA_URL||!_SUPA_ANON) return;
-  var subject='Vibe Images | '+region+' | '+subregion+' — '+results.length+' fetched';
-  var total=results.reduce(function(s,r){ return s+r.count; },0);
-  var rows=results.map(function(r){ var bg=r.count>=3?'#d4edda':r.count>=1?'#fff3cd':'#f8d7da'; return '<tr style="background:'+bg+'"><td style="padding:6px 12px">'+esc(r.label)+'</td><td style="padding:6px 12px;text-align:center">'+r.count+'</td><td style="padding:6px 12px;font-size:12px;color:#555">'+esc(r.sources)+'</td></tr>'; }).join('');
-  var html='<!DOCTYPE html><html><body style="font-family:sans-serif;max-width:660px;margin:0 auto;padding:24px;color:#1C3649"><h2 style="color:#B85C38;margin-top:0">'+esc(subregion)+' — Vibe Images</h2><p><strong>'+total+'</strong> images across <strong>'+results.length+'</strong> vibes</p><table style="border-collapse:collapse;width:100%;font-size:13px"><thead><tr style="background:#1C3649;color:#fff"><th style="padding:8px 12px;text-align:left">Vibe</th><th style="padding:8px 12px">Images</th><th style="padding:8px 12px;text-align:left">Sources</th></tr></thead><tbody>'+rows+'</tbody></table></body></html>';
-  try { await fetch(_SUPA_URL+'/functions/v1/send-curation-email',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+_SUPA_ANON,apikey:_SUPA_ANON},body:JSON.stringify({to:'vfratto@vcinnovationsgroup.com',cc:'ccupero@vcinnovationsgroup.com',subject:subject,html:html})}); } catch(e){}
 }
 
 /* ── Settings panel ───────────────────────────────────────────────────────── */
@@ -610,7 +618,7 @@ async function settingsSave(){
   var cfg=_settingsCfg(); if(!cfg.steps.length){ document.getElementById('set-status').textContent='Add at least one step.'; return; }
   _CFG=cfg; var st=document.getElementById('set-status'); st.textContent='Saving…';
   try { var body={ id:1, name:'custom', max_images:cfg.max_images, min_images:cfg.min_images, delay_ms:cfg.delay_ms, steps:cfg.steps, block_terms:cfg.block_terms, pexels_size:cfg.pexels_size, pixabay_category:cfg.pixabay_category, orientation:cfg.orientation, wiki_skip_portrait:cfg.wiki_skip_portrait, updated_at:new Date().toISOString() };
-    var r=await fetch(_SUPA_URL+'/rest/v1/vibe_image_fetch_config?on_conflict=id',{method:'POST',headers:{apikey:_SUPA_ANON,Authorization:'Bearer '+_SUPA_ANON,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates'},body:JSON.stringify(body)});
+    var r=await fetch(_SUPA_URL+'/rest/v1/vibe_image_fetch_config?on_conflict=id',{method:'POST',headers:await _authedHeaders({'Content-Type':'application/json',Prefer:'resolution=merge-duplicates'}),body:JSON.stringify(body)});
     if(r.ok){ st.textContent='Saved & applied — re-fetch a vibe to see it.'; setTimeout(closeSettings,1500); }
     else { st.textContent='Applied for this session. DB save failed (run vibe_image_fetch_config.sql): HTTP '+r.status; }
   } catch(e){ st.textContent='Applied for this session. DB save error: '+e.message; }

@@ -459,6 +459,23 @@ const ADMIN_MODE = true;
 const EDITS_KEY  = 'dest_img_edits';
 const _H = { apikey:_SUPA_ANON, Authorization:'Bearer '+_SUPA_ANON };
 
+function waitForAuthedClient(){
+  return new Promise(function(resolve){
+    if (window.__wtSupabase) { resolve(window.__wtSupabase); return; }
+    document.addEventListener('wt-admin-ready', function once(){
+      document.removeEventListener('wt-admin-ready', once);
+      resolve(window.__wtSupabase);
+    });
+  });
+}
+async function _authedHeaders(extra){
+  var client = await waitForAuthedClient();
+  var sessRes = await client.auth.getSession();
+  var token = sessRes && sessRes.data && sessRes.data.session && sessRes.data.session.access_token;
+  if (!token) throw new Error('Not logged in (no active session) — refresh and log in again.');
+  return Object.assign({ apikey: _SUPA_ANON, Authorization: 'Bearer ' + token }, extra || {});
+}
+
 /* ── Fetch caps (defaults; overridden by the image_fetch_config table) ────── */
 var _SEED_MIN = 1;
 var _SEED_MAX = 5;
@@ -710,7 +727,7 @@ function renderGallery(images){
 async function _supaSave(destId, images){
   if(!_SUPA_URL||!_SUPA_ANON||!destId) return;
   try {
-    await fetch(_SUPA_URL+'/rest/v1/destination_image_edits?on_conflict=dest_id',{method:'POST',headers:{apikey:_SUPA_ANON,Authorization:'Bearer '+_SUPA_ANON,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates'},body:JSON.stringify({dest_id:destId,images:images})});
+    await fetch(_SUPA_URL+'/rest/v1/destination_image_edits?on_conflict=dest_id',{method:'POST',headers:await _authedHeaders({'Content-Type':'application/json',Prefer:'resolution=merge-duplicates'}),body:JSON.stringify({dest_id:destId,images:images})});
   } catch(e){ console.warn('[supaSave] failed:',e); }
 }
 function _heroAttribution(img){
@@ -726,7 +743,7 @@ async function _supaSyncHero(destId, images){
   var hero=images&&images[0];
   var body={ image_url:hero?(hero.url||hero.thumb||null):null, image_attribution:hero?_heroAttribution(hero):null };
   try {
-    await fetch(_SUPA_URL+'/rest/v1/destinations?id=eq.'+encodeURIComponent(destId),{method:'PATCH',headers:{apikey:_SUPA_ANON,Authorization:'Bearer '+_SUPA_ANON,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify(body)});
+    await fetch(_SUPA_URL+'/rest/v1/destinations?id=eq.'+encodeURIComponent(destId),{method:'PATCH',headers:await _authedHeaders({'Content-Type':'application/json',Prefer:'return=minimal'}),body:JSON.stringify(body)});
     var d=_destById(destId); if(d){ d.image_url=body.image_url; d.image_attribution=body.image_attribution; }
   } catch(e){ console.warn('[hero] sync failed:',e); }
 }
@@ -1045,9 +1062,8 @@ async function runCurateSub(){
     _cLog(d.city,imgs.length); _cSetBar(i+1,targets.length);
     if(currentDest&&currentDest.id===d.id) renderGallery(imgs);
   }
-  await _sendCurateEmail(currentRegion,currentSub,results);
   var tot=results.reduce(function(s,r){ return s+r.count; },0);
-  _cSetStatus('Done — '+tot+' images across '+targets.length+' destinations. Email sent.');
+  _cSetStatus('Done — '+tot+' images across '+targets.length+' destinations.');
   if(!document.getElementById('detail-view').classList.contains('hidden')&&currentDest) renderGallery(getEditedImages(currentDest.id));
   else showGrid();
   setTimeout(_cClose,3500); _cSetBtns(false); _curating=false;
@@ -1066,7 +1082,7 @@ async function _aiCurate(dest, candidates){
     max_keep:_CFG.max_images,
     images:candidates.map(function(im){ return { url:(im.thumb||im.url), alt:im.alt||'', source:im.source||'' }; })
   };
-  var r=await fetch(_SUPA_URL+'/functions/v1/curate-image',{method:'POST',headers:{'Content-Type':'application/json',apikey:_SUPA_ANON,Authorization:'Bearer '+_SUPA_ANON},body:JSON.stringify(payload)});
+  var r=await fetch(_SUPA_URL+'/functions/v1/curate-image',{method:'POST',headers:await _authedHeaders({'Content-Type':'application/json'}),body:JSON.stringify(payload)});
   if(!r.ok){ var t=''; try { t=await r.text(); } catch(e){} throw new Error('HTTP '+r.status+(t?': '+t.slice(0,140):'')); }
   var d=await r.json();
   if(!d||d.ok===false) throw new Error((d&&d.error)||'curation failed');
@@ -1171,37 +1187,11 @@ async function runAICurateSub(){
     _cSetBar(i+1,all.length);
     await _sSleep(_CFG.delay_ms);
   }
-  await _sendCurateEmail(currentRegion, currentSub, results, true);
   var tot=results.reduce(function(s,r){ return s+r.count; },0), drop=results.reduce(function(s,r){ return s+(r.dropped||0); },0);
-  _cSetStatus('Done — kept '+tot+', dropped '+drop+', across '+all.length+' destinations. Email sent.');
+  _cSetStatus('Done — kept '+tot+', dropped '+drop+', across '+all.length+' destinations.');
   if(!document.getElementById('detail-view').classList.contains('hidden')&&currentDest) renderGallery(getEditedImages(currentDest.id));
   else showGrid();
   setTimeout(_cClose,4200); _cSetBtns(false); _curating=false;
-}
-
-/* ── Summary email (bulk only) ───────────────────────────────────────────── */
-async function _sendCurateEmail(regionCode, subCode, results, isAI){
-  if(!_SUPA_URL||!_SUPA_ANON) return;
-  var region=regionCode, subregion=subCode;
-  var tag=isAI?'AI Curated':'Fetched';
-  var subject='Destination Images | '+tag+' | '+region+' | '+subregion+' — '+results.length+' destinations';
-  var total=results.reduce(function(s,r){ return s+r.count; },0);
-  var totDrop=results.reduce(function(s,r){ return s+(r.dropped||0); },0);
-  var thin=results.filter(function(r){ return r.count<_SEED_MIN||r.count===0; });
-  var extraHead=isAI?'<th style="padding:8px 12px">Pool</th><th style="padding:8px 12px">Dropped</th>':'';
-  var rowsHtml=results.map(function(r){ var bg=r.count>=3?'#d4edda':r.count>=1?'#fff3cd':'#f8d7da'; var extra=isAI?'<td style="padding:6px 12px;text-align:center;border-bottom:1px solid #eee">'+(r.pool||0)+'</td><td style="padding:6px 12px;text-align:center;border-bottom:1px solid #eee">'+(r.dropped||0)+'</td>':''; return '<tr style="background:'+bg+'"><td style="padding:6px 12px;border-bottom:1px solid #eee">'+esc(r.label)+'</td><td style="padding:6px 12px;text-align:center;border-bottom:1px solid #eee">'+r.count+'</td>'+extra+'<td style="padding:6px 12px;border-bottom:1px solid #eee;font-size:12px;color:#555">'+esc(r.sources)+'</td></tr>'; }).join('');
-  var curateRow=isAI?'<tr><td style="padding:6px 12px">Claude curation calls</td><td style="padding:6px 12px;text-align:center">'+_apiCalls.curate+'</td></tr>':'';
-  var usageHtml=curateRow+'<tr><td style="padding:6px 12px">Pexels</td><td style="padding:6px 12px;text-align:center">'+_apiCalls.pexels+' / 200 hr</td></tr><tr><td style="padding:6px 12px">Openverse</td><td style="padding:6px 12px;text-align:center">'+_apiCalls.openverse+'</td></tr><tr><td style="padding:6px 12px">Pixabay</td><td style="padding:6px 12px;text-align:center">'+_apiCalls.pixabay+' / 100 min</td></tr><tr><td style="padding:6px 12px">Wikipedia</td><td style="padding:6px 12px;text-align:center">'+_apiCalls.wikipedia+'</td></tr>';
-  var thinNote=thin.length?'<p style="background:#f8d7da;color:#721c24;padding:10px 14px;border-radius:6px">Under-filled: '+thin.map(function(r){ return esc(r.label)+' ('+r.count+')'; }).join(', ')+'</p>':'';
-  var dropNote=isAI?'<p style="color:#555;font-size:13px">Claude reviewed the fetched pool and dropped <strong>'+totDrop+'</strong> off-topic / text-logo / non-photo / portrait / low-quality images.</p>':'';
-  var html='<!DOCTYPE html><html><body style="font-family:sans-serif;max-width:660px;margin:0 auto;padding:24px;color:#1C3649">'
-    +'<h2 style="color:#B85C38;margin-top:0">'+esc(subregion)+' — '+(isAI?'AI-Curated ':'')+'Destination Images</h2>'
-    +'<p><strong>'+esc(region)+'</strong> &rsaquo; <strong>'+esc(subregion)+'</strong></p>'
-    +'<p><strong>'+total+'</strong> images kept across <strong>'+results.length+'</strong> destination'+(results.length!==1?'s':'')+'</p>'+dropNote+thinNote
-    +'<table style="border-collapse:collapse;width:100%;font-size:13px"><thead><tr style="background:#1C3649;color:#fff"><th style="padding:8px 12px;text-align:left">Destination</th><th style="padding:8px 12px">Kept</th>'+extraHead+'<th style="padding:8px 12px;text-align:left">Sources</th></tr></thead><tbody>'+rowsHtml+'</tbody></table>'
-    +'<h3 style="border-bottom:2px solid #B85C38;padding-bottom:6px;margin-top:24px">API Usage This Run</h3>'
-    +'<table style="border-collapse:collapse;width:100%;font-size:13px"><tbody>'+usageHtml+'</tbody></table></body></html>';
-  try { await fetch(_SUPA_URL+'/functions/v1/send-curation-email',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+_SUPA_ANON,apikey:_SUPA_ANON},body:JSON.stringify({to:'vfratto@vcinnovationsgroup.com',cc:'ccupero@vcinnovationsgroup.com',subject:subject,html:html})}); } catch(e){ console.warn('[email] failed:',e); }
 }
 
 /* ── Keyboard + nav ──────────────────────────────────────────────────────── */
@@ -1279,7 +1269,7 @@ async function settingsSave(){
   var st = document.getElementById('set-status'); st.textContent = 'Saving…';
   try {
     var body = { id:1, name:'custom', max_images:cfg.max_images, min_images:cfg.min_images, delay_ms:cfg.delay_ms, steps:cfg.steps, block_terms:cfg.block_terms, pexels_size:cfg.pexels_size, pixabay_category:cfg.pixabay_category, orientation:cfg.orientation, wiki_skip_portrait:cfg.wiki_skip_portrait, updated_at:new Date().toISOString() };
-    var r = await fetch(_SUPA_URL+'/rest/v1/image_fetch_config?on_conflict=id',{ method:'POST', headers:{ apikey:_SUPA_ANON, Authorization:'Bearer '+_SUPA_ANON, 'Content-Type':'application/json', Prefer:'resolution=merge-duplicates' }, body:JSON.stringify(body) });
+    var r = await fetch(_SUPA_URL+'/rest/v1/image_fetch_config?on_conflict=id',{ method:'POST', headers:await _authedHeaders({ 'Content-Type':'application/json', Prefer:'resolution=merge-duplicates' }), body:JSON.stringify(body) });
     if(r.ok){ st.textContent = 'Saved & applied — re-fetch a destination to see it.'; setTimeout(closeSettings, 1500); }
     else { st.textContent = 'Applied for this session. DB save failed (run image_fetch_config.sql once): HTTP '+r.status; }
   } catch(e){ st.textContent = 'Applied for this session. DB save error: '+e.message; }

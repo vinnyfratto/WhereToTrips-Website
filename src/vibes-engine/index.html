@@ -512,6 +512,23 @@ const _PEXELS_KEY    = '9VMHqzRbrRnjz9YFpmajdAThHvG69qsGxH3GSDrXuPQnEpbmMqhIW6TH
 const _PIXABAY_KEY   = '22813997-3cd8c57975999ca7b9b897b14';
 const _SUPA_URL      = 'https://pvqwxphrmcvmztlkzhsg.supabase.co';
 const _SUPA_ANON     = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2cXd4cGhybWN2bXp0bGt6aHNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzIxMjIsImV4cCI6MjA5NTMwODEyMn0.uz1WFZqymop5mhIUx6bxW8qofMQuGo-ltyRA8f0P1lk';
+
+function waitForAuthedClient(){
+  return new Promise(function(resolve){
+    if (window.__wtSupabase) { resolve(window.__wtSupabase); return; }
+    document.addEventListener('wt-admin-ready', function once(){
+      document.removeEventListener('wt-admin-ready', once);
+      resolve(window.__wtSupabase);
+    });
+  });
+}
+async function _authedHeaders(extra){
+  var client = await waitForAuthedClient();
+  var sessRes = await client.auth.getSession();
+  var token = sessRes && sessRes.data && sessRes.data.session && sessRes.data.session.access_token;
+  if (!token) throw new Error('Not logged in (no active session) — refresh and log in again.');
+  return Object.assign({ apikey: _SUPA_ANON, Authorization: 'Bearer ' + token }, extra || {});
+}
 const _OV_ID         = 'hRpg360HAjxAcvlvDJkdzUTQR8mzYkeDOsRGU2SZ';
 const _OV_SEC        = 'UBKgXjU8tDxOlPoGtayZ37EGf3cQVE94yhV3X96BSt84ZpFuzTcgTGTpgS0VwsimOZca2mqD11Jkzj6VoAyfrxR66acxfQnBSDA2WLUH27AAY6jM8ch39ZzIakFjOwmn';
 
@@ -706,7 +723,7 @@ async function settingsSave(){
   var cfg=_settingsCfg(); if(!cfg.steps.length){ document.getElementById('set-status').textContent='Add at least one step.'; return; }
   _CFG=cfg; var st=document.getElementById('set-status'); st.textContent='Saving...';
   try { var body={ id:1, name:'custom', max_images:cfg.max_images, min_images:cfg.min_images, delay_ms:cfg.delay_ms, steps:cfg.steps, block_terms:cfg.block_terms, pexels_size:cfg.pexels_size, pixabay_category:cfg.pixabay_category, orientation:cfg.orientation, wiki_skip_portrait:cfg.wiki_skip_portrait, updated_at:new Date().toISOString() };
-    var r=await fetch(_SUPA_URL+'/rest/v1/vibe_image_fetch_config?on_conflict=id',{method:'POST',headers:{apikey:_SUPA_ANON,Authorization:'Bearer '+_SUPA_ANON,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates'},body:JSON.stringify(body)});
+    var r=await fetch(_SUPA_URL+'/rest/v1/vibe_image_fetch_config?on_conflict=id',{method:'POST',headers:await _authedHeaders({'Content-Type':'application/json',Prefer:'resolution=merge-duplicates'}),body:JSON.stringify(body)});
     if(r.ok){ st.textContent='Saved & applied — re-fetch a vibe to see it.'; setTimeout(closeSettings,1500); }
     else { st.textContent='Applied for this session. DB save failed: HTTP '+r.status; }
   } catch(e){ st.textContent='Applied for this session. DB save error: '+e.message; }
@@ -871,35 +888,6 @@ function _cSetBtns(busy) {
   ['curate-all-btn','curate-vibe-btn'].forEach(function(id){ var b=document.getElementById(id); if(!b) return; b.disabled=busy; if(busy) b.classList.add('busy'); else b.classList.remove('busy'); });
 }
 
-// ── Curation email ──────────────────────────────────────────────────────────
-async function _sendCurateEmail(region, subregion, vibeName, results) {
-  var isSR=!vibeName;
-  var subject=(isSR?region+' | '+subregion:region+' | '+subregion+' | '+vibeName)+' Image Curation Results';
-  var total=results.reduce(function(s,r){return s+r.count;},0);
-  var thin=results.filter(function(r){return r.count<_SEED_MIN;});
-  var rowsHtml=results.map(function(r){
-    var bg=r.count>=6?'#d4edda':r.count>=_SEED_MIN?'#fff3cd':'#f8d7da';
-    return '<tr style="background:'+bg+'"><td style="padding:6px 12px;border-bottom:1px solid #eee">'+esc(r.label)+'</td><td style="padding:6px 12px;text-align:center;border-bottom:1px solid #eee">'+r.count+'</td><td style="padding:6px 12px;border-bottom:1px solid #eee;font-size:12px;color:#555">'+esc(r.sources)+'</td></tr>';
-  }).join('');
-  var usageHtml='<tr><td style="padding:6px 12px">Pexels</td><td style="padding:6px 12px;text-align:center">'+_apiCalls.pexels+' / 200 hr</td></tr><tr><td style="padding:6px 12px">Openverse</td><td style="padding:6px 12px;text-align:center">'+_apiCalls.openverse+' / 5,000 hr</td></tr><tr><td style="padding:6px 12px">Pixabay</td><td style="padding:6px 12px;text-align:center">'+_apiCalls.pixabay+' / 100 min</td></tr><tr><td style="padding:6px 12px">Wikipedia</td><td style="padding:6px 12px;text-align:center">'+_apiCalls.wikipedia+' (no limit)</td></tr>';
-  var thinNote=thin.length?'<p style="background:#f8d7da;color:#721c24;padding:10px 14px;border-radius:6px;margin:0"><strong>Under-filled ('+thin.length+'):</strong> '+thin.map(function(r){return esc(r.label)+' ('+r.count+')';}).join(', ')+' — add manually via Add Image tool.</p>':'';
-  var html='<!DOCTYPE html><html><body style="font-family:sans-serif;max-width:660px;margin:0 auto;padding:24px;color:#1C3649">'
-    +'<h2 style="color:#B85C38;margin-top:0">'+(isSR?subregion+' — Image Curation Complete':vibeName+' — '+subregion)+'</h2>'
-    +'<p><strong>'+esc(region)+'</strong> &rsaquo; <strong>'+esc(subregion)+'</strong>'+(vibeName?' &rsaquo; <strong>'+esc(vibeName)+'</strong>':'')+'</p>'
-    +'<p><strong>'+total+'</strong> images curated across <strong>'+results.length+'</strong> vibe'+(results.length!==1?'s':'')+'</p>'
-    +thinNote
-    +'<h3 style="border-bottom:2px solid #B85C38;padding-bottom:6px;margin-top:24px">Results per Vibe</h3>'
-    +'<table style="border-collapse:collapse;width:100%;font-size:13px"><thead><tr style="background:#1C3649;color:#fff"><th style="padding:8px 12px;text-align:left">Vibe</th><th style="padding:8px 12px">Images</th><th style="padding:8px 12px;text-align:left">Sources</th></tr></thead><tbody>'+rowsHtml+'</tbody></table>'
-    +'<h3 style="border-bottom:2px solid #B85C38;padding-bottom:6px;margin-top:28px">API Usage This Run</h3>'
-    +'<table style="border-collapse:collapse;width:100%;font-size:13px"><thead><tr style="background:#1C3649;color:#fff"><th style="padding:8px 12px;text-align:left">Source</th><th style="padding:8px 12px">Calls / Hourly Limit</th></tr></thead><tbody>'+usageHtml+'</tbody></table>'
-    +'<p style="color:#888;font-size:11px;margin-top:24px">Results in browser localStorage (ve_img_edits). Run CLI seed + rebuild to make permanent in the HTML.</p>'
-    +'</body></html>';
-  if(!_SUPA_URL||!_SUPA_ANON){console.warn('[curate] Supabase not configured — email skipped');return;}
-  try {
-    await fetch(_SUPA_URL+'/functions/v1/send-curation-email',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+_SUPA_ANON,'apikey':_SUPA_ANON},body:JSON.stringify({to:'vfratto@vcinnovationsgroup.com',cc:'ccupero@vcinnovationsgroup.com',subject:subject,html:html})});
-  } catch(e){console.warn('[curate] Email error:',e);}
-}
-
 // ── Supabase shared image storage ───────────────────────────────────────────
 // Saves curated images to Supabase so both editors see the same data.
 async function _supaSave(srKey, vibeKey, images) {
@@ -937,9 +925,7 @@ async function runCurateVibe() {
   var all=_loadEdits(); all[currentSR.key+'.'+v.key]=imgs; localStorage.setItem(EDITS_KEY,JSON.stringify(all));
   await _supaSave(currentSR.key,v.key,imgs);
   renderGallery(imgs); _cLog(v.label,imgs.length); _cSetBar(1,1);
-  var srcs=[...new Set(imgs.map(function(i){return i.source;}))].join(', ');
-  await _sendCurateEmail(currentSR.region,currentSR.subregion,v.label,[{label:v.label,count:imgs.length,sources:srcs}]);
-  _cSetStatus('Done — '+imgs.length+' images curated. Email sent to team.');
+  _cSetStatus('Done — '+imgs.length+' images curated.');
   setTimeout(_cClose,2500); _cSetBtns(false); _curating=false;
 }
 
@@ -961,9 +947,8 @@ async function runCurateSubRegion() {
     if(currentVibeKey===v.key) renderGallery(imgs);
   }
   localStorage.setItem(EDITS_KEY,JSON.stringify(allEdits));
-  await _sendCurateEmail(sr.region,sr.subregion,null,results);
   var tot=results.reduce(function(s,r){return s+r.count;},0);
-  _cSetStatus('Done — '+tot+' images across '+vibes.length+' vibes. Email sent to team.');
+  _cSetStatus('Done — '+tot+' images across '+vibes.length+' vibes.');
   setTimeout(_cClose,3500); _cSetBtns(false); _curating=false;
 }
 
