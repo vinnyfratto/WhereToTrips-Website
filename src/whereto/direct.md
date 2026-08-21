@@ -30,7 +30,7 @@ sections:
       pre: "Knowing the destination is step one, "
       accent: "not the whole trip"
       post: "."
-    lede: "Once you tell WhereTo where you're headed, the app still does the heavy lifting on everything after that: matching your budget against real costs, checking your dates and trip length against flight and hotel availability from your domestic departure airport, and moving you straight into booking pathways for air, hotel, and rental car."
+    lede: "Once you tell WhereTo where you're headed, the app still does the heavy lifting on everything after that: matching your budget against real costs, checking your dates and trip length against flight and hotel availability from your domestic departure airport, and moving you straight into booking pathways for air and hotel."
     image:
       src: "/media/vibes.jpg"
       alt: "A destination revealed by starting with possibility"

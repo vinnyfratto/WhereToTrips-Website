@@ -13,7 +13,7 @@ sections:
       - q: "What's the difference between the six modules?"
         a: "Discover, Explore, Chat, and Direct are all single-traveler modes — they differ only in how much you already know about your destination going in. Together and as a Group are the same underlying engine applied to two or more travelers at once, reconciling everyone's inputs instead of just one person's."
       - q: "Where does booking actually happen?"
-        a: "This website is informational. Every step of actually planning a trip — entering your inputs, getting recommendations, saving, comparing, voting as a group, and booking flights, hotels, and rental cars — happens inside the WhereTo app."
+        a: "This website is informational. Every step of actually planning a trip — entering your inputs, getting recommendations, saving, comparing, voting as a group, and booking flights and hotels — happens inside the WhereTo app."
       - q: "Are the prices I see real?"
         a: "The costs you see anywhere on the site or in early recommendations are estimates, always labeled as such. Live pricing and availability are confirmed by our booking partners at the time you book."
       - q: "Do I need an account?"

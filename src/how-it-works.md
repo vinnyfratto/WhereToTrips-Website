@@ -64,7 +64,7 @@ sections:
       - icon: "✈"
         label: "Flight access and practicality from your domestic departure airport"
       - icon: "🏨"
-        label: "Hotel and rental car availability"
+        label: "Hotel availability"
       - icon: "🗓"
         label: "Trip length fit"
       - icon: "☀"
@@ -96,5 +96,5 @@ sections:
       pre: "The website tells you. "
       accent: "The app"
       post: " takes you there."
-    body: "This site explains what WhereTo does. Actually starting a trip — entering your inputs, getting recommendations, saving and comparing destinations, voting as a group, and booking flights, hotels, and rental cars — all happens inside the WhereTo app. Cost estimates you see are always labeled as estimates; live pricing and the actual booking are handled by our booking partners, clearly identified every step of the way."
+    body: "This site explains what WhereTo does. Actually starting a trip — entering your inputs, getting recommendations, saving and comparing destinations, voting as a group, and booking flights and hotels — all happens inside the WhereTo app. Cost estimates you see are always labeled as estimates; live pricing and the actual booking are handled by our booking partners, clearly identified every step of the way."
 ---

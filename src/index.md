@@ -33,7 +33,7 @@ sections:
         title: You first
         text: You drive the details of the trip, not the other way around.
       - icon: compass
-        title: 800+ Vibes
+        title: 750+ Vibes
         text: We'll match your vibes to real destinations worldwide.
       - icon: plane
         title: All major airlines
@@ -99,7 +99,7 @@ sections:
         icon: map-point-favourite
         href: ''
       - label: Straight to booking
-        blurb: Once you find it, book flights, hotels, and a rental car right in the app.
+        blurb: Once you find it, book flights and hotels right in the app.
         icon: wallet-money
         href: ''
       - label: Group-proof
