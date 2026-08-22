@@ -281,6 +281,13 @@ function boot() {
     case 'reset':   initReset();   break;
     case 'profile': initProfile(); break;
     case 'account': initAccountIndex(); break;
+    // Loaded on demand — the booking pages carry the LiteAPI detail views and
+    // the airline tables, which no other page has any use for.
+    case 'bookings':
+      import('./wt-bookings.js')
+        .then((m) => m.initBookings(supabase))
+        .catch((e) => console.error('[wt-auth] bookings module failed to load:', e));
+      break;
   }
 }
 if (document.readyState === 'loading') {

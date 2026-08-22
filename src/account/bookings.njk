@@ -1,0 +1,49 @@
+---
+layout: layouts/account.njk
+title: "Your WhereTo bookings"
+description: "View the flights and hotels you booked with WhereTo."
+eleventyExcludeFromCollections: true
+acctWide: true
+---
+<div id="wt-gate" class="gate-msg">Loading your bookings…</div>
+
+<div id="wt-bookings" data-wt-page="bookings" style="display:none;"></div>
+
+{#
+  Solar icon sprite. The booking pages are rendered in JavaScript, which has no
+  access to the {% icon %} shortcode, so every glyph they need is rendered here
+  once and read out of the DOM by wt-booking-kit's ico(). Same icon set and
+  style the rest of the site and the app use — no hand-drawn stand-ins.
+#}
+<div id="bk-icons" hidden aria-hidden="true">
+  <span data-ico="plane">{% icon "plane" %}</span>
+  <span data-ico="buildings">{% icon "buildings" %}</span>
+  <span data-ico="danger-triangle">{% icon "danger-triangle" %}</span>
+  <span data-ico="alt-arrow-right">{% icon "alt-arrow-right" %}</span>
+  <span data-ico="calendar">{% icon "calendar" %}</span>
+  <span data-ico="calendar-mark">{% icon "calendar-mark" %}</span>
+  <span data-ico="moon">{% icon "moon" %}</span>
+  <span data-ico="user">{% icon "user" %}</span>
+  <span data-ico="user-id">{% icon "user-id" %}</span>
+  <span data-ico="bed">{% icon "bed" %}</span>
+  <span data-ico="chef-hat">{% icon "chef-hat" %}</span>
+  <span data-ico="shield-check">{% icon "shield-check" %}</span>
+  <span data-ico="info-circle">{% icon "info-circle" %}</span>
+  <span data-ico="forbidden-circle">{% icon "forbidden-circle" %}</span>
+  <span data-ico="map-point">{% icon "map-point" %}</span>
+  <span data-ico="phone">{% icon "phone" %}</span>
+  <span data-ico="letter">{% icon "letter" %}</span>
+  <span data-ico="ticket">{% icon "ticket" %}</span>
+  <span data-ico="check-circle">{% icon "check-circle" %}</span>
+  <span data-ico="wi-fi-router-round">{% icon "wi-fi-router-round" %}</span>
+  <span data-ico="swimming">{% icon "swimming" %}</span>
+  <span data-ico="dumbbell">{% icon "dumbbell" %}</span>
+  <span data-ico="wineglass">{% icon "wineglass" %}</span>
+  <span data-ico="snowflake">{% icon "snowflake" %}</span>
+  <span data-ico="washing-machine">{% icon "washing-machine" %}</span>
+  <span data-ico="tv">{% icon "tv" %}</span>
+  <span data-ico="bath">{% icon "bath" %}</span>
+  <span data-ico="accessibility">{% icon "accessibility" %}</span>
+  <span data-ico="sun">{% icon "sun" %}</span>
+  <span data-ico="safe-square">{% icon "safe-square" %}</span>
+</div>

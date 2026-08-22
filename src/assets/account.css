@@ -340,3 +340,275 @@
   border-radius: 50%; animation: wt-spin 0.7s linear infinite;
 }
 @keyframes wt-spin { to { transform: rotate(360deg); } }
+
+/* ── My Bookings (/account/bookings/) ─────────────────────────────
+   The app's booking list and detail page, in the site's own tokens.
+   Two rules carried over from the app deliberately: no pagination dots on
+   any photo strip, and no per-item boxing inside a detail page — one open
+   surface with hairline dividers instead of a card per fact.
+────────────────────────────────────────────────────────────────── */
+
+#wt-bookings .ico { width: 1em; height: 1em; display: block; }
+
+.bk-list-head {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 16px; flex-wrap: wrap; margin-bottom: 6px;
+}
+.bk-list-head h1 {
+  font-family: var(--serif); color: var(--navy);
+  font-size: clamp(1.8rem, 4vw, 2.4rem); line-height: 1.1; margin: 0;
+}
+.bk-list-head .btn { width: auto; margin: 0; }
+.bk-count {
+  font-size: 0.82rem; color: var(--wg500); margin: 0 0 20px;
+  text-transform: lowercase;
+}
+
+.bk-list { display: flex; flex-direction: column; gap: 16px; }
+
+.bk-card {
+  display: block; overflow: hidden; text-decoration: none;
+  background: var(--card); border: 1px solid var(--wg200);
+  border-radius: var(--radius-lg); box-shadow: var(--shadow-sm);
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+.bk-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--rust); }
+
+/* Photo strip — crossfade, never dots. */
+.bk-photo { position: relative; height: 168px; background: var(--wg100); }
+.bk-carousel { position: absolute; inset: 0; overflow: hidden; }
+.bk-carousel-img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; opacity: 0; transition: opacity 1.1s ease;
+}
+.bk-carousel-img.is-on { opacity: 1; }
+.bk-photo-empty {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-size: 30px; color: var(--wg300);
+}
+.bk-trip-badge {
+  position: absolute; top: 12px; right: 12px; display: flex; gap: 5px;
+  background: rgba(49,49,49,0.72); color: #fff; border-radius: 999px;
+  padding: 6px 10px; font-size: 12px;
+}
+
+.bk-card-body { padding: 20px 22px; }
+
+.bk-status {
+  display: flex; align-items: center; gap: 6px; margin: 0 0 8px;
+  font-family: var(--sans); font-weight: 700; font-size: 0.6rem; letter-spacing: 1.1px;
+}
+.bk-status-dot { width: 7px; height: 7px; border-radius: 50%; flex: 0 0 auto; }
+
+.bk-card-title {
+  font-family: var(--serif); color: var(--navy);
+  font-size: 1.35rem; line-height: 1.25; margin: 0;
+}
+.bk-card-sub { color: var(--wg600); font-size: 0.92rem; margin: 2px 0 0; }
+.bk-card-when { color: var(--wg600); font-size: 0.92rem; margin: 4px 0 16px; }
+
+.bk-card-footer {
+  display: flex; justify-content: space-between; align-items: flex-end; gap: 16px;
+  border-top: 1px solid var(--wg200); padding-top: 14px;
+}
+.bk-card-footer-left { min-width: 0; }
+.bk-card-footer-right { text-align: right; flex: 0 0 auto; }
+.bk-ref-label, .bk-stat-label {
+  font-family: var(--sans); font-weight: 600; font-size: 0.58rem;
+  letter-spacing: 1.1px; color: var(--wg500); margin: 0 0 3px; text-transform: uppercase;
+}
+/* Never truncated — a reference you can only half-read is worse than one
+   that wraps. */
+.bk-ref-value {
+  font-family: var(--sans); font-weight: 600; font-size: 0.9rem; letter-spacing: 0.6px;
+  color: var(--navy); margin: 0; overflow-wrap: anywhere;
+}
+.bk-amount { font-family: var(--serif); font-size: 1.35rem; color: var(--navy); margin: 0; }
+.bk-card-meta { font-size: 0.78rem; color: var(--wg500); margin: 2px 0 0; }
+
+/* Flight card */
+.bk-airline-row { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+.bk-airline-logo {
+  width: 44px; height: 44px; border-radius: var(--radius-sm); flex: 0 0 auto;
+  background: var(--wg100); object-fit: contain;
+}
+.bk-airline-logo--empty { display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--wg400); }
+.bk-airline-name {
+  font-family: var(--serif); color: var(--navy); font-size: 1.2rem;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.bk-route { display: flex; align-items: center; gap: 14px; }
+.bk-iata { font-family: var(--serif); color: var(--navy); font-size: 1.75rem; line-height: 1; }
+.bk-route-line { flex: 1; display: flex; align-items: center; gap: 6px; }
+.bk-route-rule { flex: 1; height: 1px; background: var(--wg200); }
+.bk-route-plane { color: var(--rust); font-size: 15px; display: block; }
+
+.bk-trip-flight {
+  display: flex; align-items: center; gap: 10px; margin: 0 0 16px;
+  color: var(--wg600); font-size: 0.9rem;
+}
+.bk-trip-logo {
+  width: 22px; height: 22px; border-radius: var(--radius-sm); flex: 0 0 auto;
+  background: var(--wg100); object-fit: contain;
+}
+.bk-trip-logo--empty { display: flex; align-items: center; justify-content: center; font-size: 14px; color: var(--wg400); }
+
+/* Empty / error state */
+.bk-empty { text-align: center; padding: 60px 20px; }
+.bk-empty-icon { display: block; font-size: 46px; color: var(--wg300); margin: 0 auto 18px; width: 46px; }
+.bk-empty h1 { font-family: var(--serif); color: var(--navy); font-size: 1.6rem; margin: 0 0 10px; }
+.bk-empty p { color: var(--wg600); margin: 0 auto 22px; max-width: 34em; line-height: 1.55; }
+.bk-empty .btn { width: auto; display: inline-flex; }
+
+/* ── Detail ──────────────────────────────────────────────────────── */
+
+.bk-back {
+  display: inline-flex; align-items: center; gap: 8px;
+  color: var(--rust); font-weight: 600; font-size: 0.9rem;
+  text-decoration: none; margin-bottom: 18px;
+}
+.bk-back .ico { transform: rotate(180deg); }
+
+.bk-hero {
+  position: relative; height: 300px; border-radius: var(--radius-lg);
+  overflow: hidden; background: var(--wg100);
+}
+.bk-hero--empty { display: flex; align-items: center; justify-content: center; }
+.bk-hero-icon { font-size: 48px; color: var(--wg400); }
+.bk-hero-carousel { position: absolute; inset: 0; }
+
+.bk-hero-info { padding: 22px 2px 0; }
+.bk-hero-overline {
+  font-family: var(--sans); font-weight: 700; font-size: 0.66rem; letter-spacing: 1.4px;
+  color: var(--rust); margin: 0 0 8px;
+}
+.bk-hero-name {
+  font-family: var(--serif); color: var(--navy);
+  font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.1; margin: 0;
+}
+.bk-hero-meta { color: var(--wg600); font-size: 0.95rem; margin: 8px 0 0; }
+
+.bk-body-wrap { padding-top: 8px; }
+.bk-divider { border: 0; border-top: 1px solid var(--wg200); margin: 26px 0; }
+
+.bk-section { margin: 0; }
+.bk-section-title {
+  font-family: var(--sans); font-weight: 700; font-size: 0.8rem;
+  letter-spacing: 1px; text-transform: uppercase; color: var(--navy); margin: 0 0 14px;
+}
+.bk-trip-head {
+  font-family: var(--sans); font-weight: 700; font-size: 0.9rem;
+  letter-spacing: 1.2px; text-transform: uppercase; color: var(--rust); margin: 0 0 4px;
+}
+
+/* One open surface, hairline-divided — no card per fact. */
+.bk-info {
+  display: flex; align-items: flex-start; gap: 12px; padding: 12px 0;
+  border-bottom: 1px solid var(--wg200);
+}
+.bk-info:last-child { border-bottom: 0; }
+.bk-info-icon {
+  width: 30px; height: 30px; border-radius: var(--radius-sm); flex: 0 0 auto;
+  background: rgba(49,49,49,0.06); color: var(--navy);
+  display: flex; align-items: center; justify-content: center; font-size: 15px;
+}
+.bk-info-text { display: block; min-width: 0; }
+.bk-info-title { display: block; font-weight: 600; color: var(--navy); font-size: 0.95rem; }
+.bk-info-body { display: block; color: var(--wg600); font-size: 0.85rem; line-height: 1.5; margin-top: 2px; }
+
+.bk-traveller-photo, .bk-traveller-avatar {
+  width: 30px; height: 30px; border-radius: 50%; flex: 0 0 auto; object-fit: cover;
+}
+.bk-traveller-avatar {
+  background: rgba(49,49,49,0.06); color: var(--navy);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem; font-weight: 700;
+}
+
+.bk-kv-block { margin: 0; }
+.bk-kv { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 7px 0; }
+.bk-kv-label { color: var(--wg600); font-size: 0.85rem; flex: 0 0 auto; }
+.bk-kv-value { color: var(--navy); font-size: 0.88rem; font-weight: 500; text-align: right; overflow-wrap: anywhere; }
+.bk-kv-value.is-strong { color: var(--amber); font-weight: 700; font-size: 0.95rem; }
+
+.bk-confirm { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+.bk-confirm > div:first-child { flex: 1; min-width: 0; }
+.bk-confirm-code {
+  font-family: var(--sans); font-weight: 600; font-size: 1.3rem; letter-spacing: 2px;
+  color: var(--navy); margin: 0; overflow-wrap: anywhere;
+}
+.bk-status-pill {
+  flex: 0 0 auto; border-radius: 999px; padding: 5px 13px; color: #fff;
+  font-family: var(--sans); font-weight: 700; font-size: 0.6rem; letter-spacing: 1.4px;
+}
+.bk-total { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
+.bk-total-right { text-align: right; }
+.bk-total-value { font-family: var(--serif); font-size: 2rem; line-height: 1.1; color: var(--amber); margin: 0; }
+.bk-total-meta { font-family: var(--serif); font-size: 1.3rem; color: var(--navy); margin: 0; }
+
+.bk-contact-block { display: flex; flex-direction: column; gap: 2px; }
+.bk-contact {
+  display: flex; align-items: center; gap: 12px; padding: 11px 0;
+  color: var(--navy); text-decoration: none; font-size: 0.95rem; overflow-wrap: anywhere;
+}
+.bk-contact:hover { color: var(--rust); }
+.bk-contact-icon { color: var(--rust); font-size: 20px; flex: 0 0 auto; display: block; }
+
+.bk-room-photo {
+  width: 100%; height: 200px; object-fit: cover;
+  border-radius: var(--radius-md); margin-bottom: 14px; display: block;
+}
+
+.bk-amenities { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 16px; }
+@media (max-width: 520px) { .bk-amenities { grid-template-columns: 1fr; } }
+.bk-amenity { display: flex; align-items: center; gap: 9px; color: var(--wg600); font-size: 0.88rem; }
+.bk-amenity-icon { color: var(--navy); font-size: 15px; flex: 0 0 auto; display: block; }
+.bk-amenity-rest { display: contents; }
+.bk-link-btn {
+  background: none; border: 0; padding: 12px 0 0; cursor: pointer;
+  color: var(--rust); font-family: var(--sans); font-weight: 600; font-size: 0.88rem;
+}
+
+.bk-body { color: var(--wg600); font-size: 0.92rem; line-height: 1.6; margin: 0 0 14px; }
+.bk-checkin-btn { width: auto; display: inline-flex; margin: 0; }
+.bk-disclaimer { color: var(--wg500); font-size: 0.78rem; line-height: 1.65; margin: 0; }
+
+/* Flat fact strip (depart / return when there is no stored journey) */
+.bk-strip { display: flex; align-items: stretch; }
+.bk-strip-col { flex: 1; }
+.bk-strip-div { width: 1px; background: var(--wg200); margin: 0 16px; }
+.bk-stat-value { font-family: var(--serif); font-size: 1.05rem; color: var(--navy); margin: 0; }
+
+/* Itinerary */
+.bk-slice { margin-bottom: 22px; }
+.bk-slice:last-child { margin-bottom: 0; }
+.bk-slice-head {
+  display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+  border-bottom: 1px solid var(--wg200); padding-bottom: 12px; margin-bottom: 16px;
+}
+.bk-slice-label {
+  font-family: var(--sans); font-weight: 700; font-size: 0.66rem; letter-spacing: 1.2px; color: var(--rust);
+}
+.bk-slice-route { font-family: var(--serif); font-size: 1.05rem; color: var(--navy); }
+.bk-slice-date { margin-left: auto; font-size: 0.8rem; color: var(--wg500); }
+
+.bk-seg { margin-bottom: 4px; }
+.bk-seg-carrier { display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px; }
+.bk-seg-carrier-name { font-weight: 600; color: var(--navy); font-size: 0.9rem; }
+.bk-seg-flightnum { font-size: 0.78rem; color: var(--wg500); letter-spacing: 0.5px; }
+.bk-seg-leg { display: flex; align-items: center; gap: 14px; }
+.bk-seg-end { flex: 0 1 auto; min-width: 0; }
+.bk-seg-end--right { text-align: right; }
+.bk-seg-time { font-family: var(--serif); font-size: 1.15rem; color: var(--navy); margin: 0; }
+.bk-seg-iata { font-weight: 600; font-size: 0.85rem; color: var(--navy); margin: 2px 0 0; letter-spacing: 0.5px; }
+.bk-seg-city { font-size: 0.76rem; color: var(--wg500); margin: 1px 0 0; overflow-wrap: anywhere; }
+.bk-seg-bar { flex: 1; display: flex; align-items: center; gap: 8px; }
+.bk-seg-rule { flex: 1; height: 1px; background: var(--wg200); }
+.bk-seg-dur { font-size: 0.72rem; color: var(--wg500); white-space: nowrap; }
+
+.bk-layover { display: flex; align-items: center; gap: 10px; margin: 14px 0; }
+.bk-layover-rule { flex: 1; height: 1px; background: var(--wg200); }
+.bk-layover-text {
+  font-family: var(--sans); font-weight: 600; font-size: 0.62rem;
+  letter-spacing: 1px; color: var(--wg500); white-space: nowrap;
+}
