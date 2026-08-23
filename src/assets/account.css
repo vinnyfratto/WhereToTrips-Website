@@ -645,6 +645,11 @@
 ────────────────────────────────────────────────────────────────── */
 .acct--bare { padding: 0 0 80px; }
 .acct--bare .alert { margin: 16px 20px 0; }
+/* The hub puts the page gutter on .ph-menu / .ph-panel so the photo header can
+   bleed to both edges. A section rendered as a direct child instead (the
+   partner portal's stacked view) would otherwise sit edge-to-edge, so it
+   carries its own. */
+.acct--bare > #wt-profile > #wt-profile-body > .pv-sec { padding-inline: 20px; }
 
 .ph { --ph-gutter: 20px; }
 

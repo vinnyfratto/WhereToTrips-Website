@@ -67,6 +67,35 @@ module.exports = function (eleventyConfig) {
     });
   });
 
+  // ── Cache-busting for ES module imports ────────────────────────────────────
+  // Every page loads its entry module as `wt-x.js?v={{ buildTime }}`, but a
+  // static `import './wt-y.js'` inside that module carries no version — so a
+  // returning visitor could get a NEW entry module chained to a STALE one that
+  // the browser (or the CDN's 10-minute cache) still held. That mismatch is
+  // invisible until something quietly renders half-wrong.
+  //
+  // So every relative import in the copied JS gets the same build stamp. The
+  // assets are passed through verbatim, which means this has to happen after
+  // the copy rather than as a template transform.
+  const fs = require("fs");
+  const pathMod = require("path");
+  eleventyConfig.on("eleventy.after", ({ dir }) => {
+    const v = require("./src/_data/buildTime.js")();
+    const jsDir = pathMod.join(dir.output, "assets", "js");
+    if (!fs.existsSync(jsDir)) return;
+    // `from './x.js'` and `import('./x.js')`, only when not already stamped.
+    const RE = /((?:from|import\()\s*["'])(\.\.?\/[^"'?]+\.js)(["'])/g;
+    let touched = 0;
+    for (const name of fs.readdirSync(jsDir)) {
+      if (!name.endsWith(".js")) continue;
+      const file = pathMod.join(jsDir, name);
+      const src = fs.readFileSync(file, "utf8");
+      const out = src.replace(RE, (_m, a, spec, b) => `${a}${spec}?v=${v}${b}`);
+      if (out !== src) { fs.writeFileSync(file, out); touched++; }
+    }
+    if (touched) console.log(`[11ty] stamped module imports in ${touched} JS file(s) with v=${v}`);
+  });
+
   // Hub collections, sorted by an `order` front-matter field.
   const byOrder = (a, b) => (a.data.order || 0) - (b.data.order || 0);
   eleventyConfig.addCollection("vibe", (c) => c.getFilteredByTag("vibe").sort(byOrder));
