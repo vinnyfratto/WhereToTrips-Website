@@ -852,6 +852,14 @@
 }
 .pv-list li:last-child { border-bottom: 0; }
 .pv-list-name { font-weight: 600; color: var(--navy); font-size: 0.98rem; }
+
+/* People read bigger than a line item — a bigger face, more room around it,
+   and their name at the size a name deserves. There is plenty of width here. */
+.pv-list--people li { gap: 16px; padding: 18px 0; }
+.pv-list--people .pv-avatar { width: 48px; height: 48px; }
+.pv-list--people .pv-avatar--initials { font-size: 1rem; }
+.pv-list--people .pv-list-name { font-size: 1.12rem; }
+.pv-list--people .pv-list-meta { font-size: 0.88rem; }
 .pv-list-meta { margin-left: auto; font-size: 0.85rem; color: var(--wg600); text-align: right; overflow-wrap: anywhere; }
 
 /* Edit view */

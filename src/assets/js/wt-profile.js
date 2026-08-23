@@ -215,7 +215,7 @@ function readLoyaltyEditor(listEl) {
  *  src/utils/selfTraveller.ts), so storing a second copy here would start
  *  drifting the first time either was edited. */
 function travellerCard(t, open) {
-  const name = [t.given_name, t.family_name].filter(Boolean).join(' ') || 'New traveller';
+  const name = [t.given_name, t.family_name].filter(Boolean).join(' ') || 'New traveler';
   const sub = [t.document_number ? 'Doc ' + t.document_number : '', fmtDate(t.born_on)].filter(Boolean).join(' · ');
   const opts = (list, sel) => list.map((o) =>
     '<option value="' + o.value + '"' + (sel === o.value ? ' selected' : '') + '>' + esc(o.label) + '</option>').join('');
@@ -247,7 +247,7 @@ function travellerCard(t, open) {
           '<input data-f="profile_photo" type="url" value="' + esc(t.profile_photo || '') + '" /></div>') +
       '<h3 class="trav-sub-head">Loyalty programs</h3>' +
       loyaltyEditor(readLoyaltyPrograms(t)) +
-      '<p class="trav-actions"><button type="button" class="btn btn-ghost btn-xs" data-remove-trav>Remove this traveller</button></p>' +
+      '<p class="trav-actions"><button type="button" class="btn btn-ghost btn-xs" data-remove-trav>Remove this traveler</button></p>' +
     '</div></details>';
 }
 
@@ -502,29 +502,35 @@ const SECTIONS = {
   },
 
   travellers: {
-    title: 'Saved travellers',
+    title: 'Saved Travelers',
     blurb: 'The people you book for. You are already one of them — your own details come from this profile, ' +
       'so there is nothing to add for yourself.',
     read: (p) => {
       const list = Array.isArray(p.saved_passengers) ? p.saved_passengers : [];
-      if (!list.length) return emptyNote('No travellers saved yet.');
-      return '<ul class="pv-list">' + list.map((t) => {
-        const name = [t.given_name, t.middle_name, t.family_name].filter(Boolean).join(' ');
-        const meta = [labelOf(DOC_TYPES, t.document_type) + (t.document_number ? ' ' + t.document_number : ''),
-          fmtDate(t.born_on)].filter((s) => s && s.trim()).join(' · ');
-        return '<li>' +
-          (t.profile_photo
-            ? '<img class="pv-avatar pv-avatar--sm" src="' + esc(t.profile_photo) + '" alt="" />'
-            : '<span class="pv-avatar pv-avatar--sm pv-avatar--initials">' +
-              esc(initials(t.given_name, t.family_name)) + '</span>') +
-          '<span class="pv-list-name">' + esc(name) + '</span>' +
-          '<span class="pv-list-meta">' + esc(meta) + '</span></li>';
-      }).join('') + '</ul>';
+      // Passport numbers are deliberately NOT here. This list exists to say who
+      // you can book for; a document number is only needed inside the form that
+      // edits it, and a screen anyone can glance at is the wrong place for one.
+      const rows = list.length
+        ? '<ul class="pv-list pv-list--people">' + list.map((t) => {
+            const name = [t.given_name, t.middle_name, t.family_name].filter(Boolean).join(' ');
+            return '<li>' +
+              (t.profile_photo
+                ? '<img class="pv-avatar" src="' + esc(t.profile_photo) + '" alt="" />'
+                : '<span class="pv-avatar pv-avatar--initials">' +
+                  esc(initials(t.given_name, t.family_name)) + '</span>') +
+              '<span class="pv-list-name">' + esc(name) + '</span>' +
+              (t.born_on ? '<span class="pv-list-meta">' + esc(fmtDate(t.born_on)) + '</span>' : '') +
+              '</li>';
+          }).join('') + '</ul>'
+        : emptyNote('No travelers saved yet.');
+      // Adding someone is the point of this screen, so the way to do it is here
+      // rather than one Edit away.
+      return rows + '<button type="button" class="pv-link-btn" data-add-trav-new>+ Add Traveler</button>';
     },
     edit: (p) => {
       const list = Array.isArray(p.saved_passengers) ? p.saved_passengers : [];
       return '<div class="trav-list" data-trav-list>' + list.map((t) => travellerCard(t, false)).join('') + '</div>' +
-        '<button type="button" class="pv-link-btn" data-add-trav>+ Add a traveller</button>';
+        '<button type="button" class="pv-link-btn" data-add-trav>+ Add Traveler</button>';
     },
     collect: (v, scope) => ({ saved_passengers: readTravellers(scope.querySelector('[data-trav-list]')) }),
   },
@@ -884,6 +890,14 @@ export async function initProfileForm(supabase, user, opts = {}) {
     });
   }
 
+  /** Appends an empty traveller card, open and scrolled to. */
+  function addBlankTraveller() {
+    const list = mount.querySelector('[data-trav-list]');
+    if (!list) return;
+    list.insertAdjacentHTML('beforeend', travellerCard({ id: uid(), title: 'mr' }, true));
+    list.lastElementChild.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
+
   // ── Clicks: navigation, per-section edit, and the repeatable rows ──
   mount.addEventListener('click', (e) => {
     const open = e.target.closest('[data-open]');
@@ -905,12 +919,15 @@ export async function initProfileForm(supabase, user, opts = {}) {
     const rmLoy = e.target.closest('[data-remove-loy]');
     if (rmLoy) { rmLoy.closest('[data-loy]').remove(); return; }
 
-    if (e.target.closest('[data-add-trav]')) {
-      const list = mount.querySelector('[data-trav-list]');
-      list.insertAdjacentHTML('beforeend', travellerCard({ id: uid(), title: 'mr' }, true));
-      list.lastElementChild.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    // Add from the READ view: open the editor first, then drop the new card in.
+    if (e.target.closest('[data-add-trav-new]')) {
+      editing.add('travellers');
+      hideAlert(alertId);
+      repaintSection('travellers');
+      addBlankTraveller();
       return;
     }
+    if (e.target.closest('[data-add-trav]')) { addBlankTraveller(); return; }
     const rmTrav = e.target.closest('[data-remove-trav]');
     if (rmTrav) { rmTrav.closest('[data-trav]').remove(); return; }
 
@@ -955,7 +972,7 @@ export async function initProfileForm(supabase, user, opts = {}) {
     if (!card) return;
     const v = readScope(card.querySelector('.trav-body'), '[data-loy]');
     const nameEl = card.querySelector('.trav-name');
-    if (nameEl) nameEl.textContent = [v.given_name, v.family_name].filter(Boolean).join(' ') || 'New traveller';
+    if (nameEl) nameEl.textContent = [v.given_name, v.family_name].filter(Boolean).join(' ') || 'New traveler';
   });
 
   // ── Save one section ──
