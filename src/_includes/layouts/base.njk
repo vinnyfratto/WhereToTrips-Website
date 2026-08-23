@@ -149,7 +149,12 @@
   var io = new IntersectionObserver(function (entries) {
     entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
   }, { threshold: 0.1, rootMargin: '0px 0px -32px 0px' });
-  document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+  // A block taller than the viewport can never reach the 0.1 threshold, so it
+  // would sit at opacity 0 forever. Legal pages hit this. Show those outright.
+  document.querySelectorAll('.reveal').forEach(function (el) {
+    if (el.getBoundingClientRect().height > window.innerHeight * 0.9) { el.classList.add('in'); return; }
+    io.observe(el);
+  });
 
   // Header: subtle shadow once the page is scrolled (template behavior).
   (function () {
