@@ -249,7 +249,11 @@ export async function initBookings(supabase) {
 
   const { data: sess } = await supabase.auth.getSession();
   if (!sess.session) {
-    window.location.href = '/account/login/?next=' + encodeURIComponent('/account/bookings/');
+    // Keep ?id= across the sign-in hop. Confirmation emails link straight to one
+    // booking, and most people opening that link are not signed in yet — sending
+    // them to the bare list afterwards loses the thing they clicked.
+    const back = window.location.pathname + window.location.search;
+    window.location.href = '/account/login/?next=' + encodeURIComponent(back);
     return;
   }
   const user = sess.session.user;
