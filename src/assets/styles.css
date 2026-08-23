@@ -187,9 +187,18 @@ header.menu-open .nav-toggle span:nth-child(3) { transform: translateY(-7px) rot
 }
 .mobile-menu .mobile-sub { color: var(--wg600); font-weight: 400; }
 .mobile-menu .mobile-cta {
-  margin-top: 20px; padding: 15px 30px; border-bottom: 0;
+  padding: 15px 30px; border-bottom: 0;
   color: var(--cream); justify-content: center;
 }
+/* Account and the main CTA head the panel rather than tailing it — the
+   signed-in reader's own account should not be the last thing in a list they
+   have to scroll past everything else to reach. */
+.mobile-menu-top {
+  display: flex; flex-direction: column; gap: 10px;
+  padding: 18px 0 6px; border-bottom: 1px solid var(--wg200);
+}
+.mobile-menu-top .btn { width: 100%; margin: 0; }
+
 
 /* ── Hero ─────────────────────────────── */
 .hero {
@@ -811,10 +820,22 @@ footer { background: var(--footer); padding: 72px 0 40px; }
 
   .slide-subtitle { order: 3; padding: 20px 24px 0; }
   .btns { order: 4; padding: 22px 24px 8px; }
+  /* Page is frozen while the menu is open (see base.njk). Scoped to the
+     breakpoint on purpose: above it the menu cannot be open, so the lock can
+     never strand a wide viewport with no visible way to release it. */
+  body.menu-locked { overflow: hidden; }
   header.menu-open .mobile-menu {
     display: flex; flex-direction: column;
     padding: 4px 24px 26px; background: var(--cream);
     border-top: 1px solid var(--wg200);
+    /* The panel scrolls itself. Without this a menu taller than the viewport
+       hangs off the bottom of a sticky header with no way to reach its last
+       items — scrolling just moved the page behind it. dvh so mobile browser
+       chrome appearing does not cut the bottom off. */
+    max-height: calc(100vh - 84px);
+    max-height: calc(100dvh - 84px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
   .foot-links { gap: 28px; }
   .foot-top { grid-template-columns: 1fr; gap: 32px; }

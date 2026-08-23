@@ -37,6 +37,10 @@
     </button>
   </div>
   <div class="mobile-menu" id="mobile-menu">
+    <div class="mobile-menu-top">
+      <a class="btn btn-ghost mobile-cta" href="/account/login/" data-wt-account>Log In</a>
+      <a class="btn btn-primary mobile-cta" href="{{ navCta.href }}">{{ navCta.label }}</a>
+    </div>
     {%- for link in site.nav %}
     {%- if link.children %}
     <span class="mobile-menu-label">{{ link.label }}</span>
@@ -51,7 +55,5 @@
     {%- for link in site.partnerNav %}
     <a class="mobile-sub" href="{{ link.href }}">{{ link.label }}</a>
     {%- endfor %}
-    <a class="btn btn-ghost mobile-cta" href="/account/login/" data-wt-account>Log In</a>
-    <a class="btn btn-primary mobile-cta" href="{{ navCta.href }}">{{ navCta.label }}</a>
   </div>
 </header>

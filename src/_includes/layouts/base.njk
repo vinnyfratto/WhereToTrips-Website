@@ -120,17 +120,28 @@
   var navToggle = document.querySelector('.nav-toggle');
   var headerEl = document.querySelector('header');
   if (navToggle && headerEl) {
-    navToggle.addEventListener('click', function () {
-      var open = headerEl.classList.toggle('menu-open');
+    // The panel scrolls itself (see .mobile-menu). The page behind it is
+    // frozen while it is open, or a taller menu than the viewport leaves the
+    // reader scrolling the page underneath and never reaching the last items.
+    function setMenu(open) {
+      headerEl.classList.toggle('menu-open', open);
+      document.body.classList.toggle('menu-locked', open);
       navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
       navToggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    }
+    navToggle.addEventListener('click', function () {
+      setMenu(!headerEl.classList.contains('menu-open'));
     });
     headerEl.querySelectorAll('.mobile-menu a').forEach(function (a) {
-      a.addEventListener('click', function () {
-        headerEl.classList.remove('menu-open');
-        navToggle.setAttribute('aria-expanded', 'false');
-        navToggle.setAttribute('aria-label', 'Open menu');
-      });
+      a.addEventListener('click', function () { setMenu(false); });
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && headerEl.classList.contains('menu-open')) setMenu(false);
+    });
+    // Widening past the breakpoint hides the toggle; without this the body
+    // would stay locked with no visible way to unlock it.
+    window.addEventListener('resize', function () {
+      if (window.innerWidth > 720 && headerEl.classList.contains('menu-open')) setMenu(false);
     });
   }
 
