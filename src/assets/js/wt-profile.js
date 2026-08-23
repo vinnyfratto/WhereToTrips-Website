@@ -8,7 +8,7 @@
 //  only when asked, and a save writes only the columns that section owns.
 //
 //  On a phone the hub and a section are never both on screen. Wide screens
-//  keep the same pieces with the menu beside the section, and open My
+//  keep the same pieces with the menu beside the section, and open
 //  Profile by default rather than landing on an empty panel.
 //
 //  Used by both /account/profile/ (wt-auth.js) and
@@ -480,6 +480,27 @@ const SECTIONS = {
     collect: (v, scope) => ({ loyalty_programs: readLoyaltyEditor(scope.querySelector('[data-loy-list]')) }),
   },
 
+  // The app keeps basic details, contact, document and loyalty on ONE screen
+  // behind its "My Profile" tile, so the website does too. The four parts stay
+  // separate definitions above — this composes them, and one Save writes the
+  // union of their columns.
+  profile: {
+    title: 'Profile',
+    blurb: 'Your own details, the way an airline needs them.',
+    read: (p, user) => PROFILE_PARTS.map((k) =>
+      '<h3 class="pv-sub-head">' + esc(SECTIONS[k].title) + '</h3>' + SECTIONS[k].read(p, user)).join(''),
+    edit: (p) => PROFILE_PARTS.map((k, i) =>
+      (i ? '<h3 class="pv-sub-head">' + esc(SECTIONS[k].title) + '</h3>' : '') + SECTIONS[k].edit(p)).join(''),
+    validate: (v) => {
+      for (const k of PROFILE_PARTS) {
+        const complaint = SECTIONS[k].validate && SECTIONS[k].validate(v);
+        if (complaint) return complaint;
+      }
+      return null;
+    },
+    collect: (v, scope) => Object.assign({}, ...PROFILE_PARTS.map((k) => SECTIONS[k].collect(v, scope))),
+  },
+
   travellers: {
     title: 'Saved travellers',
     blurb: 'The people you book for. You are already one of them — your own details come from this profile, ' +
@@ -552,13 +573,16 @@ const SECTIONS = {
   },
 };
 
+/** The four the app shows together on its own Profile screen. */
+const PROFILE_PARTS = ['basic', 'contact', 'document', 'loyalty'];
+
 // ── The menu ────────────────────────────────────────────────────────
-// The app's profile is a hub you drill into, not one long page, and the
-// overwhelming majority of readers are on a phone. So this is the same
-// shape: a photo header, a name, two shortcut tiles, then plain grouped
-// rows — and tapping a row opens THAT thing on its own, with a back
-// arrow. Desktop keeps the same pieces and puts the menu beside the
-// section instead of in front of it.
+// The same list the app's profile screen shows, in the same order, because
+// two navs for one account is two things to keep true. Rows the app has but
+// the website has no page for — Booking in Progress, Wander as a Group,
+// Account & Security, Help & Support — are left out rather than shown as
+// dead ends. Partner and Admin are website-only and appear for the accounts
+// they belong to.
 //
 // Rows either open a section (key) or leave for another page (href).
 const MENU = [
@@ -569,27 +593,6 @@ const MENU = [
         sub: (p) => {
           const n = (p.__saved || []).length;
           return n ? plural(n, 'destination') : 'None saved yet';
-        } },
-      { href: '/account/bookings/', icon: 'suitcase', title: 'My Bookings',
-        sub: () => 'Flights and hotels you have booked' },
-    ],
-  },
-  {
-    label: 'My details',
-    rows: [
-      { key: 'basic', icon: 'user-circle', title: 'Basic Information',
-        sub: (p) => [p.first_name, p.last_name].filter(Boolean).join(' ') || 'Your name and date of birth' },
-      { key: 'contact', icon: 'phone', title: 'Contact',
-        sub: (p) => p.phone || p.__email },
-      { key: 'document', icon: 'user-id', title: 'Travel Documents',
-        sub: (p) => {
-          const td = p.travel_document || {};
-          return td.number ? labelOf(DOC_TYPES, td.type) + ' · ' + td.number : 'No document saved';
-        } },
-      { key: 'travellers', icon: 'users-group-rounded', title: 'Saved Travelers',
-        sub: (p) => {
-          const n = (p.saved_passengers || []).length;
-          return n ? plural(n, 'traveller') : 'Just you so far';
         } },
     ],
   },
@@ -612,35 +615,33 @@ const MENU = [
             return v ? v.label : k;
           }).join(', ');
         } },
-      { key: 'loyalty', icon: 'ticket', title: 'Loyalty Programs',
-        sub: (p) => {
-          const n = readLoyaltyPrograms({ loyalty_programs: p.loyalty_programs }).length;
-          return n ? plural(n, 'program') : 'None saved yet';
-        } },
-      { key: 'comms', icon: 'letter', title: 'Communications',
-        sub: (p) => (p.marketing_opt_in ? 'Travel ideas: on' : 'Travel ideas: off'),
-      },
+      { key: 'comms', icon: 'bell', title: 'Notifications',
+        sub: (p) => (p.marketing_opt_in ? 'Travel ideas: on' : 'Travel ideas: off') },
     ],
   },
 ];
 
-// Shown only to the accounts they belong to — wt-auth.js reveals the same
-// two links in the page's own footer.
+// Shown only to the accounts they belong to.
 const ACCOUNT_ROWS = [
-  { href: '/partner-dashboard/', icon: 'route', title: 'Partner Dashboard',
+  { href: '/partner-dashboard/', icon: 'wallet', title: 'Partner Dashboard',
     sub: () => 'Your referrals, bookings and commissions', gate: 'affiliate' },
   { href: '/admin-dashboard/', icon: 'lock-keyhole', title: 'Admin Dashboard',
     sub: () => 'Every internal tool', gate: 'admin' },
 ];
 
-const LEGAL_ROWS = [
+// Named the way the app's own Policy group is, down to the wording on the
+// two documents — these are the signed Privacy Statement and Terms of
+// Service, not generically-titled pages.
+const POLICY_ROWS = [
   { href: '/legal/privacy/', icon: 'shield-check', title: 'Privacy Statement', sub: () => '' },
-  { href: '/legal/terms/', icon: 'document-text', title: 'Terms & Conditions', sub: () => '' },
+  { href: '/legal/terms/', icon: 'document-text', title: 'Terms of Service', sub: () => '' },
   { href: '/about/', icon: 'info-circle', title: 'About WhereTo', sub: () => '' },
 ];
 
-/** Every section a row can open, so a ?section= value can be validated. */
-const SECTION_KEYS = MENU.flatMap((g) => g.rows.filter((r) => r.key).map((r) => r.key));
+/** Every section a row or tile can open, so a ?section= value can be checked.
+ *  The four parts of `profile` are not navigable on their own — the app keeps
+ *  them on one screen and so does this. */
+const SECTION_KEYS = ['profile', 'travellers', 'saved', 'flight', 'vibes', 'comms'];
 
 function plural(n, word) { return n + ' ' + word + (Number(n) === 1 ? '' : 's'); }
 
@@ -686,7 +687,7 @@ export async function initProfileForm(supabase, user, opts = {}) {
   // empty panel is just half a blank page — My Profile opens by default
   // there. On a phone the hub IS the page, so it stays the landing view.
   const WIDE = window.matchMedia('(min-width: 900px)');
-  const landing = () => (WIDE.matches ? 'basic' : null);
+  const landing = () => (WIDE.matches ? 'profile' : null);
   const editing = new Set();
   const gates = { affiliate: false, admin: false };
 
@@ -719,7 +720,7 @@ export async function initProfileForm(supabase, user, opts = {}) {
         : '') +
       // The avatar opens Basic Information, which is where the photo is set —
       // the app opens a picker here, and the web equivalent is that field.
-      '<button type="button" class="ph-avatar-ring" data-open="basic" aria-label="Edit your basic information">' +
+      '<button type="button" class="ph-avatar-ring" data-open="profile" aria-label="Open your profile">' +
         '<span class="ph-avatar">' +
           (p.profile_photo
             ? '<img src="' + esc(p.profile_photo) + '" alt="" />'
@@ -754,20 +755,23 @@ export async function initProfileForm(supabase, user, opts = {}) {
 
   function menuHtml() {
     const accountRows = ACCOUNT_ROWS.filter((r) => gates[r.gate]);
+    // The two tiles open sections like any row, so on a wide screen — where
+    // the menu stays beside what is open — they carry the same active mark.
+    const tile = (key, icon, label) =>
+      '<button type="button" class="ph-tile' + (key === active ? ' is-active' : '') + '" ' +
+      'data-open="' + key + '"' + (key === active ? ' aria-current="true"' : '') + '>' +
+        '<span class="ph-tile-icon">' + ico(icon) + '</span>' +
+        '<span class="ph-tile-label">' + label + '</span></button>';
     return '<div class="ph-tiles">' +
-        '<button type="button" class="ph-tile" data-open="basic">' +
-          '<span class="ph-tile-icon">' + ico('user-circle') + '</span>' +
-          '<span class="ph-tile-label">My<br />Profile</span></button>' +
-        '<button type="button" class="ph-tile" data-open="travellers">' +
-          '<span class="ph-tile-icon">' + ico('users-group-rounded') + '</span>' +
-          '<span class="ph-tile-label">Travelers<br />&amp; Friends</span></button>' +
+        tile('profile', 'user-circle', 'My<br />Profile') +
+        tile('travellers', 'users-group-rounded', 'Travelers<br />&amp; Friends') +
       '</div>' +
       '<a class="ph-wide-tile" href="/account/bookings/">' +
         '<span class="ph-wide-tile-label">My Trips</span>' +
         '<span class="ph-wide-tile-icon">' + ico('route') + '</span></a>' +
       MENU.map((g) => menuGroup(g.label, g.rows)).join('') +
       menuGroup('Account', accountRows) +
-      menuGroup('Legal', LEGAL_ROWS) +
+      menuGroup('Policy', POLICY_ROWS) +
       '<button type="button" class="ph-logout" data-logout>' + ico('logout-2') + ' Log Out</button>';
   }
 

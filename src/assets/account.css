@@ -802,6 +802,7 @@
   .ph-back { display: none; }
   .ph-tile { min-height: 132px; }
   .ph-tile-icon { font-size: 44px; }
+  .ph-tile.is-active { border-color: var(--rust); }
   .ph-row.is-active { background: var(--wg100); border-radius: var(--radius-sm); padding-inline: 10px; }
   .ph-row.is-active .ph-row-title { color: var(--rust); }
 }
