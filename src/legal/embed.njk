@@ -1,0 +1,14 @@
+---
+pagination:
+  data: collections.legal
+  size: 1
+  alias: doc
+permalink: "/legal/{{ doc.fileSlug }}/embed/"
+layout: layouts/legal-embed.njk
+tags: []
+eleventyExcludeFromCollections: true
+eleventyComputed:
+  title: "{{ doc.data.title }}"
+  updated: "{{ doc.data.updated }}"
+---
+{{ doc.templateContent | safe }}
