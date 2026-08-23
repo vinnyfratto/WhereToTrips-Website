@@ -35,8 +35,9 @@ navActive: settings
     <div class="acct-card" id="profile">
       <div id="wt-prof-alert" class="alert" role="status" aria-live="polite"></div>
 
-      {# Fields are rendered by wt-profile.js — the same editor /account/profile/ uses. #}
-      <form id="wt-profile-form" novalidate></form>
+      {# Rendered by wt-profile.js — the same editor /account/profile/ uses, with
+         its rail off (this portal has its own nav), so every section stacks. #}
+      <div id="wt-profile-body"></div>
     </div>
 
   </div>

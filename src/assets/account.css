@@ -630,53 +630,145 @@
 .acct-toprow-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .acct-toprow-actions .btn { width: auto; margin: 0; white-space: nowrap; }
 
-/* Two columns of sections once there is room for them, so the width is
-   actually used rather than making every input 1000px wide. */
-.acct-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 44px; align-items: start; }
-@media (max-width: 900px) { .acct-grid { grid-template-columns: 1fr; gap: 0; } }
-.acct-sec--wide { grid-column: 1 / -1; }
-/* Each title now sits inside its own <section>, so it is always
-   :first-of-type and the base rule's border reset would strip the divider
-   from every one of them. Re-assert it here, then drop it again for the
-   two that start the columns. */
-.acct-grid .acct-section-title {
-  border-top: 1px solid var(--wg200); padding-top: 22px; margin-top: 30px;
+/* ── Account hub: rail + panel ────────────────────────────────────
+   The profile is not one long form. A rail on the left switches which
+   group of sections is showing, and each section READS first, turning
+   into a form only for the one thing being changed.
+────────────────────────────────────────────────────────────────── */
+.acct-hub { display: grid; grid-template-columns: 330px 1fr; gap: 28px; align-items: start; }
+@media (max-width: 900px) { .acct-hub { grid-template-columns: 1fr; gap: 20px; } }
+
+.acct-rail { position: sticky; top: 24px; }
+@media (max-width: 900px) { .acct-rail { position: static; } }
+
+.rail-me { display: flex; align-items: center; gap: 14px; padding: 0 4px 22px; }
+.rail-hi {
+  font-family: var(--serif); color: var(--navy); font-size: 1.5rem;
+  line-height: 1.15; margin: 0;
 }
-.acct-grid > .acct-sec:nth-child(1) .acct-section-title,
-.acct-grid > .acct-sec:nth-child(2) .acct-section-title {
-  border-top: 0; padding-top: 0; margin-top: 0;
+.rail-email { font-size: 0.85rem; color: var(--wg600); margin: 3px 0 0; overflow-wrap: anywhere; }
+
+.rail-nav { display: flex; flex-direction: column; gap: 10px; }
+.rail-item {
+  display: flex; align-items: center; gap: 14px; width: 100%; text-align: left;
+  background: var(--card); border: 1px solid var(--wg200); border-radius: var(--radius-md);
+  padding: 16px 18px; cursor: pointer; text-decoration: none; font-family: var(--sans);
+  box-shadow: var(--shadow-sm);
+  transition: border-color .12s ease, box-shadow .12s ease, transform .12s ease;
 }
-@media (max-width: 900px) {
-  .acct-grid > .acct-sec:nth-child(2) .acct-section-title {
-    border-top: 1px solid var(--wg200); padding-top: 22px; margin-top: 30px;
-  }
+.rail-item:hover { border-color: var(--rust); transform: translateY(-1px); }
+.rail-item.is-active { border-color: var(--rust); box-shadow: 0 0 0 1px var(--rust), var(--shadow-sm); }
+.rail-icon { flex: 0 0 auto; font-size: 22px; color: var(--rust); display: block; }
+.rail-text { display: block; min-width: 0; flex: 1; }
+.rail-title { display: block; font-weight: 600; font-size: 0.98rem; color: var(--navy); }
+.rail-blurb { display: block; font-size: 0.8rem; color: var(--wg600); line-height: 1.4; margin-top: 2px; }
+.rail-chev { flex: 0 0 auto; font-size: 16px; color: var(--wg400); display: block; }
+
+.rail-foot { display: flex; flex-direction: column; gap: 8px; margin-top: 18px; }
+.rail-foot .btn { width: 100%; margin: 0; }
+
+/* ── Panel ── */
+.acct-panel { min-width: 0; }
+.pv-name {
+  font-family: var(--serif); color: var(--navy);
+  font-size: clamp(1.7rem, 3.4vw, 2.2rem); line-height: 1.1; margin: 0 0 28px;
 }
 
-.acct-save {
-  border-top: 1px solid var(--wg200); margin-top: 34px; padding-top: 26px;
+.pv-sec { padding: 30px 0; border-top: 1px solid var(--wg200); }
+.pv-sec:first-of-type { padding-top: 0; border-top: 0; }
+.pv-sec:last-of-type { padding-bottom: 0; }
+.pv-sec-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
+.pv-sec-title { font-family: var(--serif); color: var(--navy); font-size: 1.45rem; line-height: 1.2; margin: 0; }
+.pv-sec-blurb { color: var(--wg600); font-size: 0.9rem; line-height: 1.55; margin: 6px 0 0; max-width: 62ch; }
+.pv-edit {
+  flex: 0 0 auto; background: none; border: 0; padding: 4px 2px; cursor: pointer;
+  font-family: var(--sans); font-weight: 600; font-size: 0.92rem; color: var(--rust);
 }
-.acct-save .btn { width: auto; min-width: 200px; margin: 0; }
+.pv-edit:hover { text-decoration: underline; }
+
+/* Read view — label above value, two to a row. Empty values say so rather
+   than collapsing, so what is still worth filling in is obvious. */
+.pv-read { margin-top: 22px; }
+.pv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px 32px; }
+@media (max-width: 560px) { .pv-grid { grid-template-columns: 1fr; gap: 18px; } }
+.pv-item--wide { grid-column: 1 / -1; }
+.pv-label { font-size: 0.82rem; font-weight: 600; color: var(--wg600); margin: 0 0 4px; }
+.pv-value { color: var(--navy); font-size: 1rem; line-height: 1.5; margin: 0; overflow-wrap: anywhere; }
+.pv-value.is-empty { color: var(--wg500); }
+.pv-empty { color: var(--wg500); font-size: 0.95rem; margin: 22px 0 0; }
+
+.pv-avatar {
+  width: 44px; height: 44px; border-radius: 50%; object-fit: cover; display: block;
+  background: var(--wg100);
+}
+.pv-avatar--lg { width: 54px; height: 54px; flex: 0 0 auto; }
+.pv-avatar--sm { width: 32px; height: 32px; }
+.pv-avatar--initials {
+  display: flex; align-items: center; justify-content: center;
+  background: var(--wg100); color: var(--navy);
+  font-family: var(--sans); font-weight: 700; font-size: 0.9rem;
+}
+.pv-avatar--sm.pv-avatar--initials { font-size: 0.72rem; }
+.pv-avatar--lg.pv-avatar--initials { font-size: 1.1rem; }
+
+.pv-list { list-style: none; margin: 22px 0 0; padding: 0; }
+.pv-list li {
+  display: flex; align-items: center; gap: 12px;
+  padding: 13px 0; border-bottom: 1px solid var(--wg200);
+}
+.pv-list li:last-child { border-bottom: 0; }
+.pv-list-name { font-weight: 600; color: var(--navy); font-size: 0.98rem; }
+.pv-list-meta { margin-left: auto; font-size: 0.85rem; color: var(--wg600); text-align: right; overflow-wrap: anywhere; }
+
+/* Edit view */
+.pv-form { margin-top: 24px; }
+.pv-sub-head {
+  font-family: var(--sans); font-weight: 700; font-size: 0.74rem; letter-spacing: 0.8px;
+  text-transform: uppercase; color: var(--wg500); margin: 26px 0 12px;
+}
+.pv-actions {
+  display: flex; gap: 12px; flex-wrap: wrap;
+  border-top: 1px solid var(--wg200); margin-top: 22px; padding-top: 20px;
+}
+.pv-actions .btn { width: auto; min-width: 140px; margin: 0; }
+.pv-link-btn {
+  background: none; border: 0; padding: 12px 0 0; cursor: pointer;
+  color: var(--rust); font-family: var(--sans); font-weight: 600; font-size: 0.88rem;
+}
+
+/* A saved vibe is shown, not offered — the static chips are not buttons. */
+.vibe-chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.vibe-chips.is-static { margin-top: 22px; }
+.vibe-chip {
+  border: 1.5px solid var(--wg300); background: #fff; color: var(--navy);
+  font-family: var(--sans); font-weight: 600; font-size: 0.88rem;
+  padding: 9px 16px; border-radius: 999px; cursor: pointer;
+  transition: border-color .12s ease, background .12s ease, color .12s ease;
+}
+.vibe-chips.is-static .vibe-chip { cursor: default; }
+button.vibe-chip:hover { border-color: var(--rust); }
+.vibe-chip[aria-pressed="true"], .vibe-chip.is-on {
+  background: var(--rust); border-color: var(--rust); color: #fff;
+}
 
 /* Repeatable rows — loyalty programs */
-.loy-list { display: flex; flex-direction: column; gap: 6px; }
+.loy-list { display: flex; flex-direction: column; gap: 8px; }
 .loy-row {
   display: grid; grid-template-columns: 110px 1fr 1fr 1fr auto; gap: 12px; align-items: end;
-  padding: 12px; border: 1px solid var(--wg200); border-radius: var(--radius-sm); background: var(--wg100);
+  padding: 14px; border: 1px solid var(--wg200); border-radius: var(--radius-sm); background: var(--wg100);
 }
 .loy-row .field { margin-bottom: 0; }
 .loy-row .btn { width: auto; margin: 0 0 2px; }
-@media (max-width: 1000px) { .loy-row { grid-template-columns: 1fr 1fr; } .loy-row .btn { grid-column: 1 / -1; } }
+@media (max-width: 1100px) { .loy-row { grid-template-columns: 1fr 1fr; } .loy-row .btn { grid-column: 1 / -1; } }
 @media (max-width: 520px) { .loy-row { grid-template-columns: 1fr; } }
 
 /* Saved travellers — one disclosure per person, so a long list stays
    scannable and only the one being edited is open. */
 .trav-list { display: flex; flex-direction: column; gap: 8px; }
-.trav {
-  border: 1px solid var(--wg200); border-radius: var(--radius-sm); background: var(--wg100);
-}
+.trav { border: 1px solid var(--wg200); border-radius: var(--radius-sm); background: var(--wg100); }
 .trav > summary {
   cursor: pointer; padding: 14px 16px; display: flex; align-items: baseline; gap: 12px;
-  font-family: var(--sans); list-style-position: inside;
+  font-family: var(--sans);
 }
 .trav > summary::marker { color: var(--wg400); }
 .trav-name { font-weight: 600; color: var(--navy); }
@@ -688,17 +780,6 @@
 }
 .trav-actions { margin: 18px 0 0; }
 .trav-actions .btn { width: auto; margin: 0; color: #8f2c1b; }
-
-/* Vibe chips */
-.vibe-chips { display: flex; flex-wrap: wrap; gap: 10px; }
-.vibe-chip {
-  border: 1.5px solid var(--wg300); background: #fff; color: var(--navy);
-  font-family: var(--sans); font-weight: 600; font-size: 0.88rem;
-  padding: 9px 16px; border-radius: 999px; cursor: pointer;
-  transition: border-color .12s ease, background .12s ease, color .12s ease;
-}
-.vibe-chip:hover { border-color: var(--rust); }
-.vibe-chip[aria-pressed="true"] { background: var(--rust); border-color: var(--rust); color: #fff; }
 
 /* Bookings at the wider page width: two cards abreast, and a detail page
    whose text column stays readable under its full-width hero. */

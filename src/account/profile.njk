@@ -8,26 +8,40 @@ acctWide: true
 <div id="wt-gate" class="gate-msg">Loading your profile…</div>
 
 {#
-  The form's fields are rendered by wt-profile.js, not written here. It covers
-  every profile column the app writes, and the same editor is embedded on
-  /partner-dashboard/settings/ — two hand-maintained copies of that many
-  fields would not have stayed in step.
+  Both halves are rendered by wt-profile.js: the rail switches which group of
+  sections is showing, and each section reads first and turns into a form only
+  when you ask it to. The same editor is embedded on
+  /partner-dashboard/settings/ (rail off, sections stacked), so the fields are
+  defined once in JS rather than twice in templates.
 #}
-<div id="wt-profile" class="acct-card" data-wt-page="profile" style="display:none;">
-  <div class="acct-toprow">
-    <div>
-      <p class="eyebrow">Your account</p>
-      <h1>Profile</h1>
-    </div>
-    <div class="acct-toprow-actions">
-      <a href="/account/bookings/" class="btn btn-ghost">My bookings</a>
-      <a id="wt-aff-dash-link" href="/partner-dashboard/" class="btn btn-primary" style="display:none;">Partner dashboard</a>
-      <a id="wt-admin-link" href="/admin-dashboard/" class="btn btn-primary" style="display:none;">Admin dashboard</a>
+<div id="wt-profile" class="acct-hub" data-wt-page="profile" style="display:none;">
+
+  <aside class="acct-rail">
+    <div id="wt-profile-rail"></div>
+    <div class="rail-foot">
+      <a id="wt-aff-dash-link" href="/partner-dashboard/" class="btn btn-ghost" style="display:none;">Partner dashboard</a>
+      <a id="wt-admin-link" href="/admin-dashboard/" class="btn btn-ghost" style="display:none;">Admin dashboard</a>
       <button id="wt-logout" type="button" class="btn btn-ghost">Log out</button>
     </div>
+  </aside>
+
+  <div class="acct-panel acct-card">
+    <h1 class="pv-name" id="wt-profile-name">Your profile</h1>
+    <div id="wt-alert" class="alert" role="status" aria-live="polite"></div>
+    <div id="wt-profile-body"></div>
   </div>
+</div>
 
-  <div id="wt-alert" class="alert" role="status" aria-live="polite"></div>
-
-  <form id="wt-profile-form" novalidate></form>
+{#
+  Solar icon sprite — the rail is rendered in JavaScript, which cannot call the
+  {% icon %} shortcode, so the glyphs it needs are rendered here once and read
+  out of the DOM. Same set and style the rest of the site and the app use.
+#}
+<div id="wt-icons" hidden aria-hidden="true">
+  <span data-ico="user-circle">{% icon "user-circle" %}</span>
+  <span data-ico="compass">{% icon "compass" %}</span>
+  <span data-ico="users-group-rounded">{% icon "users-group-rounded" %}</span>
+  <span data-ico="letter">{% icon "letter" %}</span>
+  <span data-ico="suitcase">{% icon "suitcase" %}</span>
+  <span data-ico="alt-arrow-right">{% icon "alt-arrow-right" %}</span>
 </div>

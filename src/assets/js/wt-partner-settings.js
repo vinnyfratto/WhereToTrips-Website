@@ -12,7 +12,11 @@ import { initProfileForm } from './wt-profile.js';
 async function init() {
   const ctx = await requirePartner();
   if (!ctx) return;
-  await initProfileForm(ctx.supabase, ctx.user, { alertId: 'wt-prof-alert', logoutId: 'wt-logout-handled-by-partner-header' });
+  await initProfileForm(ctx.supabase, ctx.user, {
+    alertId: 'wt-prof-alert',
+    rail: false,
+    logoutId: 'wt-logout-handled-by-partner-header',
+  });
 }
 
 if (document.readyState === 'loading') {

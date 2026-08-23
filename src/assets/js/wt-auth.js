@@ -237,7 +237,9 @@ async function initProfile() {
   await initProfileForm(supabase, user);
 
   if (gate) gate.style.display = 'none';
-  root.style.display = 'block';
+  // Clear the inline none rather than setting 'block' — the hub lays itself
+  // out with grid, and an inline display would quietly outrank it.
+  root.style.display = '';
 
   // Reveal the partner dashboard link if this user is an affiliate (the
   // program's internal/DB name for a partner — see get-affiliate-stats).
