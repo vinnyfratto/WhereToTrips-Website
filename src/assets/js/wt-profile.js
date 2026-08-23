@@ -503,6 +503,37 @@ const SECTIONS = {
     collect: (v, scope) => ({ saved_passengers: readTravellers(scope.querySelector('[data-trav-list]')) }),
   },
 
+  saved: {
+    title: 'Saved destinations',
+    blurb: 'The places you hearted in the app. Save one there and it shows up here.',
+    // Read-only apart from removing: hearting a destination happens where you
+    // are looking at it, which is in the app.
+    read: (p) => {
+      const list = p.__saved || [];
+      if (!list.length) return emptyNote('Nothing saved yet. Heart a destination in the app and it will appear here.');
+      return '<div class="sd-grid">' + list.map((d) => {
+        const rec = d.destination || {};
+        const photo = (rec.images && rec.images[0] && rec.images[0].url) || rec.image || '';
+        const city = rec.cityName || rec.name || d.code;
+        const place = [rec.gatewayCity && rec.gatewayCity !== city ? rec.gatewayCity : '', rec.countryName]
+          .filter(Boolean).join(', ');
+        return '<article class="sd-card">' +
+          '<div class="sd-photo">' +
+            (photo
+              ? '<img src="' + esc(photo) + '" alt="" loading="lazy" />'
+              : '<span class="sd-photo-empty">' + ico('map-point') + '</span>') +
+            '<button type="button" class="sd-remove" data-unsave="' + esc(d.code) + '" ' +
+            'aria-label="Remove ' + esc(city) + '">&times;</button>' +
+          '</div>' +
+          '<div class="sd-body">' +
+            '<h3 class="sd-city">' + esc(city) + '</h3>' +
+            (place ? '<p class="sd-place">' + esc(place) + '</p>' : '') +
+          '</div>' +
+        '</article>';
+      }).join('') + '</div>';
+    },
+  },
+
   comms: {
     title: 'Communications',
     blurb: 'Control which emails you get from us. Booking confirmations and trip updates are always sent.',
@@ -528,6 +559,9 @@ const GROUPS = [
   { key: 'travellers', icon: 'users-group-rounded', label: 'Saved travellers',
     blurb: 'The people you book for',
     sections: ['travellers'] },
+  { key: 'saved', icon: 'heart', label: 'Saved destinations',
+    blurb: 'The places you hearted in the app',
+    sections: ['saved'] },
   { key: 'comms', icon: 'letter', label: 'Communications',
     blurb: 'Control which emails you get',
     sections: ['comms'] },
@@ -549,14 +583,22 @@ export async function initProfileForm(supabase, user, opts = {}) {
 
   maybeOptOutInternal(user.email);
 
-  const { data, error } = await supabase
-    .from('profiles').select(PROFILE_COLS).eq('id', user.id).single();
+  const [{ data, error }, savedRes] = await Promise.all([
+    supabase.from('profiles').select(PROFILE_COLS).eq('id', user.id).single(),
+    // Written by the app on every heart tap (saved_destinations, owner-only
+    // RLS). A failure here must not take the whole profile down with it.
+    supabase.from('saved_destinations').select('code, destination, created_at')
+      .eq('user_id', user.id).order('created_at', { ascending: false })
+      .then((r) => r, (e) => ({ data: null, error: e })),
+  ]);
   if (error) showAlert(alertId, 'error', 'Could not load your profile. ' + error.message);
+  if (savedRes && savedRes.error) console.error('[profile] saved_destinations fetch failed:', savedRes.error.message);
 
   // The working copy. Each section's save merges its own columns back in, so
   // the read views stay true without re-fetching the row.
   const p = Object.assign({}, data || {});
   p.__email = user.email;
+  p.__saved = (savedRes && savedRes.data) || [];
 
   let active = 'profile';
   const editing = new Set();
@@ -683,6 +725,24 @@ export async function initProfileForm(supabase, user, opts = {}) {
     }
     const rmTrav = e.target.closest('[data-remove-trav]');
     if (rmTrav) { rmTrav.closest('[data-trav]').remove(); return; }
+
+    const unsave = e.target.closest('[data-unsave]');
+    if (unsave) {
+      const code = unsave.dataset.unsave;
+      unsave.disabled = true;
+      supabase.from('saved_destinations').delete()
+        .eq('user_id', user.id).eq('code', code)
+        .then(({ error: delErr }) => {
+          if (delErr) {
+            unsave.disabled = false;
+            showAlert(alertId, 'error', 'Could not remove that destination: ' + delErr.message);
+            return;
+          }
+          p.__saved = p.__saved.filter((d) => d.code !== code);
+          repaintSection('saved');
+        });
+      return;
+    }
 
     const chip = e.target.closest('[data-vibe]');
     if (chip) {

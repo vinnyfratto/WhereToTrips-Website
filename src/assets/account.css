@@ -751,6 +751,33 @@ button.vibe-chip:hover { border-color: var(--rust); }
   background: var(--rust); border-color: var(--rust); color: #fff;
 }
 
+/* Saved destinations — the places hearted in the app. Photo-forward, the
+   way the app's own saved cards are; hearting happens in the app, so the only
+   write here is letting one go. */
+.sd-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 22px; }
+@media (max-width: 900px) { .sd-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 520px) { .sd-grid { grid-template-columns: 1fr; } }
+.sd-card {
+  border: 1px solid var(--wg200); border-radius: var(--radius-md); overflow: hidden;
+  background: var(--card); box-shadow: var(--shadow-sm);
+}
+.sd-photo { position: relative; height: 132px; background: var(--wg100); }
+.sd-photo img { width: 100%; height: 100%; object-fit: cover; }
+.sd-photo-empty {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-size: 26px; color: var(--wg300);
+}
+.sd-remove {
+  position: absolute; top: 8px; right: 8px; width: 28px; height: 28px;
+  border: 0; border-radius: 50%; cursor: pointer;
+  background: rgba(49,49,49,0.66); color: #fff; font-size: 18px; line-height: 1;
+}
+.sd-remove:hover { background: rgba(49,49,49,0.88); }
+.sd-remove[disabled] { opacity: 0.5; cursor: default; }
+.sd-body { padding: 13px 15px 15px; }
+.sd-city { font-family: var(--serif); color: var(--navy); font-size: 1.1rem; line-height: 1.2; margin: 0; }
+.sd-place { font-size: 0.84rem; color: var(--wg600); margin: 3px 0 0; }
+
 /* Repeatable rows — loyalty programs */
 .loy-list { display: flex; flex-direction: column; gap: 8px; }
 .loy-row {
