@@ -176,20 +176,17 @@ header.menu-open .nav-toggle span:nth-child(3) { transform: translateY(-7px) rot
 
 /* Mobile menu panel */
 .mobile-menu { display: none; }
-.mobile-menu a {
+.mobile-menu a:not(.btn) {
   font-family: var(--sans); font-size: 16px; font-weight: 500; color: var(--navy);
   padding: 15px 0; border-bottom: 1px solid var(--wg200);
 }
-.mobile-menu a:hover, .mobile-menu a:active { color: var(--rust); }
+.mobile-menu a:not(.btn):hover, .mobile-menu a:not(.btn):active { color: var(--rust); }
 .mobile-menu .mobile-menu-label {
   font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
   color: var(--wg500); padding: 18px 0 4px;
 }
 .mobile-menu .mobile-sub { color: var(--wg600); font-weight: 400; }
-.mobile-menu .mobile-cta {
-  padding: 15px 30px; border-bottom: 0;
-  color: var(--cream); justify-content: center;
-}
+.mobile-menu .mobile-cta { padding: 15px 30px; justify-content: center; }
 /* Account and the main CTA head the panel rather than tailing it — the
    signed-in reader's own account should not be the last thing in a list they
    have to scroll past everything else to reach. */
