@@ -630,50 +630,183 @@
 .acct-toprow-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .acct-toprow-actions .btn { width: auto; margin: 0; white-space: nowrap; }
 
-/* ── Account hub: rail + panel ────────────────────────────────────
-   The profile is not one long form. A rail on the left switches which
-   group of sections is showing, and each section READS first, turning
-   into a form only for the one thing being changed.
+/* ── Profile hub (/account/profile/) ──────────────────────────────
+   Built to the same shape as the app's own profile, because that is where
+   nearly everyone reads it: a full-bleed photo header with the avatar on
+   it, the name, two shortcut tiles, then plain grouped rows. Tapping a row
+   opens that thing ON ITS OWN with a back arrow — nothing unfolds below.
+
+   Below the tiles there are deliberately no cards: plain rows, charcoal
+   glyphs, hairline separators. The tiles are the only raised surfaces,
+   which is what makes them read as the shortcuts.
+
+   Wide screens keep every one of those pieces and simply put the menu
+   beside the open section instead of in front of it.
 ────────────────────────────────────────────────────────────────── */
-.acct-hub { display: grid; grid-template-columns: 330px 1fr; gap: 28px; align-items: start; }
-@media (max-width: 900px) { .acct-hub { grid-template-columns: 1fr; gap: 20px; } }
+.acct--bare { padding: 0 0 80px; }
+.acct--bare .alert { margin: 16px 20px 0; }
 
-.acct-rail { position: sticky; top: 24px; }
-@media (max-width: 900px) { .acct-rail { position: static; } }
+.ph { --ph-gutter: 20px; }
 
-.rail-me { display: flex; align-items: center; gap: 14px; padding: 0 4px 22px; }
-.rail-hi {
-  font-family: var(--serif); color: var(--navy); font-size: 1.5rem;
-  line-height: 1.15; margin: 0;
+/* ── Photo header ── */
+.ph-hero {
+  position: relative; height: 190px; overflow: hidden;
+  /* Azure at 30% is the no-saved-places state — a flat wash rather than a
+     stock photo of somewhere the traveller never picked. */
+  background: rgba(32, 156, 224, 0.3);
 }
-.rail-email { font-size: 0.85rem; color: var(--wg600); margin: 3px 0 0; overflow-wrap: anywhere; }
-
-.rail-nav { display: flex; flex-direction: column; gap: 10px; }
-.rail-item {
-  display: flex; align-items: center; gap: 14px; width: 100%; text-align: left;
-  background: var(--card); border: 1px solid var(--wg200); border-radius: var(--radius-md);
-  padding: 16px 18px; cursor: pointer; text-decoration: none; font-family: var(--sans);
-  box-shadow: var(--shadow-sm);
-  transition: border-color .12s ease, box-shadow .12s ease, transform .12s ease;
+.ph-hero.has-photo { background: var(--wg100); }
+.ph-hero-photos { position: absolute; inset: 0; }
+.ph-hero-img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  /* Held back so the roundel reads as the subject of the header and the photo
+     as the setting. */
+  opacity: 0; transition: opacity 1.1s ease;
 }
-.rail-item:hover { border-color: var(--rust); transform: translateY(-1px); }
-.rail-item.is-active { border-color: var(--rust); box-shadow: 0 0 0 1px var(--rust), var(--shadow-sm); }
-.rail-icon { flex: 0 0 auto; font-size: 22px; color: var(--rust); display: block; }
-.rail-text { display: block; min-width: 0; flex: 1; }
-.rail-title { display: block; font-weight: 600; font-size: 0.98rem; color: var(--navy); }
-.rail-blurb { display: block; font-size: 0.8rem; color: var(--wg600); line-height: 1.4; margin-top: 2px; }
-.rail-chev { flex: 0 0 auto; font-size: 16px; color: var(--wg400); display: block; }
+.ph-hero-img.is-on { opacity: 0.4; }
 
-.rail-foot { display: flex; flex-direction: column; gap: 8px; margin-top: 18px; }
-.rail-foot .btn { width: 100%; margin: 0; }
+.ph-avatar-ring {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 134px; height: 134px; border-radius: 50%; padding: 8px; border: 0;
+  background: #fff; box-shadow: var(--shadow-md); cursor: pointer;
+}
+.ph-avatar {
+  display: flex; align-items: center; justify-content: center;
+  width: 118px; height: 118px; border-radius: 50%; overflow: hidden;
+  background: var(--navy); color: #fff;
+  font-family: var(--serif); font-size: 44px; line-height: 1;
+}
+.ph-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.ph-avatar-badge {
+  position: absolute; right: 8px; bottom: 8px;
+  width: 30px; height: 30px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--rust); color: #fff; font-size: 14px;
+  border: 2px solid #fff;
+}
 
-/* ── Panel ── */
-.acct-panel { min-width: 0; }
-.pv-name {
+.ph-name-block { padding: 14px var(--ph-gutter) 20px; }
+.ph-eyebrow { color: var(--wg600); font-size: 0.95rem; margin: 0; }
+/* .acct h1 would otherwise win on specificity and size this itself. */
+.ph .ph-name {
   font-family: var(--serif); color: var(--navy);
-  font-size: clamp(1.7rem, 3.4vw, 2.2rem); line-height: 1.1; margin: 0 0 28px;
+  font-size: clamp(28px, 8vw, 34px); line-height: 1.24; margin: 0;
 }
 
+/* ── Tiles — the only raised surfaces on the page ── */
+.ph-menu { padding: 0 var(--ph-gutter); }
+.ph-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.ph-tile {
+  display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+  gap: 14px; min-height: 158px; padding: 20px;
+  background: var(--card); border: 1.5px solid transparent; border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm); cursor: pointer; font-family: var(--sans);
+  transition: border-color .12s ease, transform .12s ease;
+}
+.ph-tile:hover { border-color: var(--rust); transform: translateY(-2px); }
+.ph-tile-icon { font-size: 54px; color: var(--rust); line-height: 1; }
+.ph-tile-label {
+  font-family: var(--serif); color: var(--navy);
+  font-size: 19px; line-height: 25px; text-align: center;
+}
+
+.ph-wide-tile {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding: 20px; margin-bottom: 30px; text-decoration: none;
+  background: var(--card); border: 1.5px solid transparent; border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: border-color .12s ease, transform .12s ease;
+}
+.ph-wide-tile:hover { border-color: var(--rust); transform: translateY(-2px); }
+.ph-wide-tile-label { font-family: var(--serif); color: var(--navy); font-size: 19px; line-height: 25px; }
+.ph-wide-tile-icon { font-size: 40px; color: var(--rust); line-height: 1; }
+
+/* ── Grouped rows — no cards, hairline separators ── */
+.ph-group { margin-bottom: 30px; }
+.ph-group-label {
+  font-family: var(--sans); font-weight: 700; font-size: 0.68rem;
+  letter-spacing: 1.6px; text-transform: uppercase; color: var(--navy);
+  margin: 0 0 4px 4px;
+}
+.ph-row {
+  display: flex; align-items: center; gap: 14px; width: 100%;
+  padding: 14px 4px; text-align: left; text-decoration: none;
+  background: none; border: 0; border-bottom: 1px solid var(--wg200);
+  cursor: pointer; font-family: var(--sans);
+}
+.ph-row:last-child { border-bottom: 0; }
+.ph-row:hover .ph-row-title { color: var(--rust); }
+.ph-row-icon { flex: 0 0 auto; font-size: 22px; color: var(--navy); line-height: 1; }
+.ph-row-body { display: block; min-width: 0; flex: 1; }
+.ph-row-title { display: block; font-weight: 600; font-size: 0.95rem; color: var(--navy); }
+.ph-row-sub {
+  display: block; font-size: 0.82rem; color: var(--wg500); line-height: 1.4; margin-top: 1px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.ph-row-chev { flex: 0 0 auto; font-size: 20px; color: var(--wg400); line-height: 1; }
+
+.ph-logout {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  width: 100%; margin-top: 10px; padding: 16px;
+  background: var(--card); border: 1.5px solid #DE4C4C; border-radius: 999px;
+  color: #DE4C4C; font-family: var(--sans); font-weight: 600; font-size: 0.95rem;
+  cursor: pointer;
+}
+.ph-logout:hover { background: #fdecea; }
+.ph-logout .ico { font-size: 17px; }
+
+/* ── One section, on its own ── */
+.ph-panel { padding: 0 var(--ph-gutter); }
+.ph-back {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: none; border: 0; padding: 4px 0 16px; cursor: pointer;
+  font-family: var(--sans); font-weight: 600; font-size: 0.92rem; color: var(--rust);
+}
+.ph-back .ico { font-size: 18px; }
+
+/* Phone: the hub and a section are never both on screen. This is the whole
+   point of the drill-in — a section used to unfold below the menu, which left
+   the reader scrolling past everything to find what they had just opened. */
+@media (max-width: 899px) {
+  .ph.is-section .ph-menu { display: none; }
+  .ph.is-hub .ph-panel { display: none; }
+  /* The header belongs to the hub — a section gets its own back arrow and
+     title instead, so there is one subject on screen at a time. */
+  .ph.is-section .ph-head { display: none; }
+  .ph.is-section .ph-panel { padding-top: 18px; }
+}
+
+/* Wide: same pieces, menu beside the section rather than in front of it. */
+@media (min-width: 900px) {
+  .ph { --ph-gutter: 0px; }
+  .acct--bare { padding: 0 24px 96px; }
+  .acct--bare .alert { margin: 20px 0 0; }
+  .ph-head {
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0; overflow: hidden;
+    border: 1px solid var(--wg200); border-bottom: 0; background: var(--card);
+  }
+  .ph-hero { height: 220px; }
+  .ph-name-block { padding: 18px 32px 24px; }
+  .ph-cols {
+    display: grid; grid-template-columns: 340px 1fr; gap: 0;
+    border: 1px solid var(--wg200); border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    background: var(--card); box-shadow: var(--shadow-md); overflow: hidden;
+  }
+  .ph-menu { padding: 28px; border-right: 1px solid var(--wg200); }
+  .ph-panel { padding: 28px 32px; min-width: 0; }
+  .ph-back { display: none; }
+  .ph-tile { min-height: 132px; }
+  .ph-tile-icon { font-size: 44px; }
+  .ph-row.is-active { background: var(--wg100); border-radius: var(--radius-sm); padding-inline: 10px; }
+  .ph-row.is-active .ph-row-title { color: var(--rust); }
+  /* Nothing open yet — say so rather than leaving half the page blank. */
+  .ph.is-hub .ph-panel::before {
+    content: 'Pick something on the left to view or edit it.';
+    display: block; color: var(--wg500); font-size: 0.95rem;
+  }
+}
+
+/* ── Sections ── */
 .pv-sec { padding: 30px 0; border-top: 1px solid var(--wg200); }
 .pv-sec:first-of-type { padding-top: 0; border-top: 0; }
 .pv-sec:last-of-type { padding-bottom: 0; }

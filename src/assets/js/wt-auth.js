@@ -233,37 +233,14 @@ async function initProfile() {
   }
   const user = sess.session.user;
 
-  // Shared editor (same one the partner dashboard embeds).
+  // The profile renders its own header, menu and sections (wt-profile.js),
+  // including the two dashboard rows, so there is nothing to reveal here.
   await initProfileForm(supabase, user);
 
   if (gate) gate.style.display = 'none';
-  // Clear the inline none rather than setting 'block' — the hub lays itself
-  // out with grid, and an inline display would quietly outrank it.
+  // Clear the inline none rather than setting a value — the profile lays
+  // itself out, and an inline display would quietly outrank it.
   root.style.display = '';
-
-  // Reveal the partner dashboard link if this user is an affiliate (the
-  // program's internal/DB name for a partner — see get-affiliate-stats).
-  try {
-    const { data: aff } = await supabase
-      .from('affiliates').select('id').eq('user_id', user.id).maybeSingle();
-    if (aff) {
-      const link = document.getElementById('wt-aff-dash-link');
-      if (link) link.style.display = 'inline-block';
-    }
-  } catch (_e) { /* not an affiliate */ }
-
-  // Reveal the Admin dashboard link if this user is an admin (own-row RLS
-  // read). /admin-dashboard/ is the single jump-off hub to every admin
-  // surface, so one link here is enough — authorization for each surface
-  // it links to is still enforced server-side in the `admin` edge fn.
-  try {
-    const { data: adm } = await supabase
-      .from('admins').select('user_id').eq('user_id', user.id).maybeSingle();
-    if (adm) {
-      const link = document.getElementById('wt-admin-link');
-      if (link) link.style.display = 'inline-block';
-    }
-  } catch (_e) { /* not an admin */ }
 }
 
 // ── ACCOUNT index: route to profile or login ────────────────────────

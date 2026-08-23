@@ -4,46 +4,46 @@ title: "Your WhereTo profile"
 description: "Manage your WhereTo account and travel preferences."
 eleventyExcludeFromCollections: true
 acctWide: true
+acctBare: true
 ---
 <div id="wt-gate" class="gate-msg">Loading your profile…</div>
 
 {#
-  Both halves are rendered by wt-profile.js: the rail switches which group of
-  sections is showing, and each section reads first and turns into a form only
-  when you ask it to. The same editor is embedded on
-  /partner-dashboard/settings/ (rail off, sections stacked), so the fields are
-  defined once in JS rather than twice in templates.
+  Everything inside is rendered by wt-profile.js: the photo header, the name,
+  the shortcut tiles, the grouped menu, and whichever section is open. It is
+  built to the same shape as the app's own profile — a hub you drill into —
+  because that is where nearly everyone reads it. The same editor is embedded
+  on /partner-dashboard/settings/ with the hub off.
 #}
-<div id="wt-profile" class="acct-hub" data-wt-page="profile" style="display:none;">
-
-  <aside class="acct-rail">
-    <div id="wt-profile-rail"></div>
-    <div class="rail-foot">
-      <a id="wt-aff-dash-link" href="/partner-dashboard/" class="btn btn-ghost" style="display:none;">Partner dashboard</a>
-      <a id="wt-admin-link" href="/admin-dashboard/" class="btn btn-ghost" style="display:none;">Admin dashboard</a>
-      <button id="wt-logout" type="button" class="btn btn-ghost">Log out</button>
-    </div>
-  </aside>
-
-  <div class="acct-panel acct-card">
-    <h1 class="pv-name" id="wt-profile-name">Your profile</h1>
-    <div id="wt-alert" class="alert" role="status" aria-live="polite"></div>
-    <div id="wt-profile-body"></div>
-  </div>
+<div id="wt-profile" data-wt-page="profile" style="display:none;">
+  <div id="wt-alert" class="alert" role="status" aria-live="polite"></div>
+  <div id="wt-profile-body" class="ph is-hub"></div>
 </div>
 
 {#
-  Solar icon sprite — the rail is rendered in JavaScript, which cannot call the
-  {% icon %} shortcode, so the glyphs it needs are rendered here once and read
-  out of the DOM. Same set and style the rest of the site and the app use.
+  Solar icon sprite — the profile is rendered in JavaScript, which cannot call
+  the {% icon %} shortcode, so the glyphs it needs are rendered here once and
+  read out of the DOM. Same set and style the rest of the site and the app use.
 #}
 <div id="wt-icons" hidden aria-hidden="true">
   <span data-ico="user-circle">{% icon "user-circle" %}</span>
-  <span data-ico="compass">{% icon "compass" %}</span>
   <span data-ico="users-group-rounded">{% icon "users-group-rounded" %}</span>
+  <span data-ico="phone">{% icon "phone" %}</span>
+  <span data-ico="user-id">{% icon "user-id" %}</span>
   <span data-ico="heart">{% icon "heart" %}</span>
-  <span data-ico="map-point">{% icon "map-point" %}</span>
-  <span data-ico="letter">{% icon "letter" %}</span>
   <span data-ico="suitcase">{% icon "suitcase" %}</span>
+  <span data-ico="route">{% icon "route" %}</span>
+  <span data-ico="tuning">{% icon "tuning" %}</span>
+  <span data-ico="compass">{% icon "compass" %}</span>
+  <span data-ico="ticket">{% icon "ticket" %}</span>
+  <span data-ico="letter">{% icon "letter" %}</span>
+  <span data-ico="map-point">{% icon "map-point" %}</span>
+  <span data-ico="camera">{% icon "camera" %}</span>
+  <span data-ico="logout-2">{% icon "logout-2" %}</span>
+  <span data-ico="lock-keyhole">{% icon "lock-keyhole" %}</span>
+  <span data-ico="shield-check">{% icon "shield-check" %}</span>
+  <span data-ico="document-text">{% icon "document-text" %}</span>
+  <span data-ico="info-circle">{% icon "info-circle" %}</span>
   <span data-ico="alt-arrow-right">{% icon "alt-arrow-right" %}</span>
+  <span data-ico="alt-arrow-left">{% icon "alt-arrow-left" %}</span>
 </div>

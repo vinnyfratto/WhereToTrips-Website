@@ -547,25 +547,97 @@ const SECTIONS = {
   },
 };
 
-// The rail's groups. Splitting the profile across these is the point — one
-// page of thirty fields is a form, not a profile.
-const GROUPS = [
-  { key: 'profile', icon: 'user-circle', label: 'Profile',
-    blurb: 'Your personal details and travel documents',
-    sections: ['basic', 'contact', 'document'] },
-  { key: 'preferences', icon: 'compass', label: 'Travel preferences',
-    blurb: 'How you like to fly, and what you like to do',
-    sections: ['flight', 'vibes', 'loyalty'] },
-  { key: 'travellers', icon: 'users-group-rounded', label: 'Saved travellers',
-    blurb: 'The people you book for',
-    sections: ['travellers'] },
-  { key: 'saved', icon: 'heart', label: 'Saved destinations',
-    blurb: 'The places you hearted in the app',
-    sections: ['saved'] },
-  { key: 'comms', icon: 'letter', label: 'Communications',
-    blurb: 'Control which emails you get',
-    sections: ['comms'] },
+// ── The menu ────────────────────────────────────────────────────────
+// The app's profile is a hub you drill into, not one long page, and the
+// overwhelming majority of readers are on a phone. So this is the same
+// shape: a photo header, a name, two shortcut tiles, then plain grouped
+// rows — and tapping a row opens THAT thing on its own, with a back
+// arrow. Desktop keeps the same pieces and puts the menu beside the
+// section instead of in front of it.
+//
+// Rows either open a section (key) or leave for another page (href).
+const MENU = [
+  {
+    label: 'My travel',
+    rows: [
+      { key: 'saved', icon: 'heart', title: 'Saved Destinations',
+        sub: (p) => {
+          const n = (p.__saved || []).length;
+          return n ? plural(n, 'destination') : 'None saved yet';
+        } },
+      { href: '/account/bookings/', icon: 'suitcase', title: 'My Bookings',
+        sub: () => 'Flights and hotels you have booked' },
+    ],
+  },
+  {
+    label: 'My details',
+    rows: [
+      { key: 'basic', icon: 'user-circle', title: 'Basic Information',
+        sub: (p) => [p.first_name, p.last_name].filter(Boolean).join(' ') || 'Your name and date of birth' },
+      { key: 'contact', icon: 'phone', title: 'Contact',
+        sub: (p) => p.phone || p.__email },
+      { key: 'document', icon: 'user-id', title: 'Travel Documents',
+        sub: (p) => {
+          const td = p.travel_document || {};
+          return td.number ? labelOf(DOC_TYPES, td.type) + ' · ' + td.number : 'No document saved';
+        } },
+      { key: 'travellers', icon: 'users-group-rounded', title: 'Saved Travelers',
+        sub: (p) => {
+          const n = (p.saved_passengers || []).length;
+          return n ? plural(n, 'traveller') : 'Just you so far';
+        } },
+    ],
+  },
+  {
+    label: 'Preferences',
+    rows: [
+      { key: 'flight', icon: 'tuning', title: 'Flight Preferences',
+        sub: (p) => {
+          const fp = p.flight_prefs || {};
+          const bits = [fp.nearestAirport, labelOf(SEAT_CLASSES, fp.seatClass), labelOf(STOP_PREFS, fp.stopCount)]
+            .filter(Boolean);
+          return bits.length ? bits.join(' · ') : 'Not set yet';
+        } },
+      { key: 'vibes', icon: 'compass', title: 'My Vibes',
+        sub: (p) => {
+          const keys = p.base_vibes || [];
+          if (!keys.length) return 'None picked yet';
+          return keys.map((k) => {
+            const v = BASE_VIBES.find((b) => b.key === k);
+            return v ? v.label : k;
+          }).join(', ');
+        } },
+      { key: 'loyalty', icon: 'ticket', title: 'Loyalty Programs',
+        sub: (p) => {
+          const n = readLoyaltyPrograms({ loyalty_programs: p.loyalty_programs }).length;
+          return n ? plural(n, 'program') : 'None saved yet';
+        } },
+      { key: 'comms', icon: 'letter', title: 'Communications',
+        sub: (p) => (p.marketing_opt_in ? 'Travel ideas: on' : 'Travel ideas: off'),
+      },
+    ],
+  },
 ];
+
+// Shown only to the accounts they belong to — wt-auth.js reveals the same
+// two links in the page's own footer.
+const ACCOUNT_ROWS = [
+  { href: '/partner-dashboard/', icon: 'route', title: 'Partner Dashboard',
+    sub: () => 'Your referrals, bookings and commissions', gate: 'affiliate' },
+  { href: '/admin-dashboard/', icon: 'lock-keyhole', title: 'Admin Dashboard',
+    sub: () => 'Every internal tool', gate: 'admin' },
+];
+
+const LEGAL_ROWS = [
+  { href: '/legal/privacy/', icon: 'shield-check', title: 'Privacy Policy', sub: () => '' },
+  { href: '/legal/terms/', icon: 'document-text', title: 'Terms & Conditions', sub: () => '' },
+  { href: '/about/', icon: 'info-circle', title: 'About WhereTo', sub: () => '' },
+];
+
+/** Every section a row can open, so a ?section= value can be validated. */
+const SECTION_KEYS = MENU.flatMap((g) => g.rows.filter((r) => r.key).map((r) => r.key));
+
+function plural(n, word) { return n + ' ' + word + (Number(n) === 1 ? '' : 's'); }
 
 // ── Public entry point ──────────────────────────────────────────────
 
@@ -577,7 +649,9 @@ const PROFILE_COLS =
 export async function initProfileForm(supabase, user, opts = {}) {
   const alertId = opts.alertId || 'wt-alert';
   const mount = document.getElementById(opts.mountId || 'wt-profile-body');
-  const railMount = opts.rail === false ? null : document.getElementById('wt-profile-rail');
+  // The partner portal embeds the editor inside its own page and has its own
+  // nav, so it gets every section stacked with no hub around them.
+  const hub = opts.rail !== false;
   const logoutId = opts.logoutId || 'wt-logout';
   if (!mount) return;
 
@@ -600,44 +674,94 @@ export async function initProfileForm(supabase, user, opts = {}) {
   p.__email = user.email;
   p.__saved = (savedRes && savedRes.data) || [];
 
-  let active = 'profile';
+  // null = the hub. On a phone the hub and a section are never both on screen;
+  // on a wide screen the menu stays beside whatever is open.
+  let active = null;
   const editing = new Set();
+  const gates = { affiliate: false, admin: false };
 
-  // ── Rail ──
-  function paintRail() {
-    // The panel is headed by whoever the profile is for, the way a passport
-    // page is — it changes the moment the name does.
-    const nameEl = document.getElementById('wt-profile-name');
-    if (nameEl) {
-      nameEl.textContent = [p.first_name, p.last_name].filter(Boolean).join(' ') || 'Your profile';
+  // ── Hero ──
+  /** One photo per saved place, so the header reads as "where you are thinking
+   *  of going" rather than as a gallery of one destination — the same rule the
+   *  app's ProfileHero follows. No saved places is a flat azure wash, never a
+   *  stock photo of somewhere they never picked. */
+  function heroPhotos() {
+    const out = [], seen = new Set();
+    for (const d of p.__saved || []) {
+      const rec = d.destination || {};
+      const url = (rec.images && rec.images[0] && rec.images[0].url) || rec.image;
+      if (!url || seen.has(url)) continue;
+      seen.add(url);
+      out.push(url);
     }
-    if (!railMount) return;
-    railMount.innerHTML =
-      '<div class="rail-me">' +
-        (p.profile_photo
-          ? '<img class="pv-avatar pv-avatar--lg" src="' + esc(p.profile_photo) + '" alt="" />'
-          : '<span class="pv-avatar pv-avatar--lg pv-avatar--initials">' +
-            esc(initials(p.first_name, p.last_name)) + '</span>') +
-        '<div><p class="rail-hi">Hi, ' + esc(p.first_name || 'there') + '</p>' +
-        '<p class="rail-email">' + esc(user.email) + '</p></div>' +
-      '</div>' +
-      '<nav class="rail-nav">' +
-        GROUPS.map((g) => '<button type="button" class="rail-item' +
-          (g.key === active ? ' is-active' : '') + '" data-group="' + g.key + '"' +
-          (g.key === active ? ' aria-current="true"' : '') + '>' +
-          '<span class="rail-icon">' + ico(g.icon) + '</span>' +
-          '<span class="rail-text"><span class="rail-title">' + esc(g.label) + '</span>' +
-          '<span class="rail-blurb">' + esc(g.blurb) + '</span></span>' +
-          '<span class="rail-chev">' + ico('alt-arrow-right') + '</span></button>').join('') +
-        '<a class="rail-item" href="/account/bookings/">' +
-          '<span class="rail-icon">' + ico('suitcase') + '</span>' +
-          '<span class="rail-text"><span class="rail-title">My bookings</span>' +
-          '<span class="rail-blurb">The flights and hotels you have booked</span></span>' +
-          '<span class="rail-chev">' + ico('alt-arrow-right') + '</span></a>' +
-      '</nav>';
+    return out.slice(0, 6);
   }
 
-  // ── Panel ──
+  function heroHtml() {
+    const photos = heroPhotos();
+    const name = [p.first_name, p.last_name].filter(Boolean).join(' ');
+    return '<div class="ph-head">' +
+      '<div class="ph-hero' + (photos.length ? ' has-photo' : '') + '">' +
+      (photos.length
+        ? '<div class="ph-hero-photos">' + photos.map((u, i) =>
+            '<img src="' + esc(u) + '" alt="" class="ph-hero-img' + (i === 0 ? ' is-on' : '') + '" ' +
+            'loading="' + (i === 0 ? 'eager' : 'lazy') + '" />').join('') + '</div>'
+        : '') +
+      // The avatar opens Basic Information, which is where the photo is set —
+      // the app opens a picker here, and the web equivalent is that field.
+      '<button type="button" class="ph-avatar-ring" data-open="basic" aria-label="Edit your basic information">' +
+        '<span class="ph-avatar">' +
+          (p.profile_photo
+            ? '<img src="' + esc(p.profile_photo) + '" alt="" />'
+            : esc(initials(p.first_name, p.last_name))) +
+        '</span>' +
+        '<span class="ph-avatar-badge">' + ico('camera') + '</span>' +
+      '</button>' +
+      '</div>' +
+      '<div class="ph-name-block"><p class="ph-eyebrow">Profile</p>' +
+      '<h1 class="ph-name">' + esc(name || 'Your profile') + '</h1></div>' +
+    '</div>';
+  }
+
+  // ── Menu ──
+  function menuRow(r) {
+    const sub = r.sub ? r.sub(p) : '';
+    const inner =
+      '<span class="ph-row-icon">' + ico(r.icon) + '</span>' +
+      '<span class="ph-row-body"><span class="ph-row-title">' + esc(r.title) + '</span>' +
+      (sub ? '<span class="ph-row-sub">' + esc(sub) + '</span>' : '') + '</span>' +
+      '<span class="ph-row-chev">' + ico('alt-arrow-right') + '</span>';
+    if (r.href) return '<a class="ph-row" href="' + esc(r.href) + '">' + inner + '</a>';
+    return '<button type="button" class="ph-row' + (r.key === active ? ' is-active' : '') + '" ' +
+      'data-open="' + r.key + '"' + (r.key === active ? ' aria-current="true"' : '') + '>' + inner + '</button>';
+  }
+
+  function menuGroup(label, rows) {
+    if (!rows.length) return '';
+    return '<section class="ph-group"><h2 class="ph-group-label">' + esc(label) + '</h2>' +
+      rows.map(menuRow).join('') + '</section>';
+  }
+
+  function menuHtml() {
+    const accountRows = ACCOUNT_ROWS.filter((r) => gates[r.gate]);
+    return '<div class="ph-tiles">' +
+        '<button type="button" class="ph-tile" data-open="basic">' +
+          '<span class="ph-tile-icon">' + ico('user-circle') + '</span>' +
+          '<span class="ph-tile-label">My<br />Profile</span></button>' +
+        '<button type="button" class="ph-tile" data-open="travellers">' +
+          '<span class="ph-tile-icon">' + ico('users-group-rounded') + '</span>' +
+          '<span class="ph-tile-label">Travelers<br />&amp; Friends</span></button>' +
+      '</div>' +
+      '<a class="ph-wide-tile" href="/account/bookings/">' +
+        '<span class="ph-wide-tile-label">My Trips</span>' +
+        '<span class="ph-wide-tile-icon">' + ico('route') + '</span></a>' +
+      MENU.map((g) => menuGroup(g.label, g.rows)).join('') +
+      menuGroup('Account', accountRows) +
+      menuGroup('Legal', LEGAL_ROWS) +
+      '<button type="button" class="ph-logout" data-logout>' + ico('logout-2') + ' Log Out</button>';
+  }
+
+  // ── Section ──
   function sectionHtml(key) {
     const s = SECTIONS[key];
     const isEditing = editing.has(key);
@@ -645,7 +769,7 @@ export async function initProfileForm(supabase, user, opts = {}) {
       '<div class="pv-sec-head">' +
         '<div><h2 class="pv-sec-title">' + esc(s.title) + '</h2>' +
         (s.blurb ? '<p class="pv-sec-blurb">' + esc(s.blurb) + '</p>' : '') + '</div>' +
-        (isEditing ? '' : '<button type="button" class="pv-edit" data-edit="' + key + '">Edit</button>') +
+        (isEditing || !s.edit ? '' : '<button type="button" class="pv-edit" data-edit="' + key + '">Edit</button>') +
       '</div>' +
       (isEditing
         ? '<form class="pv-form" data-form="' + key + '" novalidate>' + s.edit(p) +
@@ -657,52 +781,87 @@ export async function initProfileForm(supabase, user, opts = {}) {
       '</section>';
   }
 
-  function paintPanel() {
-    const keys = railMount
-      ? (GROUPS.find((g) => g.key === active) || GROUPS[0]).sections
-      : GROUPS.flatMap((g) => g.sections);
-    mount.innerHTML = keys.map(sectionHtml).join('');
+  /** The back arrow that turns a section into its own page on a phone. It is
+   *  in the markup on every width — the wide layout hides it, since there the
+   *  menu never left. */
+  function sectionPage(key) {
+    return '<div class="ph-section-page">' +
+      '<button type="button" class="ph-back" data-back>' + ico('alt-arrow-left') + ' Profile</button>' +
+      sectionHtml(key) + '</div>';
+  }
+
+  function paint() {
+    if (!hub) { mount.innerHTML = SECTION_KEYS.map(sectionHtml).join(''); return; }
+    mount.className = 'ph' + (active ? ' is-section' : ' is-hub');
+    mount.innerHTML =
+      heroHtml() +
+      '<div class="ph-cols">' +
+        '<nav class="ph-menu">' + menuHtml() + '</nav>' +
+        '<div class="ph-panel">' + (active ? sectionPage(active) : '') + '</div>' +
+      '</div>';
   }
 
   function repaintSection(key) {
     const el = mount.querySelector('[data-sec="' + key + '"]');
-    if (!el) return;
+    if (!el) { paint(); return; }
     el.outerHTML = sectionHtml(key);
   }
 
-  paintRail();
-  paintPanel();
+  /** Menu subtitles quote the values, so they go stale the moment one is
+   *  saved. Repaint just the menu rather than the whole page — repainting the
+   *  page would throw away the section the reader is looking at. */
+  function repaintMenu() {
+    const nav = mount.querySelector('.ph-menu');
+    if (nav) nav.innerHTML = menuHtml();
+    const head = mount.querySelector('.ph-head');
+    if (head) head.outerHTML = heroHtml();
+  }
 
-  // ── Rail navigation ──
-  if (railMount) {
-    railMount.addEventListener('click', (e) => {
-      const item = e.target.closest('[data-group]');
-      if (!item) return;
-      active = item.dataset.group;
-      editing.clear();
-      hideAlert(alertId);
-      paintRail();
-      paintPanel();
-      // Deep-linkable, and the browser's Back button walks the groups the way
-      // it walks pages.
+  function go(key, push) {
+    active = key;
+    editing.clear();
+    hideAlert(alertId);
+    paint();
+    if (push !== false) {
       const url = new URL(window.location.href);
-      url.searchParams.set('section', active);
-      history.pushState({ section: active }, '', url);
+      if (key) url.searchParams.set('section', key);
+      else url.searchParams.delete('section');
+      history.pushState({ section: key }, '', url);
+    }
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
+
+  // Deep link straight to a section (and the app's own links can do the same).
+  const initial = new URLSearchParams(window.location.search).get('section');
+  if (hub && initial && SECTION_KEYS.includes(initial)) active = initial;
+  paint();
+
+  // Which of the two dashboards this account can see. Both are own-row reads
+  // under RLS; the rows appear once the answers arrive.
+  if (hub) {
+    Promise.all([
+      supabase.from('affiliates').select('id').eq('user_id', user.id).maybeSingle().then((r) => r, () => ({})),
+      supabase.from('admins').select('user_id').eq('user_id', user.id).maybeSingle().then((r) => r, () => ({})),
+    ]).then(([aff, adm]) => {
+      gates.affiliate = !!(aff && aff.data);
+      gates.admin = !!(adm && adm.data);
+      if (gates.affiliate || gates.admin) repaintMenu();
     });
   }
-  window.addEventListener('popstate', () => {
-    if (!railMount) return;
-    const want = new URLSearchParams(window.location.search).get('section') || 'profile';
-    if (!GROUPS.some((g) => g.key === want) || want === active) return;
-    active = want; editing.clear(); paintRail(); paintPanel();
-  });
-  const initialSection = new URLSearchParams(window.location.search).get('section');
-  if (railMount && initialSection && GROUPS.some((g) => g.key === initialSection)) {
-    active = initialSection; paintRail(); paintPanel();
-  }
 
-  // ── Section edit / cancel, and the repeatable rows inside a section ──
+  window.addEventListener('popstate', () => {
+    if (!hub) return;
+    const want = new URLSearchParams(window.location.search).get('section');
+    go(SECTION_KEYS.includes(want) ? want : null, false);
+  });
+
+  // ── Clicks: navigation, per-section edit, and the repeatable rows ──
   mount.addEventListener('click', (e) => {
+    const open = e.target.closest('[data-open]');
+    if (open) { go(open.dataset.open); return; }
+    if (e.target.closest('[data-back]')) { go(null); return; }
+    if (e.target.closest('[data-logout]')) { doLogout(); return; }
+
     const edit = e.target.closest('[data-edit]');
     if (edit) { editing.add(edit.dataset.edit); hideAlert(alertId); repaintSection(edit.dataset.edit); return; }
 
@@ -740,6 +899,7 @@ export async function initProfileForm(supabase, user, opts = {}) {
           }
           p.__saved = p.__saved.filter((d) => d.code !== code);
           repaintSection('saved');
+          repaintMenu();
         });
       return;
     }
@@ -793,25 +953,24 @@ export async function initProfileForm(supabase, user, opts = {}) {
     Object.assign(p, updates);
     editing.delete(key);
     repaintSection(key);
-    paintRail(); // name or photo may have just changed
+    if (hub) repaintMenu(); // subtitles, the hero name and the avatar all quote these
     showAlert(alertId, 'success', s.title + ' saved.');
   });
 
   // ── Logout ──
-  const out = document.getElementById(logoutId);
-  if (out) {
-    out.addEventListener('click', async () => {
-      if (window.posthog) {
-        window.posthog.capture('logout', { surface: 'whereto_trips_web' });
-        // Clears registered super properties (platform/surface) — re-register
-        // immediately so the next anonymous visitor on this device does not
-        // silently lose its reporting category. Mirrors the app-side fix in
-        // Wander_App/src/utils/analytics.ts (2026-08-09).
-        window.posthog.reset();
-        window.posthog.register({ platform: 'website', surface: 'whereto_trips_web' });
-      }
-      await supabase.auth.signOut();
-      window.location.href = '/account/login/';
-    });
+  async function doLogout() {
+    if (window.posthog) {
+      window.posthog.capture('logout', { surface: 'whereto_trips_web' });
+      // Clears registered super properties (platform/surface) — re-register
+      // immediately so the next anonymous visitor on this device does not
+      // silently lose its reporting category. Mirrors the app-side fix in
+      // Wander_App/src/utils/analytics.ts (2026-08-09).
+      window.posthog.reset();
+      window.posthog.register({ platform: 'website', surface: 'whereto_trips_web' });
+    }
+    await supabase.auth.signOut();
+    window.location.href = '/account/login/';
   }
+  const out = document.getElementById(logoutId);
+  if (out) out.addEventListener('click', doLogout);
 }

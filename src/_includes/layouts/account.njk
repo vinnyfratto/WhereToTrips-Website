@@ -2,7 +2,7 @@
 layout: layouts/base.njk
 ---
 <link rel="stylesheet" href="/assets/account.css?v={{ buildTime }}" />
-<main class="acct {{ acctWide and 'acct--wide' or '' }}">
+<main class="acct {{ acctWide and 'acct--wide' or '' }} {{ acctBare and 'acct--bare' or '' }}">
   {{ content | safe }}
 </main>
 <script type="module" src="/assets/js/wt-auth.js?v={{ buildTime }}"></script>
