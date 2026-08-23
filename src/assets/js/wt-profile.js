@@ -634,7 +634,7 @@ const ACCOUNT_ROWS = [
 ];
 
 const LEGAL_ROWS = [
-  { href: '/legal/privacy/', icon: 'shield-check', title: 'Privacy Policy', sub: () => '' },
+  { href: '/legal/privacy/', icon: 'shield-check', title: 'Privacy Statement', sub: () => '' },
   { href: '/legal/terms/', icon: 'document-text', title: 'Terms & Conditions', sub: () => '' },
   { href: '/about/', icon: 'info-circle', title: 'About WhereTo', sub: () => '' },
 ];

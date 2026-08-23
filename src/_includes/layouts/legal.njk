@@ -3,7 +3,7 @@ layout: layouts/base.njk
 ---
 <section class="block">
   <div class="wrap">
-    <div class="rich-text reveal">
+    <div class="rich-text legal-doc reveal">
       <span class="eyebrow">Legal</span>
       <h1 style="font-size: clamp(30px, 4vw, 44px); line-height: 1.1; margin: 12px 0 10px;">{{ title }}</h1>
       {% if updated %}<p class="email-note" style="margin-bottom: 28px;">Last updated: {{ updated }}</p>{% endif %}
@@ -11,3 +11,21 @@ layout: layouts/base.njk
     </div>
   </div>
 </section>
+
+<style>
+  /* Legal documents are long and section-numbered, so the marketing heading
+     scale is far too loud here. Scope the smaller scale to this layout only. */
+  .legal-doc { max-width: 820px; font-size: 15.5px; line-height: 1.75; }
+  .legal-doc h2 { font-size: clamp(20px, 2.4vw, 25px); margin: 40px 0 12px; }
+  .legal-doc h3 { font-size: 18px; margin: 26px 0 8px; }
+  .legal-doc li { margin-bottom: 8px; }
+  .legal-doc table {
+    display: block; width: 100%; overflow-x: auto;
+    border-collapse: collapse; margin: 18px 0 24px; font-size: 14px; line-height: 1.55;
+  }
+  .legal-doc th, .legal-doc td {
+    border: 1px solid rgba(0, 0, 0, .12);
+    padding: 10px 12px; text-align: left; vertical-align: top; min-width: 150px;
+  }
+  .legal-doc th { background: rgba(0, 0, 0, .04); font-weight: 600; }
+</style>
