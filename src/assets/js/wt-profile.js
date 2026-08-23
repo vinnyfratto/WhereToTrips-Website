@@ -1,15 +1,20 @@
 // ───────────────────────────────────────────────────────────────────
-//  wt-profile.js — the account area's profile editor.
+//  wt-profile.js — the account area's profile.
 //
-//  Shape: a left rail that switches which group of sections is showing,
-//  and a panel of sections that READ first and turn into a form one
-//  section at a time. Nothing is edited until you ask to edit it, and a
-//  save only writes the columns that section owns.
+//  Shape: the app's own profile, because that is where nearly everyone
+//  reads it. A photo header, the name, two shortcut tiles, then plain
+//  grouped rows — and opening a row shows THAT section on its own, with a
+//  back arrow and its own URL. Sections READ first and turn into a form
+//  only when asked, and a save writes only the columns that section owns.
+//
+//  On a phone the hub and a section are never both on screen. Wide screens
+//  keep the same pieces with the menu beside the section, and open My
+//  Profile by default rather than landing on an empty panel.
 //
 //  Used by both /account/profile/ (wt-auth.js) and
 //  /partner-dashboard/settings/ (wt-partner-settings.js) so there is ONE
 //  editor and ONE client. The partner page passes rail:false — it has its
-//  own portal nav — and gets every section stacked instead.
+//  own portal nav — and gets every section stacked with no hub.
 //
 //  Column parity with the app (src/store/authStore.ts updateProfile):
 //    first_name last_name middle_name profile_photo phone marketing_opt_in
@@ -677,6 +682,11 @@ export async function initProfileForm(supabase, user, opts = {}) {
   // null = the hub. On a phone the hub and a section are never both on screen;
   // on a wide screen the menu stays beside whatever is open.
   let active = null;
+  // Wide screens keep the menu on show whatever is open, so landing on an
+  // empty panel is just half a blank page — My Profile opens by default
+  // there. On a phone the hub IS the page, so it stays the landing view.
+  const WIDE = window.matchMedia('(min-width: 900px)');
+  const landing = () => (WIDE.matches ? 'basic' : null);
   const editing = new Set();
   const gates = { affiliate: false, admin: false };
 
@@ -833,7 +843,7 @@ export async function initProfileForm(supabase, user, opts = {}) {
 
   // Deep link straight to a section (and the app's own links can do the same).
   const initial = new URLSearchParams(window.location.search).get('section');
-  if (hub && initial && SECTION_KEYS.includes(initial)) active = initial;
+  if (hub) active = (initial && SECTION_KEYS.includes(initial)) ? initial : landing();
   paint();
 
   // Which of the two dashboards this account can see. Both are own-row reads
@@ -852,8 +862,23 @@ export async function initProfileForm(supabase, user, opts = {}) {
   window.addEventListener('popstate', () => {
     if (!hub) return;
     const want = new URLSearchParams(window.location.search).get('section');
-    go(SECTION_KEYS.includes(want) ? want : null, false);
+    // Back out of a section on a wide screen lands on the default rather than
+    // an empty panel — the same place a fresh load puts you.
+    go(SECTION_KEYS.includes(want) ? want : landing(), false);
   });
+
+  // Crossing the breakpoint re-decides the landing view: widening opens the
+  // default instead of showing an empty panel, narrowing returns to the hub.
+  // A section named in the URL is an explicit choice and survives both.
+  if (hub) {
+    WIDE.addEventListener('change', () => {
+      const named = new URLSearchParams(window.location.search).get('section');
+      if (named && SECTION_KEYS.includes(named)) return;
+      active = landing();
+      editing.clear();
+      paint();
+    });
+  }
 
   // ── Clicks: navigation, per-section edit, and the repeatable rows ──
   mount.addEventListener('click', (e) => {

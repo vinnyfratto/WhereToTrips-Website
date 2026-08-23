@@ -804,11 +804,6 @@
   .ph-tile-icon { font-size: 44px; }
   .ph-row.is-active { background: var(--wg100); border-radius: var(--radius-sm); padding-inline: 10px; }
   .ph-row.is-active .ph-row-title { color: var(--rust); }
-  /* Nothing open yet — say so rather than leaving half the page blank. */
-  .ph.is-hub .ph-panel::before {
-    content: 'Pick something on the left to view or edit it.';
-    display: block; color: var(--wg500); font-size: 0.95rem;
-  }
 }
 
 /* ── Sections ── */
