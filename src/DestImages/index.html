@@ -535,7 +535,7 @@ function _canonCountry(s){ return _norm(s).replace(/\bst\b/g,'saint').replace(/\
 function _engineFor(d){
   var e=(d.iata&&ENGINE_BY_IATA[d.iata])||ENGINE_BY_NAME[_norm(d.city)+'|'+_norm(d.country)]||ENGINE_BY_COUNTRY[_canonCountry(d.country)];
   if(e) return { region:e.region, subregion:e.subregion, vibeCount:e.vibeCount, vibes:e.vibes||[], matched:true };
-  return { region:CODE_REGION[d.region]||'Other', subregion:SUBREGION_LABELS[d.subregion]||'Other', vibeCount:null, vibes:[], matched:false };
+  return { region:CODE_REGION[d.region]||'Other', subregion:'⚠ Not yet in Vibe Engine', vibeCount:null, vibes:[], matched:false };
 }
 
 // Seed the gallery from the destination's current single hero (image_url) so the
@@ -551,7 +551,7 @@ async function _loadData(){
   if(!_SUPA_URL||!_SUPA_ANON){ _bootError('Supabase not configured in the build (.env keys missing).'); return; }
   try {
     await _loadFetchCfg();
-    var dr = await fetch(_SUPA_URL+'/rest/v1/destinations?select=id,city,country,iata,region,subregion,image_url,image_attribution&is_active=eq.true&order=city.asc',{headers:_H});
+    var dr = await fetch(_SUPA_URL+'/rest/v1/destinations?select=id,city,country,iata,region,image_url,image_attribution&is_active=eq.true&order=city.asc',{headers:_H});
     if(!dr.ok) throw new Error('destinations HTTP '+dr.status);
     var dests = await dr.json();
     var er = await fetch(_SUPA_URL+'/rest/v1/destination_image_edits?select=dest_id,images,updated_at',{headers:_H});

@@ -621,7 +621,7 @@ async function boot(){
   if (!_SUPA_URL || !_SUPA_ANON) { showBootError('Missing Supabase URL/anon key at build time.'); return; }
   try {
     var [destRes, editsRes] = await Promise.all([
-      fetch(_SUPA_URL+'/rest/v1/destinations?select=id,city,country,iata,region,subregion,image_url,image_attribution,intro_title,intro_body&order=city', {headers:_H}),
+      fetch(_SUPA_URL+'/rest/v1/destinations?select=id,city,country,iata,region,image_url,image_attribution,intro_title,intro_body&order=city', {headers:_H}),
       fetch(_SUPA_URL+'/rest/v1/destination_image_edits?select=dest_id,images', {headers:_H}),
     ]);
     if (!destRes.ok) throw new Error('destinations fetch failed: '+destRes.status);
