@@ -106,6 +106,26 @@ function amenityIcon(name) {
   return 'check-circle';
 }
 
+/** Street (from the property's own content record) plus the city/country
+ *  stamped on the order at booking time — never lat/lng, which is what the
+ *  property's `address` field alone leaves out. Skips the city/country
+ *  suffix when the street already names the city, so it never doubles up. */
+function fullHotelAddress(order, content) {
+  const street = content && content.address;
+  const cityCountry = [order.city, order.country].filter(Boolean).join(', ');
+  const cityLower = String(order.city || '').toLowerCase();
+  if (street && cityLower && street.toLowerCase().includes(cityLower)) return street;
+  return [street, cityCountry].filter(Boolean).join(', ') || street || cityCountry || null;
+}
+
+/** A named-place query, never a bare coordinate pair — Google Maps' embed
+ *  labels the pin with whatever text is searched, so leading with the hotel's
+ *  own name (not lat/lng) is what keeps the pin from reading as a lat/lng pair. */
+function hotelMapEmbedSrc(name, address) {
+  const query = [name, address].filter(Boolean).join(', ');
+  return 'https://www.google.com/maps?q=' + encodeURIComponent(query) + '&z=15&output=embed';
+}
+
 function hotelSections(order, live, content, opts) {
   const o = opts || {};
   const status = (live && live.status) || order.status;
@@ -127,15 +147,15 @@ function hotelSections(order, live, content, opts) {
 
   let html = '';
 
-  // Contact — right below the identity block, one big tappable line each.
+  // Contact — right below the identity block, one big tappable line each,
+  // with a map alongside naming the property (never its bare coordinates).
+  const fullAddress = fullHotelAddress(order, content);
   const contact = [];
-  if (content && content.address) {
-    const q = content.latitude != null && content.longitude != null
-      ? content.latitude + ',' + content.longitude
-      : content.address;
+  if (fullAddress) {
+    const mapsQuery = [order.hotel_name, fullAddress].filter(Boolean).join(', ');
     contact.push('<a class="bk-contact" href="https://www.google.com/maps/search/?api=1&query=' +
-      encodeURIComponent(q) + '" target="_blank" rel="noopener">' +
-      '<span class="bk-contact-icon">' + ico('map-point') + '</span>' + esc(content.address) + '</a>');
+      encodeURIComponent(mapsQuery) + '" target="_blank" rel="noopener">' +
+      '<span class="bk-contact-icon">' + ico('map-point') + '</span>' + esc(fullAddress) + '</a>');
   }
   if (propertyPhone) {
     contact.push('<a class="bk-contact" href="tel:' + esc(String(propertyPhone).replace(/\s+/g, '')) + '">' +
@@ -145,7 +165,15 @@ function hotelSections(order, live, content, opts) {
     contact.push('<a class="bk-contact" href="mailto:' + esc(propertyEmail) + '">' +
       '<span class="bk-contact-icon">' + ico('letter') + '</span>' + esc(propertyEmail) + '</a>');
   }
-  if (contact.length) html += '<div class="bk-contact-block">' + contact.join('') + '</div><hr class="bk-divider" />';
+  const contactHtml = contact.length ? '<div class="bk-contact-block">' + contact.join('') + '</div>' : '';
+  const mapHtml = fullAddress
+    ? '<div class="bk-map-embed"><iframe src="' + esc(hotelMapEmbedSrc(order.hotel_name, fullAddress)) +
+      '" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen ' +
+      'title="' + esc(order.hotel_name || 'Hotel location') + '"></iframe></div>'
+    : '';
+  if (contactHtml || mapHtml) {
+    html += '<div class="bk-contact-map-row">' + contactHtml + mapHtml + '</div><hr class="bk-divider" />';
+  }
 
   // Stay — one fact per row, with the property's own times when known.
   let stay = '';
@@ -559,6 +587,21 @@ function backLink() {
     ' Back to bookings</a>';
 }
 
+/** A leg's subtotal — bold, starts a new group in the price breakdown. */
+function kvGroupRow(label, value) {
+  if (value == null || value === '') return '';
+  return '<div class="bk-kv bk-kv-group"><span class="bk-kv-label">' + esc(label) + '</span>' +
+    '<span class="bk-kv-value is-group">' + esc(value) + '</span></div>';
+}
+
+/** One line item under a group row — indented, quieter than the subtotal
+ *  it belongs to. */
+function kvSubRow(label, value) {
+  if (value == null || value === '') return '';
+  return '<div class="bk-kv bk-kv-sub"><span class="bk-kv-label">' + esc(label) + '</span>' +
+    '<span class="bk-kv-value">' + esc(value) + '</span></div>';
+}
+
 /** Trip-as-a-whole summary shown above the flight/hotel breakdowns: dates,
  *  total package price, and a one-line pointer to each leg — the detailed
  *  confirmation codes, fares and room facts live in the sections below. */
@@ -579,21 +622,27 @@ function tripSummary(hotel, flight, live, content) {
   const airportLine = [flight.origin, flight.destination].filter(Boolean).join(' → ');
 
   const ci = (live.hotel && live.hotel.checkinInstructions) || {};
-  const hotelAddress = (content && content.address) || null;
+  const hotelAddress = fullHotelAddress(hotel, content);
   const hotelPhone = (ci.propertyContact && ci.propertyContact.phone) || (content && content.phone) || null;
 
   const hpb = hotelPriceBreakdown(hotel);
   const fpb = flightPriceBreakdown(flight);
+  const roomRate = hpb ? hpb.roomRate : Number(hotel.total_amount) || 0;
+  const roomCurrency = hpb ? hpb.currency : hotel.total_currency;
+  const perNight = hotel.nights ? roomRate / hotel.nights : null;
 
   let priceRows = '';
-  priceRows += kvRow('Flight fare', fpb ? money(fpb.base, fpb.currency) : money(flight.total_amount, flight.total_currency));
-  if (fpb && fpb.taxes != null) priceRows += kvRow('Flight taxes & fees', money(fpb.taxes, fpb.currency));
-  priceRows += kvRow('Hotel room rate', hpb ? money(hpb.roomRate, hpb.currency) : money(hotel.total_amount, hotel.total_currency));
-  if (hpb) priceRows += kvRow('Hotel taxes & fees', money(hpb.taxesFees, hpb.currency));
-  if (hpb && hpb.dueAtProperty > 0) {
-    priceRows += kvRow('Due at property', money(hpb.dueAtProperty, hpb.currency));
-  }
-  priceRows += kvRow('Total paid today', money(totalPaid, currency), true);
+  priceRows += kvGroupRow('Total flight cost', money(flight.total_amount, flight.total_currency));
+  priceRows += kvSubRow('Flight fare', fpb ? money(fpb.base, fpb.currency) : money(flight.total_amount, flight.total_currency));
+  if (fpb && fpb.taxes != null) priceRows += kvSubRow('Flight taxes & fees', money(fpb.taxes, fpb.currency));
+
+  priceRows += kvGroupRow('Total hotel cost', money(hotel.total_amount, hotel.total_currency));
+  priceRows += kvSubRow('Hotel rate', money(roomRate, roomCurrency));
+  if (perNight != null) priceRows += kvSubRow('Per night rate', money(perNight, roomCurrency));
+  if (hpb) priceRows += kvSubRow('Hotel taxes & fees', money(hpb.taxesFees, hpb.currency));
+  if (hpb && hpb.dueAtProperty > 0) priceRows += kvSubRow('Due at property', money(hpb.dueAtProperty, hpb.currency));
+
+  priceRows += kvRow('Trip package total', money(totalPaid, currency), true);
 
   let html = '<div class="bk-summary-card">' +
     '<p class="bk-summary-eyebrow">Trip summary</p>' +
