@@ -20,59 +20,68 @@
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink);
   font: 14px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-.wrap { max-width: 1240px; margin: 0 auto; padding: 22px 20px 90px; }
+.wrap { max-width: 1400px; margin: 0 auto; padding: 22px 20px 90px; }
 h1 { font-size: 24px; margin: 0 0 4px; }
-.sub { color: var(--muted); margin: 0 0 18px; max-width: 900px; }
+.sub { color: var(--muted); margin: 0 0 14px; max-width: 900px; }
 .sub code { background: #EDF2F7; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
 
-.tabs { display: flex; gap: 8px; margin: 0 0 16px; }
-.tabBtn { border: 1px solid var(--line); background: var(--card); color: var(--ink);
-  padding: 9px 18px; border-radius: 999px; font-size: 14px; font-weight: 600; cursor: pointer; }
-.tabBtn.on { background: var(--ink); border-color: var(--ink); color: #fff; }
+.crumbs { display: flex; align-items: center; gap: 6px; margin: 0 0 16px; flex-wrap: wrap; font-size: 13.5px; }
+.crumbs button { border: 0; background: none; color: var(--azure); font-weight: 700; cursor: pointer; padding: 4px 6px; border-radius: 6px; }
+.crumbs button:hover { background: #EAF2FA; }
+.crumbs button:disabled { color: var(--ink); cursor: default; }
+.crumbs button:disabled:hover { background: none; }
+.crumbs .sep { color: #B7C2CE; }
 
-.lede { color: var(--muted); margin: 6px 2px 14px; max-width: 900px; }
-.lede.warn { color: var(--bad); font-weight: 600; }
-
-.row { display: flex; gap: 16px; background: var(--card); border: 1px solid var(--line);
-  border-radius: 12px; padding: 14px; margin-bottom: 10px; }
-.row.child { margin-left: 30px; border-left: 3px solid var(--azure); }
-.row.isDirty { border-color: var(--amber); box-shadow: 0 0 0 2px rgba(200,134,43,.14); }
-.rowMain { flex: 1 1 auto; min-width: 0; }
-.rowHead { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+.catCard { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px; cursor: pointer;
+  transition: border-color .12s, box-shadow .12s; }
+.catCard:hover { border-color: var(--azure); box-shadow: 0 2px 10px rgba(47,111,168,.12); }
+.catCard.isDirty { border-color: var(--amber); box-shadow: 0 0 0 2px rgba(200,134,43,.14); }
 .nameIn { font-size: 16px; font-weight: 700; color: var(--ink); border: 1px solid transparent;
-  background: #F3F6F9; border-radius: 8px; padding: 7px 10px; min-width: 260px; }
+  background: #F3F6F9; border-radius: 8px; padding: 7px 10px; width: 100%; }
 .nameIn:focus { border-color: var(--azure); background: #fff; outline: none; }
-.code { font: 12px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--muted);
-  background: #EDF2F7; border-radius: 5px; padding: 5px 7px; cursor: help; }
-.pill { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px;
-  color: var(--azure); background: #EAF2FA; border-radius: 999px; padding: 4px 9px; }
-.pill.top { color: var(--amber); background: #FBF1E2; }
+.nameIn.sm { font-size: 13.5px; font-weight: 700; padding: 5px 8px; }
+.metaRow { display: flex; align-items: center; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+.code { font: 11px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--muted);
+  background: #EDF2F7; border-radius: 5px; padding: 4px 6px; cursor: help; }
 .count { font-size: 12px; color: var(--muted); }
 .count.zero { color: var(--bad); font-weight: 700; }
-.sortWrap { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
-.sortIn { width: 62px; padding: 5px 7px; border: 1px solid var(--line); border-radius: 6px; }
-.saveBtn { margin-left: auto; border: 1px solid var(--azure); background: #fff; color: var(--azure);
-  padding: 7px 15px; border-radius: 8px; font-weight: 700; cursor: pointer; }
-.saveBtn:hover { background: var(--azure); color: #fff; }
-.saveBtn:disabled { opacity: .5; cursor: default; }
-.blurbIn { width: 100%; margin: 9px 0 8px; padding: 7px 10px; border: 1px solid var(--line);
-  border-radius: 8px; font-size: 13px; color: var(--muted); }
-.vibes { display: flex; flex-wrap: wrap; gap: 5px; }
-.v { font-size: 11.5px; background: #F3F6F9; border: 1px solid var(--line); border-radius: 999px;
-  padding: 3px 9px; color: #44586C; }
-.v.none { background: #FDECEA; border-color: #F5C6C2; color: var(--bad); }
 
-.rowImgs { flex: 0 0 372px; display: flex; gap: 8px; }
-.imgSlot { flex: 1 1 0; min-width: 0; }
-.thumb { height: 74px; border-radius: 8px; background: #EDF2F7 center/cover no-repeat;
-  border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; }
-.thumb.empty span { color: #A9B7C6; font-size: 20px; font-weight: 800; }
-.imgUrl { width: 100%; margin-top: 5px; padding: 5px 7px; border: 1px solid var(--line);
-  border-radius: 6px; font-size: 11px; }
+.board { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 10px; align-items: flex-start; }
+.col { flex: 0 0 260px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px; }
+.col.drag-over { border-color: var(--azure); box-shadow: 0 0 0 2px rgba(47,111,168,.18); background: #F5F9FC; }
+.colHead { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+.colCount { font-size: 11px; color: var(--muted); background: #EDF2F7; border-radius: 999px; padding: 2px 8px; white-space: nowrap; }
+.colBody { display: flex; flex-direction: column; gap: 8px; min-height: 40px; }
+.keyCard, .destCard { background: #F9FBFC; border: 1px solid var(--line); border-radius: 9px; padding: 9px 10px; cursor: grab; }
+.keyCard.dragging, .destCard.dragging { opacity: .35; }
+.keyCard:hover, .destCard:hover { border-color: var(--azure); }
+.keyCardTop { display: flex; align-items: flex-start; justify-content: space-between; gap: 6px; }
+.keyCardName { font-weight: 700; font-size: 13.5px; color: var(--ink); cursor: pointer; }
+.keyCardName:hover { text-decoration: underline; }
+.chip { font-size: 10.5px; font-weight: 700; color: var(--azure); background: #EAF2FA; border-radius: 999px; padding: 3px 8px; white-space: nowrap; }
+.destScore { font-size: 11px; font-weight: 700; color: var(--good); background: #EAF6EA; border-radius: 999px; padding: 3px 7px; }
+.moveBtn { border: 1px solid var(--line); background: #fff; color: var(--muted); font-size: 11px; padding: 3px 8px;
+  border-radius: 999px; cursor: pointer; margin-top: 7px; }
+.moveBtn:hover { border-color: var(--azure); color: var(--azure); }
+
+.keyDetail { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px; margin-bottom: 16px; }
+.keyDetailHead { display: flex; align-items: flex-start; gap: 14px; flex-wrap: wrap; }
+.keyDetailHead .nameIn { font-size: 20px; max-width: 480px; }
+.locPill { font-size: 12px; color: var(--muted); background: #F3F6F9; border-radius: 999px; padding: 6px 12px; }
+
+.section { margin: 22px 0 0; }
+.sectionTitle { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; color: var(--muted); margin: 0 0 10px; }
+.vibeRow { display: flex; align-items: center; gap: 8px; background: var(--card); border: 1px solid var(--line);
+  border-radius: 10px; padding: 9px 11px; margin-bottom: 7px; }
+.vibeRow .nameIn.sm { flex: 1 1 auto; }
+.tier { font-size: 10.5px; color: var(--muted); background: #EDF2F7; border-radius: 999px; padding: 3px 8px; }
+
+.lede { color: var(--muted); margin: 6px 2px 14px; max-width: 900px; }
 
 .bar { position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-top: 1px solid var(--line);
   padding: 12px 20px; display: flex; align-items: center; gap: 12px; z-index: 30; }
-.bar .inner { max-width: 1240px; margin: 0 auto; width: 100%; display: flex; align-items: center; gap: 12px; }
+.bar .inner { max-width: 1400px; margin: 0 auto; width: 100%; display: flex; align-items: center; gap: 12px; }
 .primary { background: var(--ink); color: #fff; border: 0; padding: 11px 22px; border-radius: 9px;
   font-weight: 700; cursor: pointer; }
 .primary:disabled { background: #C3CDD8; cursor: default; }
@@ -91,9 +100,21 @@ h1 { font-size: 24px; margin: 0 0 4px; }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 .toast.bad { background: var(--bad); }
 
-@media (max-width: 900px) {
-  .row { flex-direction: column; }
-  .rowImgs { flex-basis: auto; }
+.modalOverlay { position: fixed; inset: 0; background: rgba(20,30,40,.42); z-index: 50; display: flex;
+  align-items: center; justify-content: center; padding: 20px; }
+.modal { background: #fff; border-radius: 14px; width: 100%; max-width: 460px; max-height: 78vh; display: flex;
+  flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,.25); }
+.modalHead { padding: 16px 18px 10px; border-bottom: 1px solid var(--line); }
+.modalHead h3 { margin: 0 0 8px; font-size: 15px; }
+.modalSearch { width: 100%; padding: 8px 11px; border: 1px solid var(--line); border-radius: 8px; font-size: 13px; }
+.modalList { overflow-y: auto; padding: 8px; flex: 1 1 auto; }
+.modalItem { padding: 9px 11px; border-radius: 8px; cursor: pointer; font-size: 13px; }
+.modalItem:hover { background: #EAF2FA; }
+.modalItem .sub { color: var(--muted); font-size: 11.5px; margin-top: 1px; }
+.modalFoot { padding: 10px 18px; border-top: 1px solid var(--line); text-align: right; }
+
+@media (max-width: 700px) {
+  .keyDetailHead { flex-direction: column; }
 }
 </style>
 </head>
@@ -149,45 +170,63 @@ h1 { font-size: 24px; margin: 0 0 4px; }
 <div class="wrap">
   <h1>Vibe Taxonomy</h1>
   <p class="sub">
-    Every canonical vibe carries two groupings. <b>Category</b> is one global bucket, the same
-    everywhere on earth. <b>Shelf</b> is the picker's accordion group, a parent&nbsp;&rarr;&nbsp;child
-    tree packed per sub-region. Rename either, give either up to three images, and set the order.
-    The grey <code>code</code> beside each name is the stable id everything joins on — it never
-    changes, which is what makes renaming free. Which vibes sit in a group is decided in code and
-    shown here read-only.
+    Categories &rarr; Shelves &rarr; Keys (canonical vibes) &rarr; engine vibes &amp; their destinations.
+    Rename anything inline. Drag a Key card to another shelf column, or a destination card to another
+    engine-vibe column; use <b>Move to&hellip;</b> when the target isn't on screen (a different category,
+    a different Key). The grey <code>code</code> is the stable id everything joins on — it never changes,
+    which is what makes renaming free.
   </p>
 
-  <div class="tabs">
-    <button class="tabBtn on" type="button" data-act="tab" data-tab="categories">Categories</button>
-    <button class="tabBtn" type="button" data-act="tab" data-tab="shelves">Shelves</button>
-  </div>
-
-  <div id="vt-body"><div class="loading">Loading taxonomy…</div></div>
+  <div class="crumbs" id="vt-crumbs"></div>
+  <div id="vt-body"><div class="loading">Loading taxonomy&hellip;</div></div>
 </div>
 
 <div class="bar">
   <div class="inner">
     <button class="primary" id="vt-saveall" type="button" disabled>No changes</button>
     <button class="ghost" type="button" data-act="reload">Reload</button>
-    <span class="barNote">Edits save straight to Supabase. Images take any public URL.</span>
+    <span class="barNote">Publish saves every rename/move straight to Supabase — live in the app immediately.</span>
   </div>
 </div>
 
 <div class="toast" id="vt-toast"></div>
+<div id="vt-modal-root"></div>
 
 <script>window.__VT_BOOT = {"supabaseUrl":"https://pvqwxphrmcvmztlkzhsg.supabase.co","anonKey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2cXd4cGhybWN2bXp0bGt6aHNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzIxMjIsImV4cCI6MjA5NTMwODEyMn0.uz1WFZqymop5mhIUx6bxW8qofMQuGo-ltyRA8f0P1lk"};</script>
 <script>
+
+function waitForAuthedClient(){
+  return new Promise(function(resolve){
+    if (window.__wtSupabase) { resolve(window.__wtSupabase); return; }
+    document.addEventListener('wt-admin-ready', function once(){
+      document.removeEventListener('wt-admin-ready', once);
+      resolve(window.__wtSupabase);
+    });
+  });
+}
+async function _authedHeaders(extra){
+  var client = await waitForAuthedClient();
+  var sessRes = await client.auth.getSession();
+  var token = sessRes && sessRes.data && sessRes.data.session && sessRes.data.session.access_token;
+  if (!token) throw new Error('Not logged in (no active session) — refresh and log in again.');
+  return Object.assign({ apikey: _SUPA_ANON, Authorization: 'Bearer ' + token }, extra || {});
+}
 /* ─────────────────────────────────────────────────────────────────────────────
    Vibe Taxonomy admin — client logic for /VibeTaxonomy/
 
-   Manages the two display groupings a canonical vibe carries:
-     • Category — one global bucket per vibe (vibe_categories)
-     • Shelf    — the picker's accordion group, a parent -> child tree (vibe_shelves)
+   Full drill-down: Categories -> Shelf board (within a category) -> Key detail.
+   A "Key" is a canonical vibe (vibe_canonical_map). Its engine vibes
+   (vibe_keys) and their destinations (vibe_destination_rankings) are shown and
+   editable inside the Key detail view.
 
-   `code` is the stable id and is never editable here; everything joins on it, so
-   display_name can be changed as often as you like without touching app code.
-   Which vibe belongs to which category/shelf is decided in code (vibesCanonical.ts
-   + vibeShelves.mjs) and shown read-only — this page owns names and images only.
+   `code` / `canonical_key` / `key` / `id` are stable ids and never editable —
+   everything joins on them, so renaming a display label is always free.
+
+   Writes go through _authedHeaders() (from adminAuthedHelperJs(), inlined onto
+   the page just before this file) so they carry the signed-in admin's real
+   session token — required now that every one of these tables enforces
+   is_admin() on write via RLS. The bare anon key this page used to write with
+   no longer passes.
    ───────────────────────────────────────────────────────────────────────────── */
 (function () {
   'use strict';
@@ -195,19 +234,30 @@ h1 { font-size: 24px; margin: 0 0 4px; }
   const BOOT = window.__VT_BOOT || {};
   const SUPA = BOOT.supabaseUrl || '';
   const ANON = BOOT.anonKey || '';
-  const HDRS = { apikey: ANON, Authorization: 'Bearer ' + ANON };
+  const READ_HDRS = { apikey: ANON, Authorization: 'Bearer ' + ANON };
 
-  const S = { cats: [], shelves: [], map: [], tab: 'categories', dirty: new Set(), busy: false };
+  const PK = {
+    vibe_categories: 'code',
+    vibe_shelves: 'code',
+    vibe_canonical_map: 'canonical_key',
+    vibe_keys: 'key',
+    vibe_destination_rankings: 'id',
+  };
+
+  const S = {
+    cats: [], shelves: [], map: [], vibeKeys: [],
+    destByVibe: new Map(),   // vibe_key -> destination rows (loaded lazily per Key detail)
+    destLoadedFor: null,     // canonical_key the cache above was loaded for
+    view: { level: 'categories', categoryCode: null, keyCode: null },
+    dirty: new Set(), busy: false,
+  };
+  const pending = {}; // "table:pk" -> { field: value }
 
   const $ = function (id) { return document.getElementById(id); };
   function esc(s) {
     return String(s == null ? '' : s)
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-  }
-  // Safe for style="background-image:url('…')" — kills quotes/parens/newlines.
-  function cssUrl(u) {
-    return String(u == null ? '' : u).replace(/["'()\\\n\r]/g, '');
   }
   function toast(msg, bad) {
     const t = $('vt-toast');
@@ -219,141 +269,99 @@ h1 { font-size: 24px; margin: 0 0 4px; }
 
   /* ── Load ───────────────────────────────────────────────────────────────── */
   function get(tableAndQuery) {
-    return fetch(SUPA + '/rest/v1/' + tableAndQuery, { headers: HDRS }).then(function (r) {
+    return fetch(SUPA + '/rest/v1/' + tableAndQuery, { headers: READ_HDRS }).then(function (r) {
       if (!r.ok) return r.text().then(function (t) { throw new Error(r.status + ' ' + t); });
       return r.json();
     });
   }
 
   function load() {
-    $('vt-body').innerHTML = '<div class="loading">Loading taxonomy…</div>';
+    $('vt-body').innerHTML = '<div class="loading">Loading taxonomy&hellip;</div>';
     return Promise.all([
       get('vibe_categories?select=*&order=sort_order'),
       get('vibe_shelves?select=*&order=sort_order'),
-      get('vibe_canonical_map?select=*&order=canonical_label'),
+      get('vibe_canonical_map?select=*&order=sort_order,canonical_label'),
+      get('vibe_keys?select=*&order=label'),
     ]).then(function (res) {
-      S.cats = res[0]; S.shelves = res[1]; S.map = res[2];
+      S.cats = res[0]; S.shelves = res[1]; S.map = res[2]; S.vibeKeys = res[3];
+      S.destByVibe = new Map(); S.destLoadedFor = null;
       S.dirty.clear();
       render();
     }).catch(function (e) {
       $('vt-body').innerHTML =
-        '<div class="err"><b>Could not load.</b><br>' + esc(e.message) +
-        '<br><br>If the tables do not exist yet, run <code>supabase/vibe_taxonomy.sql</code> in the Supabase SQL editor first.</div>';
+        '<div class="err"><b>Could not load.</b><br>' + esc(e.message) + '</div>';
     });
   }
 
-  /* ── Row rendering ──────────────────────────────────────────────────────── */
-  function vibesFor(kind, code) {
-    return S.map.filter(function (m) {
-      return kind === 'categories' ? m.category_code === code : m.shelf_code === code;
-    });
-  }
-
-  function imgCell(row, kind, n) {
-    const key = 'image_' + n;
-    const url = row[key] || '';
-    return '' +
-      '<div class="imgSlot">' +
-      '  <div class="thumb' + (url ? '' : ' empty') + '"' +
-      (url ? ' style="background-image:url(\'' + cssUrl(url) + '\')"' : '') + '>' +
-      (url ? '' : '<span>' + n + '</span>') + '</div>' +
-      '  <input class="imgUrl" type="url" placeholder="Image ' + n + ' URL"' +
-      ' value="' + esc(url) + '" data-kind="' + kind + '" data-code="' + esc(row.code) + '" data-field="' + key + '">' +
-      '</div>';
-  }
-
-  function rowHtml(row, kind, isChild) {
-    const linked = vibesFor(kind, row.code);
-    const names = linked.map(function (m) { return m.canonical_label; });
-    const parent = row.parent_code
-      ? (S.shelves.filter(function (s) { return s.code === row.parent_code; })[0] || {}).display_name
-      : null;
-
-    return '' +
-      '<div class="row' + (isChild ? ' child' : '') + '" data-row="' + esc(row.code) + '">' +
-      '  <div class="rowMain">' +
-      '    <div class="rowHead">' +
-      '      <input class="nameIn" type="text" value="' + esc(row.display_name) + '"' +
-      ' data-kind="' + kind + '" data-code="' + esc(row.code) + '" data-field="display_name">' +
-      '      <span class="code" title="Stable id — everything joins on this. It never changes, so renaming above is free.">' + esc(row.code) + '</span>' +
-      (parent ? '      <span class="pill">under ' + esc(parent) + '</span>' : '') +
-      (kind === 'shelves' && !row.parent_code ? '      <span class="pill top">top level</span>' : '') +
-      '      <span class="count' + (linked.length ? '' : ' zero') + '">' + linked.length + ' vibe' + (linked.length === 1 ? '' : 's') + '</span>' +
-      '      <label class="sortWrap">order <input class="sortIn" type="number" value="' + esc(row.sort_order) + '"' +
-      ' data-kind="' + kind + '" data-code="' + esc(row.code) + '" data-field="sort_order"></label>' +
-      '      <button class="saveBtn" type="button" data-act="save" data-kind="' + kind + '" data-code="' + esc(row.code) + '">Save</button>' +
-      '    </div>' +
-      '    <input class="blurbIn" type="text" placeholder="Optional blurb shown under the name in the picker"' +
-      ' value="' + esc(row.blurb || '') + '" data-kind="' + kind + '" data-code="' + esc(row.code) + '" data-field="blurb">' +
-      '    <div class="vibes">' + (names.length
-        ? names.map(function (n) { return '<span class="v">' + esc(n) + '</span>'; }).join('')
-        : '<span class="v none">no vibes mapped — check vibe_canonical_map</span>') + '</div>' +
-      '  </div>' +
-      '  <div class="rowImgs">' + imgCell(row, kind, 1) + imgCell(row, kind, 2) + imgCell(row, kind, 3) + '</div>' +
-      '</div>';
-  }
-
-  function render() {
-    const kind = S.tab;
-    let html = '';
-
-    if (kind === 'categories') {
-      html += '<div class="lede">One global bucket per vibe. A vibe keeps its category everywhere on earth.</div>';
-      html += S.cats.map(function (c) { return rowHtml(c, 'categories', false); }).join('');
-    } else {
-      html += '<div class="lede">The picker\'s accordion groups, as a tree. Shelves are packed per sub-region, so a child shelf with too few vibes in a given place collapses into its parent — which is why parents get names and images too.</div>';
-      const tops = S.shelves.filter(function (s) { return !s.parent_code; });
-      tops.forEach(function (p) {
-        html += rowHtml(p, 'shelves', false);
-        S.shelves.filter(function (s) { return s.parent_code === p.code; })
-          .forEach(function (c) { html += rowHtml(c, 'shelves', true); });
+  function loadDestinationsFor(canonicalKey, engineKeys) {
+    if (S.destLoadedFor === canonicalKey) return Promise.resolve();
+    if (!engineKeys.length) { S.destByVibe = new Map(); S.destLoadedFor = canonicalKey; return Promise.resolve(); }
+    const inList = engineKeys.map(function (k) { return encodeURIComponent(k); }).join(',');
+    return get('vibe_destination_rankings?select=id,vibe_key,vibe_label,destination,score&vibe_key=in.(' + inList + ')&order=score.desc')
+      .then(function (rows) {
+        const byVibe = new Map();
+        engineKeys.forEach(function (k) { byVibe.set(k, []); });
+        rows.forEach(function (r) { (byVibe.get(r.vibe_key) || byVibe.set(r.vibe_key, []).get(r.vibe_key)).push(r); });
+        S.destByVibe = byVibe;
+        S.destLoadedFor = canonicalKey;
       });
-      const orphans = S.shelves.filter(function (s) {
-        return s.parent_code && !S.shelves.some(function (p) { return p.code === s.parent_code; });
-      });
-      if (orphans.length) {
-        html += '<div class="lede warn">These shelves point at a parent that no longer exists:</div>';
-        orphans.forEach(function (o) { html += rowHtml(o, 'shelves', true); });
-      }
-    }
-    $('vt-body').innerHTML = html;
-    syncDirty();
   }
 
-  function syncDirty() {
-    const n = S.dirty.size;
-    $('vt-saveall').disabled = !n || S.busy;
-    $('vt-saveall').textContent = n ? 'Save ' + n + ' change' + (n === 1 ? '' : 's') : 'No changes';
-    Array.prototype.forEach.call(document.querySelectorAll('.row'), function (el) {
-      const k = S.tab + ':' + el.getAttribute('data-row');
-      el.classList.toggle('isDirty', S.dirty.has(k));
+  /* ── Derived lookups ────────────────────────────────────────────────────── */
+  function catByCode(code) { return S.cats.filter(function (c) { return c.code === code; })[0]; }
+  function shelfByCode(code) { return S.shelves.filter(function (s) { return s.code === code; })[0]; }
+  function mapRow(canonicalKey) { return S.map.filter(function (m) { return m.canonical_key === canonicalKey; })[0]; }
+  function keysInCategory(catCode) { return S.map.filter(function (m) { return m.category_code === catCode; }); }
+  function shelvesInCategory(catCode) {
+    const codes = []; const seen = {};
+    keysInCategory(catCode).forEach(function (m) { if (!seen[m.shelf_code]) { seen[m.shelf_code] = true; codes.push(m.shelf_code); } });
+    return codes.map(shelfByCode).filter(Boolean).sort(function (a, b) {
+      return (a.sort_order - b.sort_order) || a.display_name.localeCompare(b.display_name);
     });
+  }
+  function engineVibesFor(canonicalKey) {
+    return S.vibeKeys.filter(function (v) { return v.canonical_key === canonicalKey; })
+      .sort(function (a, b) { return a.label.localeCompare(b.label); });
+  }
+  function allCategoryShelfPairs() {
+    const seen = {}; const out = [];
+    S.map.forEach(function (m) {
+      const k = m.category_code + '||' + m.shelf_code;
+      if (seen[k]) return; seen[k] = true;
+      const cat = catByCode(m.category_code), shelf = shelfByCode(m.shelf_code);
+      if (!cat || !shelf) return;
+      out.push({ category_code: m.category_code, shelf_code: m.shelf_code, label: cat.display_name + ' → ' + shelf.display_name });
+    });
+    return out.sort(function (a, b) { return a.label.localeCompare(b.label); });
   }
 
   /* ── Edit + save ────────────────────────────────────────────────────────── */
-  const pending = {}; // "kind:code" -> { field: value }
-
-  function markEdit(kind, code, field, value) {
-    const k = kind + ':' + code;
+  function markField(table, pkVal, field, value, localRow) {
+    const k = table + ':' + pkVal;
     pending[k] = pending[k] || {};
-    pending[k][field] = field === 'sort_order' ? Number(value) : (value === '' ? null : value);
+    pending[k][field] = value;
     S.dirty.add(k);
-    // keep local state current so re-render does not lose an unsaved edit
-    const list = kind === 'categories' ? S.cats : S.shelves;
-    const row = list.filter(function (r) { return r.code === code; })[0];
-    if (row) row[field] = pending[k][field];
+    if (localRow) localRow[field] = value;
     syncDirty();
   }
 
-  function saveOne(kind, code) {
-    const k = kind + ':' + code;
+  // For moves: mutate + queue + full re-render (layout changes, unlike a rename).
+  function markMove(table, pkVal, fields, localRow) {
+    const k = table + ':' + pkVal;
+    pending[k] = Object.assign({}, pending[k], fields);
+    S.dirty.add(k);
+    if (localRow) Object.assign(localRow, fields);
+    render();
+  }
+
+  function saveOne(table, pkVal) {
+    const k = table + ':' + pkVal;
     const body = pending[k];
     if (!body) return Promise.resolve();
-    const table = kind === 'categories' ? 'vibe_categories' : 'vibe_shelves';
-    return fetch(SUPA + '/rest/v1/' + table + '?code=eq.' + encodeURIComponent(code), {
-      method: 'PATCH',
-      headers: Object.assign({}, HDRS, { 'Content-Type': 'application/json', Prefer: 'return=representation' }),
-      body: JSON.stringify(body),
+    return _authedHeaders({ 'Content-Type': 'application/json', Prefer: 'return=representation' }).then(function (hdrs) {
+      return fetch(SUPA + '/rest/v1/' + table + '?' + PK[table] + '=eq.' + encodeURIComponent(pkVal), {
+        method: 'PATCH', headers: hdrs, body: JSON.stringify(body),
+      });
     }).then(function (r) {
       if (!r.ok) return r.text().then(function (t) { throw new Error(r.status + ' ' + t); });
       return r.json();
@@ -373,46 +381,318 @@ h1 { font-size: 24px; margin: 0 0 4px; }
       return saveOne(k.slice(0, i), k.slice(i + 1));
     })).then(function () {
       S.busy = false;
-      toast('Saved ' + keys.length + ' change' + (keys.length === 1 ? '' : 's'));
+      toast('Published ' + keys.length + ' change' + (keys.length === 1 ? '' : 's'));
       render();
     }).catch(function (e) {
       S.busy = false; syncDirty();
-      toast('Save failed: ' + e.message, true);
+      toast('Publish failed: ' + e.message, true);
     });
   }
+
+  function syncDirty() {
+    const n = S.dirty.size;
+    $('vt-saveall').disabled = !n || S.busy;
+    $('vt-saveall').textContent = n ? 'Publish ' + n + ' change' + (n === 1 ? '' : 's') : 'No changes';
+  }
+
+  /* ── Move picker modal ──────────────────────────────────────────────────── */
+  function openMovePicker(title, items, onPick) {
+    const root = $('vt-modal-root');
+    function close() { root.innerHTML = ''; document.removeEventListener('keydown', onKey); }
+    function onKey(e) { if (e.key === 'Escape') close(); }
+    function draw(filter) {
+      const f = (filter || '').toLowerCase();
+      const shown = !f ? items : items.filter(function (it) {
+        return it.label.toLowerCase().indexOf(f) >= 0 || (it.sub || '').toLowerCase().indexOf(f) >= 0;
+      });
+      root.innerHTML =
+        '<div class="modalOverlay" data-act="modalClose">' +
+        '  <div class="modal" data-act="modalStop">' +
+        '    <div class="modalHead"><h3>' + esc(title) + '</h3>' +
+        '      <input class="modalSearch" id="vt-modal-search" type="text" placeholder="Search&hellip;" value="' + esc(filter || '') + '"></div>' +
+        '    <div class="modalList">' + (shown.length
+          ? shown.map(function (it, i) {
+              return '<div class="modalItem" data-idx="' + i + '"><div>' + esc(it.label) + '</div>' +
+                (it.sub ? '<div class="sub">' + esc(it.sub) + '</div>' : '') + '</div>';
+            }).join('')
+          : '<div class="sub" style="padding:10px">No matches.</div>') + '</div>' +
+        '    <div class="modalFoot"><button class="ghost" type="button" data-act="modalClose">Cancel</button></div>' +
+        '  </div></div>';
+      root.querySelectorAll('.modalItem').forEach(function (el) {
+        el.addEventListener('click', function () { const it = shown[Number(el.getAttribute('data-idx'))]; close(); onPick(it); });
+      });
+      const search = $('vt-modal-search');
+      search.focus(); search.setSelectionRange(search.value.length, search.value.length);
+      search.addEventListener('input', function () { draw(search.value); });
+    }
+    root.addEventListener('click', function overlayClick(e) {
+      if (e.target.getAttribute && e.target.getAttribute('data-act') === 'modalClose') { close(); root.removeEventListener('click', overlayClick); }
+    });
+    document.addEventListener('keydown', onKey);
+    draw('');
+  }
+
+  /* ── Drag and drop (native HTML5 — same idiom as the image-gallery admin
+     pages, extended to carry a source id so a drop can move an item into a
+     DIFFERENT list, not just reorder within one). ────────────────────────── */
+  let _drag = null; // { kind: 'key'|'dest', payload }
+
+  function dragAttrs(kind, payload) {
+    return ' draggable="true" data-drag-kind="' + kind + '" data-drag-payload="' + esc(JSON.stringify(payload)) + '"';
+  }
+  document.addEventListener('dragstart', function (e) {
+    const el = e.target.closest && e.target.closest('[data-drag-kind]');
+    if (!el) return;
+    _drag = { kind: el.getAttribute('data-drag-kind'), payload: JSON.parse(el.getAttribute('data-drag-payload')) };
+    el.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+  });
+  document.addEventListener('dragend', function (e) {
+    const el = e.target.closest && e.target.closest('[data-drag-kind]');
+    if (el) el.classList.remove('dragging');
+    document.querySelectorAll('.drag-over').forEach(function (c) { c.classList.remove('drag-over'); });
+    _drag = null;
+  });
+  document.addEventListener('dragover', function (e) {
+    const col = e.target.closest && e.target.closest('[data-drop-kind]');
+    if (!col || !_drag || col.getAttribute('data-drop-kind') !== _drag.kind) return;
+    e.preventDefault();
+    document.querySelectorAll('.drag-over').forEach(function (c) { c.classList.remove('drag-over'); });
+    col.classList.add('drag-over');
+  });
+  document.addEventListener('drop', function (e) {
+    const col = e.target.closest && e.target.closest('[data-drop-kind]');
+    if (!col || !_drag || col.getAttribute('data-drop-kind') !== _drag.kind) return;
+    e.preventDefault();
+    col.classList.remove('drag-over');
+    const target = JSON.parse(col.getAttribute('data-drop-payload'));
+    if (_drag.kind === 'key') {
+      if (target.shelf_code === _drag.payload.shelf_code) return;
+      const row = mapRow(_drag.payload.canonical_key);
+      if (row) markMove('vibe_canonical_map', row.canonical_key, { shelf_code: target.shelf_code }, row);
+    } else if (_drag.kind === 'dest') {
+      if (target.vibe_key === _drag.payload.vibe_key) return;
+      const list = S.destByVibe.get(_drag.payload.vibe_key) || [];
+      const idx = list.findIndex(function (r) { return r.id === _drag.payload.id; });
+      if (idx < 0) return;
+      const row = list[idx];
+      list.splice(idx, 1);
+      const targetVibe = S.vibeKeys.filter(function (v) { return v.key === target.vibe_key; })[0];
+      const newLabel = targetVibe ? targetVibe.label : target.vibe_key;
+      row.vibe_key = target.vibe_key; row.vibe_label = newLabel;
+      (S.destByVibe.get(target.vibe_key) || S.destByVibe.set(target.vibe_key, []).get(target.vibe_key)).unshift(row);
+      markMove('vibe_destination_rankings', row.id, { vibe_key: target.vibe_key, vibe_label: newLabel });
+    }
+  });
+
+  /* ── Breadcrumbs ────────────────────────────────────────────────────────── */
+  function renderCrumbs() {
+    const parts = ['<button type="button" data-nav="categories"' + (S.view.level === 'categories' ? ' disabled' : '') + '>Categories</button>'];
+    if (S.view.categoryCode) {
+      const cat = catByCode(S.view.categoryCode);
+      parts.push('<span class="sep">/</span>');
+      parts.push('<button type="button" data-nav="category"' + (S.view.level === 'category' ? ' disabled' : '') + '>' + esc(cat ? cat.display_name : S.view.categoryCode) + '</button>');
+    }
+    if (S.view.keyCode) {
+      const row = mapRow(S.view.keyCode);
+      parts.push('<span class="sep">/</span>');
+      parts.push('<button type="button" data-nav="key" disabled>' + esc(row ? row.canonical_label : S.view.keyCode) + '</button>');
+    }
+    $('vt-crumbs').innerHTML = parts.join('');
+  }
+
+  /* ── Level 1: Categories ────────────────────────────────────────────────── */
+  function renderCategories() {
+    let html = '<div class="lede">Every canonical vibe belongs to exactly one category, one shelf.</div><div class="grid">';
+    S.cats.forEach(function (c) {
+      const inCat = keysInCategory(c.code);
+      const shelfCount = shelvesInCategory(c.code).length;
+      html += '' +
+        '<div class="catCard" data-open-cat="' + esc(c.code) + '">' +
+        '  <input class="nameIn" type="text" value="' + esc(c.display_name) + '" data-table="vibe_categories" data-pk="' + esc(c.code) + '" data-field="display_name">' +
+        '  <div class="metaRow">' +
+        '    <span class="code" title="Stable id">' + esc(c.code) + '</span>' +
+        '    <span class="count' + (shelfCount ? '' : ' zero') + '">' + shelfCount + ' shelf' + (shelfCount === 1 ? '' : 'ves') + '</span>' +
+        '    <span class="count' + (inCat.length ? '' : ' zero') + '">' + inCat.length + ' key' + (inCat.length === 1 ? '' : 's') + '</span>' +
+        '  </div>' +
+        '</div>';
+    });
+    $('vt-body').innerHTML = html + '</div>';
+  }
+
+  /* ── Level 2: Shelf board within a category ─────────────────────────────── */
+  function renderShelfBoard() {
+    const catCode = S.view.categoryCode;
+    const shelves = shelvesInCategory(catCode);
+    let html = '<div class="lede">Drag a Key card to another shelf column to move it. Use <b>Move&hellip;</b> to send it to a shelf under a different category.</div><div class="board">';
+    shelves.forEach(function (shelf) {
+      const rows = S.map.filter(function (m) { return m.category_code === catCode && m.shelf_code === shelf.code; })
+        .sort(function (a, b) { return (a.sort_order - b.sort_order) || a.canonical_label.localeCompare(b.canonical_label); });
+      html += '' +
+        '<div class="col" data-drop-kind="key" data-drop-payload=\'' + esc(JSON.stringify({ shelf_code: shelf.code })) + '\'>' +
+        '  <div class="colHead"><input class="nameIn sm" type="text" value="' + esc(shelf.display_name) + '" data-table="vibe_shelves" data-pk="' + esc(shelf.code) + '" data-field="display_name">' +
+        '    <span class="colCount">' + rows.length + '</span></div>' +
+        '  <div class="colBody">' +
+        rows.map(function (m) {
+          const vibeCount = S.vibeKeys.filter(function (v) { return v.canonical_key === m.canonical_key; }).length;
+          return '' +
+            '<div class="keyCard"' + dragAttrs('key', { canonical_key: m.canonical_key, shelf_code: shelf.code }) + '>' +
+            '  <div class="keyCardTop"><span class="keyCardName" data-open-key="' + esc(m.canonical_key) + '">' + esc(m.canonical_label) + '</span>' +
+            '  <span class="chip">' + vibeCount + ' vibe' + (vibeCount === 1 ? '' : 's') + '</span></div>' +
+            '  <button class="moveBtn" type="button" data-move-key="' + esc(m.canonical_key) + '">Move&hellip;</button>' +
+            '</div>';
+        }).join('') +
+        '  </div></div>';
+    });
+    $('vt-body').innerHTML = html + '</div>';
+  }
+
+  /* ── Level 3: Key detail ─────────────────────────────────────────────────── */
+  function renderKeyDetail() {
+    const row = mapRow(S.view.keyCode);
+    if (!row) { $('vt-body').innerHTML = '<div class="err">This Key no longer exists.</div>'; return; }
+    const cat = catByCode(row.category_code), shelf = shelfByCode(row.shelf_code);
+    const vibes = engineVibesFor(row.canonical_key);
+
+    $('vt-body').innerHTML = '<div class="loading">Loading vibes &amp; destinations&hellip;</div>';
+    loadDestinationsFor(row.canonical_key, vibes.map(function (v) { return v.key; })).then(function () {
+      let html = '' +
+        '<div class="keyDetail">' +
+        '  <div class="keyDetailHead">' +
+        '    <input class="nameIn" type="text" value="' + esc(row.canonical_label) + '" data-table="vibe_canonical_map" data-pk="' + esc(row.canonical_key) + '" data-field="canonical_label">' +
+        '    <span class="locPill">' + esc(cat ? cat.display_name : '?') + ' → ' + esc(shelf ? shelf.display_name : '?') + '</span>' +
+        '    <button class="moveBtn" type="button" data-move-key="' + esc(row.canonical_key) + '">Move&hellip;</button>' +
+        '    <span class="code" title="Stable id">' + esc(row.canonical_key) + '</span>' +
+        '  </div>' +
+        '</div>' +
+        '<div class="section"><div class="sectionTitle">Engine vibes (' + vibes.length + ')</div>';
+      html += vibes.length ? vibes.map(function (v) {
+        const count = (S.destByVibe.get(v.key) || []).length;
+        return '' +
+          '<div class="vibeRow">' +
+          '  <input class="nameIn sm" type="text" value="' + esc(v.label) + '" data-table="vibe_keys" data-pk="' + esc(v.key) + '" data-field="label">' +
+          '  <span class="tier">' + esc(v.tier) + '</span>' +
+          '  <span class="count">' + count + ' dest' + (count === 1 ? '' : 's') + '</span>' +
+          '  <span class="code" title="Stable id">' + esc(v.key) + '</span>' +
+          '  <button class="moveBtn" type="button" data-move-vibe="' + esc(v.key) + '">Move to Key&hellip;</button>' +
+          '</div>';
+      }).join('') : '<div class="lede">No engine vibes roll up to this Key.</div>';
+      html += '</div>';
+
+      if (vibes.length) {
+        html += '<div class="section"><div class="sectionTitle">Destinations by engine vibe</div>' +
+          '<div class="lede">Drag a destination card to a sibling column to recategorize it under this Key. Use <b>Move&hellip;</b> to send it to an engine vibe under a different Key.</div>' +
+          '<div class="board">';
+        vibes.forEach(function (v) {
+          const dests = S.destByVibe.get(v.key) || [];
+          html += '' +
+            '<div class="col" data-drop-kind="dest" data-drop-payload=\'' + esc(JSON.stringify({ vibe_key: v.key })) + '\'>' +
+            '  <div class="colHead"><b style="font-size:12.5px">' + esc(v.label) + '</b><span class="colCount">' + dests.length + '</span></div>' +
+            '  <div class="colBody">' +
+            dests.map(function (d) {
+              return '' +
+                '<div class="destCard"' + dragAttrs('dest', { id: d.id, vibe_key: v.key }) + '>' +
+                '  <div class="keyCardTop"><span>' + esc(d.destination) + '</span><span class="destScore">' + esc(d.score) + '</span></div>' +
+                '  <button class="moveBtn" type="button" data-move-dest="' + esc(d.id) + '">Move&hellip;</button>' +
+                '</div>';
+            }).join('') +
+            '  </div></div>';
+        });
+        html += '</div></div>';
+      }
+      $('vt-body').innerHTML = html;
+    }).catch(function (e) {
+      $('vt-body').innerHTML = '<div class="err">Could not load destinations.<br>' + esc(e.message) + '</div>';
+    });
+  }
+
+  function render() {
+    renderCrumbs();
+    if (S.view.level === 'categories') renderCategories();
+    else if (S.view.level === 'category') renderShelfBoard();
+    else renderKeyDetail();
+    syncDirty();
+  }
+
+  function setView(v) { S.view = v; render(); }
 
   /* ── Wiring ─────────────────────────────────────────────────────────────── */
   document.addEventListener('input', function (e) {
     const t = e.target;
-    const field = t.getAttribute && t.getAttribute('data-field');
-    if (!field) return;
-    markEdit(t.getAttribute('data-kind'), t.getAttribute('data-code'), field, t.value);
-    if (field.indexOf('image_') === 0) {
-      const slot = t.parentNode.querySelector('.thumb');
-      if (slot) {
-        if (t.value) { slot.style.backgroundImage = "url('" + cssUrl(t.value) + "')"; slot.classList.remove('empty'); }
-        else { slot.style.backgroundImage = ''; slot.classList.add('empty'); }
-      }
-    }
+    const table = t.getAttribute && t.getAttribute('data-table');
+    if (!table) return;
+    const pk = t.getAttribute('data-pk'), field = t.getAttribute('data-field');
+    let localRow;
+    if (table === 'vibe_categories') localRow = catByCode(pk);
+    else if (table === 'vibe_shelves') localRow = shelfByCode(pk);
+    else if (table === 'vibe_canonical_map') localRow = mapRow(pk);
+    else if (table === 'vibe_keys') localRow = S.vibeKeys.filter(function (v) { return v.key === pk; })[0];
+    markField(table, pk, field, t.value, localRow);
   });
 
   document.addEventListener('click', function (e) {
-    const b = e.target.closest && e.target.closest('[data-act]');
-    if (!b) return;
-    const act = b.getAttribute('data-act');
-    if (act === 'save') {
-      b.disabled = true;
-      saveOne(b.getAttribute('data-kind'), b.getAttribute('data-code'))
-        .then(function () { b.disabled = false; toast('Saved'); })
-        .catch(function (err) { b.disabled = false; toast('Save failed: ' + err.message, true); });
-    } else if (act === 'tab') {
-      S.tab = b.getAttribute('data-tab');
-      Array.prototype.forEach.call(document.querySelectorAll('[data-act="tab"]'), function (el) {
-        el.classList.toggle('on', el.getAttribute('data-tab') === S.tab);
+    const nav = e.target.closest && e.target.closest('[data-nav]');
+    if (nav) { const n = nav.getAttribute('data-nav');
+      if (n === 'categories') setView({ level: 'categories', categoryCode: null, keyCode: null });
+      else if (n === 'category') setView({ level: 'category', categoryCode: S.view.categoryCode, keyCode: null });
+      return;
+    }
+    const openCat = e.target.closest && e.target.closest('[data-open-cat]');
+    if (openCat && !e.target.closest('input')) { setView({ level: 'category', categoryCode: openCat.getAttribute('data-open-cat'), keyCode: null }); return; }
+
+    const openKey = e.target.closest && e.target.closest('[data-open-key]');
+    if (openKey) { setView({ level: 'key', categoryCode: S.view.categoryCode, keyCode: openKey.getAttribute('data-open-key') }); return; }
+
+    const moveKey = e.target.closest && e.target.closest('[data-move-key]');
+    if (moveKey) {
+      const canonicalKey = moveKey.getAttribute('data-move-key');
+      const row = mapRow(canonicalKey);
+      openMovePicker('Move "' + (row ? row.canonical_label : canonicalKey) + '" to&hellip;', allCategoryShelfPairs(), function (it) {
+        markMove('vibe_canonical_map', canonicalKey, { category_code: it.category_code, shelf_code: it.shelf_code }, row);
       });
-      render();
-    } else if (act === 'reload') {
-      if (S.dirty.size && !confirm('You have ' + S.dirty.size + ' unsaved change(s). Reload and lose them?')) return;
+      return;
+    }
+
+    const moveVibe = e.target.closest && e.target.closest('[data-move-vibe]');
+    if (moveVibe) {
+      const key = moveVibe.getAttribute('data-move-vibe');
+      const vRow = S.vibeKeys.filter(function (v) { return v.key === key; })[0];
+      const items = S.map.map(function (m) { const shelf = shelfByCode(m.shelf_code), cat = catByCode(m.category_code);
+        return { value: m.canonical_key, label: m.canonical_label, sub: (cat ? cat.display_name : '') + ' → ' + (shelf ? shelf.display_name : '') };
+      }).sort(function (a, b) { return a.label.localeCompare(b.label); });
+      openMovePicker('Move "' + (vRow ? vRow.label : key) + '" to Key&hellip;', items, function (it) {
+        markMove('vibe_keys', key, { canonical_key: it.value }, vRow);
+      });
+      return;
+    }
+
+    const moveDest = e.target.closest && e.target.closest('[data-move-dest]');
+    if (moveDest) {
+      const id = Number(moveDest.getAttribute('data-move-dest'));
+      let row = null, fromKey = null;
+      S.destByVibe.forEach(function (list, vk) { const hit = list.filter(function (r) { return r.id === id; })[0]; if (hit) { row = hit; fromKey = vk; } });
+      if (!row) return;
+      const items = S.vibeKeys.map(function (v) {
+        const cv = mapRow(v.canonical_key);
+        return { value: v.key, label: v.label, sub: cv ? cv.canonical_label : v.canonical_key };
+      }).sort(function (a, b) { return a.label.localeCompare(b.label); });
+      openMovePicker('Move "' + row.destination + '" to&hellip;', items, function (it) {
+        if (it.value === fromKey) return;
+        const list = S.destByVibe.get(fromKey) || [];
+        const idx = list.findIndex(function (r) { return r.id === id; });
+        if (idx >= 0) list.splice(idx, 1);
+        const targetVibe = S.vibeKeys.filter(function (v) { return v.key === it.value; })[0];
+        const newLabel = targetVibe ? targetVibe.label : it.value;
+        row.vibe_key = it.value; row.vibe_label = newLabel;
+        (S.destByVibe.get(it.value) || S.destByVibe.set(it.value, []).get(it.value)).unshift(row);
+        markMove('vibe_destination_rankings', row.id, { vibe_key: it.value, vibe_label: newLabel });
+      });
+      return;
+    }
+
+    const b = e.target.closest && e.target.closest('[data-act]');
+    if (b && b.getAttribute('data-act') === 'reload') {
+      if (S.dirty.size && !confirm('You have ' + S.dirty.size + ' unpublished change(s). Reload and lose them?')) return;
       Object.keys(pending).forEach(function (k) { delete pending[k]; });
       load();
     }
