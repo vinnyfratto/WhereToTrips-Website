@@ -40,12 +40,35 @@ function hero(images, fallbackIcon, extraClass) {
   return '<div class="' + cls + ' bk-hero--empty"><span class="bk-hero-icon">' + ico(fallbackIcon) + '</span></div>';
 }
 
-function heroIdentity(overline, name, meta) {
+function heroIdentity(overline, name, place, meta) {
   return '<div class="bk-hero-info">' +
     (overline ? '<p class="bk-hero-overline">' + esc(overline) + '</p>' : '') +
-    '<h1 class="bk-hero-name">' + esc(name) + '</h1>' +
+    '<h1 class="bk-hero-name">' + esc(name) +
+      (place ? '<span class="bk-hero-place">, ' + esc(place) + '</span>' : '') + '</h1>' +
     (meta ? '<p class="bk-hero-meta">' + esc(meta) + '</p>' : '') +
     '</div>';
+}
+
+/** Two-letter state off the end of a US street address ("...Austin, TX
+ *  78701") — the property's own address text already carries it, so no
+ *  separate state dataset is needed. Null for anything that isn't a US
+ *  ZIP-terminated address. */
+function usStateFromAddress(address) {
+  if (!address) return null;
+  const m = String(address).match(/,\s*([A-Z]{2})\s+\d{5}(-\d{4})?\s*$/);
+  return m ? m[1] : null;
+}
+
+/** What to show next to a destination name in a hero: the US state when the
+ *  property's address gives us one (more useful than "United States" for a
+ *  domestic trip), the country otherwise. */
+function heroPlaceLabel(country, address) {
+  if (!country) return null;
+  if (/^(united states|usa|us)$/i.test(country.trim())) {
+    const state = usStateFromAddress(address);
+    if (state) return state;
+  }
+  return country;
 }
 
 function confirmBlock(label, code, status, total, currency, rightLabel, rightValue) {
@@ -106,16 +129,23 @@ function amenityIcon(name) {
   return 'check-circle';
 }
 
-/** Street (from the property's own content record) plus the city/country
- *  stamped on the order at booking time — never lat/lng, which is what the
- *  property's `address` field alone leaves out. Skips the city/country
- *  suffix when the street already names the city, so it never doubles up. */
-function fullHotelAddress(order, content) {
-  const street = content && content.address;
-  const cityCountry = [order.city, order.country].filter(Boolean).join(', ');
+/** Street (from the property's own content record) as one line, city/country
+ *  (stamped on the order at booking time) as a second — the way a human
+ *  addresses an envelope, never lat/lng. Drops the second line when the
+ *  street already names the city, so it never doubles up. */
+function hotelAddressParts(order, content) {
+  const street = (content && content.address) || null;
+  const cityCountry = [order.city, order.country].filter(Boolean).join(', ') || null;
   const cityLower = String(order.city || '').toLowerCase();
-  if (street && cityLower && street.toLowerCase().includes(cityLower)) return street;
-  return [street, cityCountry].filter(Boolean).join(', ') || street || cityCountry || null;
+  if (street && cityLower && street.toLowerCase().includes(cityLower)) return { street, cityLine: null };
+  return { street, cityLine: cityCountry };
+}
+
+/** Flat single-line form of the same address, for a tap-to-open link or a
+ *  map query — never lat/lng. */
+function fullHotelAddress(order, content) {
+  const parts = hotelAddressParts(order, content);
+  return [parts.street, parts.cityLine].filter(Boolean).join(', ') || null;
 }
 
 /** A named-place query, never a bare coordinate pair — Google Maps' embed
@@ -166,7 +196,9 @@ function hotelSections(order, live, content, opts) {
       '<span class="bk-contact-icon">' + ico('letter') + '</span>' + esc(propertyEmail) + '</a>');
   }
   const contactHtml = contact.length ? '<div class="bk-contact-block">' + contact.join('') + '</div>' : '';
-  const mapHtml = fullAddress
+  // A trip booking already shows the map once, up in the trip summary card —
+  // only a standalone hotel page (no summary card above it) gets one here.
+  const mapHtml = (o.showMap !== false && fullAddress)
     ? '<div class="bk-map-embed"><iframe src="' + esc(hotelMapEmbedSrc(order.hotel_name, fullAddress)) +
       '" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen ' +
       'title="' + esc(order.hotel_name || 'Hotel location') + '"></iframe></div>'
@@ -602,6 +634,34 @@ function kvSubRow(label, value) {
     '<span class="bk-kv-value">' + esc(value) + '</span></div>';
 }
 
+/** One trip-summary leg — an icon, a title, and however many address/contact
+ *  lines it has (a hotel's street + city + phone read as separate lines the
+ *  way a person addresses an envelope, not squeezed onto one). `iconHtml` is
+ *  the already-wrapped icon markup so a caller can swap in something other
+ *  than a bare glyph (the airline logo, below). */
+function legRow(iconHtml, title, lines) {
+  const body = (lines || []).filter(Boolean).map((l) => '<span class="bk-info-body">' + esc(l) + '</span>').join('');
+  return '<div class="bk-info">' + iconHtml +
+    '<span class="bk-info-text"><span class="bk-info-title">' + esc(title) + '</span>' + body + '</span></div>';
+}
+
+const AIRLINE_LOGO_BASE = 'https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/airlines/';
+
+/** The carrier's real wordmark when we have one (same public bucket the app
+ *  reads — src/data/airlineLogos.ts), falling back to the bare plane glyph
+ *  on error — an unlicensed or sandbox test carrier (code "ND") has no logo
+ *  and the <img> 404s, so the fallback swaps in via onerror rather than a
+ *  pre-checked allowlist that would drift from the app's own list. */
+function flightLegIcon(code) {
+  if (!code) return '<span class="bk-info-icon">' + ico('plane') + '</span>';
+  const src = AIRLINE_LOGO_BASE + String(code).toUpperCase() + '_thumb.png';
+  return '<span class="bk-info-icon bk-airline-logo-wrap">' +
+    '<img class="bk-airline-logo" src="' + esc(src) + '" alt="" ' +
+    'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\';" />' +
+    '<span class="bk-airline-logo-fallback" style="display:none">' + ico('plane') + '</span>' +
+    '</span>';
+}
+
 /** Trip-as-a-whole summary shown above the flight/hotel breakdowns: dates,
  *  total package price, and a one-line pointer to each leg — the detailed
  *  confirmation codes, fares and room facts live in the sections below. */
@@ -622,6 +682,7 @@ function tripSummary(hotel, flight, live, content) {
   const airportLine = [flight.origin, flight.destination].filter(Boolean).join(' → ');
 
   const ci = (live.hotel && live.hotel.checkinInstructions) || {};
+  const addressParts = hotelAddressParts(hotel, content);
   const hotelAddress = fullHotelAddress(hotel, content);
   const hotelPhone = (ci.propertyContact && ci.propertyContact.phone) || (content && content.phone) || null;
 
@@ -652,10 +713,17 @@ function tripSummary(hotel, flight, live, content) {
       '<p class="bk-total-value">' + esc(money(totalPaid, currency)) + '</p></div>' +
     '</div>' +
     '<hr class="bk-divider" />' +
+    '<div class="bk-summary-body-row">' +
     '<div class="bk-summary-legs">' +
-      infoRow(ico('buildings'), hotel.hotel_name || 'Hotel',
-        [hotelAddress, hotelPhone].filter(Boolean).join('  ·  ') || null) +
-      infoRow(ico('plane'), carrierName + (flightNum ? '  ·  Flight ' + flightNum : ''), airportLine || null) +
+      legRow('<span class="bk-info-icon">' + ico('buildings') + '</span>', hotel.hotel_name || 'Hotel',
+        [addressParts.street, addressParts.cityLine, hotelPhone]) +
+      legRow(flightLegIcon(airline.code), carrierName + (flightNum ? '  ·  Flight ' + flightNum : ''), [airportLine]) +
+    '</div>' +
+    (hotelAddress
+      ? '<div class="bk-summary-map"><iframe src="' + esc(hotelMapEmbedSrc(hotel.hotel_name, hotelAddress)) +
+        '" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen ' +
+        'title="' + esc(hotel.hotel_name || 'Hotel location') + '"></iframe></div>'
+      : '') +
     '</div>' +
     '<hr class="bk-divider" />' +
     '<div class="bk-kv-block">' + priceRows + '</div>' +
@@ -713,6 +781,7 @@ export function renderDetail(ctx, item) {
 
       if (item.kind === 'trip') {
         const name = look.city || hotel.city || (flight && flight.destination) || 'Your trip';
+        const heroPlace = heroPlaceLabel(look.country || hotel.country, live.content && live.content.address);
         const meta = [
           hotel.check_in && hotel.check_out
             ? shortDate(hotel.check_in) + ' – ' + shortDate(hotel.check_out)
@@ -729,14 +798,14 @@ export function renderDetail(ctx, item) {
           ? live.content.images
           : (hotel.hotel_photo ? [hotel.hotel_photo] : []);
 
-        html += hero(tripHeroImages, 'buildings') + heroIdentity('FLIGHT + HOTEL', name, meta);
+        html += hero(tripHeroImages, 'buildings') + heroIdentity('FLIGHT + HOTEL', name, heroPlace, meta);
         html += '<div class="bk-body-wrap">';
         html += tripSummary(hotel, flight, live, live.content);
         html += '<hr class="bk-divider" /><h2 class="bk-trip-head">YOUR FLIGHT</h2>';
         html += flightSections(flight, live.flight, roster, { includeDisclaimer: false });
         html += '<hr class="bk-divider" /><h2 class="bk-trip-head">YOUR HOTEL</h2>';
         if (hotelImages.length) html += hero(hotelImages, 'buildings', 'bk-hero--sub');
-        html += hotelSections(hotel, live.hotel, live.content, { includeDisclaimer: false });
+        html += hotelSections(hotel, live.hotel, live.content, { includeDisclaimer: false, showMap: false });
         html += '<hr class="bk-divider" /><p class="bk-disclaimer">The flight and hotel above were booked ' +
           'together but are charged and confirmed separately — cancelling or changing one does not affect ' +
           'the other. Rates, taxes and fees for both were confirmed at booking. The airline controls flight ' +
@@ -747,7 +816,7 @@ export function renderDetail(ctx, item) {
       } else {
         const place = [hotel.city, hotel.country].filter(Boolean).join(', ');
         html += hero(images, 'buildings') +
-          heroIdentity(place ? place.toUpperCase() : null, hotel.hotel_name || 'Hotel', hotelMeta(hotel));
+          heroIdentity(place ? place.toUpperCase() : null, hotel.hotel_name || 'Hotel', null, hotelMeta(hotel));
         html += '<div class="bk-body-wrap">' + hotelSections(hotel, live.hotel, live.content, {}) + '</div>';
       }
     } else if (item.kind === 'flight') {
@@ -756,8 +825,9 @@ export function renderDetail(ctx, item) {
       // The destination the trip is ABOUT — a city name whenever the pool can
       // give one, never a bare IATA if it can be helped.
       const name = look.city || order.destination || 'Your trip';
+      const heroPlace = heroPlaceLabel(look.country, null);
       html += hero(look.images, 'plane') +
-        heroIdentity(order.return_date ? 'ROUND TRIP' : 'ONE WAY', name, flightMeta(order));
+        heroIdentity(order.return_date ? 'ROUND TRIP' : 'ONE WAY', name, heroPlace, flightMeta(order));
       html += '<div class="bk-body-wrap">' + flightSections(order, live.flight, roster, {}) + '</div>';
     } else {
       // Legacy Duffel rows — historical only, and never carrying the LiteAPI
@@ -766,7 +836,7 @@ export function renderDetail(ctx, item) {
       const payload = order.duffel_payload || {};
       const passengers = payload.passengers || [];
       html += hero([], 'plane') +
-        heroIdentity('FLIGHT', (order.origin || '—') + ' → ' + (order.destination || '—'),
+        heroIdentity('FLIGHT', (order.origin || '—') + ' → ' + (order.destination || '—'), null,
           fmtDateTime(order.departing_at).date);
       let body = confirmBlock('BOOKING REFERENCE', order.booking_reference || '——', order.status,
         order.total_amount, order.total_currency, 'PASSENGERS', order.passenger_count == null ? '—' : order.passenger_count);
