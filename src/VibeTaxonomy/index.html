@@ -196,6 +196,7 @@ h1 { font-size: 24px; margin: 0 0 4px; }
 
 <script>window.__VT_BOOT = {"supabaseUrl":"https://pvqwxphrmcvmztlkzhsg.supabase.co","anonKey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2cXd4cGhybWN2bXp0bGt6aHNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzIxMjIsImV4cCI6MjA5NTMwODEyMn0.uz1WFZqymop5mhIUx6bxW8qofMQuGo-ltyRA8f0P1lk"};</script>
 <script>
+const _SUPA_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB2cXd4cGhybWN2bXp0bGt6aHNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3MzIxMjIsImV4cCI6MjA5NTMwODEyMn0.uz1WFZqymop5mhIUx6bxW8qofMQuGo-ltyRA8f0P1lk";
 
 function waitForAuthedClient(){
   return new Promise(function(resolve){
@@ -212,6 +213,15 @@ async function _authedHeaders(extra){
   var token = sessRes && sessRes.data && sessRes.data.session && sessRes.data.session.access_token;
   if (!token) throw new Error('Not logged in (no active session) — refresh and log in again.');
   return Object.assign({ apikey: _SUPA_ANON, Authorization: 'Bearer ' + token }, extra || {});
+}
+
+function urlGetParams(){ return new URLSearchParams(window.location.search); }
+function urlSetParams(params, opts){
+  var qs = new URLSearchParams();
+  Object.keys(params || {}).forEach(function(k){ if (params[k] != null && params[k] !== '') qs.set(k, params[k]); });
+  var url = window.location.pathname + (qs.toString() ? '?' + qs.toString() : '');
+  if (opts && opts.replace) window.history.replaceState(params, '', url);
+  else window.history.pushState(params, '', url);
 }
 /* ─────────────────────────────────────────────────────────────────────────────
    Vibe Taxonomy admin — client logic for /VibeTaxonomy/
@@ -294,6 +304,11 @@ async function _authedHeaders(extra){
       S.cats = res[0]; S.shelves = res[1]; S.map = res[2]; S.vibeKeys = res[3];
       S.destByVibe = new Map(); S.destLoadedFor = null;
       S.dirty.clear();
+      // Seed from the URL (a shared link, or a reload) rather than resetting to
+      // the top every time — replaceState so this doesn't add its own history
+      // entry on top of whatever navigation actually got us here.
+      S.view = viewFromParams(urlGetParams());
+      urlSetParams(paramsFromView(S.view), { replace: true });
       render();
     }).catch(function (e) {
       $('vt-body').innerHTML =
@@ -685,7 +700,35 @@ async function _authedHeaders(extra){
     syncDirty();
   }
 
-  function setView(v) { S.view = v; render(); }
+  /* ── URL <-> view (deep links — see admin-nav.js's adminUrlStateJs) ────── */
+  function paramsFromView(v) {
+    const p = {};
+    if (v.categoryCode) p.cat = v.categoryCode;
+    if (v.keyCode) p.key = v.keyCode;
+    return p;
+  }
+  function viewFromParams(params) {
+    const keyCode = params.get('key');
+    const catCode = params.get('cat');
+    if (keyCode) {
+      const row = mapRow(keyCode);
+      if (row) return { level: 'key', categoryCode: row.category_code, keyCode: keyCode };
+      if (S.map.length) toast('Key "' + keyCode + '" not found — showing categories.', true);
+    } else if (catCode) {
+      if (catByCode(catCode)) return { level: 'category', categoryCode: catCode, keyCode: null };
+      if (S.cats.length) toast('Category "' + catCode + '" not found — showing categories.', true);
+    }
+    return { level: 'categories', categoryCode: null, keyCode: null };
+  }
+
+  // Navigating within the page: push a new history entry so back/forward and
+  // shared links work. Arriving VIA back/forward (popstate) does not push again
+  // — the browser already moved history for us, we just re-render to match.
+  function setView(v) { S.view = v; urlSetParams(paramsFromView(v)); render(); }
+  window.addEventListener('popstate', function () {
+    S.view = viewFromParams(urlGetParams());
+    render();
+  });
 
   /* ── Wiring ─────────────────────────────────────────────────────────────── */
   document.addEventListener('input', function (e) {
