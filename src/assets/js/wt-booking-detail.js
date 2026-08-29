@@ -49,26 +49,30 @@ function heroIdentity(overline, name, place, meta) {
     '</div>';
 }
 
-/** Two-letter state off the end of a US street address ("...Austin, TX
- *  78701") — the property's own address text already carries it, so no
- *  separate state dataset is needed. Null for anything that isn't a US
- *  ZIP-terminated address. */
-function usStateFromAddress(address) {
-  if (!address) return null;
-  const m = String(address).match(/,\s*([A-Z]{2})\s+\d{5}(-\d{4})?\s*$/);
+/** Two-letter state out of LiteAPI's own `zip` field, which for a US
+ *  property is really "STATE ZIPCODE" combined ("NY 10019") — NOT off the
+ *  street address, which is street-only and never carries it. No separate
+ *  state dataset needed since the property record already has this. */
+function usStateFromZip(zip) {
+  if (!zip) return null;
+  const m = String(zip).trim().match(/^([A-Z]{2})\s+\d{5}(-\d{4})?$/);
   return m ? m[1] : null;
 }
 
 /** What to show next to a destination name in a hero: the US state when the
- *  property's address gives us one (more useful than "United States" for a
- *  domestic trip), the country otherwise. */
-function heroPlaceLabel(country, address) {
-  if (!country) return null;
-  if (/^(united states|usa|us)$/i.test(country.trim())) {
-    const state = usStateFromAddress(address);
+ *  property's own record gives us one (more useful than "United States" for
+ *  a domestic trip), the country otherwise. Prefers the property's own
+ *  country (once its content record has loaded) over the order's stamped
+ *  one — same "search label vs. real location" reasoning as the address
+ *  block, see [[feedback_hotel_order_city_not_for_display]]. */
+function heroPlaceLabel(orderCountry, content) {
+  const countryName = (content && content.country) ? countryDisplayName(content.country) : orderCountry;
+  if (!countryName) return null;
+  if (/^(united states|usa|us)$/i.test(countryName.trim())) {
+    const state = usStateFromZip(content && content.zip);
     if (state) return state;
   }
-  return country;
+  return countryName;
 }
 
 function confirmBlock(label, code, status, total, currency, rightLabel, rightValue) {
@@ -801,7 +805,7 @@ export function renderDetail(ctx, item) {
 
       if (item.kind === 'trip') {
         const name = look.city || hotel.city || (flight && flight.destination) || 'Your trip';
-        const heroPlace = heroPlaceLabel(look.country || hotel.country, live.content && live.content.address);
+        const heroPlace = heroPlaceLabel(look.country || hotel.country, live.content);
         const meta = [
           hotel.check_in && hotel.check_out
             ? shortDate(hotel.check_in) + ' – ' + shortDate(hotel.check_out)
@@ -834,7 +838,8 @@ export function renderDetail(ctx, item) {
           'property they refer to.</p>';
         html += '</div>';
       } else {
-        const place = [hotel.city, hotel.country].filter(Boolean).join(', ');
+        const placeCountry = heroPlaceLabel(hotel.country, live.content);
+        const place = [live.content && live.content.city || hotel.city, placeCountry].filter(Boolean).join(', ');
         html += hero(images, 'buildings') +
           heroIdentity(place ? place.toUpperCase() : null, hotel.hotel_name || 'Hotel', null, hotelMeta(hotel));
         html += '<div class="bk-body-wrap">' + hotelSections(hotel, live.hotel, live.content, {}) + '</div>';
