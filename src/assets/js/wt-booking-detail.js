@@ -233,6 +233,23 @@ function hotelSections(order, live, content, opts) {
 
 // ── Flight ──────────────────────────────────────────────────────────
 
+/** Base/tax split for a flight order — same field the "Booking" record in
+ *  flightSections reads. Returns null for older bookings made before this
+ *  was captured, so callers fall back to the single total. */
+function flightPriceBreakdown(order) {
+  const payload = order.liteapi_payload || {};
+  const journey = payload.journey || (payload.raw && payload.raw.journey) || {};
+  const orderPrice = (payload.order && payload.order.price)
+    || (payload.raw && payload.raw.order && payload.raw.order.price)
+    || (journey.pricing && journey.pricing.display);
+  if (!orderPrice || orderPrice.base == null) return null;
+  return {
+    base: orderPrice.base,
+    taxes: orderPrice.taxes,
+    currency: orderPrice.currency || order.total_currency || 'USD',
+  };
+}
+
 function minutesLabel(mins) {
   if (!isFinite(mins) || mins <= 0) return '';
   const h = Math.floor(mins / 60), m = Math.round(mins % 60);
@@ -565,19 +582,37 @@ function tripSummary(hotel, flight, live, content) {
   const hotelAddress = (content && content.address) || null;
   const hotelPhone = (ci.propertyContact && ci.propertyContact.phone) || (content && content.phone) || null;
 
-  let html = section('Trip summary',
-    infoRow(ico('calendar'), 'Trip dates', dates) +
-    infoRow(ico('wallet'), 'Total package price', money(totalPaid, currency)) +
-    infoRow(ico('buildings'), hotel.hotel_name || 'Hotel',
-      [hotelAddress, hotelPhone].filter(Boolean).join('  ·  ') || null) +
-    infoRow(ico('plane'), carrierName + (flightNum ? '  ·  Flight ' + flightNum : ''), airportLine || null));
-  html += '<div class="bk-kv-block">' +
-    kvRow('Hotel', money(hotel.total_amount, hotel.total_currency)) +
-    kvRow('Flight', money(flight.total_amount, flight.total_currency)) +
-    kvRow('Total paid', money(totalPaid, currency), true) +
+  const hpb = hotelPriceBreakdown(hotel);
+  const fpb = flightPriceBreakdown(flight);
+
+  let priceRows = '';
+  priceRows += kvRow('Flight fare', fpb ? money(fpb.base, fpb.currency) : money(flight.total_amount, flight.total_currency));
+  if (fpb && fpb.taxes != null) priceRows += kvRow('Flight taxes & fees', money(fpb.taxes, fpb.currency));
+  priceRows += kvRow('Hotel room rate', hpb ? money(hpb.roomRate, hpb.currency) : money(hotel.total_amount, hotel.total_currency));
+  if (hpb) priceRows += kvRow('Hotel taxes & fees', money(hpb.taxesFees, hpb.currency));
+  if (hpb && hpb.dueAtProperty > 0) {
+    priceRows += kvRow('Due at property', money(hpb.dueAtProperty, hpb.currency));
+  }
+  priceRows += kvRow('Total paid today', money(totalPaid, currency), true);
+
+  let html = '<div class="bk-summary-card">' +
+    '<p class="bk-summary-eyebrow">Trip summary</p>' +
+    '<div class="bk-summary-top">' +
+      '<div><p class="bk-stat-label">TRIP DATES</p><p class="bk-summary-dates">' + esc(dates) + '</p></div>' +
+      '<div class="bk-summary-total"><p class="bk-stat-label">TOTAL PACKAGE PRICE</p>' +
+      '<p class="bk-total-value">' + esc(money(totalPaid, currency)) + '</p></div>' +
+    '</div>' +
+    '<hr class="bk-divider" />' +
+    '<div class="bk-summary-legs">' +
+      infoRow(ico('buildings'), hotel.hotel_name || 'Hotel',
+        [hotelAddress, hotelPhone].filter(Boolean).join('  ·  ') || null) +
+      infoRow(ico('plane'), carrierName + (flightNum ? '  ·  Flight ' + flightNum : ''), airportLine || null) +
+    '</div>' +
+    '<hr class="bk-divider" />' +
+    '<div class="bk-kv-block">' + priceRows + '</div>' +
+    '<p class="bk-body bk-summary-note">A full breakdown of each — confirmation codes, fare and room ' +
+    'details, and check-in info — is below.</p>' +
     '</div>';
-  html += '<p class="bk-body">A full breakdown of each — confirmation codes, fare and room details, ' +
-    'and check-in info — is below.</p>';
   return html;
 }
 
@@ -622,6 +657,10 @@ export function renderDetail(ctx, item) {
       const images = (live.content && live.content.images && live.content.images.length)
         ? live.content.images
         : (hotel.hotel_photo ? [hotel.hotel_photo] : look.images);
+      // A trip's top hero is about the DESTINATION, not either leg — the
+      // property gets its own photo header down in "Your hotel" below.
+      // Same fallback order, just destination-first.
+      const tripHeroImages = look.images.length ? look.images : images;
 
       if (item.kind === 'trip') {
         const name = look.city || hotel.city || (flight && flight.destination) || 'Your trip';
@@ -641,7 +680,7 @@ export function renderDetail(ctx, item) {
           ? live.content.images
           : (hotel.hotel_photo ? [hotel.hotel_photo] : []);
 
-        html += hero(images, 'buildings') + heroIdentity('FLIGHT + HOTEL', name, meta);
+        html += hero(tripHeroImages, 'buildings') + heroIdentity('FLIGHT + HOTEL', name, meta);
         html += '<div class="bk-body-wrap">';
         html += tripSummary(hotel, flight, live, live.content);
         html += '<hr class="bk-divider" /><h2 class="bk-trip-head">YOUR FLIGHT</h2>';
