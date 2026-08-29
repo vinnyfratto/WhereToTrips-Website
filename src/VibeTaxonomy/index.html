@@ -50,6 +50,8 @@ h1 { font-size: 24px; margin: 0 0 4px; }
 .board { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 10px; align-items: flex-start; }
 .col { flex: 0 0 260px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px; }
 .col.drag-over { border-color: var(--azure); box-shadow: 0 0 0 2px rgba(47,111,168,.18); background: #F5F9FC; }
+.col.addCol { background: none; border: 2px dashed var(--line); display: flex; align-items: center; justify-content: center; min-height: 64px; }
+.col.addCol .ghost { border-style: dashed; }
 .colHead { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
 .colCount { font-size: 11px; color: var(--muted); background: #EDF2F7; border-radius: 999px; padding: 2px 8px; white-space: nowrap; }
 .colBody { display: flex; flex-direction: column; gap: 8px; min-height: 40px; }
@@ -250,6 +252,12 @@ async function _authedHeaders(extra){
     destLoadedFor: null,     // canonical_key the cache above was loaded for
     view: { level: 'categories', categoryCode: null, keyCode: null },
     dirty: new Set(), busy: false,
+    // category_code -> [shelf_code, ...] created this session with nothing dragged
+    // into them yet. shelvesInCategory() derives columns from vibe_canonical_map,
+    // so a brand-new shelf with 0 keys would otherwise never appear as a drop
+    // target — this keeps it visible until a Key actually lands in it (at which
+    // point it's part of the real data and no longer needs the pin).
+    extraShelvesInCategory: {},
   };
   const pending = {}; // "table:pk" -> { field: value }
 
@@ -315,6 +323,7 @@ async function _authedHeaders(extra){
   function shelvesInCategory(catCode) {
     const codes = []; const seen = {};
     keysInCategory(catCode).forEach(function (m) { if (!seen[m.shelf_code]) { seen[m.shelf_code] = true; codes.push(m.shelf_code); } });
+    (S.extraShelvesInCategory[catCode] || []).forEach(function (code) { if (!seen[code]) { seen[code] = true; codes.push(code); } });
     return codes.map(shelfByCode).filter(Boolean).sort(function (a, b) {
       return (a.sort_order - b.sort_order) || a.display_name.localeCompare(b.display_name);
     });
@@ -393,6 +402,67 @@ async function _authedHeaders(extra){
     const n = S.dirty.size;
     $('vt-saveall').disabled = !n || S.busy;
     $('vt-saveall').textContent = n ? 'Publish ' + n + ' change' + (n === 1 ? '' : 's') : 'No changes';
+  }
+
+  /* ── Create a shelf ─────────────────────────────────────────────────────── */
+  function slugify(name) {
+    return String(name).toLowerCase().trim()
+      .replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '') || 'shelf';
+  }
+  function uniqueShelfCode(name) {
+    const base = slugify(name);
+    const taken = {}; S.shelves.forEach(function (s) { taken[s.code] = true; });
+    if (!taken[base]) return base;
+    let n = 2;
+    while (taken[base + '_' + n]) n++;
+    return base + '_' + n;
+  }
+
+  // New shelves save immediately (not queued in Publish) — there's nothing
+  // meaningful to "undo" by leaving it unsaved, and it needs to exist in
+  // Supabase right away so a Key can be dragged into it in the same visit.
+  function createShelf(displayName, catCode) {
+    const code = uniqueShelfCode(displayName);
+    const sortOrder = S.shelves.reduce(function (m, s) { return Math.max(m, s.sort_order); }, 0) + 1;
+    const row = { code: code, display_name: displayName, sort_order: sortOrder, enabled: true };
+    return _authedHeaders({ 'Content-Type': 'application/json', Prefer: 'return=representation' }).then(function (hdrs) {
+      return fetch(SUPA + '/rest/v1/vibe_shelves', { method: 'POST', headers: hdrs, body: JSON.stringify([row]) });
+    }).then(function (r) {
+      if (!r.ok) return r.text().then(function (t) { throw new Error(r.status + ' ' + t); });
+      return r.json();
+    }).then(function (created) {
+      const saved = (created && created[0]) || Object.assign({ blurb: null, parent_code: null, image_1: null, image_2: null, image_3: null }, row);
+      S.shelves.push(saved);
+      (S.extraShelvesInCategory[catCode] = S.extraShelvesInCategory[catCode] || []).push(saved.code);
+      toast('Shelf "' + displayName + '" created — drag Keys into it, then Publish their move.');
+      render();
+    }).catch(function (e) { toast('Could not create shelf: ' + e.message, true); });
+  }
+
+  /* ── Simple text-input modal (shelf creation) ───────────────────────────── */
+  function openTextPrompt(title, placeholder, onSubmit) {
+    const root = $('vt-modal-root');
+    function close() { root.innerHTML = ''; document.removeEventListener('keydown', onKey); }
+    function onKey(e) { if (e.key === 'Escape') close(); }
+    root.innerHTML =
+      '<div class="modalOverlay" data-act="modalClose">' +
+      '  <div class="modal" data-act="modalStop" style="max-width:380px">' +
+      '    <div class="modalHead"><h3>' + esc(title) + '</h3>' +
+      '      <input class="modalSearch" id="vt-prompt-input" type="text" placeholder="' + esc(placeholder) + '"></div>' +
+      '    <div class="modalFoot" style="display:flex;justify-content:space-between">' +
+      '      <button class="ghost" type="button" data-act="modalClose">Cancel</button>' +
+      '      <button class="primary" type="button" id="vt-prompt-ok">Create</button>' +
+      '    </div>' +
+      '  </div></div>';
+    root.addEventListener('click', function overlayClick(e) {
+      if (e.target.getAttribute && e.target.getAttribute('data-act') === 'modalClose') { close(); root.removeEventListener('click', overlayClick); }
+    });
+    document.addEventListener('keydown', onKey);
+    const input = $('vt-prompt-input');
+    input.focus();
+    function submit() { const v = input.value.trim(); if (!v) return; close(); onSubmit(v); }
+    input.addEventListener('keydown', function (e) { if (e.key === 'Enter') submit(); });
+    $('vt-prompt-ok').addEventListener('click', submit);
   }
 
   /* ── Move picker modal ──────────────────────────────────────────────────── */
@@ -544,6 +614,7 @@ async function _authedHeaders(extra){
         }).join('') +
         '  </div></div>';
     });
+    html += '<div class="col addCol"><button class="ghost" type="button" data-add-shelf="' + esc(catCode) + '">+ Add shelf</button></div>';
     $('vt-body').innerHTML = html + '</div>';
   }
 
@@ -642,6 +713,13 @@ async function _authedHeaders(extra){
 
     const openKey = e.target.closest && e.target.closest('[data-open-key]');
     if (openKey) { setView({ level: 'key', categoryCode: S.view.categoryCode, keyCode: openKey.getAttribute('data-open-key') }); return; }
+
+    const addShelf = e.target.closest && e.target.closest('[data-add-shelf]');
+    if (addShelf) {
+      const catCode = addShelf.getAttribute('data-add-shelf');
+      openTextPrompt('New shelf', 'e.g. "Breweries & Distilleries"', function (name) { createShelf(name, catCode); });
+      return;
+    }
 
     const moveKey = e.target.closest && e.target.closest('[data-move-key]');
     if (moveKey) {
