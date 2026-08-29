@@ -473,7 +473,7 @@
 .bk-back .ico { transform: rotate(180deg); }
 
 .bk-hero {
-  position: relative; height: 300px; border-radius: var(--radius-lg);
+  position: relative; height: 380px; border-radius: var(--radius-lg);
   overflow: hidden; background: var(--wg100);
 }
 .bk-hero--empty { display: flex; align-items: center; justify-content: center; }
@@ -503,6 +503,8 @@
   font-family: var(--sans); font-weight: 700; font-size: 0.9rem;
   letter-spacing: 1.2px; text-transform: uppercase; color: var(--rust); margin: 0 0 4px;
 }
+
+.bk-hero--sub { height: 200px; margin-top: 14px; }
 
 /* One open surface, hairline-divided — no card per fact. */
 .bk-info {

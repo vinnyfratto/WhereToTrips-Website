@@ -32,11 +32,12 @@ const BOARD_LABELS = {
 
 // ── Hero ────────────────────────────────────────────────────────────
 
-function hero(images, fallbackIcon) {
+function hero(images, fallbackIcon, extraClass) {
+  const cls = 'bk-hero' + (extraClass ? ' ' + extraClass : '');
   if (images && images.length) {
-    return '<div class="bk-hero">' + carousel(images, 'bk-hero-carousel', '', true) + '</div>';
+    return '<div class="' + cls + '">' + carousel(images, 'bk-hero-carousel', '', true) + '</div>';
   }
-  return '<div class="bk-hero bk-hero--empty"><span class="bk-hero-icon">' + ico(fallbackIcon) + '</span></div>';
+  return '<div class="' + cls + ' bk-hero--empty"><span class="bk-hero-icon">' + ico(fallbackIcon) + '</span></div>';
 }
 
 function heroIdentity(overline, name, meta) {
@@ -541,6 +542,45 @@ function backLink() {
     ' Back to bookings</a>';
 }
 
+/** Trip-as-a-whole summary shown above the flight/hotel breakdowns: dates,
+ *  total package price, and a one-line pointer to each leg — the detailed
+ *  confirmation codes, fares and room facts live in the sections below. */
+function tripSummary(hotel, flight, live, content) {
+  const currency = hotel.total_currency || flight.total_currency || 'USD';
+  const totalPaid = (Number(hotel.total_amount) || 0) + (Number(flight.total_amount) || 0);
+
+  const dates = hotel.check_in && hotel.check_out
+    ? fmtDateOnly(hotel.check_in) + ' – ' + fmtDateOnly(hotel.check_out)
+    : (flight.depart_date
+      ? (flight.return_date ? fmtDateOnly(flight.depart_date) + ' – ' + fmtDateOnly(flight.return_date) : fmtDateOnly(flight.depart_date))
+      : '—');
+
+  const airline = getFlightAirline(flight);
+  const carrierName = airline.name || airlineName(airline.code) || 'Flight';
+  const firstSeg = liteSegmentGroups(flight)[0];
+  const flightNum = firstSeg && firstSeg[0].flight && firstSeg[0].flight.marketingNumber;
+  const airportLine = [flight.origin, flight.destination].filter(Boolean).join(' → ');
+
+  const ci = (live.hotel && live.hotel.checkinInstructions) || {};
+  const hotelAddress = (content && content.address) || null;
+  const hotelPhone = (ci.propertyContact && ci.propertyContact.phone) || (content && content.phone) || null;
+
+  let html = section('Trip summary',
+    infoRow(ico('calendar'), 'Trip dates', dates) +
+    infoRow(ico('wallet'), 'Total package price', money(totalPaid, currency)) +
+    infoRow(ico('buildings'), hotel.hotel_name || 'Hotel',
+      [hotelAddress, hotelPhone].filter(Boolean).join('  ·  ') || null) +
+    infoRow(ico('plane'), carrierName + (flightNum ? '  ·  Flight ' + flightNum : ''), airportLine || null));
+  html += '<div class="bk-kv-block">' +
+    kvRow('Hotel', money(hotel.total_amount, hotel.total_currency)) +
+    kvRow('Flight', money(flight.total_amount, flight.total_currency)) +
+    kvRow('Total paid', money(totalPaid, currency), true) +
+    '</div>';
+  html += '<p class="bk-body">A full breakdown of each — confirmation codes, fare and room details, ' +
+    'and check-in info — is below.</p>';
+  return html;
+}
+
 function hotelMeta(order) {
   return [
     order.check_in && order.check_out ? shortDate(order.check_in) + ' – ' + shortDate(order.check_out) : '',
@@ -595,11 +635,19 @@ export function renderDetail(ctx, item) {
           flight && flight.passengers ? plural(flight.passengers, 'traveller') : '',
         ].filter(Boolean).join(' · ');
 
+        // Real property photos for the hotel section's own header, distinct
+        // from the top hero (which may be showing a destination or flight shot).
+        const hotelImages = (live.content && live.content.images && live.content.images.length)
+          ? live.content.images
+          : (hotel.hotel_photo ? [hotel.hotel_photo] : []);
+
         html += hero(images, 'buildings') + heroIdentity('FLIGHT + HOTEL', name, meta);
         html += '<div class="bk-body-wrap">';
-        html += '<h2 class="bk-trip-head">YOUR FLIGHT</h2>';
+        html += tripSummary(hotel, flight, live, live.content);
+        html += '<hr class="bk-divider" /><h2 class="bk-trip-head">YOUR FLIGHT</h2>';
         html += flightSections(flight, live.flight, roster, { includeDisclaimer: false });
         html += '<hr class="bk-divider" /><h2 class="bk-trip-head">YOUR HOTEL</h2>';
+        if (hotelImages.length) html += hero(hotelImages, 'buildings', 'bk-hero--sub');
         html += hotelSections(hotel, live.hotel, live.content, { includeDisclaimer: false });
         html += '<hr class="bk-divider" /><p class="bk-disclaimer">The flight and hotel above were booked ' +
           'together but are charged and confirmed separately — cancelling or changing one does not affect ' +
