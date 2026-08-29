@@ -129,23 +129,38 @@ function amenityIcon(name) {
   return 'check-circle';
 }
 
-/** Street (from the property's own content record) as one line, city/country
- *  (stamped on the order at booking time) as a second — the way a human
- *  addresses an envelope, never lat/lng. Drops the second line when the
- *  street already names the city, so it never doubles up. */
-function hotelAddressParts(order, content) {
-  const street = (content && content.address) || null;
-  const cityCountry = [order.city, order.country].filter(Boolean).join(', ') || null;
-  const cityLower = String(order.city || '').toLowerCase();
-  if (street && cityLower && street.toLowerCase().includes(cityLower)) return { street, cityLine: null };
-  return { street, cityLine: cityCountry };
+/** ISO-2 → display name via the browser's own locale data (LiteAPI's hotel
+ *  content returns a bare lowercase code like "us") — no country table to
+ *  keep in sync by hand. */
+function countryDisplayName(code) {
+  if (!code) return null;
+  try {
+    return new Intl.DisplayNames(['en'], { type: 'region' }).of(String(code).toUpperCase()) || String(code).toUpperCase();
+  } catch (e) {
+    return String(code).toUpperCase();
+  }
+}
+
+/** The property's OWN address record — street, then city + state/zip (US)
+ *  or postal code (international) + country — as a human would address an
+ *  envelope. Deliberately never the order's stored city/country: those are
+ *  stamped from the SEARCH that found the hotel (a metro group like "Pompeii
+ *  & Herculaneum" standing in for the actual city — see the destination
+ *  pairing notes in wt-booking-kit.js), not a mailing address. Null until
+ *  the property's content record has loaded — the summary re-paints once it
+ *  lands, same as the photos and facilities. */
+function hotelAddressParts(content) {
+  if (!content || !content.address) return null;
+  const cityZip = [content.city, content.zip].filter(Boolean).join(', ');
+  const cityLine = [cityZip, countryDisplayName(content.country)].filter(Boolean).join(', ') || null;
+  return { street: content.address, cityLine };
 }
 
 /** Flat single-line form of the same address, for a tap-to-open link or a
  *  map query — never lat/lng. */
-function fullHotelAddress(order, content) {
-  const parts = hotelAddressParts(order, content);
-  return [parts.street, parts.cityLine].filter(Boolean).join(', ') || null;
+function fullHotelAddress(content) {
+  const parts = hotelAddressParts(content);
+  return parts ? [parts.street, parts.cityLine].filter(Boolean).join(', ') : null;
 }
 
 /** A named-place query, never a bare coordinate pair — Google Maps' embed
@@ -179,7 +194,7 @@ function hotelSections(order, live, content, opts) {
 
   // Contact — right below the identity block, one big tappable line each,
   // with a map alongside naming the property (never its bare coordinates).
-  const fullAddress = fullHotelAddress(order, content);
+  const fullAddress = fullHotelAddress(content);
   const contact = [];
   if (fullAddress) {
     const mapsQuery = [order.hotel_name, fullAddress].filter(Boolean).join(', ');
@@ -601,6 +616,11 @@ function fetchHotelContent(supabase, hotelId) {
       return {
         images, rooms, facilities,
         address: d.address || null,
+        // "zip" is LiteAPI's own field name, but for a US property it's
+        // really "state zip" together ("NY 10019") — used as-is, not split.
+        city: d.city || null,
+        country: d.country || null,
+        zip: d.zip || null,
         latitude: d.location && typeof d.location.latitude === 'number' ? d.location.latitude : null,
         longitude: d.location && typeof d.location.longitude === 'number' ? d.location.longitude : null,
         phone: d.phone || null,
@@ -682,8 +702,8 @@ function tripSummary(hotel, flight, live, content) {
   const airportLine = [flight.origin, flight.destination].filter(Boolean).join(' → ');
 
   const ci = (live.hotel && live.hotel.checkinInstructions) || {};
-  const addressParts = hotelAddressParts(hotel, content);
-  const hotelAddress = fullHotelAddress(hotel, content);
+  const addressParts = hotelAddressParts(content) || {};
+  const hotelAddress = fullHotelAddress(content);
   const hotelPhone = (ci.propertyContact && ci.propertyContact.phone) || (content && content.phone) || null;
 
   const hpb = hotelPriceBreakdown(hotel);
