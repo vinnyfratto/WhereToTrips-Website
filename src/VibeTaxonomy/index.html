@@ -295,7 +295,7 @@ function urlSetParams(params, opts){
     view: { level: 'categories', categoryCode: null, keyCode: null },
     dirty: new Set(), busy: false,
     // All-Engine-Vibes table sort/filter state, kept across re-renders.
-    vibeFilters: { name: '', shelf: '', key: '', images: '' },
+    vibeFilters: { name: '', shelf: '', key: '', images: '', manual: '' },
     vibeSort: { col: 'name', dir: 'asc' },
   };
   const pending = {}; // "table:pk" -> { field: value }
@@ -643,6 +643,42 @@ function urlSetParams(params, opts){
   }
 
   /* ── Shelf image pills (image_1/2/3 on vibe_shelves) ────────────────────── */
+  /* ── "Done" checkbox (vibe_keys.manual_set) — writes immediately, not
+     queued in Publish, so it's never lost/forgotten alongside a rename. ──── */
+  function setManualSet(engineKey, checked) {
+    const v = S.vibeKeys.filter(function (x) { return x.key === engineKey; })[0];
+    if (!v) return;
+    const prev = v.manual_set;
+    v.manual_set = checked;
+    _authedHeaders({ 'Content-Type': 'application/json' }).then(function (hdrs) {
+      return fetch(SUPA + '/rest/v1/vibe_keys?key=eq.' + encodeURIComponent(engineKey), {
+        method: 'PATCH', headers: hdrs, body: JSON.stringify({ manual_set: checked }),
+      });
+    }).then(function (r) {
+      if (!r.ok) return r.text().then(function (t) { throw new Error(r.status + ' ' + t); });
+      // Row order/visibility may depend on this column — refresh once saved.
+      const tbody = $('vt-vibe-tbody'); if (tbody) tbody.innerHTML = vibeTableRows();
+    }).catch(function (e) {
+      v.manual_set = prev;
+      const tbody = $('vt-vibe-tbody'); if (tbody) tbody.innerHTML = vibeTableRows();
+      toast('Could not save: ' + e.message, true);
+    });
+  }
+  function clearAllManualSet() {
+    const marked = S.vibeKeys.filter(function (v) { return v.manual_set; });
+    if (!marked.length) { toast('Nothing is marked Done.'); return; }
+    if (!confirm('Clear "Done" on all ' + marked.length + ' marked engine vibe(s)? This cannot be undone.')) return;
+    const list = marked.map(function (v) { return encodeURIComponent(v.key); }).join(',');
+    _authedHeaders({ 'Content-Type': 'application/json' }).then(function (hdrs) {
+      return fetch(SUPA + '/rest/v1/vibe_keys?key=in.(' + list + ')', { method: 'PATCH', headers: hdrs, body: JSON.stringify({ manual_set: false }) });
+    }).then(function (r) {
+      if (!r.ok) return r.text().then(function (t) { throw new Error(r.status + ' ' + t); });
+      marked.forEach(function (v) { v.manual_set = false; });
+      toast('Cleared ' + marked.length + '.');
+      const tbody = $('vt-vibe-tbody'); if (tbody) tbody.innerHTML = vibeTableRows();
+    }).catch(function (e) { toast('Could not clear: ' + e.message, true); });
+  }
+
   function patchShelf(shelfCode, body) {
     return _authedHeaders({ 'Content-Type': 'application/json' }).then(function (hdrs) {
       return fetch(SUPA + '/rest/v1/vibe_shelves?code=eq.' + encodeURIComponent(shelfCode), { method: 'PATCH', headers: hdrs, body: JSON.stringify(body) });
@@ -888,8 +924,9 @@ function urlSetParams(params, opts){
         }).join('') + '</div></div>';
     }
 
-    html += '<div class="section"><div class="sectionTitle">All Engine Vibes (' + S.vibeKeys.length + ')</div>' +
-      '<div class="lede">Click a column name to sort by it; the row beneath each header filters that column.</div>' +
+    html += '<div class="section"><div class="sectionTitle">All Engine Vibes (' + S.vibeKeys.length + ')' +
+      '<button class="moveBtn del" type="button" style="margin-left:10px" data-act="clear-manual-set">Clear all Done</button></div>' +
+      '<div class="lede">Click a column name to sort by it; the row beneath each header filters that column. The checkbox marks a vibe as reviewed/done — it saves straight to Supabase, no Publish needed.</div>' +
       '<div style="overflow-x:auto"><table class="vibeTable" id="vt-vibe-table"><thead>' + vibeTableHead() + '</thead>' +
       '<tbody id="vt-vibe-tbody">' + vibeTableRows() + '</tbody></table></div></div>';
 
@@ -913,8 +950,13 @@ function urlSetParams(params, opts){
       const arrow = active ? (S.vibeSort.dir === 'asc' ? ' ▲' : ' ▼') : '';
       return '<th class="sortable" data-sort-col="' + col + '">' + esc(label) + arrow + '</th>';
     }
-    return '<tr>' + th('Name', 'name') + th('Move') + th('Current shelf', 'shelf') + th('Key', 'key') + th('Images', 'images') + '</tr>' +
+    return '<tr>' + th('Done', 'manual') + th('Name', 'name') + th('Move') + th('Current shelf', 'shelf') + th('Key', 'key') + th('Images', 'images') + '</tr>' +
       '<tr class="filterRow">' +
+      '<th><select class="filterIn" id="vt-vf-manual">' +
+      '<option value=""' + (S.vibeFilters.manual === '' ? ' selected' : '') + '>All</option>' +
+      '<option value="y"' + (S.vibeFilters.manual === 'y' ? ' selected' : '') + '>Y</option>' +
+      '<option value="n"' + (S.vibeFilters.manual === 'n' ? ' selected' : '') + '>N</option>' +
+      '</select></th>' +
       '<th><input class="filterIn" type="text" placeholder="Filter&hellip;" id="vt-vf-name" value="' + esc(S.vibeFilters.name) + '"></th>' +
       '<th></th>' +
       '<th><input class="filterIn" type="text" placeholder="Filter&hellip;" id="vt-vf-shelf" value="' + esc(S.vibeFilters.shelf) + '"></th>' +
@@ -939,21 +981,25 @@ function urlSetParams(params, opts){
       if (keyF && !(r.cv && r.cv.canonical_label.toLowerCase().indexOf(keyF) >= 0)) return false;
       if (f.images === 'has' && !r.imgs.length) return false;
       if (f.images === 'none' && r.imgs.length) return false;
+      if (f.manual === 'y' && !r.v.manual_set) return false;
+      if (f.manual === 'n' && r.v.manual_set) return false;
       return true;
     });
     const col = S.vibeSort.col, dir = S.vibeSort.dir === 'desc' ? -1 : 1;
     const keyOf = {
+      manual: function (r) { return r.v.manual_set ? 1 : 0; },
       name: function (r) { return r.v.label.toLowerCase(); },
       shelf: function (r) { return r.shelf ? r.shelf.display_name.toLowerCase() : '￿'; }, // unassigned sorts last
       key: function (r) { return r.cv ? r.cv.canonical_label.toLowerCase() : '￿'; },
       images: function (r) { return r.imgs.length; },
     }[col] || function (r) { return r.v.label.toLowerCase(); };
     rows.sort(function (a, b) { const ka = keyOf(a), kb = keyOf(b); return ka < kb ? -1 * dir : ka > kb ? 1 * dir : 0; });
-    if (!rows.length) return '<tr><td colspan="5" class="sub" style="padding:14px">No matches.</td></tr>';
+    if (!rows.length) return '<tr><td colspan="6" class="sub" style="padding:14px">No matches.</td></tr>';
     return rows.map(function (r) {
       const v = r.v, cv = r.cv, shelf = r.shelf, imgs = r.imgs, dupes = r.dupes;
       return '' +
         '<tr>' +
+        '<td><input type="checkbox" data-manual-set="' + esc(v.key) + '"' + (v.manual_set ? ' checked' : '') + '></td>' +
         '<td>' + (dupes.length ? '<span class="shareIcon" title="' + esc(duplicateTooltip(dupes)) + '">🔗</span> ' : '') +
         '<input class="nameIn sm" type="text" value="' + esc(v.label) + '" data-table="vibe_keys" data-pk="' + esc(v.key) + '" data-field="label"></td>' +
         '<td><button class="moveBtn" type="button" data-move-vibe="' + esc(v.key) + '">Move to Key&hellip;</button></td>' +
@@ -1102,9 +1148,11 @@ function urlSetParams(params, opts){
   });
 
   /* ── Wiring ─────────────────────────────────────────────────────────────── */
-  const VIBE_FILTER_IDS = { 'vt-vf-name': 'name', 'vt-vf-shelf': 'shelf', 'vt-vf-key': 'key', 'vt-vf-images': 'images' };
+  const VIBE_FILTER_IDS = { 'vt-vf-name': 'name', 'vt-vf-shelf': 'shelf', 'vt-vf-key': 'key', 'vt-vf-images': 'images', 'vt-vf-manual': 'manual' };
   document.addEventListener('input', function (e) {
     const t = e.target;
+    const manualKey = t.getAttribute && t.getAttribute('data-manual-set');
+    if (manualKey) { setManualSet(manualKey, t.checked); return; }
     const filterField = VIBE_FILTER_IDS[t.id];
     if (filterField) {
       S.vibeFilters[filterField] = t.value;
@@ -1250,6 +1298,8 @@ function urlSetParams(params, opts){
       if (S.dirty.size && !confirm('You have ' + S.dirty.size + ' unpublished change(s). Reload and lose them?')) return;
       Object.keys(pending).forEach(function (k) { delete pending[k]; });
       load();
+    } else if (b && b.getAttribute('data-act') === 'clear-manual-set') {
+      clearAllManualSet();
     }
   });
 
