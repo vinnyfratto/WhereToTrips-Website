@@ -59,6 +59,8 @@ h1 { font-size: 24px; margin: 0 0 4px; }
 .moveBtn.del { color: var(--bad); border-color: #F5C6C2; }
 .moveBtn.del:hover { background: var(--bad); border-color: var(--bad); color: #fff; }
 .shareIcon { font-size: 13px; cursor: help; line-height: 1; }
+.dragHandle { cursor: grab; color: var(--muted); font-size: 15px; line-height: 1; padding: 2px 1px; user-select: none; }
+.dragHandle:active { cursor: grabbing; }
 .imgPills { display: flex; gap: 6px; margin-bottom: 10px; }
 .imgPill { width: 44px; height: 44px; flex: 0 0 44px; border-radius: 8px; background: #EDF2F7 center/cover no-repeat;
   border: 1px solid var(--line); cursor: grab; position: relative; }
@@ -297,6 +299,11 @@ function urlSetParams(params, opts){
     // All-Engine-Vibes table sort/filter state, kept across re-renders.
     vibeFilters: { name: '', cat: '', shelf: '', key: '', images: '', manual: '' },
     vibeSort: { col: 'name', dir: 'asc' },
+    // category_code -> [shelf_code,...] — a purely visual column order, kept
+    // ONLY in memory (never written to Supabase, never persisted) so it resets
+    // on a real page refresh, same as the user asked. shelvesInCategory()
+    // applies it on top of the real (DB) order.
+    shelfOrderOverride: {},
   };
   const pending = {}; // "table:pk" -> { field: value }
 
@@ -377,9 +384,30 @@ function urlSetParams(params, opts){
     const codes = []; const seen = {};
     S.categoryShelves.forEach(function (r) { if (r.category_code === catCode && !seen[r.shelf_code]) { seen[r.shelf_code] = true; codes.push(r.shelf_code); } });
     keysInCategory(catCode).forEach(function (m) { if (!seen[m.shelf_code]) { seen[m.shelf_code] = true; codes.push(m.shelf_code); } });
-    return codes.map(shelfByCode).filter(Boolean).sort(function (a, b) {
-      return (a.sort_order - b.sort_order) || a.display_name.localeCompare(b.display_name);
+    const shelves = codes.map(shelfByCode).filter(Boolean);
+    const naturalSort = function (a, b) { return (a.sort_order - b.sort_order) || a.display_name.localeCompare(b.display_name); };
+    const override = S.shelfOrderOverride[catCode];
+    if (!override) return shelves.sort(naturalSort);
+    const pos = {}; override.forEach(function (code, i) { pos[code] = i; });
+    // A shelf not in the override (created/assigned after the last drag) has
+    // no position — Infinity puts it after every explicitly-ordered one.
+    return shelves.sort(function (a, b) {
+      const pa = pos.hasOwnProperty(a.code) ? pos[a.code] : Infinity;
+      const pb = pos.hasOwnProperty(b.code) ? pos[b.code] : Infinity;
+      return pa !== pb ? pa - pb : naturalSort(a, b);
     });
+  }
+  // Purely visual, session-only column reorder — never written to Supabase,
+  // so it resets on an actual page refresh (see S.shelfOrderOverride).
+  function reorderShelfInCategory(catCode, draggedCode, targetCode) {
+    if (draggedCode === targetCode) return;
+    const codes = shelvesInCategory(catCode).map(function (s) { return s.code; });
+    const from = codes.indexOf(draggedCode), to = codes.indexOf(targetCode);
+    if (from < 0 || to < 0) return;
+    codes.splice(from, 1);
+    codes.splice(to, 0, draggedCode);
+    S.shelfOrderOverride[catCode] = codes;
+    render();
   }
   // Shared markup so a shelf's image row looks/behaves identically everywhere
   // it appears (a category's shelf board, the Unassigned section).
@@ -859,6 +887,8 @@ function urlSetParams(params, opts){
     } else if (_drag.kind === 'shelfImage') {
       if (target.shelf_code === _drag.payload.shelf_code) return;
       moveShelfImage(_drag.payload.shelf_code, _drag.payload.slot, target.shelf_code);
+    } else if (_drag.kind === 'shelfcol') {
+      reorderShelfInCategory(S.view.categoryCode, _drag.payload.shelf_code, target.shelf_code);
     } else if (_drag.kind === 'dest') {
       if (target.vibe_key === _drag.payload.vibe_key) return;
       const list = S.destByVibe.get(_drag.payload.vibe_key) || [];
@@ -1027,8 +1057,9 @@ function urlSetParams(params, opts){
         .sort(function (a, b) { return (a.sort_order - b.sort_order) || a.canonical_label.localeCompare(b.canonical_label); });
       const shared = otherCategoriesForShelf(shelf.code, catCode);
       html += '' +
-        '<div class="col" data-drop-kind="key,shelfImage" data-drop-payload=\'' + esc(JSON.stringify({ shelf_code: shelf.code })) + '\'>' +
-        '  <div class="colHead"><input class="nameIn sm" type="text" value="' + esc(shelf.display_name) + '" data-table="vibe_shelves" data-pk="' + esc(shelf.code) + '" data-field="display_name">' +
+        '<div class="col" data-drop-kind="key,shelfImage,shelfcol" data-drop-payload=\'' + esc(JSON.stringify({ shelf_code: shelf.code })) + '\'>' +
+        '  <div class="colHead"><span class="dragHandle"' + dragAttrs('shelfcol', { shelf_code: shelf.code }) + ' title="Drag to reorder shelves (this session only)">⠿</span>' +
+        '<input class="nameIn sm" type="text" value="' + esc(shelf.display_name) + '" data-table="vibe_shelves" data-pk="' + esc(shelf.code) + '" data-field="display_name">' +
         (shared.length ? '    <span class="shareIcon" title="Also used by: ' + esc(shared.join(', ')) + '">🔗</span>' : '') +
         '    <span class="colCount">' + rows.length + '</span></div>' +
         '  <div class="colSub"><span class="code" title="Stable id">' + esc(shelf.code) + '</span>' +
