@@ -521,9 +521,31 @@ function urlSetParams(params, opts){
     }).catch(function (e) { toast('Could not create shelf: ' + e.message, true); });
   }
 
+  // A Key drag/move only updates vibe_canonical_map LOCALLY until Publish is
+  // clicked — S.map (and therefore keysInCategoryShelf's count) reflects that
+  // optimistic state immediately, even though the DB row hasn't changed yet.
+  // Deleting against that stale DB state is exactly what throws the FK error
+  // ("moved a Key out, shelf looked empty, delete still 409'd") — so a shelf
+  // delete always requires a clean, fully-published state first.
+  function blockedByUnpublished() {
+    if (!S.dirty.size) return false;
+    toast('You have ' + S.dirty.size + ' unpublished change' + (S.dirty.size === 1 ? '' : 's') + ' — click Publish first, then delete.', true);
+    return true;
+  }
+  // Turns a PostgREST foreign-key error into something actionable instead of
+  // the raw JSON dump — the common case is exactly the stale-state race above.
+  function friendlyDeleteError(e) {
+    const msg = String(e && e.message || e);
+    if (msg.indexOf('23503') >= 0 || msg.indexOf('violates foreign key') >= 0) {
+      return 'Still referenced by a Key that hasn\'t been Published yet — Publish your pending moves, reload, then delete again.';
+    }
+    return msg;
+  }
+
   // Blocks (with a toast) if the shelf still holds a Key in this category —
   // deleting it would either FK-violate at the DB or silently orphan the Key.
   function deleteShelf(catCode, shelfCode) {
+    if (blockedByUnpublished()) return;
     const shelf = shelfByCode(shelfCode);
     const stillPopulated = keysInCategoryShelf(catCode, shelfCode).length;
     if (stillPopulated) {
@@ -549,7 +571,7 @@ function urlSetParams(params, opts){
         toast('Shelf deleted.');
         render();
       });
-    }).catch(function (e) { toast('Could not delete shelf: ' + e.message, true); });
+    }).catch(function (e) { toast('Could not delete shelf: ' + friendlyDeleteError(e), true); });
   }
 
   /* ── Shelf image pills (image_1/2/3 on vibe_shelves) ────────────────────── */
@@ -614,6 +636,7 @@ function urlSetParams(params, opts){
   // No category context needed here — an unassigned shelf has no
   // vibe_category_shelves row and no Key, so there's nothing to unlink first.
   function deleteShelfGlobal(shelfCode) {
+    if (blockedByUnpublished()) return;
     const shelf = shelfByCode(shelfCode);
     if (!confirm('Delete the shelf "' + (shelf ? shelf.display_name : shelfCode) + '"? This cannot be undone.')) return;
     _authedHeaders().then(function (hdrs) {
@@ -623,7 +646,7 @@ function urlSetParams(params, opts){
       S.shelves = S.shelves.filter(function (s) { return s.code !== shelfCode; });
       toast('Shelf deleted.');
       render();
-    }).catch(function (e) { toast('Could not delete shelf: ' + e.message, true); });
+    }).catch(function (e) { toast('Could not delete shelf: ' + friendlyDeleteError(e), true); });
   }
 
   /* ── Simple text-input modal (shelf creation) ───────────────────────────── */
