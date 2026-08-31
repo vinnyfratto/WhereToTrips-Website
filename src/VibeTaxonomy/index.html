@@ -364,6 +364,17 @@ function urlSetParams(params, opts){
       return (a.sort_order - b.sort_order) || a.display_name.localeCompare(b.display_name);
     });
   }
+  // Shared markup so a shelf's image row looks/behaves identically everywhere
+  // it appears (a category's shelf board, the Unassigned section).
+  function imgPillsHtml(shelf) {
+    return '<div class="imgPills">' + [1, 2, 3].map(function (n) {
+      const url = shelf['image_' + n];
+      return url
+        ? '<div class="imgPill" style="background-image:url(\'' + esc(String(url).replace(/["\'()\\\n\r]/g, '')) + '\')"' + dragAttrs('shelfImage', { shelf_code: shelf.code, slot: n }) + '>' +
+          '<button class="rm" type="button" data-rm-image="' + esc(shelf.code) + '" data-rm-slot="' + n + '">&times;</button></div>'
+        : '<div class="imgPill empty" data-add-image="' + esc(shelf.code) + '" data-add-slot="' + n + '" title="Add image">+</div>';
+    }).join('') + '</div>';
+  }
   function engineVibesFor(canonicalKey) {
     return S.vibeKeys.filter(function (v) { return v.canonical_key === canonicalKey; })
       .sort(function (a, b) { return a.label.localeCompare(b.label); });
@@ -397,6 +408,15 @@ function urlSetParams(params, opts){
     S.categoryShelves.forEach(function (r) { if (r.shelf_code === shelfCode && r.category_code !== excludeCatCode) codes[r.category_code] = true; });
     S.map.forEach(function (m) { if (m.shelf_code === shelfCode && m.category_code !== excludeCatCode) codes[m.category_code] = true; });
     return Object.keys(codes).map(catByCode).filter(Boolean).map(function (c) { return c.display_name; }).sort();
+  }
+  // Shelves with no category_shelves pin and no populated Key anywhere —
+  // invisible on every board and in the live app until assigned.
+  function unassignedShelves() {
+    const assigned = {};
+    S.categoryShelves.forEach(function (r) { assigned[r.shelf_code] = true; });
+    S.map.forEach(function (m) { assigned[m.shelf_code] = true; });
+    return S.shelves.filter(function (s) { return !assigned[s.code]; })
+      .sort(function (a, b) { return a.display_name.localeCompare(b.display_name); });
   }
 
   /* ── Edit + save ────────────────────────────────────────────────────────── */
@@ -577,6 +597,35 @@ function urlSetParams(params, opts){
     }).catch(function (e) { toast('Could not move image: ' + e.message, true); });
   }
 
+  /* ── Unassigned shelves (no category_shelves pin, no populated Key) ────── */
+  function assignShelfToCategory(shelfCode, categoryCode) {
+    _authedHeaders({ 'Content-Type': 'application/json', Prefer: 'return=representation' }).then(function (hdrs) {
+      return fetch(SUPA + '/rest/v1/vibe_category_shelves', {
+        method: 'POST', headers: hdrs, body: JSON.stringify([{ category_code: categoryCode, shelf_code: shelfCode }]),
+      });
+    }).then(function (r) {
+      if (!r.ok) return r.text().then(function (t) { throw new Error(r.status + ' ' + t); });
+      S.categoryShelves.push({ category_code: categoryCode, shelf_code: shelfCode });
+      const cat = catByCode(categoryCode);
+      toast('Assigned to "' + (cat ? cat.display_name : categoryCode) + '".');
+      render();
+    }).catch(function (e) { toast('Could not assign: ' + e.message, true); });
+  }
+  // No category context needed here — an unassigned shelf has no
+  // vibe_category_shelves row and no Key, so there's nothing to unlink first.
+  function deleteShelfGlobal(shelfCode) {
+    const shelf = shelfByCode(shelfCode);
+    if (!confirm('Delete the shelf "' + (shelf ? shelf.display_name : shelfCode) + '"? This cannot be undone.')) return;
+    _authedHeaders().then(function (hdrs) {
+      return fetch(SUPA + '/rest/v1/vibe_shelves?code=eq.' + encodeURIComponent(shelfCode), { method: 'DELETE', headers: hdrs });
+    }).then(function (r) {
+      if (!r.ok) return r.text().then(function (t) { throw new Error(r.status + ' ' + t); });
+      S.shelves = S.shelves.filter(function (s) { return s.code !== shelfCode; });
+      toast('Shelf deleted.');
+      render();
+    }).catch(function (e) { toast('Could not delete shelf: ' + e.message, true); });
+  }
+
   /* ── Simple text-input modal (shelf creation) ───────────────────────────── */
   function openTextPrompt(title, placeholder, onSubmit, submitLabel) {
     const root = $('vt-modal-root');
@@ -728,7 +777,24 @@ function urlSetParams(params, opts){
         '  </div>' +
         '</div>';
     });
-    $('vt-body').innerHTML = html + '</div>';
+    html += '</div>';
+
+    const unassigned = unassignedShelves();
+    if (unassigned.length) {
+      html += '<div class="section"><div class="sectionTitle">Unassigned shelves (' + unassigned.length + ')</div>' +
+        '<div class="lede">Not pinned to any category — invisible on every board and in the app until assigned.</div>' +
+        '<div class="board">' + unassigned.map(function (shelf) {
+          return '' +
+            '<div class="col" data-drop-kind="shelfImage" data-drop-payload=\'' + esc(JSON.stringify({ shelf_code: shelf.code })) + '\'>' +
+            '  <div class="colHead"><input class="nameIn sm" type="text" value="' + esc(shelf.display_name) + '" data-table="vibe_shelves" data-pk="' + esc(shelf.code) + '" data-field="display_name"></div>' +
+            '  <div class="colSub"><span class="code" title="Stable id">' + esc(shelf.code) + '</span>' +
+            '    <button class="moveBtn del" type="button" data-delete-shelf-global="' + esc(shelf.code) + '">Delete&hellip;</button></div>' +
+            '  ' + imgPillsHtml(shelf) +
+            '  <button class="primary" type="button" style="width:100%" data-assign-shelf="' + esc(shelf.code) + '">Assign to&hellip;</button>' +
+            '</div>';
+        }).join('') + '</div></div>';
+    }
+    $('vt-body').innerHTML = html;
   }
 
   /* ── Level 2: Shelf board within a category ─────────────────────────────── */
@@ -747,13 +813,7 @@ function urlSetParams(params, opts){
         '    <span class="colCount">' + rows.length + '</span></div>' +
         '  <div class="colSub"><span class="code" title="Stable id">' + esc(shelf.code) + '</span>' +
         '    <button class="moveBtn del" type="button" data-delete-shelf="' + esc(shelf.code) + '" data-delete-cat="' + esc(catCode) + '">Delete&hellip;</button></div>' +
-        '  <div class="imgPills">' + [1, 2, 3].map(function (n) {
-          const url = shelf['image_' + n];
-          return url
-            ? '<div class="imgPill" style="background-image:url(\'' + esc(String(url).replace(/["\'()\\\n\r]/g, '')) + '\')"' + dragAttrs('shelfImage', { shelf_code: shelf.code, slot: n }) + '>' +
-              '<button class="rm" type="button" data-rm-image="' + esc(shelf.code) + '" data-rm-slot="' + n + '">&times;</button></div>'
-            : '<div class="imgPill empty" data-add-image="' + esc(shelf.code) + '" data-add-slot="' + n + '" title="Add image">+</div>';
-        }).join('') + '</div>' +
+        '  ' + imgPillsHtml(shelf) +
         '  <div class="colBody">' +
         rows.map(function (m) {
           const vibeCount = S.vibeKeys.filter(function (v) { return v.canonical_key === m.canonical_key; }).length;
@@ -918,6 +978,24 @@ function urlSetParams(params, opts){
     const rmImage = e.target.closest && e.target.closest('[data-rm-image]');
     if (rmImage) {
       removeShelfImage(rmImage.getAttribute('data-rm-image'), Number(rmImage.getAttribute('data-rm-slot')));
+      return;
+    }
+
+    const assignShelf = e.target.closest && e.target.closest('[data-assign-shelf]');
+    if (assignShelf) {
+      const shelfCode = assignShelf.getAttribute('data-assign-shelf');
+      const shelf = shelfByCode(shelfCode);
+      const items = S.cats.map(function (c) { return { value: c.code, label: c.display_name }; })
+        .sort(function (a, b) { return a.label.localeCompare(b.label); });
+      openMovePicker('Assign "' + (shelf ? shelf.display_name : shelfCode) + '" to&hellip;', items, function (it) {
+        assignShelfToCategory(shelfCode, it.value);
+      });
+      return;
+    }
+
+    const delShelfGlobal = e.target.closest && e.target.closest('[data-delete-shelf-global]');
+    if (delShelfGlobal) {
+      deleteShelfGlobal(delShelfGlobal.getAttribute('data-delete-shelf-global'));
       return;
     }
 
