@@ -302,7 +302,11 @@ function urlSetParams(params, opts){
     dirty: new Set(), busy: false,
     // All-Canonical-Vibes table sort/filter state, kept across re-renders.
     canonicalFilters: { name: '', cat: '', shelf: '', vibes: '', images: '', manual: '' },
-    canonicalSort: { col: 'name', dir: 'asc' },
+    // Defaults to the STABLE canonical_key, not the editable label — renaming
+    // a bunch of vibes to human-friendly text while reviewing them shouldn't
+    // reshuffle the list out from under you mid-pass. Explicitly click "Name"
+    // to sort by label instead, any time that's what you actually want.
+    canonicalSort: { col: 'key', dir: 'asc' },
     canonicalVisibleCount: 0,
     // category_code -> [shelf_code,...] — a purely visual column order, kept
     // ONLY in memory (never written to Supabase, never persisted) so it resets
@@ -1047,6 +1051,7 @@ function urlSetParams(params, opts){
     const col = S.canonicalSort.col, dir = S.canonicalSort.dir === 'desc' ? -1 : 1;
     const keyOf = {
       manual: function (r) { return r.m.manual_set ? 1 : 0; },
+      key: function (r) { return r.m.canonical_key.toLowerCase(); },
       name: function (r) { return r.m.canonical_label.toLowerCase(); },
       cat: function (r) { return r.cat ? r.cat.display_name.toLowerCase() : '￿'; }, // unassigned sorts last
       shelf: function (r) { return r.shelf ? r.shelf.display_name.toLowerCase() : '￿'; },
@@ -1060,7 +1065,8 @@ function urlSetParams(params, opts){
       return '' +
         '<tr>' +
         '<td><input type="checkbox" data-canon-manual-set="' + esc(m.canonical_key) + '"' + (m.manual_set ? ' checked' : '') + '></td>' +
-        '<td><input class="nameIn sm" type="text" value="' + esc(m.canonical_label) + '" data-table="vibe_canonical_map" data-pk="' + esc(m.canonical_key) + '" data-field="canonical_label"></td>' +
+        '<td><input class="nameIn sm" type="text" value="' + esc(m.canonical_label) + '" data-table="vibe_canonical_map" data-pk="' + esc(m.canonical_key) + '" data-field="canonical_label">' +
+        '<span class="code" title="Stable id — the table sorts by this, not the label, so renaming never reshuffles it">' + esc(m.canonical_key) + '</span></td>' +
         '<td><button class="moveBtn" type="button" data-open-key="' + esc(m.canonical_key) + '">Open</button> ' +
         '<button class="moveBtn" type="button" data-move-key="' + esc(m.canonical_key) + '">Move&hellip;</button></td>' +
         '<td>' + (cat ? esc(cat.display_name) : '<span class="count zero">unassigned</span>') + '</td>' +
