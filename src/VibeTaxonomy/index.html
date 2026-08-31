@@ -302,12 +302,7 @@ function urlSetParams(params, opts){
     dirty: new Set(), busy: false,
     // All-Canonical-Vibes table sort/filter state, kept across re-renders.
     canonicalFilters: { name: '', cat: '', shelf: '', vibes: '', images: '', manual: '' },
-    // Defaults to the STABLE canonical_key, not the editable label — renaming
-    // a bunch of vibes to human-friendly text while reviewing them shouldn't
-    // reshuffle the list out from under you mid-pass. Explicitly click "Name"
-    // to sort by label instead, any time that's what you actually want.
-    canonicalSort: { col: 'key', dir: 'asc' },
-    canonicalVisibleCount: 0,
+    canonicalSort: { col: 'name', dir: 'asc' },
     // category_code -> [shelf_code,...] — a purely visual column order, kept
     // ONLY in memory (never written to Supabase, never persisted) so it resets
     // on a real page refresh, same as the user asked. shelvesInCategory()
@@ -680,15 +675,6 @@ function urlSetParams(params, opts){
   }
 
   /* ── Shelf image pills (image_1/2/3 on vibe_shelves) ────────────────────── */
-  // Only checking/filtering/sorting by "Done" can change which rows are
-  // visible or where they sit — refreshing the tbody on every check
-  // regardless was the actual bug behind rows seeming to vanish (any hiccup
-  // in that rebuild could drop rows that had nothing to do with the filter
-  // in effect). Under the default view this now touches nothing but the one
-  // checkbox itself, so a check can never make a row disappear.
-  function manualColumnAffectsVisibility() {
-    return S.canonicalFilters.manual !== '' || S.canonicalSort.col === 'manual';
-  }
   /* ── "Done" checkbox (vibe_canonical_map.manual_set) — writes immediately,
      not queued in Publish, so it's never lost/forgotten alongside a rename. */
   function setCanonManualSet(canonicalKey, checked) {
@@ -702,14 +688,11 @@ function urlSetParams(params, opts){
       });
     }).then(function (r) {
       if (!r.ok) return r.text().then(function (t) { throw new Error(r.status + ' ' + t); });
-      if (manualColumnAffectsVisibility()) {
-        const tbody = $('vt-vibe-tbody'); if (tbody) tbody.innerHTML = canonicalTableRows();
-      }
+      // Row order/visibility may depend on this column — refresh once saved.
+      const tbody = $('vt-vibe-tbody'); if (tbody) tbody.innerHTML = canonicalTableRows();
     }).catch(function (e) {
       m.manual_set = prev;
-      if (manualColumnAffectsVisibility()) {
-        const tbody = $('vt-vibe-tbody'); if (tbody) tbody.innerHTML = canonicalTableRows();
-      }
+      const tbody = $('vt-vibe-tbody'); if (tbody) tbody.innerHTML = canonicalTableRows();
       toast('Could not save: ' + e.message, true);
     });
   }
@@ -975,14 +958,11 @@ function urlSetParams(params, opts){
         }).join('') + '</div></div>';
     }
 
-    const canonicalRowsHtml = canonicalTableRows(); // sets S.canonicalVisibleCount as a side effect
     html += '<div class="section"><div class="sectionTitle">All Canonical Vibes (' + S.map.length + ')' +
-      '<button class="moveBtn del" type="button" style="margin-left:10px" data-act="clear-manual-set">Clear all Done</button>' +
-      '<button class="moveBtn" type="button" style="margin-left:6px" data-act="clear-vibe-filters">Clear filters</button>' +
-      '<span class="count" id="vt-vibe-count" style="margin-left:10px">Showing ' + S.canonicalVisibleCount + ' of ' + S.map.length + '</span></div>' +
-      '<div class="lede">One row per canonical vibe (a "Key") — the Engine Vibes column lists the finer-grained vibe_keys rolled up under it. Click a column name to sort by it; the row beneath each header filters that column. The checkbox marks a vibe as reviewed/done — it saves straight to Supabase, no Publish needed. Every vibe stays listed here unless a filter above is narrowing it.</div>' +
+      '<button class="moveBtn del" type="button" style="margin-left:10px" data-act="clear-manual-set">Clear all Done</button></div>' +
+      '<div class="lede">One row per canonical vibe (a "Key") — the Engine Vibes column lists the finer-grained vibe_keys rolled up under it. Click a column name to sort by it; the row beneath each header filters that column. The checkbox marks a vibe as reviewed/done — it saves straight to Supabase, no Publish needed.</div>' +
       '<div style="overflow-x:auto"><table class="vibeTable" id="vt-vibe-table"><thead>' + canonicalTableHead() + '</thead>' +
-      '<tbody id="vt-vibe-tbody">' + canonicalRowsHtml + '</tbody></table></div></div>';
+      '<tbody id="vt-vibe-tbody">' + canonicalTableRows() + '</tbody></table></div></div>';
 
     $('vt-body').innerHTML = html;
   }
@@ -1043,15 +1023,9 @@ function urlSetParams(params, opts){
       if (f.manual === 'n' && r.m.manual_set) return false;
       return true;
     });
-    // "Showing X of Y" — always visible so a filter hiding rows is obvious
-    // rather than silently looking like a row went missing.
-    S.canonicalVisibleCount = rows.length;
-    const countEl = $('vt-vibe-count');
-    if (countEl) countEl.textContent = 'Showing ' + rows.length + ' of ' + S.map.length;
     const col = S.canonicalSort.col, dir = S.canonicalSort.dir === 'desc' ? -1 : 1;
     const keyOf = {
       manual: function (r) { return r.m.manual_set ? 1 : 0; },
-      key: function (r) { return r.m.canonical_key.toLowerCase(); },
       name: function (r) { return r.m.canonical_label.toLowerCase(); },
       cat: function (r) { return r.cat ? r.cat.display_name.toLowerCase() : '￿'; }, // unassigned sorts last
       shelf: function (r) { return r.shelf ? r.shelf.display_name.toLowerCase() : '￿'; },
@@ -1065,8 +1039,7 @@ function urlSetParams(params, opts){
       return '' +
         '<tr>' +
         '<td><input type="checkbox" data-canon-manual-set="' + esc(m.canonical_key) + '"' + (m.manual_set ? ' checked' : '') + '></td>' +
-        '<td><input class="nameIn sm" type="text" value="' + esc(m.canonical_label) + '" data-table="vibe_canonical_map" data-pk="' + esc(m.canonical_key) + '" data-field="canonical_label">' +
-        '<span class="code" title="Stable id — the table sorts by this, not the label, so renaming never reshuffles it">' + esc(m.canonical_key) + '</span></td>' +
+        '<td><input class="nameIn sm" type="text" value="' + esc(m.canonical_label) + '" data-table="vibe_canonical_map" data-pk="' + esc(m.canonical_key) + '" data-field="canonical_label"></td>' +
         '<td><button class="moveBtn" type="button" data-open-key="' + esc(m.canonical_key) + '">Open</button> ' +
         '<button class="moveBtn" type="button" data-move-key="' + esc(m.canonical_key) + '">Move&hellip;</button></td>' +
         '<td>' + (cat ? esc(cat.display_name) : '<span class="count zero">unassigned</span>') + '</td>' +
@@ -1377,13 +1350,6 @@ function urlSetParams(params, opts){
       load();
     } else if (b && b.getAttribute('data-act') === 'clear-manual-set') {
       clearAllCanonManualSet();
-    } else if (b && b.getAttribute('data-act') === 'clear-vibe-filters') {
-      S.canonicalFilters = { name: '', cat: '', shelf: '', vibes: '', images: '', manual: '' };
-      const table = $('vt-vibe-table');
-      if (table) {
-        table.querySelector('thead').innerHTML = canonicalTableHead();
-        table.querySelector('tbody').innerHTML = canonicalTableRows();
-      }
     }
   });
 
