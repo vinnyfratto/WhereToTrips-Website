@@ -67,6 +67,15 @@ h1 { font-size: 24px; margin: 0 0 4px; }
   color: var(--muted); font-size: 18px; font-weight: 800; background: none; }
 .imgPill .rm { position: absolute; top: -6px; right: -6px; width: 18px; height: 18px; border-radius: 999px;
   background: var(--bad); color: #fff; border: 2px solid #fff; font-size: 12px; line-height: 14px; cursor: pointer; padding: 0; }
+
+.vibeTable { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--card); }
+.vibeTable th { text-align: left; padding: 8px 10px; border-bottom: 2px solid var(--line); color: var(--muted);
+  font-size: 11px; text-transform: uppercase; letter-spacing: .4px; white-space: nowrap; }
+.vibeTable td { padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.vibeTable tr:hover td { background: #F8FAFB; }
+.vibeThumbs { display: flex; gap: 4px; }
+.vibeThumb { width: 26px; height: 26px; flex: 0 0 26px; border-radius: 6px; background: #EDF2F7 center/cover no-repeat;
+  border: 1px solid var(--line); }
 .keyCard, .destCard { background: #F9FBFC; border: 1px solid var(--line); border-radius: 9px; padding: 9px 10px; cursor: grab; }
 .keyCard.dragging, .destCard.dragging { opacity: .35; }
 .keyCard:hover, .destCard:hover { border-color: var(--azure); }
@@ -280,6 +289,7 @@ function urlSetParams(params, opts){
     destLoadedFor: null,     // canonical_key the cache above was loaded for
     view: { level: 'categories', categoryCode: null, keyCode: null },
     dirty: new Set(), busy: false,
+    vibeFilter: '', // All-Engine-Vibes table search text, kept across re-renders
   };
   const pending = {}; // "table:pk" -> { field: value }
 
@@ -870,7 +880,50 @@ function urlSetParams(params, opts){
             '</div>';
         }).join('') + '</div></div>';
     }
+
+    html += '<div class="section"><div class="sectionTitle">All Engine Vibes (' + S.vibeKeys.length + ')</div>' +
+      '<input class="modalSearch" id="vt-vibe-search" type="text" placeholder="Search name, shelf, or Key&hellip;" ' +
+      'style="max-width:340px;margin-bottom:10px" value="' + esc(S.vibeFilter) + '">' +
+      '<div style="overflow-x:auto"><table class="vibeTable"><thead><tr>' +
+      '<th>Name</th><th>Move</th><th>Current shelf</th><th>Key</th><th>Images</th>' +
+      '</tr></thead><tbody id="vt-vibe-tbody">' + vibeTableRows(S.vibeFilter) + '</tbody></table></div></div>';
+
     $('vt-body').innerHTML = html;
+  }
+
+  // Every engine vibe, one row each — Name (rename), Move (same "Move to
+  // Key…" as the Key detail list), the shelf it currently lives under (via
+  // its canonical Key), that Key's label, and that shelf's images as small
+  // thumbnails (engine vibes have no image columns of their own).
+  function vibeTableRows(filter) {
+    const f = (filter || '').toLowerCase();
+    const rows = S.vibeKeys.filter(function (v) {
+      if (!f) return true;
+      const cv = mapRow(v.canonical_key);
+      const shelf = cv ? shelfByCode(cv.shelf_code) : null;
+      return v.label.toLowerCase().indexOf(f) >= 0 ||
+        v.key.toLowerCase().indexOf(f) >= 0 ||
+        (cv && cv.canonical_label.toLowerCase().indexOf(f) >= 0) ||
+        (shelf && shelf.display_name.toLowerCase().indexOf(f) >= 0);
+    }).sort(function (a, b) { return a.label.localeCompare(b.label); });
+    if (!rows.length) return '<tr><td colspan="5" class="sub" style="padding:14px">No matches.</td></tr>';
+    return rows.map(function (v) {
+      const cv = mapRow(v.canonical_key);
+      const shelf = cv ? shelfByCode(cv.shelf_code) : null;
+      const dupes = duplicateEngineVibes(v.key);
+      const imgs = shelf ? [1, 2, 3].map(function (n) { return shelf['image_' + n]; }).filter(Boolean) : [];
+      return '' +
+        '<tr>' +
+        '<td>' + (dupes.length ? '<span class="shareIcon" title="' + esc(duplicateTooltip(dupes)) + '">🔗</span> ' : '') +
+        '<input class="nameIn sm" type="text" value="' + esc(v.label) + '" data-table="vibe_keys" data-pk="' + esc(v.key) + '" data-field="label"></td>' +
+        '<td><button class="moveBtn" type="button" data-move-vibe="' + esc(v.key) + '">Move to Key&hellip;</button></td>' +
+        '<td>' + (shelf ? esc(shelf.display_name) : '<span class="count zero">unassigned</span>') + '</td>' +
+        '<td>' + (cv ? esc(cv.canonical_label) : '<span class="count zero">none</span>') + '</td>' +
+        '<td><div class="vibeThumbs">' + (imgs.length
+          ? imgs.map(function (u) { return '<div class="vibeThumb" style="background-image:url(\'' + esc(String(u).replace(/["\'()\\\n\r]/g, '')) + '\')"></div>'; }).join('')
+          : '<span class="sub">—</span>') + '</div></td>' +
+        '</tr>';
+    }).join('');
   }
 
   /* ── Level 2: Shelf board within a category ─────────────────────────────── */
@@ -1011,6 +1064,12 @@ function urlSetParams(params, opts){
   /* ── Wiring ─────────────────────────────────────────────────────────────── */
   document.addEventListener('input', function (e) {
     const t = e.target;
+    if (t.id === 'vt-vibe-search') {
+      S.vibeFilter = t.value;
+      const tbody = $('vt-vibe-tbody');
+      if (tbody) tbody.innerHTML = vibeTableRows(S.vibeFilter);
+      return;
+    }
     const table = t.getAttribute && t.getAttribute('data-table');
     if (!table) return;
     const pk = t.getAttribute('data-pk'), field = t.getAttribute('data-field');
