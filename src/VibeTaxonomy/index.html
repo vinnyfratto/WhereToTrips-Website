@@ -981,7 +981,7 @@ function urlSetParams(params, opts){
       const arrow = active ? (S.vibeSort.dir === 'asc' ? ' ▲' : ' ▼') : '';
       return '<th class="sortable" data-sort-col="' + col + '">' + esc(label) + arrow + '</th>';
     }
-    return '<tr>' + th('Done', 'manual') + th('Name', 'name') + th('Move') + th('Category', 'cat') + th('Current shelf', 'shelf') + th('Key', 'key') + th('Images', 'images') + '</tr>' +
+    return '<tr>' + th('Done', 'manual') + th('Name', 'name') + th('Move') + th('Category', 'cat') + th('Current shelf', 'shelf') + th('Engine Vibe', 'key') + th('Images', 'images') + '</tr>' +
       '<tr class="filterRow">' +
       '<th><select class="filterIn" id="vt-vf-manual">' +
       '<option value=""' + (S.vibeFilters.manual === '' ? ' selected' : '') + '>All</option>' +
@@ -1011,7 +1011,7 @@ function urlSetParams(params, opts){
       if (nameF && r.v.label.toLowerCase().indexOf(nameF) < 0 && r.v.key.toLowerCase().indexOf(nameF) < 0) return false;
       if (catF && !(r.cat && r.cat.display_name.toLowerCase().indexOf(catF) >= 0)) return false;
       if (shelfF && !(r.shelf && r.shelf.display_name.toLowerCase().indexOf(shelfF) >= 0)) return false;
-      if (keyF && !(r.cv && r.cv.canonical_label.toLowerCase().indexOf(keyF) >= 0)) return false;
+      if (keyF && r.v.key.toLowerCase().indexOf(keyF) < 0) return false;
       if (f.images === 'has' && !r.imgs.length) return false;
       if (f.images === 'none' && r.imgs.length) return false;
       if (f.manual === 'y' && !r.v.manual_set) return false;
@@ -1024,13 +1024,13 @@ function urlSetParams(params, opts){
       name: function (r) { return r.v.label.toLowerCase(); },
       cat: function (r) { return r.cat ? r.cat.display_name.toLowerCase() : '￿'; }, // unassigned sorts last
       shelf: function (r) { return r.shelf ? r.shelf.display_name.toLowerCase() : '￿'; },
-      key: function (r) { return r.cv ? r.cv.canonical_label.toLowerCase() : '￿'; },
+      key: function (r) { return r.v.key.toLowerCase(); },
       images: function (r) { return r.imgs.length; },
     }[col] || function (r) { return r.v.label.toLowerCase(); };
     rows.sort(function (a, b) { const ka = keyOf(a), kb = keyOf(b); return ka < kb ? -1 * dir : ka > kb ? 1 * dir : 0; });
     if (!rows.length) return '<tr><td colspan="7" class="sub" style="padding:14px">No matches.</td></tr>';
     return rows.map(function (r) {
-      const v = r.v, cv = r.cv, cat = r.cat, shelf = r.shelf, imgs = r.imgs, dupes = r.dupes;
+      const v = r.v, cat = r.cat, shelf = r.shelf, imgs = r.imgs, dupes = r.dupes;
       return '' +
         '<tr>' +
         '<td><input type="checkbox" data-manual-set="' + esc(v.key) + '"' + (v.manual_set ? ' checked' : '') + '></td>' +
@@ -1039,7 +1039,7 @@ function urlSetParams(params, opts){
         '<td><button class="moveBtn" type="button" data-move-vibe="' + esc(v.key) + '">Move to Key&hellip;</button></td>' +
         '<td>' + (cat ? esc(cat.display_name) : '<span class="count zero">unassigned</span>') + '</td>' +
         '<td>' + (shelf ? esc(shelf.display_name) : '<span class="count zero">unassigned</span>') + '</td>' +
-        '<td>' + (cv ? esc(cv.canonical_label) : '<span class="count zero">none</span>') + '</td>' +
+        '<td><span class="code" title="Stable id">' + esc(v.key) + '</span></td>' +
         '<td><div class="vibeThumbs">' + (imgs.length
           ? imgs.map(function (u) { return '<div class="vibeThumb" style="background-image:url(\'' + esc(String(u).replace(/["\'()\\\n\r]/g, '')) + '\')"></div>'; }).join('')
           : '<span class="sub">—</span>') + '</div></td>' +
