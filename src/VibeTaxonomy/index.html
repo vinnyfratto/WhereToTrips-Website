@@ -295,7 +295,7 @@ function urlSetParams(params, opts){
     view: { level: 'categories', categoryCode: null, keyCode: null },
     dirty: new Set(), busy: false,
     // All-Engine-Vibes table sort/filter state, kept across re-renders.
-    vibeFilters: { name: '', shelf: '', key: '', images: '', manual: '' },
+    vibeFilters: { name: '', cat: '', shelf: '', key: '', images: '', manual: '' },
     vibeSort: { col: 'name', dir: 'asc' },
   };
   const pending = {}; // "table:pk" -> { field: value }
@@ -938,9 +938,10 @@ function urlSetParams(params, opts){
   function vibeTableRowData() {
     return S.vibeKeys.map(function (v) {
       const cv = mapRow(v.canonical_key);
+      const cat = cv ? catByCode(cv.category_code) : null;
       const shelf = cv ? shelfByCode(cv.shelf_code) : null;
       const imgs = shelf ? [1, 2, 3].map(function (n) { return shelf['image_' + n]; }).filter(Boolean) : [];
-      return { v: v, cv: cv, shelf: shelf, imgs: imgs, dupes: duplicateEngineVibes(v.key) };
+      return { v: v, cv: cv, cat: cat, shelf: shelf, imgs: imgs, dupes: duplicateEngineVibes(v.key) };
     });
   }
   function vibeTableHead() {
@@ -950,7 +951,7 @@ function urlSetParams(params, opts){
       const arrow = active ? (S.vibeSort.dir === 'asc' ? ' ▲' : ' ▼') : '';
       return '<th class="sortable" data-sort-col="' + col + '">' + esc(label) + arrow + '</th>';
     }
-    return '<tr>' + th('Done', 'manual') + th('Name', 'name') + th('Move') + th('Current shelf', 'shelf') + th('Key', 'key') + th('Images', 'images') + '</tr>' +
+    return '<tr>' + th('Done', 'manual') + th('Name', 'name') + th('Move') + th('Category', 'cat') + th('Current shelf', 'shelf') + th('Key', 'key') + th('Images', 'images') + '</tr>' +
       '<tr class="filterRow">' +
       '<th><select class="filterIn" id="vt-vf-manual">' +
       '<option value=""' + (S.vibeFilters.manual === '' ? ' selected' : '') + '>All</option>' +
@@ -959,6 +960,7 @@ function urlSetParams(params, opts){
       '</select></th>' +
       '<th><input class="filterIn" type="text" placeholder="Filter&hellip;" id="vt-vf-name" value="' + esc(S.vibeFilters.name) + '"></th>' +
       '<th></th>' +
+      '<th><input class="filterIn" type="text" placeholder="Filter&hellip;" id="vt-vf-cat" value="' + esc(S.vibeFilters.cat) + '"></th>' +
       '<th><input class="filterIn" type="text" placeholder="Filter&hellip;" id="vt-vf-shelf" value="' + esc(S.vibeFilters.shelf) + '"></th>' +
       '<th><input class="filterIn" type="text" placeholder="Filter&hellip;" id="vt-vf-key" value="' + esc(S.vibeFilters.key) + '"></th>' +
       '<th><select class="filterIn" id="vt-vf-images">' +
@@ -974,9 +976,10 @@ function urlSetParams(params, opts){
   // thumbnails (engine vibes have no image columns of their own).
   function vibeTableRows() {
     const f = S.vibeFilters;
-    const nameF = f.name.toLowerCase(), shelfF = f.shelf.toLowerCase(), keyF = f.key.toLowerCase();
+    const nameF = f.name.toLowerCase(), catF = f.cat.toLowerCase(), shelfF = f.shelf.toLowerCase(), keyF = f.key.toLowerCase();
     let rows = vibeTableRowData().filter(function (r) {
       if (nameF && r.v.label.toLowerCase().indexOf(nameF) < 0 && r.v.key.toLowerCase().indexOf(nameF) < 0) return false;
+      if (catF && !(r.cat && r.cat.display_name.toLowerCase().indexOf(catF) >= 0)) return false;
       if (shelfF && !(r.shelf && r.shelf.display_name.toLowerCase().indexOf(shelfF) >= 0)) return false;
       if (keyF && !(r.cv && r.cv.canonical_label.toLowerCase().indexOf(keyF) >= 0)) return false;
       if (f.images === 'has' && !r.imgs.length) return false;
@@ -989,20 +992,22 @@ function urlSetParams(params, opts){
     const keyOf = {
       manual: function (r) { return r.v.manual_set ? 1 : 0; },
       name: function (r) { return r.v.label.toLowerCase(); },
-      shelf: function (r) { return r.shelf ? r.shelf.display_name.toLowerCase() : '￿'; }, // unassigned sorts last
+      cat: function (r) { return r.cat ? r.cat.display_name.toLowerCase() : '￿'; }, // unassigned sorts last
+      shelf: function (r) { return r.shelf ? r.shelf.display_name.toLowerCase() : '￿'; },
       key: function (r) { return r.cv ? r.cv.canonical_label.toLowerCase() : '￿'; },
       images: function (r) { return r.imgs.length; },
     }[col] || function (r) { return r.v.label.toLowerCase(); };
     rows.sort(function (a, b) { const ka = keyOf(a), kb = keyOf(b); return ka < kb ? -1 * dir : ka > kb ? 1 * dir : 0; });
-    if (!rows.length) return '<tr><td colspan="6" class="sub" style="padding:14px">No matches.</td></tr>';
+    if (!rows.length) return '<tr><td colspan="7" class="sub" style="padding:14px">No matches.</td></tr>';
     return rows.map(function (r) {
-      const v = r.v, cv = r.cv, shelf = r.shelf, imgs = r.imgs, dupes = r.dupes;
+      const v = r.v, cv = r.cv, cat = r.cat, shelf = r.shelf, imgs = r.imgs, dupes = r.dupes;
       return '' +
         '<tr>' +
         '<td><input type="checkbox" data-manual-set="' + esc(v.key) + '"' + (v.manual_set ? ' checked' : '') + '></td>' +
         '<td>' + (dupes.length ? '<span class="shareIcon" title="' + esc(duplicateTooltip(dupes)) + '">🔗</span> ' : '') +
         '<input class="nameIn sm" type="text" value="' + esc(v.label) + '" data-table="vibe_keys" data-pk="' + esc(v.key) + '" data-field="label"></td>' +
         '<td><button class="moveBtn" type="button" data-move-vibe="' + esc(v.key) + '">Move to Key&hellip;</button></td>' +
+        '<td>' + (cat ? esc(cat.display_name) : '<span class="count zero">unassigned</span>') + '</td>' +
         '<td>' + (shelf ? esc(shelf.display_name) : '<span class="count zero">unassigned</span>') + '</td>' +
         '<td>' + (cv ? esc(cv.canonical_label) : '<span class="count zero">none</span>') + '</td>' +
         '<td><div class="vibeThumbs">' + (imgs.length
@@ -1148,7 +1153,7 @@ function urlSetParams(params, opts){
   });
 
   /* ── Wiring ─────────────────────────────────────────────────────────────── */
-  const VIBE_FILTER_IDS = { 'vt-vf-name': 'name', 'vt-vf-shelf': 'shelf', 'vt-vf-key': 'key', 'vt-vf-images': 'images', 'vt-vf-manual': 'manual' };
+  const VIBE_FILTER_IDS = { 'vt-vf-name': 'name', 'vt-vf-cat': 'cat', 'vt-vf-shelf': 'shelf', 'vt-vf-key': 'key', 'vt-vf-images': 'images', 'vt-vf-manual': 'manual' };
   document.addEventListener('input', function (e) {
     const t = e.target;
     const manualKey = t.getAttribute && t.getAttribute('data-manual-set');
