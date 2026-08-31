@@ -58,6 +58,15 @@ h1 { font-size: 24px; margin: 0 0 4px; }
 .colBody { display: flex; flex-direction: column; gap: 8px; min-height: 40px; }
 .moveBtn.del { color: var(--bad); border-color: #F5C6C2; }
 .moveBtn.del:hover { background: var(--bad); border-color: var(--bad); color: #fff; }
+.shareIcon { font-size: 13px; cursor: help; line-height: 1; }
+.imgPills { display: flex; gap: 6px; margin-bottom: 10px; }
+.imgPill { width: 44px; height: 44px; flex: 0 0 44px; border-radius: 8px; background: #EDF2F7 center/cover no-repeat;
+  border: 1px solid var(--line); cursor: grab; position: relative; }
+.imgPill.dragging { opacity: .35; }
+.imgPill.empty { display: flex; align-items: center; justify-content: center; border-style: dashed; cursor: pointer;
+  color: var(--muted); font-size: 18px; font-weight: 800; background: none; }
+.imgPill .rm { position: absolute; top: -6px; right: -6px; width: 18px; height: 18px; border-radius: 999px;
+  background: var(--bad); color: #fff; border: 2px solid #fff; font-size: 12px; line-height: 14px; cursor: pointer; padding: 0; }
 .keyCard, .destCard { background: #F9FBFC; border: 1px solid var(--line); border-radius: 9px; padding: 9px 10px; cursor: grab; }
 .keyCard.dragging, .destCard.dragging { opacity: .35; }
 .keyCard:hover, .destCard:hover { border-color: var(--azure); }
@@ -380,6 +389,15 @@ function urlSetParams(params, opts){
   function categoryShelfPinCount(shelfCode) {
     return S.categoryShelves.filter(function (r) { return r.shelf_code === shelfCode; }).length;
   }
+  // Every OTHER category (besides catCode) this shelf is pinned to or
+  // populated in — a shelf row is shared/global, so renaming or reorganizing
+  // it from one category's board silently affects every other one too.
+  function otherCategoriesForShelf(shelfCode, excludeCatCode) {
+    const codes = {};
+    S.categoryShelves.forEach(function (r) { if (r.shelf_code === shelfCode && r.category_code !== excludeCatCode) codes[r.category_code] = true; });
+    S.map.forEach(function (m) { if (m.shelf_code === shelfCode && m.category_code !== excludeCatCode) codes[m.category_code] = true; });
+    return Object.keys(codes).map(catByCode).filter(Boolean).map(function (c) { return c.display_name; }).sort();
+  }
 
   /* ── Edit + save ────────────────────────────────────────────────────────── */
   function markField(table, pkVal, field, value, localRow) {
@@ -514,8 +532,53 @@ function urlSetParams(params, opts){
     }).catch(function (e) { toast('Could not delete shelf: ' + e.message, true); });
   }
 
+  /* ── Shelf image pills (image_1/2/3 on vibe_shelves) ────────────────────── */
+  function patchShelf(shelfCode, body) {
+    return _authedHeaders({ 'Content-Type': 'application/json' }).then(function (hdrs) {
+      return fetch(SUPA + '/rest/v1/vibe_shelves?code=eq.' + encodeURIComponent(shelfCode), { method: 'PATCH', headers: hdrs, body: JSON.stringify(body) });
+    }).then(function (r) {
+      if (!r.ok) return r.text().then(function (t) { throw new Error(r.status + ' ' + t); });
+    });
+  }
+  function setShelfImage(shelfCode, slot, url) {
+    const shelf = shelfByCode(shelfCode);
+    if (!shelf) return;
+    const body = {}; body['image_' + slot] = url;
+    patchShelf(shelfCode, body).then(function () {
+      shelf['image_' + slot] = url;
+      render();
+    }).catch(function (e) { toast('Could not save image: ' + e.message, true); });
+  }
+  function removeShelfImage(shelfCode, slot) {
+    const shelf = shelfByCode(shelfCode);
+    if (!shelf) return;
+    const body = {}; body['image_' + slot] = null;
+    patchShelf(shelfCode, body).then(function () {
+      shelf['image_' + slot] = null;
+      render();
+    }).catch(function (e) { toast('Could not remove image: ' + e.message, true); });
+  }
+  // Moves (not copies) an image from one shelf to another's first empty slot.
+  function moveShelfImage(fromCode, fromSlot, toCode) {
+    const from = shelfByCode(fromCode), to = shelfByCode(toCode);
+    if (!from || !to) return;
+    const url = from['image_' + fromSlot];
+    if (!url) return;
+    let toSlot = 0;
+    for (let n = 1; n <= 3; n++) { if (!to['image_' + n]) { toSlot = n; break; } }
+    if (!toSlot) { toast('"' + to.display_name + '" already has 3 images — remove one first.', true); return; }
+    const fromBody = {}; fromBody['image_' + fromSlot] = null;
+    const toBody = {}; toBody['image_' + toSlot] = url;
+    Promise.all([patchShelf(fromCode, fromBody), patchShelf(toCode, toBody)]).then(function () {
+      from['image_' + fromSlot] = null;
+      to['image_' + toSlot] = url;
+      toast('Image moved to "' + to.display_name + '".');
+      render();
+    }).catch(function (e) { toast('Could not move image: ' + e.message, true); });
+  }
+
   /* ── Simple text-input modal (shelf creation) ───────────────────────────── */
-  function openTextPrompt(title, placeholder, onSubmit) {
+  function openTextPrompt(title, placeholder, onSubmit, submitLabel) {
     const root = $('vt-modal-root');
     function close() { root.innerHTML = ''; document.removeEventListener('keydown', onKey); }
     function onKey(e) { if (e.key === 'Escape') close(); }
@@ -526,7 +589,7 @@ function urlSetParams(params, opts){
       '      <input class="modalSearch" id="vt-prompt-input" type="text" placeholder="' + esc(placeholder) + '"></div>' +
       '    <div class="modalFoot" style="display:flex;justify-content:space-between">' +
       '      <button class="ghost" type="button" data-act="modalClose">Cancel</button>' +
-      '      <button class="primary" type="button" id="vt-prompt-ok">Create</button>' +
+      '      <button class="primary" type="button" id="vt-prompt-ok">' + esc(submitLabel || 'Create') + '</button>' +
       '    </div>' +
       '  </div></div>';
     root.addEventListener('click', function overlayClick(e) {
@@ -600,14 +663,14 @@ function urlSetParams(params, opts){
   });
   document.addEventListener('dragover', function (e) {
     const col = e.target.closest && e.target.closest('[data-drop-kind]');
-    if (!col || !_drag || col.getAttribute('data-drop-kind') !== _drag.kind) return;
+    if (!col || !_drag || col.getAttribute('data-drop-kind').split(',').indexOf(_drag.kind) < 0) return;
     e.preventDefault();
     document.querySelectorAll('.drag-over').forEach(function (c) { c.classList.remove('drag-over'); });
     col.classList.add('drag-over');
   });
   document.addEventListener('drop', function (e) {
     const col = e.target.closest && e.target.closest('[data-drop-kind]');
-    if (!col || !_drag || col.getAttribute('data-drop-kind') !== _drag.kind) return;
+    if (!col || !_drag || col.getAttribute('data-drop-kind').split(',').indexOf(_drag.kind) < 0) return;
     e.preventDefault();
     col.classList.remove('drag-over');
     const target = JSON.parse(col.getAttribute('data-drop-payload'));
@@ -615,6 +678,9 @@ function urlSetParams(params, opts){
       if (target.shelf_code === _drag.payload.shelf_code) return;
       const row = mapRow(_drag.payload.canonical_key);
       if (row) markMove('vibe_canonical_map', row.canonical_key, { shelf_code: target.shelf_code }, row);
+    } else if (_drag.kind === 'shelfImage') {
+      if (target.shelf_code === _drag.payload.shelf_code) return;
+      moveShelfImage(_drag.payload.shelf_code, _drag.payload.slot, target.shelf_code);
     } else if (_drag.kind === 'dest') {
       if (target.vibe_key === _drag.payload.vibe_key) return;
       const list = S.destByVibe.get(_drag.payload.vibe_key) || [];
@@ -669,16 +735,25 @@ function urlSetParams(params, opts){
   function renderShelfBoard() {
     const catCode = S.view.categoryCode;
     const shelves = shelvesInCategory(catCode);
-    let html = '<div class="lede">Drag a Key card to another shelf column to move it. Use <b>Move&hellip;</b> to send it to a shelf under a different category. Empty shelves stay put until you delete them — they never disappear on their own.</div><div class="board">';
+    let html = '<div class="lede">Drag a Key card to another shelf column to move it. Use <b>Move&hellip;</b> to send it to a shelf under a different category. Empty shelves stay put until you delete them — they never disappear on their own. A 🔗 means this shelf row is shared with other categories — hover it to see which; renaming or reorganizing it here changes it everywhere.</div><div class="board">';
     shelves.forEach(function (shelf) {
       const rows = S.map.filter(function (m) { return m.category_code === catCode && m.shelf_code === shelf.code; })
         .sort(function (a, b) { return (a.sort_order - b.sort_order) || a.canonical_label.localeCompare(b.canonical_label); });
+      const shared = otherCategoriesForShelf(shelf.code, catCode);
       html += '' +
-        '<div class="col" data-drop-kind="key" data-drop-payload=\'' + esc(JSON.stringify({ shelf_code: shelf.code })) + '\'>' +
+        '<div class="col" data-drop-kind="key,shelfImage" data-drop-payload=\'' + esc(JSON.stringify({ shelf_code: shelf.code })) + '\'>' +
         '  <div class="colHead"><input class="nameIn sm" type="text" value="' + esc(shelf.display_name) + '" data-table="vibe_shelves" data-pk="' + esc(shelf.code) + '" data-field="display_name">' +
+        (shared.length ? '    <span class="shareIcon" title="Also used by: ' + esc(shared.join(', ')) + '">🔗</span>' : '') +
         '    <span class="colCount">' + rows.length + '</span></div>' +
         '  <div class="colSub"><span class="code" title="Stable id">' + esc(shelf.code) + '</span>' +
         '    <button class="moveBtn del" type="button" data-delete-shelf="' + esc(shelf.code) + '" data-delete-cat="' + esc(catCode) + '">Delete&hellip;</button></div>' +
+        '  <div class="imgPills">' + [1, 2, 3].map(function (n) {
+          const url = shelf['image_' + n];
+          return url
+            ? '<div class="imgPill" style="background-image:url(\'' + esc(String(url).replace(/["\'()\\\n\r]/g, '')) + '\')"' + dragAttrs('shelfImage', { shelf_code: shelf.code, slot: n }) + '>' +
+              '<button class="rm" type="button" data-rm-image="' + esc(shelf.code) + '" data-rm-slot="' + n + '">&times;</button></div>'
+            : '<div class="imgPill empty" data-add-image="' + esc(shelf.code) + '" data-add-slot="' + n + '" title="Add image">+</div>';
+        }).join('') + '</div>' +
         '  <div class="colBody">' +
         rows.map(function (m) {
           const vibeCount = S.vibeKeys.filter(function (v) { return v.canonical_key === m.canonical_key; }).length;
@@ -831,6 +906,18 @@ function urlSetParams(params, opts){
     const delShelf = e.target.closest && e.target.closest('[data-delete-shelf]');
     if (delShelf) {
       deleteShelf(delShelf.getAttribute('data-delete-cat'), delShelf.getAttribute('data-delete-shelf'));
+      return;
+    }
+
+    const addImage = e.target.closest && e.target.closest('[data-add-image]');
+    if (addImage) {
+      const shelfCode = addImage.getAttribute('data-add-image'), slot = Number(addImage.getAttribute('data-add-slot'));
+      openTextPrompt('Image URL', 'https://…', function (url) { setShelfImage(shelfCode, slot, url); }, 'Add');
+      return;
+    }
+    const rmImage = e.target.closest && e.target.closest('[data-rm-image]');
+    if (rmImage) {
+      removeShelfImage(rmImage.getAttribute('data-rm-image'), Number(rmImage.getAttribute('data-rm-slot')));
       return;
     }
 
