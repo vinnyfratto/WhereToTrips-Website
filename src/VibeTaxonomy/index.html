@@ -80,6 +80,10 @@ h1 { font-size: 24px; margin: 0 0 4px; }
   text-transform: none; letter-spacing: normal; font-weight: 400; color: var(--ink); background: #fff; }
 .vibeTable td { padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: middle; }
 .vibeTable tr:hover td { background: #F8FAFB; }
+.vibes { display: flex; flex-wrap: wrap; gap: 5px; max-width: 320px; }
+.v { font-size: 11.5px; background: #F3F6F9; border: 1px solid var(--line); border-radius: 999px;
+  padding: 3px 9px; color: #44586C; white-space: nowrap; }
+.v.none { background: #FDECEA; border-color: #F5C6C2; color: var(--bad); }
 .vibeThumbs { display: flex; gap: 4px; }
 .vibeThumb { width: 26px; height: 26px; flex: 0 0 26px; border-radius: 6px; background: #EDF2F7 center/cover no-repeat;
   border: 1px solid var(--line); }
@@ -296,9 +300,9 @@ function urlSetParams(params, opts){
     destLoadedFor: null,     // canonical_key the cache above was loaded for
     view: { level: 'categories', categoryCode: null, keyCode: null },
     dirty: new Set(), busy: false,
-    // All-Engine-Vibes table sort/filter state, kept across re-renders.
-    vibeFilters: { name: '', cat: '', shelf: '', key: '', images: '', manual: '' },
-    vibeSort: { col: 'name', dir: 'asc' },
+    // All-Canonical-Vibes table sort/filter state, kept across re-renders.
+    canonicalFilters: { name: '', cat: '', shelf: '', vibes: '', images: '', manual: '' },
+    canonicalSort: { col: 'name', dir: 'asc' },
     // category_code -> [shelf_code,...] — a purely visual column order, kept
     // ONLY in memory (never written to Supabase, never persisted) so it resets
     // on a real page refresh, same as the user asked. shelvesInCategory()
@@ -671,39 +675,39 @@ function urlSetParams(params, opts){
   }
 
   /* ── Shelf image pills (image_1/2/3 on vibe_shelves) ────────────────────── */
-  /* ── "Done" checkbox (vibe_keys.manual_set) — writes immediately, not
-     queued in Publish, so it's never lost/forgotten alongside a rename. ──── */
-  function setManualSet(engineKey, checked) {
-    const v = S.vibeKeys.filter(function (x) { return x.key === engineKey; })[0];
-    if (!v) return;
-    const prev = v.manual_set;
-    v.manual_set = checked;
+  /* ── "Done" checkbox (vibe_canonical_map.manual_set) — writes immediately,
+     not queued in Publish, so it's never lost/forgotten alongside a rename. */
+  function setCanonManualSet(canonicalKey, checked) {
+    const m = mapRow(canonicalKey);
+    if (!m) return;
+    const prev = m.manual_set;
+    m.manual_set = checked;
     _authedHeaders({ 'Content-Type': 'application/json' }).then(function (hdrs) {
-      return fetch(SUPA + '/rest/v1/vibe_keys?key=eq.' + encodeURIComponent(engineKey), {
+      return fetch(SUPA + '/rest/v1/vibe_canonical_map?canonical_key=eq.' + encodeURIComponent(canonicalKey), {
         method: 'PATCH', headers: hdrs, body: JSON.stringify({ manual_set: checked }),
       });
     }).then(function (r) {
       if (!r.ok) return r.text().then(function (t) { throw new Error(r.status + ' ' + t); });
       // Row order/visibility may depend on this column — refresh once saved.
-      const tbody = $('vt-vibe-tbody'); if (tbody) tbody.innerHTML = vibeTableRows();
+      const tbody = $('vt-vibe-tbody'); if (tbody) tbody.innerHTML = canonicalTableRows();
     }).catch(function (e) {
-      v.manual_set = prev;
-      const tbody = $('vt-vibe-tbody'); if (tbody) tbody.innerHTML = vibeTableRows();
+      m.manual_set = prev;
+      const tbody = $('vt-vibe-tbody'); if (tbody) tbody.innerHTML = canonicalTableRows();
       toast('Could not save: ' + e.message, true);
     });
   }
-  function clearAllManualSet() {
-    const marked = S.vibeKeys.filter(function (v) { return v.manual_set; });
+  function clearAllCanonManualSet() {
+    const marked = S.map.filter(function (m) { return m.manual_set; });
     if (!marked.length) { toast('Nothing is marked Done.'); return; }
-    if (!confirm('Clear "Done" on all ' + marked.length + ' marked engine vibe(s)? This cannot be undone.')) return;
-    const list = marked.map(function (v) { return encodeURIComponent(v.key); }).join(',');
+    if (!confirm('Clear "Done" on all ' + marked.length + ' marked canonical vibe(s)? This cannot be undone.')) return;
+    const list = marked.map(function (m) { return encodeURIComponent(m.canonical_key); }).join(',');
     _authedHeaders({ 'Content-Type': 'application/json' }).then(function (hdrs) {
-      return fetch(SUPA + '/rest/v1/vibe_keys?key=in.(' + list + ')', { method: 'PATCH', headers: hdrs, body: JSON.stringify({ manual_set: false }) });
+      return fetch(SUPA + '/rest/v1/vibe_canonical_map?canonical_key=in.(' + list + ')', { method: 'PATCH', headers: hdrs, body: JSON.stringify({ manual_set: false }) });
     }).then(function (r) {
       if (!r.ok) return r.text().then(function (t) { throw new Error(r.status + ' ' + t); });
-      marked.forEach(function (v) { v.manual_set = false; });
+      marked.forEach(function (m) { m.manual_set = false; });
       toast('Cleared ' + marked.length + '.');
-      const tbody = $('vt-vibe-tbody'); if (tbody) tbody.innerHTML = vibeTableRows();
+      const tbody = $('vt-vibe-tbody'); if (tbody) tbody.innerHTML = canonicalTableRows();
     }).catch(function (e) { toast('Could not clear: ' + e.message, true); });
   }
 
@@ -954,92 +958,97 @@ function urlSetParams(params, opts){
         }).join('') + '</div></div>';
     }
 
-    html += '<div class="section"><div class="sectionTitle">All Engine Vibes (' + S.vibeKeys.length + ')' +
+    html += '<div class="section"><div class="sectionTitle">All Canonical Vibes (' + S.map.length + ')' +
       '<button class="moveBtn del" type="button" style="margin-left:10px" data-act="clear-manual-set">Clear all Done</button></div>' +
-      '<div class="lede">Click a column name to sort by it; the row beneath each header filters that column. The checkbox marks a vibe as reviewed/done — it saves straight to Supabase, no Publish needed.</div>' +
-      '<div style="overflow-x:auto"><table class="vibeTable" id="vt-vibe-table"><thead>' + vibeTableHead() + '</thead>' +
-      '<tbody id="vt-vibe-tbody">' + vibeTableRows() + '</tbody></table></div></div>';
+      '<div class="lede">One row per canonical vibe (a "Key") — the Engine Vibes column lists the finer-grained vibe_keys rolled up under it. Click a column name to sort by it; the row beneath each header filters that column. The checkbox marks a vibe as reviewed/done — it saves straight to Supabase, no Publish needed.</div>' +
+      '<div style="overflow-x:auto"><table class="vibeTable" id="vt-vibe-table"><thead>' + canonicalTableHead() + '</thead>' +
+      '<tbody id="vt-vibe-tbody">' + canonicalTableRows() + '</tbody></table></div></div>';
 
     $('vt-body').innerHTML = html;
   }
 
   // Each row's derived display fields, computed once and reused for both
   // filtering and sorting so the two always agree on what a column "is".
-  function vibeTableRowData() {
-    return S.vibeKeys.map(function (v) {
-      const cv = mapRow(v.canonical_key);
-      const cat = cv ? catByCode(cv.category_code) : null;
-      const shelf = cv ? shelfByCode(cv.shelf_code) : null;
+  function canonicalTableRowData() {
+    return S.map.map(function (m) {
+      const cat = catByCode(m.category_code);
+      const shelf = shelfByCode(m.shelf_code);
       const imgs = shelf ? [1, 2, 3].map(function (n) { return shelf['image_' + n]; }).filter(Boolean) : [];
-      return { v: v, cv: cv, cat: cat, shelf: shelf, imgs: imgs, dupes: duplicateEngineVibes(v.key) };
+      const engineVibes = engineVibesFor(m.canonical_key);
+      return { m: m, cat: cat, shelf: shelf, imgs: imgs, engineVibes: engineVibes };
     });
   }
-  function vibeTableHead() {
+  function canonicalTableHead() {
     function th(label, col) {
       if (!col) return '<th>' + esc(label) + '</th>';
-      const active = S.vibeSort.col === col;
-      const arrow = active ? (S.vibeSort.dir === 'asc' ? ' ▲' : ' ▼') : '';
+      const active = S.canonicalSort.col === col;
+      const arrow = active ? (S.canonicalSort.dir === 'asc' ? ' ▲' : ' ▼') : '';
       return '<th class="sortable" data-sort-col="' + col + '">' + esc(label) + arrow + '</th>';
     }
-    return '<tr>' + th('Done', 'manual') + th('Name', 'name') + th('Move') + th('Category', 'cat') + th('Current shelf', 'shelf') + th('Engine Vibe', 'key') + th('Images', 'images') + '</tr>' +
+    return '<tr>' + th('Done', 'manual') + th('Name', 'name') + th('Move') + th('Category', 'cat') + th('Current shelf', 'shelf') + th('Engine Vibes', 'vibes') + th('Images', 'images') + '</tr>' +
       '<tr class="filterRow">' +
       '<th><select class="filterIn" id="vt-vf-manual">' +
-      '<option value=""' + (S.vibeFilters.manual === '' ? ' selected' : '') + '>All</option>' +
-      '<option value="y"' + (S.vibeFilters.manual === 'y' ? ' selected' : '') + '>Y</option>' +
-      '<option value="n"' + (S.vibeFilters.manual === 'n' ? ' selected' : '') + '>N</option>' +
+      '<option value=""' + (S.canonicalFilters.manual === '' ? ' selected' : '') + '>All</option>' +
+      '<option value="y"' + (S.canonicalFilters.manual === 'y' ? ' selected' : '') + '>Y</option>' +
+      '<option value="n"' + (S.canonicalFilters.manual === 'n' ? ' selected' : '') + '>N</option>' +
       '</select></th>' +
-      '<th><input class="filterIn" type="text" placeholder="Filter&hellip;" id="vt-vf-name" value="' + esc(S.vibeFilters.name) + '"></th>' +
+      '<th><input class="filterIn" type="text" placeholder="Filter&hellip;" id="vt-vf-name" value="' + esc(S.canonicalFilters.name) + '"></th>' +
       '<th></th>' +
-      '<th><input class="filterIn" type="text" placeholder="Filter&hellip;" id="vt-vf-cat" value="' + esc(S.vibeFilters.cat) + '"></th>' +
-      '<th><input class="filterIn" type="text" placeholder="Filter&hellip;" id="vt-vf-shelf" value="' + esc(S.vibeFilters.shelf) + '"></th>' +
-      '<th><input class="filterIn" type="text" placeholder="Filter&hellip;" id="vt-vf-key" value="' + esc(S.vibeFilters.key) + '"></th>' +
+      '<th><input class="filterIn" type="text" placeholder="Filter&hellip;" id="vt-vf-cat" value="' + esc(S.canonicalFilters.cat) + '"></th>' +
+      '<th><input class="filterIn" type="text" placeholder="Filter&hellip;" id="vt-vf-shelf" value="' + esc(S.canonicalFilters.shelf) + '"></th>' +
+      '<th><input class="filterIn" type="text" placeholder="Filter&hellip;" id="vt-vf-vibes" value="' + esc(S.canonicalFilters.vibes) + '"></th>' +
       '<th><select class="filterIn" id="vt-vf-images">' +
-      '<option value=""' + (S.vibeFilters.images === '' ? ' selected' : '') + '>All</option>' +
-      '<option value="has"' + (S.vibeFilters.images === 'has' ? ' selected' : '') + '>Has images</option>' +
-      '<option value="none"' + (S.vibeFilters.images === 'none' ? ' selected' : '') + '>No images</option>' +
+      '<option value=""' + (S.canonicalFilters.images === '' ? ' selected' : '') + '>All</option>' +
+      '<option value="has"' + (S.canonicalFilters.images === 'has' ? ' selected' : '') + '>Has images</option>' +
+      '<option value="none"' + (S.canonicalFilters.images === 'none' ? ' selected' : '') + '>No images</option>' +
       '</select></th>' +
       '</tr>';
   }
-  // Every engine vibe, one row each — Name (rename), Move (same "Move to
-  // Key…" as the Key detail list), the shelf it currently lives under (via
-  // its canonical Key), that Key's label, and that shelf's images as small
-  // thumbnails (engine vibes have no image columns of their own).
-  function vibeTableRows() {
-    const f = S.vibeFilters;
-    const nameF = f.name.toLowerCase(), catF = f.cat.toLowerCase(), shelfF = f.shelf.toLowerCase(), keyF = f.key.toLowerCase();
-    let rows = vibeTableRowData().filter(function (r) {
-      if (nameF && r.v.label.toLowerCase().indexOf(nameF) < 0 && r.v.key.toLowerCase().indexOf(nameF) < 0) return false;
+  // Every canonical vibe (a "Key"), one row each — Name (rename), Open/Move,
+  // its category + shelf, the engine vibes rolled up under it as chips (🔗
+  // if that specific engine vibe's label is duplicated elsewhere), and its
+  // shelf's images as small thumbnails (canonical vibes have no images of
+  // their own — only their shelf does).
+  function canonicalTableRows() {
+    const f = S.canonicalFilters;
+    const nameF = f.name.toLowerCase(), catF = f.cat.toLowerCase(), shelfF = f.shelf.toLowerCase(), vibesF = f.vibes.toLowerCase();
+    let rows = canonicalTableRowData().filter(function (r) {
+      if (nameF && r.m.canonical_label.toLowerCase().indexOf(nameF) < 0 && r.m.canonical_key.toLowerCase().indexOf(nameF) < 0) return false;
       if (catF && !(r.cat && r.cat.display_name.toLowerCase().indexOf(catF) >= 0)) return false;
       if (shelfF && !(r.shelf && r.shelf.display_name.toLowerCase().indexOf(shelfF) >= 0)) return false;
-      if (keyF && r.v.key.toLowerCase().indexOf(keyF) < 0) return false;
+      if (vibesF && !r.engineVibes.some(function (v) { return v.label.toLowerCase().indexOf(vibesF) >= 0 || v.key.toLowerCase().indexOf(vibesF) >= 0; })) return false;
       if (f.images === 'has' && !r.imgs.length) return false;
       if (f.images === 'none' && r.imgs.length) return false;
-      if (f.manual === 'y' && !r.v.manual_set) return false;
-      if (f.manual === 'n' && r.v.manual_set) return false;
+      if (f.manual === 'y' && !r.m.manual_set) return false;
+      if (f.manual === 'n' && r.m.manual_set) return false;
       return true;
     });
-    const col = S.vibeSort.col, dir = S.vibeSort.dir === 'desc' ? -1 : 1;
+    const col = S.canonicalSort.col, dir = S.canonicalSort.dir === 'desc' ? -1 : 1;
     const keyOf = {
-      manual: function (r) { return r.v.manual_set ? 1 : 0; },
-      name: function (r) { return r.v.label.toLowerCase(); },
+      manual: function (r) { return r.m.manual_set ? 1 : 0; },
+      name: function (r) { return r.m.canonical_label.toLowerCase(); },
       cat: function (r) { return r.cat ? r.cat.display_name.toLowerCase() : '￿'; }, // unassigned sorts last
       shelf: function (r) { return r.shelf ? r.shelf.display_name.toLowerCase() : '￿'; },
-      key: function (r) { return r.v.key.toLowerCase(); },
+      vibes: function (r) { return r.engineVibes.length; },
       images: function (r) { return r.imgs.length; },
-    }[col] || function (r) { return r.v.label.toLowerCase(); };
+    }[col] || function (r) { return r.m.canonical_label.toLowerCase(); };
     rows.sort(function (a, b) { const ka = keyOf(a), kb = keyOf(b); return ka < kb ? -1 * dir : ka > kb ? 1 * dir : 0; });
     if (!rows.length) return '<tr><td colspan="7" class="sub" style="padding:14px">No matches.</td></tr>';
     return rows.map(function (r) {
-      const v = r.v, cat = r.cat, shelf = r.shelf, imgs = r.imgs, dupes = r.dupes;
+      const m = r.m, cat = r.cat, shelf = r.shelf, imgs = r.imgs;
       return '' +
         '<tr>' +
-        '<td><input type="checkbox" data-manual-set="' + esc(v.key) + '"' + (v.manual_set ? ' checked' : '') + '></td>' +
-        '<td>' + (dupes.length ? '<span class="shareIcon" title="' + esc(duplicateTooltip(dupes)) + '">🔗</span> ' : '') +
-        '<input class="nameIn sm" type="text" value="' + esc(v.label) + '" data-table="vibe_keys" data-pk="' + esc(v.key) + '" data-field="label"></td>' +
-        '<td><button class="moveBtn" type="button" data-move-vibe="' + esc(v.key) + '">Move to Key&hellip;</button></td>' +
+        '<td><input type="checkbox" data-canon-manual-set="' + esc(m.canonical_key) + '"' + (m.manual_set ? ' checked' : '') + '></td>' +
+        '<td><input class="nameIn sm" type="text" value="' + esc(m.canonical_label) + '" data-table="vibe_canonical_map" data-pk="' + esc(m.canonical_key) + '" data-field="canonical_label"></td>' +
+        '<td><button class="moveBtn" type="button" data-open-key="' + esc(m.canonical_key) + '">Open</button> ' +
+        '<button class="moveBtn" type="button" data-move-key="' + esc(m.canonical_key) + '">Move&hellip;</button></td>' +
         '<td>' + (cat ? esc(cat.display_name) : '<span class="count zero">unassigned</span>') + '</td>' +
         '<td>' + (shelf ? esc(shelf.display_name) : '<span class="count zero">unassigned</span>') + '</td>' +
-        '<td><span class="code" title="Stable id">' + esc(v.key) + '</span></td>' +
+        '<td><div class="vibes">' + (r.engineVibes.length ? r.engineVibes.map(function (v) {
+          const dupes = duplicateEngineVibes(v.key);
+          return '<span class="v"' + (dupes.length ? ' title="' + esc(duplicateTooltip(dupes)) + '"' : '') + '>' +
+            (dupes.length ? '🔗 ' : '') + esc(v.label) + '</span>';
+        }).join('') : '<span class="v none">none</span>') + '</div></td>' +
         '<td><div class="vibeThumbs">' + (imgs.length
           ? imgs.map(function (u) { return '<div class="vibeThumb" style="background-image:url(\'' + esc(String(u).replace(/["\'()\\\n\r]/g, '')) + '\')"></div>'; }).join('')
           : '<span class="sub">—</span>') + '</div></td>' +
@@ -1184,16 +1193,16 @@ function urlSetParams(params, opts){
   });
 
   /* ── Wiring ─────────────────────────────────────────────────────────────── */
-  const VIBE_FILTER_IDS = { 'vt-vf-name': 'name', 'vt-vf-cat': 'cat', 'vt-vf-shelf': 'shelf', 'vt-vf-key': 'key', 'vt-vf-images': 'images', 'vt-vf-manual': 'manual' };
+  const CANONICAL_FILTER_IDS = { 'vt-vf-name': 'name', 'vt-vf-cat': 'cat', 'vt-vf-shelf': 'shelf', 'vt-vf-vibes': 'vibes', 'vt-vf-images': 'images', 'vt-vf-manual': 'manual' };
   document.addEventListener('input', function (e) {
     const t = e.target;
-    const manualKey = t.getAttribute && t.getAttribute('data-manual-set');
-    if (manualKey) { setManualSet(manualKey, t.checked); return; }
-    const filterField = VIBE_FILTER_IDS[t.id];
+    const manualKey = t.getAttribute && t.getAttribute('data-canon-manual-set');
+    if (manualKey) { setCanonManualSet(manualKey, t.checked); return; }
+    const filterField = CANONICAL_FILTER_IDS[t.id];
     if (filterField) {
-      S.vibeFilters[filterField] = t.value;
+      S.canonicalFilters[filterField] = t.value;
       const tbody = $('vt-vibe-tbody');
-      if (tbody) tbody.innerHTML = vibeTableRows();
+      if (tbody) tbody.innerHTML = canonicalTableRows();
       return;
     }
     const table = t.getAttribute && t.getAttribute('data-table');
@@ -1218,7 +1227,12 @@ function urlSetParams(params, opts){
     if (openCat && !e.target.closest('input')) { setView({ level: 'category', categoryCode: openCat.getAttribute('data-open-cat'), keyCode: null }); return; }
 
     const openKey = e.target.closest && e.target.closest('[data-open-key]');
-    if (openKey) { setView({ level: 'key', categoryCode: S.view.categoryCode, keyCode: openKey.getAttribute('data-open-key') }); return; }
+    if (openKey) {
+      const keyCode = openKey.getAttribute('data-open-key');
+      const row = mapRow(keyCode);
+      setView({ level: 'key', categoryCode: row ? row.category_code : S.view.categoryCode, keyCode: keyCode });
+      return;
+    }
 
     const addShelf = e.target.closest && e.target.closest('[data-add-shelf]');
     if (addShelf) {
@@ -1236,12 +1250,12 @@ function urlSetParams(params, opts){
     const sortCol = e.target.closest && e.target.closest('[data-sort-col]');
     if (sortCol) {
       const col = sortCol.getAttribute('data-sort-col');
-      S.vibeSort.dir = (S.vibeSort.col === col && S.vibeSort.dir === 'asc') ? 'desc' : 'asc';
-      S.vibeSort.col = col;
+      S.canonicalSort.dir = (S.canonicalSort.col === col && S.canonicalSort.dir === 'asc') ? 'desc' : 'asc';
+      S.canonicalSort.col = col;
       const table = $('vt-vibe-table');
       if (table) {
-        table.querySelector('thead').innerHTML = vibeTableHead();
-        table.querySelector('tbody').innerHTML = vibeTableRows();
+        table.querySelector('thead').innerHTML = canonicalTableHead();
+        table.querySelector('tbody').innerHTML = canonicalTableRows();
       }
       return;
     }
@@ -1335,7 +1349,7 @@ function urlSetParams(params, opts){
       Object.keys(pending).forEach(function (k) { delete pending[k]; });
       load();
     } else if (b && b.getAttribute('data-act') === 'clear-manual-set') {
-      clearAllManualSet();
+      clearAllCanonManualSet();
     }
   });
 
