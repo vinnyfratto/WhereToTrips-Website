@@ -958,11 +958,17 @@ function urlSetParams(params, opts){
         }).join('') + '</div></div>';
     }
 
+    let canonicalRowsHtml;
+    try {
+      canonicalRowsHtml = canonicalTableRows();
+    } catch (e) {
+      canonicalRowsHtml = '<tr><td colspan="7" class="err" style="padding:10px">Could not build the table: ' + esc(e.message) + '</td></tr>';
+    }
     html += '<div class="section"><div class="sectionTitle">All Canonical Vibes (' + S.map.length + ')' +
       '<button class="moveBtn del" type="button" style="margin-left:10px" data-act="clear-manual-set">Clear all Done</button></div>' +
       '<div class="lede">One row per canonical vibe (a "Key") — the Engine Vibes column lists the finer-grained vibe_keys rolled up under it. Click a column name to sort by it; the row beneath each header filters that column. The checkbox marks a vibe as reviewed/done — it saves straight to Supabase, no Publish needed.</div>' +
       '<div style="overflow-x:auto"><table class="vibeTable" id="vt-vibe-table"><thead>' + canonicalTableHead() + '</thead>' +
-      '<tbody id="vt-vibe-tbody">' + canonicalTableRows() + '</tbody></table></div></div>';
+      '<tbody id="vt-vibe-tbody">' + canonicalRowsHtml + '</tbody></table></div></div>';
 
     $('vt-body').innerHTML = html;
   }
@@ -1034,25 +1040,35 @@ function urlSetParams(params, opts){
     }[col] || function (r) { return r.m.canonical_label.toLowerCase(); };
     rows.sort(function (a, b) { const ka = keyOf(a), kb = keyOf(b); return ka < kb ? -1 * dir : ka > kb ? 1 * dir : 0; });
     if (!rows.length) return '<tr><td colspan="7" class="sub" style="padding:14px">No matches.</td></tr>';
+    // Every row in S.map MUST produce a <tr>, no matter what — if building
+    // one throws, show the error IN PLACE of that row instead of letting one
+    // bad row silently take the rest of the table down with it (a single
+    // throw inside .map() aborts the whole call, which is exactly how a
+    // canonical vibe could go missing here without any visible cause).
     return rows.map(function (r) {
-      const m = r.m, cat = r.cat, shelf = r.shelf, imgs = r.imgs;
-      return '' +
-        '<tr>' +
-        '<td><input type="checkbox" data-canon-manual-set="' + esc(m.canonical_key) + '"' + (m.manual_set ? ' checked' : '') + '></td>' +
-        '<td><input class="nameIn sm" type="text" value="' + esc(m.canonical_label) + '" data-table="vibe_canonical_map" data-pk="' + esc(m.canonical_key) + '" data-field="canonical_label"></td>' +
-        '<td><button class="moveBtn" type="button" data-open-key="' + esc(m.canonical_key) + '">Open</button> ' +
-        '<button class="moveBtn" type="button" data-move-key="' + esc(m.canonical_key) + '">Move&hellip;</button></td>' +
-        '<td>' + (cat ? esc(cat.display_name) : '<span class="count zero">unassigned</span>') + '</td>' +
-        '<td>' + (shelf ? esc(shelf.display_name) : '<span class="count zero">unassigned</span>') + '</td>' +
-        '<td><div class="vibes">' + (r.engineVibes.length ? r.engineVibes.map(function (v) {
-          const dupes = duplicateEngineVibes(v.key);
-          return '<span class="v"' + (dupes.length ? ' title="' + esc(duplicateTooltip(dupes)) + '"' : '') + '>' +
-            (dupes.length ? '🔗 ' : '') + esc(v.label) + '</span>';
-        }).join('') : '<span class="v none">none</span>') + '</div></td>' +
-        '<td><div class="vibeThumbs">' + (imgs.length
-          ? imgs.map(function (u) { return '<div class="vibeThumb" style="background-image:url(\'' + esc(String(u).replace(/["\'()\\\n\r]/g, '')) + '\')"></div>'; }).join('')
-          : '<span class="sub">—</span>') + '</div></td>' +
-        '</tr>';
+      try {
+        const m = r.m, cat = r.cat, shelf = r.shelf, imgs = r.imgs;
+        return '' +
+          '<tr>' +
+          '<td><input type="checkbox" data-canon-manual-set="' + esc(m.canonical_key) + '"' + (m.manual_set ? ' checked' : '') + '></td>' +
+          '<td><input class="nameIn sm" type="text" value="' + esc(m.canonical_label) + '" data-table="vibe_canonical_map" data-pk="' + esc(m.canonical_key) + '" data-field="canonical_label"></td>' +
+          '<td><button class="moveBtn" type="button" data-open-key="' + esc(m.canonical_key) + '">Open</button> ' +
+          '<button class="moveBtn" type="button" data-move-key="' + esc(m.canonical_key) + '">Move&hellip;</button></td>' +
+          '<td>' + (cat ? esc(cat.display_name) : '<span class="count zero">unassigned</span>') + '</td>' +
+          '<td>' + (shelf ? esc(shelf.display_name) : '<span class="count zero">unassigned</span>') + '</td>' +
+          '<td><div class="vibes">' + (r.engineVibes.length ? r.engineVibes.map(function (v) {
+            const dupes = duplicateEngineVibes(v.key);
+            return '<span class="v"' + (dupes.length ? ' title="' + esc(duplicateTooltip(dupes)) + '"' : '') + '>' +
+              (dupes.length ? '🔗 ' : '') + esc(v.label) + '</span>';
+          }).join('') : '<span class="v none">none</span>') + '</div></td>' +
+          '<td><div class="vibeThumbs">' + (imgs.length
+            ? imgs.map(function (u) { return '<div class="vibeThumb" style="background-image:url(\'' + esc(String(u).replace(/["\'()\\\n\r]/g, '')) + '\')"></div>'; }).join('')
+            : '<span class="sub">—</span>') + '</div></td>' +
+          '</tr>';
+      } catch (e) {
+        return '<tr><td colspan="7" class="err" style="padding:10px">' +
+          'Could not render "' + esc((r.m && r.m.canonical_key) || '?') + '": ' + esc(e.message) + '</td></tr>';
+      }
     }).join('');
   }
 
