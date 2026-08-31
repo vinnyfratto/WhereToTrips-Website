@@ -71,6 +71,11 @@ h1 { font-size: 24px; margin: 0 0 4px; }
 .vibeTable { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--card); }
 .vibeTable th { text-align: left; padding: 8px 10px; border-bottom: 2px solid var(--line); color: var(--muted);
   font-size: 11px; text-transform: uppercase; letter-spacing: .4px; white-space: nowrap; }
+.vibeTable th.sortable { cursor: pointer; user-select: none; }
+.vibeTable th.sortable:hover { color: var(--ink); }
+.vibeTable tr.filterRow th { padding: 4px 10px 8px; border-bottom: 1px solid var(--line); }
+.filterIn { width: 100%; font-size: 12px; padding: 5px 7px; border: 1px solid var(--line); border-radius: 6px;
+  text-transform: none; letter-spacing: normal; font-weight: 400; color: var(--ink); background: #fff; }
 .vibeTable td { padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: middle; }
 .vibeTable tr:hover td { background: #F8FAFB; }
 .vibeThumbs { display: flex; gap: 4px; }
@@ -289,7 +294,9 @@ function urlSetParams(params, opts){
     destLoadedFor: null,     // canonical_key the cache above was loaded for
     view: { level: 'categories', categoryCode: null, keyCode: null },
     dirty: new Set(), busy: false,
-    vibeFilter: '', // All-Engine-Vibes table search text, kept across re-renders
+    // All-Engine-Vibes table sort/filter state, kept across re-renders.
+    vibeFilters: { name: '', shelf: '', key: '', images: '' },
+    vibeSort: { col: 'name', dir: 'asc' },
   };
   const pending = {}; // "table:pk" -> { field: value }
 
@@ -882,36 +889,69 @@ function urlSetParams(params, opts){
     }
 
     html += '<div class="section"><div class="sectionTitle">All Engine Vibes (' + S.vibeKeys.length + ')</div>' +
-      '<input class="modalSearch" id="vt-vibe-search" type="text" placeholder="Search name, shelf, or Key&hellip;" ' +
-      'style="max-width:340px;margin-bottom:10px" value="' + esc(S.vibeFilter) + '">' +
-      '<div style="overflow-x:auto"><table class="vibeTable"><thead><tr>' +
-      '<th>Name</th><th>Move</th><th>Current shelf</th><th>Key</th><th>Images</th>' +
-      '</tr></thead><tbody id="vt-vibe-tbody">' + vibeTableRows(S.vibeFilter) + '</tbody></table></div></div>';
+      '<div class="lede">Click a column name to sort by it; the row beneath each header filters that column.</div>' +
+      '<div style="overflow-x:auto"><table class="vibeTable" id="vt-vibe-table"><thead>' + vibeTableHead() + '</thead>' +
+      '<tbody id="vt-vibe-tbody">' + vibeTableRows() + '</tbody></table></div></div>';
 
     $('vt-body').innerHTML = html;
   }
 
+  // Each row's derived display fields, computed once and reused for both
+  // filtering and sorting so the two always agree on what a column "is".
+  function vibeTableRowData() {
+    return S.vibeKeys.map(function (v) {
+      const cv = mapRow(v.canonical_key);
+      const shelf = cv ? shelfByCode(cv.shelf_code) : null;
+      const imgs = shelf ? [1, 2, 3].map(function (n) { return shelf['image_' + n]; }).filter(Boolean) : [];
+      return { v: v, cv: cv, shelf: shelf, imgs: imgs, dupes: duplicateEngineVibes(v.key) };
+    });
+  }
+  function vibeTableHead() {
+    function th(label, col) {
+      if (!col) return '<th>' + esc(label) + '</th>';
+      const active = S.vibeSort.col === col;
+      const arrow = active ? (S.vibeSort.dir === 'asc' ? ' ▲' : ' ▼') : '';
+      return '<th class="sortable" data-sort-col="' + col + '">' + esc(label) + arrow + '</th>';
+    }
+    return '<tr>' + th('Name', 'name') + th('Move') + th('Current shelf', 'shelf') + th('Key', 'key') + th('Images', 'images') + '</tr>' +
+      '<tr class="filterRow">' +
+      '<th><input class="filterIn" type="text" placeholder="Filter&hellip;" id="vt-vf-name" value="' + esc(S.vibeFilters.name) + '"></th>' +
+      '<th></th>' +
+      '<th><input class="filterIn" type="text" placeholder="Filter&hellip;" id="vt-vf-shelf" value="' + esc(S.vibeFilters.shelf) + '"></th>' +
+      '<th><input class="filterIn" type="text" placeholder="Filter&hellip;" id="vt-vf-key" value="' + esc(S.vibeFilters.key) + '"></th>' +
+      '<th><select class="filterIn" id="vt-vf-images">' +
+      '<option value=""' + (S.vibeFilters.images === '' ? ' selected' : '') + '>All</option>' +
+      '<option value="has"' + (S.vibeFilters.images === 'has' ? ' selected' : '') + '>Has images</option>' +
+      '<option value="none"' + (S.vibeFilters.images === 'none' ? ' selected' : '') + '>No images</option>' +
+      '</select></th>' +
+      '</tr>';
+  }
   // Every engine vibe, one row each — Name (rename), Move (same "Move to
   // Key…" as the Key detail list), the shelf it currently lives under (via
   // its canonical Key), that Key's label, and that shelf's images as small
   // thumbnails (engine vibes have no image columns of their own).
-  function vibeTableRows(filter) {
-    const f = (filter || '').toLowerCase();
-    const rows = S.vibeKeys.filter(function (v) {
-      if (!f) return true;
-      const cv = mapRow(v.canonical_key);
-      const shelf = cv ? shelfByCode(cv.shelf_code) : null;
-      return v.label.toLowerCase().indexOf(f) >= 0 ||
-        v.key.toLowerCase().indexOf(f) >= 0 ||
-        (cv && cv.canonical_label.toLowerCase().indexOf(f) >= 0) ||
-        (shelf && shelf.display_name.toLowerCase().indexOf(f) >= 0);
-    }).sort(function (a, b) { return a.label.localeCompare(b.label); });
+  function vibeTableRows() {
+    const f = S.vibeFilters;
+    const nameF = f.name.toLowerCase(), shelfF = f.shelf.toLowerCase(), keyF = f.key.toLowerCase();
+    let rows = vibeTableRowData().filter(function (r) {
+      if (nameF && r.v.label.toLowerCase().indexOf(nameF) < 0 && r.v.key.toLowerCase().indexOf(nameF) < 0) return false;
+      if (shelfF && !(r.shelf && r.shelf.display_name.toLowerCase().indexOf(shelfF) >= 0)) return false;
+      if (keyF && !(r.cv && r.cv.canonical_label.toLowerCase().indexOf(keyF) >= 0)) return false;
+      if (f.images === 'has' && !r.imgs.length) return false;
+      if (f.images === 'none' && r.imgs.length) return false;
+      return true;
+    });
+    const col = S.vibeSort.col, dir = S.vibeSort.dir === 'desc' ? -1 : 1;
+    const keyOf = {
+      name: function (r) { return r.v.label.toLowerCase(); },
+      shelf: function (r) { return r.shelf ? r.shelf.display_name.toLowerCase() : '￿'; }, // unassigned sorts last
+      key: function (r) { return r.cv ? r.cv.canonical_label.toLowerCase() : '￿'; },
+      images: function (r) { return r.imgs.length; },
+    }[col] || function (r) { return r.v.label.toLowerCase(); };
+    rows.sort(function (a, b) { const ka = keyOf(a), kb = keyOf(b); return ka < kb ? -1 * dir : ka > kb ? 1 * dir : 0; });
     if (!rows.length) return '<tr><td colspan="5" class="sub" style="padding:14px">No matches.</td></tr>';
-    return rows.map(function (v) {
-      const cv = mapRow(v.canonical_key);
-      const shelf = cv ? shelfByCode(cv.shelf_code) : null;
-      const dupes = duplicateEngineVibes(v.key);
-      const imgs = shelf ? [1, 2, 3].map(function (n) { return shelf['image_' + n]; }).filter(Boolean) : [];
+    return rows.map(function (r) {
+      const v = r.v, cv = r.cv, shelf = r.shelf, imgs = r.imgs, dupes = r.dupes;
       return '' +
         '<tr>' +
         '<td>' + (dupes.length ? '<span class="shareIcon" title="' + esc(duplicateTooltip(dupes)) + '">🔗</span> ' : '') +
@@ -1062,12 +1102,14 @@ function urlSetParams(params, opts){
   });
 
   /* ── Wiring ─────────────────────────────────────────────────────────────── */
+  const VIBE_FILTER_IDS = { 'vt-vf-name': 'name', 'vt-vf-shelf': 'shelf', 'vt-vf-key': 'key', 'vt-vf-images': 'images' };
   document.addEventListener('input', function (e) {
     const t = e.target;
-    if (t.id === 'vt-vibe-search') {
-      S.vibeFilter = t.value;
+    const filterField = VIBE_FILTER_IDS[t.id];
+    if (filterField) {
+      S.vibeFilters[filterField] = t.value;
       const tbody = $('vt-vibe-tbody');
-      if (tbody) tbody.innerHTML = vibeTableRows(S.vibeFilter);
+      if (tbody) tbody.innerHTML = vibeTableRows();
       return;
     }
     const table = t.getAttribute && t.getAttribute('data-table');
@@ -1104,6 +1146,19 @@ function urlSetParams(params, opts){
     const addVibeShelf = e.target.closest && e.target.closest('[data-add-vibe-shelf]');
     if (addVibeShelf) {
       openAddEngineVibePicker(addVibeShelf.getAttribute('data-add-vibe-shelf'));
+      return;
+    }
+
+    const sortCol = e.target.closest && e.target.closest('[data-sort-col]');
+    if (sortCol) {
+      const col = sortCol.getAttribute('data-sort-col');
+      S.vibeSort.dir = (S.vibeSort.col === col && S.vibeSort.dir === 'asc') ? 'desc' : 'asc';
+      S.vibeSort.col = col;
+      const table = $('vt-vibe-table');
+      if (table) {
+        table.querySelector('thead').innerHTML = vibeTableHead();
+        table.querySelector('tbody').innerHTML = vibeTableRows();
+      }
       return;
     }
 
