@@ -379,6 +379,27 @@ function urlSetParams(params, opts){
     return S.vibeKeys.filter(function (v) { return v.canonical_key === canonicalKey; })
       .sort(function (a, b) { return a.label.localeCompare(b.label); });
   }
+  // Other engine vibes (different key) sharing the exact same label, anywhere
+  // in the taxonomy — likely the same concept re-created under a second key
+  // rather than a genuine duplicate the DB would reject (vibe_keys.key is
+  // unique, so this can only happen via label text, not a real constraint).
+  function duplicateEngineVibes(engineKey) {
+    const v = S.vibeKeys.filter(function (x) { return x.key === engineKey; })[0];
+    const norm = v && String(v.label || '').trim().toLowerCase();
+    if (!norm) return [];
+    return S.vibeKeys.filter(function (x) { return x.key !== engineKey && String(x.label || '').trim().toLowerCase() === norm; });
+  }
+  function duplicateTooltip(dupes) {
+    return 'Same label used by: ' + dupes.map(function (d) {
+      const cv = mapRow(d.canonical_key);
+      return d.key + ' (under "' + (cv ? cv.canonical_label : d.canonical_key) + '")';
+    }).join(', ');
+  }
+  // Canonical Keys (rows) currently sitting in a shelf, across every category
+  // it's used in — not scoped to the category the admin happens to be viewing.
+  function keysInShelfAnywhere(shelfCode) {
+    return S.map.filter(function (m) { return m.shelf_code === shelfCode; });
+  }
   // Every pinned or populated (category, shelf) pair — includes empty shelves
   // as valid "Move to..." targets, not just ones a Key currently occupies.
   function allCategoryShelfPairs() {
@@ -496,6 +517,36 @@ function urlSetParams(params, opts){
   // New shelves save immediately (not queued in Publish) — there's nothing
   // meaningful to "undo" by leaving it unsaved, and it needs to exist in
   // Supabase right away so a Key can be dragged into it in the same visit.
+  // Reassigns an existing engine vibe onto one of this shelf's Keys — there's
+  // no direct engine-vibe-to-shelf column, only vibe_keys.canonical_key, so
+  // "adding a vibe to a shelf" means picking which of the shelf's Keys it
+  // rolls up to. Queued via markMove, same as the existing "Move to Key…"
+  // action, so it publishes alongside everything else.
+  function openAddEngineVibePicker(shelfCode) {
+    const shelf = shelfByCode(shelfCode);
+    const shelfKeys = keysInShelfAnywhere(shelfCode);
+    const shelfKeyCodes = {}; shelfKeys.forEach(function (m) { shelfKeyCodes[m.canonical_key] = true; });
+    const items = S.vibeKeys.map(function (v) {
+      const cv = mapRow(v.canonical_key);
+      const alreadyHere = !!shelfKeyCodes[v.canonical_key];
+      return {
+        value: v.key, label: v.label, sub: cv ? cv.canonical_label : v.canonical_key,
+        badge: alreadyHere ? '🔗' : null,
+        badgeTitle: alreadyHere ? 'Already under "' + (cv ? cv.canonical_label : v.canonical_key) + '" in this shelf' : null,
+      };
+    }).sort(function (a, b) { return a.label.localeCompare(b.label); });
+    openMovePicker('Add an engine vibe to "' + (shelf ? shelf.display_name : shelfCode) + '"', items, function (it) {
+      if (!shelfKeys.length) { toast('"' + (shelf ? shelf.display_name : shelfCode) + '" has no Keys yet — move or create one here first.', true); return; }
+      const vRow = S.vibeKeys.filter(function (v) { return v.key === it.value; })[0];
+      if (shelfKeys.length === 1) { markMove('vibe_keys', it.value, { canonical_key: shelfKeys[0].canonical_key }, vRow); return; }
+      const keyItems = shelfKeys.map(function (m) { return { value: m.canonical_key, label: m.canonical_label }; })
+        .sort(function (a, b) { return a.label.localeCompare(b.label); });
+      openMovePicker('Which Key in "' + (shelf ? shelf.display_name : shelfCode) + '"?', keyItems, function (kIt) {
+        markMove('vibe_keys', it.value, { canonical_key: kIt.value }, vRow);
+      });
+    });
+  }
+
   function createShelf(displayName, catCode) {
     const code = uniqueShelfCode(displayName);
     const sortOrder = S.shelves.reduce(function (m, s) { return Math.max(m, s.sort_order); }, 0) + 1;
@@ -692,7 +743,9 @@ function urlSetParams(params, opts){
         '      <input class="modalSearch" id="vt-modal-search" type="text" placeholder="Search&hellip;" value="' + esc(filter || '') + '"></div>' +
         '    <div class="modalList">' + (shown.length
           ? shown.map(function (it, i) {
-              return '<div class="modalItem" data-idx="' + i + '"><div>' + esc(it.label) + '</div>' +
+              return '<div class="modalItem" data-idx="' + i + '"><div>' +
+                (it.badge ? '<span class="shareIcon" title="' + esc(it.badgeTitle || '') + '">' + esc(it.badge) + '</span> ' : '') +
+                esc(it.label) + '</div>' +
                 (it.sub ? '<div class="sub">' + esc(it.sub) + '</div>' : '') + '</div>';
             }).join('')
           : '<div class="sub" style="padding:10px">No matches.</div>') + '</div>' +
@@ -849,6 +902,7 @@ function urlSetParams(params, opts){
             '</div>';
         }).join('') +
         (rows.length ? '' : '<div class="lede" style="margin:2px 0">Empty — drag a Key here.</div>') +
+        '  <button class="ghost" type="button" style="width:100%;margin-top:6px" data-add-vibe-shelf="' + esc(shelf.code) + '">+ Add Engine Vibe</button>' +
         '  </div></div>';
     });
     html += '<div class="col addCol"><button class="ghost" type="button" data-add-shelf="' + esc(catCode) + '">+ Add shelf</button></div>';
@@ -876,8 +930,10 @@ function urlSetParams(params, opts){
         '<div class="section"><div class="sectionTitle">Engine vibes (' + vibes.length + ')</div>';
       html += vibes.length ? vibes.map(function (v) {
         const count = (S.destByVibe.get(v.key) || []).length;
+        const dupes = duplicateEngineVibes(v.key);
         return '' +
           '<div class="vibeRow">' +
+          (dupes.length ? '<span class="shareIcon" title="' + esc(duplicateTooltip(dupes)) + '">🔗</span>' : '') +
           '  <input class="nameIn sm" type="text" value="' + esc(v.label) + '" data-table="vibe_keys" data-pk="' + esc(v.key) + '" data-field="label">' +
           '  <span class="tier">' + esc(v.tier) + '</span>' +
           '  <span class="count">' + count + ' dest' + (count === 1 ? '' : 's') + '</span>' +
@@ -983,6 +1039,12 @@ function urlSetParams(params, opts){
     if (addShelf) {
       const catCode = addShelf.getAttribute('data-add-shelf');
       openTextPrompt('New shelf', 'e.g. "Breweries & Distilleries"', function (name) { createShelf(name, catCode); });
+      return;
+    }
+
+    const addVibeShelf = e.target.closest && e.target.closest('[data-add-vibe-shelf]');
+    if (addVibeShelf) {
+      openAddEngineVibePicker(addVibeShelf.getAttribute('data-add-vibe-shelf'));
       return;
     }
 
