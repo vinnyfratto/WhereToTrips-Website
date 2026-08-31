@@ -52,9 +52,12 @@ h1 { font-size: 24px; margin: 0 0 4px; }
 .col.drag-over { border-color: var(--azure); box-shadow: 0 0 0 2px rgba(47,111,168,.18); background: #F5F9FC; }
 .col.addCol { background: none; border: 2px dashed var(--line); display: flex; align-items: center; justify-content: center; min-height: 64px; }
 .col.addCol .ghost { border-style: dashed; }
-.colHead { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+.colHead { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
 .colCount { font-size: 11px; color: var(--muted); background: #EDF2F7; border-radius: 999px; padding: 2px 8px; white-space: nowrap; }
+.colSub { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 8px; }
 .colBody { display: flex; flex-direction: column; gap: 8px; min-height: 40px; }
+.moveBtn.del { color: var(--bad); border-color: #F5C6C2; }
+.moveBtn.del:hover { background: var(--bad); border-color: var(--bad); color: #fff; }
 .keyCard, .destCard { background: #F9FBFC; border: 1px solid var(--line); border-radius: 9px; padding: 9px 10px; cursor: grab; }
 .keyCard.dragging, .destCard.dragging { opacity: .35; }
 .keyCard:hover, .destCard:hover { border-color: var(--azure); }
@@ -258,16 +261,16 @@ function urlSetParams(params, opts){
 
   const S = {
     cats: [], shelves: [], map: [], vibeKeys: [],
+    categoryShelves: [],     // vibe_category_shelves rows — which shelves are PINNED
+                              // visible on a category's board, independent of whether
+                              // any Key currently occupies that pair. Without this, an
+                              // emptied shelf column (every Key dragged out) would
+                              // vanish, since shelvesInCategory() would otherwise have
+                              // to derive columns from vibe_canonical_map alone.
     destByVibe: new Map(),   // vibe_key -> destination rows (loaded lazily per Key detail)
     destLoadedFor: null,     // canonical_key the cache above was loaded for
     view: { level: 'categories', categoryCode: null, keyCode: null },
     dirty: new Set(), busy: false,
-    // category_code -> [shelf_code, ...] created this session with nothing dragged
-    // into them yet. shelvesInCategory() derives columns from vibe_canonical_map,
-    // so a brand-new shelf with 0 keys would otherwise never appear as a drop
-    // target — this keeps it visible until a Key actually lands in it (at which
-    // point it's part of the real data and no longer needs the pin).
-    extraShelvesInCategory: {},
   };
   const pending = {}; // "table:pk" -> { field: value }
 
@@ -300,8 +303,11 @@ function urlSetParams(params, opts){
       get('vibe_shelves?select=*&order=sort_order'),
       get('vibe_canonical_map?select=*&order=sort_order,canonical_label'),
       get('vibe_keys?select=*&order=label'),
+      // Soft-fail: falls back to deriving columns from vibe_canonical_map alone
+      // (the old behavior) if the migration adding this table hasn't run yet.
+      get('vibe_category_shelves?select=*').catch(function () { return []; }),
     ]).then(function (res) {
-      S.cats = res[0]; S.shelves = res[1]; S.map = res[2]; S.vibeKeys = res[3];
+      S.cats = res[0]; S.shelves = res[1]; S.map = res[2]; S.vibeKeys = res[3]; S.categoryShelves = res[4];
       S.destByVibe = new Map(); S.destLoadedFor = null;
       S.dirty.clear();
       // Seed from the URL (a shared link, or a reload) rather than resetting to
@@ -335,10 +341,16 @@ function urlSetParams(params, opts){
   function shelfByCode(code) { return S.shelves.filter(function (s) { return s.code === code; })[0]; }
   function mapRow(canonicalKey) { return S.map.filter(function (m) { return m.canonical_key === canonicalKey; })[0]; }
   function keysInCategory(catCode) { return S.map.filter(function (m) { return m.category_code === catCode; }); }
+  function keysInCategoryShelf(catCode, shelfCode) {
+    return S.map.filter(function (m) { return m.category_code === catCode && m.shelf_code === shelfCode; });
+  }
+  // Pinned (vibe_category_shelves) UNION anything with a live Key, so a shelf
+  // never disappears just because its last Key moved out, and legacy pairs
+  // stay visible even before the pin migration/backfill has run.
   function shelvesInCategory(catCode) {
     const codes = []; const seen = {};
+    S.categoryShelves.forEach(function (r) { if (r.category_code === catCode && !seen[r.shelf_code]) { seen[r.shelf_code] = true; codes.push(r.shelf_code); } });
     keysInCategory(catCode).forEach(function (m) { if (!seen[m.shelf_code]) { seen[m.shelf_code] = true; codes.push(m.shelf_code); } });
-    (S.extraShelvesInCategory[catCode] || []).forEach(function (code) { if (!seen[code]) { seen[code] = true; codes.push(code); } });
     return codes.map(shelfByCode).filter(Boolean).sort(function (a, b) {
       return (a.sort_order - b.sort_order) || a.display_name.localeCompare(b.display_name);
     });
@@ -347,16 +359,26 @@ function urlSetParams(params, opts){
     return S.vibeKeys.filter(function (v) { return v.canonical_key === canonicalKey; })
       .sort(function (a, b) { return a.label.localeCompare(b.label); });
   }
+  // Every pinned or populated (category, shelf) pair — includes empty shelves
+  // as valid "Move to..." targets, not just ones a Key currently occupies.
   function allCategoryShelfPairs() {
     const seen = {}; const out = [];
-    S.map.forEach(function (m) {
-      const k = m.category_code + '||' + m.shelf_code;
+    function add(catCode, shelfCode) {
+      const k = catCode + '||' + shelfCode;
       if (seen[k]) return; seen[k] = true;
-      const cat = catByCode(m.category_code), shelf = shelfByCode(m.shelf_code);
+      const cat = catByCode(catCode), shelf = shelfByCode(shelfCode);
       if (!cat || !shelf) return;
-      out.push({ category_code: m.category_code, shelf_code: m.shelf_code, label: cat.display_name + ' → ' + shelf.display_name });
-    });
+      out.push({ category_code: catCode, shelf_code: shelfCode, label: cat.display_name + ' → ' + shelf.display_name });
+    }
+    S.categoryShelves.forEach(function (r) { add(r.category_code, r.shelf_code); });
+    S.map.forEach(function (m) { add(m.category_code, m.shelf_code); });
     return out.sort(function (a, b) { return a.label.localeCompare(b.label); });
+  }
+  // How many OTHER (category, shelf) pins reference this shelf_code — used to
+  // decide whether deleting it from one category can also delete the shelf
+  // row itself, or must only unlink it from this category.
+  function categoryShelfPinCount(shelfCode) {
+    return S.categoryShelves.filter(function (r) { return r.shelf_code === shelfCode; }).length;
   }
 
   /* ── Edit + save ────────────────────────────────────────────────────────── */
@@ -440,7 +462,9 @@ function urlSetParams(params, opts){
     const code = uniqueShelfCode(displayName);
     const sortOrder = S.shelves.reduce(function (m, s) { return Math.max(m, s.sort_order); }, 0) + 1;
     const row = { code: code, display_name: displayName, sort_order: sortOrder, enabled: true };
-    return _authedHeaders({ 'Content-Type': 'application/json', Prefer: 'return=representation' }).then(function (hdrs) {
+    let hdrs;
+    return _authedHeaders({ 'Content-Type': 'application/json', Prefer: 'return=representation' }).then(function (h) {
+      hdrs = h;
       return fetch(SUPA + '/rest/v1/vibe_shelves', { method: 'POST', headers: hdrs, body: JSON.stringify([row]) });
     }).then(function (r) {
       if (!r.ok) return r.text().then(function (t) { throw new Error(r.status + ' ' + t); });
@@ -448,10 +472,46 @@ function urlSetParams(params, opts){
     }).then(function (created) {
       const saved = (created && created[0]) || Object.assign({ blurb: null, parent_code: null, image_1: null, image_2: null, image_3: null }, row);
       S.shelves.push(saved);
-      (S.extraShelvesInCategory[catCode] = S.extraShelvesInCategory[catCode] || []).push(saved.code);
+      // Pin it visible on this category's board even at 0 Keys.
+      return fetch(SUPA + '/rest/v1/vibe_category_shelves', {
+        method: 'POST', headers: hdrs, body: JSON.stringify([{ category_code: catCode, shelf_code: saved.code }]),
+      });
+    }).then(function () {
+      S.categoryShelves.push({ category_code: catCode, shelf_code: code });
       toast('Shelf "' + displayName + '" created — drag Keys into it, then Publish their move.');
       render();
     }).catch(function (e) { toast('Could not create shelf: ' + e.message, true); });
+  }
+
+  // Blocks (with a toast) if the shelf still holds a Key in this category —
+  // deleting it would either FK-violate at the DB or silently orphan the Key.
+  function deleteShelf(catCode, shelfCode) {
+    const shelf = shelfByCode(shelfCode);
+    const stillPopulated = keysInCategoryShelf(catCode, shelfCode).length;
+    if (stillPopulated) {
+      toast('Move ' + stillPopulated + ' Key' + (stillPopulated === 1 ? '' : 's') + ' out of "' + (shelf ? shelf.display_name : shelfCode) + '" before deleting it.', true);
+      return;
+    }
+    if (!confirm('Delete the shelf "' + (shelf ? shelf.display_name : shelfCode) + '" from this category? This cannot be undone.')) return;
+    _authedHeaders().then(function (hdrs) {
+      return fetch(SUPA + '/rest/v1/vibe_category_shelves?category_code=eq.' + encodeURIComponent(catCode) + '&shelf_code=eq.' + encodeURIComponent(shelfCode), {
+        method: 'DELETE', headers: hdrs,
+      });
+    }).then(function (r) {
+      if (!r.ok) return r.text().then(function (t) { throw new Error(r.status + ' ' + t); });
+      S.categoryShelves = S.categoryShelves.filter(function (r) { return !(r.category_code === catCode && r.shelf_code === shelfCode); });
+      // Only globally delete the shelf row once nothing else pins it — it may
+      // still be in use under a different category.
+      if (categoryShelfPinCount(shelfCode) > 0) { toast('Removed from this category (still used elsewhere).'); render(); return; }
+      return _authedHeaders().then(function (hdrs2) {
+        return fetch(SUPA + '/rest/v1/vibe_shelves?code=eq.' + encodeURIComponent(shelfCode), { method: 'DELETE', headers: hdrs2 });
+      }).then(function (r2) {
+        if (!r2.ok) return r2.text().then(function (t) { throw new Error(r2.status + ' ' + t); });
+        S.shelves = S.shelves.filter(function (s) { return s.code !== shelfCode; });
+        toast('Shelf deleted.');
+        render();
+      });
+    }).catch(function (e) { toast('Could not delete shelf: ' + e.message, true); });
   }
 
   /* ── Simple text-input modal (shelf creation) ───────────────────────────── */
@@ -609,7 +669,7 @@ function urlSetParams(params, opts){
   function renderShelfBoard() {
     const catCode = S.view.categoryCode;
     const shelves = shelvesInCategory(catCode);
-    let html = '<div class="lede">Drag a Key card to another shelf column to move it. Use <b>Move&hellip;</b> to send it to a shelf under a different category.</div><div class="board">';
+    let html = '<div class="lede">Drag a Key card to another shelf column to move it. Use <b>Move&hellip;</b> to send it to a shelf under a different category. Empty shelves stay put until you delete them — they never disappear on their own.</div><div class="board">';
     shelves.forEach(function (shelf) {
       const rows = S.map.filter(function (m) { return m.category_code === catCode && m.shelf_code === shelf.code; })
         .sort(function (a, b) { return (a.sort_order - b.sort_order) || a.canonical_label.localeCompare(b.canonical_label); });
@@ -617,6 +677,8 @@ function urlSetParams(params, opts){
         '<div class="col" data-drop-kind="key" data-drop-payload=\'' + esc(JSON.stringify({ shelf_code: shelf.code })) + '\'>' +
         '  <div class="colHead"><input class="nameIn sm" type="text" value="' + esc(shelf.display_name) + '" data-table="vibe_shelves" data-pk="' + esc(shelf.code) + '" data-field="display_name">' +
         '    <span class="colCount">' + rows.length + '</span></div>' +
+        '  <div class="colSub"><span class="code" title="Stable id">' + esc(shelf.code) + '</span>' +
+        '    <button class="moveBtn del" type="button" data-delete-shelf="' + esc(shelf.code) + '" data-delete-cat="' + esc(catCode) + '">Delete&hellip;</button></div>' +
         '  <div class="colBody">' +
         rows.map(function (m) {
           const vibeCount = S.vibeKeys.filter(function (v) { return v.canonical_key === m.canonical_key; }).length;
@@ -624,9 +686,11 @@ function urlSetParams(params, opts){
             '<div class="keyCard"' + dragAttrs('key', { canonical_key: m.canonical_key, shelf_code: shelf.code }) + '>' +
             '  <div class="keyCardTop"><span class="keyCardName" data-open-key="' + esc(m.canonical_key) + '">' + esc(m.canonical_label) + '</span>' +
             '  <span class="chip">' + vibeCount + ' vibe' + (vibeCount === 1 ? '' : 's') + '</span></div>' +
+            '  <span class="code" title="Stable id">' + esc(m.canonical_key) + '</span>' +
             '  <button class="moveBtn" type="button" data-move-key="' + esc(m.canonical_key) + '">Move&hellip;</button>' +
             '</div>';
         }).join('') +
+        (rows.length ? '' : '<div class="lede" style="margin:2px 0">Empty — drag a Key here.</div>') +
         '  </div></div>';
     });
     html += '<div class="col addCol"><button class="ghost" type="button" data-add-shelf="' + esc(catCode) + '">+ Add shelf</button></div>';
@@ -761,6 +825,12 @@ function urlSetParams(params, opts){
     if (addShelf) {
       const catCode = addShelf.getAttribute('data-add-shelf');
       openTextPrompt('New shelf', 'e.g. "Breweries & Distilleries"', function (name) { createShelf(name, catCode); });
+      return;
+    }
+
+    const delShelf = e.target.closest && e.target.closest('[data-delete-shelf]');
+    if (delShelf) {
+      deleteShelf(delShelf.getAttribute('data-delete-cat'), delShelf.getAttribute('data-delete-shelf'));
       return;
     }
 
