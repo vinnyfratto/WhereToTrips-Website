@@ -171,7 +171,7 @@ sections:
         name: Devin K.
         location: Chicago, IL
         initials: ''
-      - quote: I told it warm, not too far, under two grand. It gave me three places I'd never considered and the flights were real.
+      - quote: I told it warm, not too far, under two grand. It gave me three places I'd never considered.
         name: Priya S.
         location: Seattle, WA
         initials: ''
