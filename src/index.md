@@ -27,13 +27,15 @@ sections:
         alt: A glittering city skyline at dusk
       - src: /media/WhereTo_Hero_Mountain.jpg
         alt: A palm-fringed island lagoon
+    image: null
+    badge: null
   - type: highlights
     items:
       - icon: wallet-money
         title: You first
         text: You drive the details of the trip, not the other way around.
       - icon: compass
-        title: 750+ Vibes
+        title: 11,000+ Vibes
         text: We'll match your vibes to real destinations worldwide.
       - icon: plane
         title: All major airlines
@@ -55,7 +57,12 @@ sections:
       alt: Aerial view of a turquoise lagoon surrounded by white sand
       transparent: true
     id: vibes
+    flip: false
+    background: false
     body: ''
+    image2: null
+    stats: []
+    features: []
     cta:
       label: Join the Beta
       href: /beta-signup/
@@ -74,47 +81,14 @@ sections:
         body: An engine built on hundreds of travel styles, not ten generic tags.
       - title: Get a ranked shortlist
         body: Real destinations, each with a plain-English reason why it fits.
-  - type: tile_grid
-    eyebrow: Why travelers love WhereTo
-    title:
-      pre: This isn't a mood board. It's a
-      accent: shortlist you can book
-      post: .
-    id: ''
-    background: true
-    center: true
-    intro: ''
-    columns: 3
-    tiles:
-      - label: Real recommendations
-        blurb: Not inspiration — every destination comes with a fit score, a reason why, and an honest trade-off.
-        icon: global
-        href: ''
-      - label: A serious Vibe Engine
-        blurb: Hundreds of travel vibes, tiered and scored under the hood, simple to use on top.
-        icon: compass
-        href: ''
-      - label: Global, not a shortlist
-        blurb: We don't limit you to fifty "curated" cities. If it's a real place worth visiting, it's in play.
-        icon: map-point-favourite
-        href: ''
-      - label: Straight to booking
-        blurb: Once you find it, book flights and hotels right in the app.
-        icon: wallet-money
-        href: ''
-      - label: Group-proof
-        blurb: Everyone's vibe and budget, reconciled into one recommendation the whole trip can live with.
-        icon: users-group-rounded
-        href: ''
-      - label: No pressure, no games
-        blurb: Estimated costs are always labeled as estimates; final pricing is confirmed by our booking partners, plainly disclosed.
-        icon: plane
   - type: collection_grid
     eyebrow: Featured Travel Vibes
     title:
       pre: Start with a
       accent: feeling
       post: .
+    id: ''
+    background: false
     center: true
     intro: Browse by the experience you want. Each vibe maps to real destinations and typical budgets.
     columns: 3
@@ -130,9 +104,13 @@ sections:
     image:
       src: /media/together.jpg
       alt: Group of friends laughing together at an outdoor table
+      transparent: false
     id: together
     flip: true
     background: true
+    body: ''
+    image2: null
+    stats: []
     features:
       - icon: check-circle
         label: Invite your crew to a shared trip
@@ -157,6 +135,7 @@ sections:
     image:
       src: /media/chat.jpg
       alt: Person relaxing on a terrace with a phone and a view
+      transparent: false
     id: chat
     examples:
       - A beach week under $2k in April
@@ -170,6 +149,7 @@ sections:
       post: .
     image:
       src: /media/hero/mountains.jpg
+    id: ''
     body: Tell WhereTo your budget and your vibe. Watch it surface destinations, flights, and stays that actually fit.
     href: /app/
     playLabel: Get the app
@@ -179,22 +159,29 @@ sections:
       pre: Loved by people who
       accent: wander
       post: .
+    id: ''
+    background: true
+    intro: ''
     items:
       - quote: I never would have thought to search Albania. WhereTo matched my budget to a coastline I now can't stop talking about.
         name: Maya R.
         location: Austin, TX
+        initials: ''
       - quote: We planned a five-person trip without a single 40-message group chat. Everyone set their vibe and it just found the overlap.
         name: Devin K.
         location: Chicago, IL
+        initials: ''
       - quote: I told it warm, not too far, under two grand. It gave me three places I'd never considered and the flights were real.
         name: Priya S.
         location: Seattle, WA
+        initials: ''
   - type: collection_grid
     eyebrow: From the blog
     title:
       pre: Travel smarter with our
       accent: Insights
       post: .
+    id: ''
     background: true
     center: true
     intro: Budgeting, group trips, and getting more out of every mile.
@@ -209,4 +196,5 @@ sections:
       post: .
     id: download
     body: Free to download. No subscription. Just better travel.
+    formLabel: ''
 ---
