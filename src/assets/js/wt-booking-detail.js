@@ -95,24 +95,36 @@ function confirmBlock(label, code, status, total, currency, rightLabel, rightVal
 
 // ── Hotel ───────────────────────────────────────────────────────────
 
-/** Itemised room rate — LiteAPI's book response carries the real split at
- *  bookedRooms[0].rate.retailRate: `total` is what was actually charged, and
+/** Itemised room rate — LiteAPI's book response carries the real split across
+ *  bookedRooms[], one entry PER ROOM, summed here rather than read off
+ *  bookedRooms[0] alone (that silently dropped every room after the first for
+ *  any 2+ room booking): `total` is what was actually charged, and
  *  taxesAndFees[] splits into `included` (already in that total) and NOT
  *  included (payable at the property, never charged by us — kept on its own
  *  line so it is never mistaken for part of what was already paid). */
 function hotelPriceBreakdown(order) {
   const payload = order.liteapi_payload || {};
-  const booked = payload.bookedRooms && payload.bookedRooms[0];
-  const room = booked && booked.rate && booked.rate.retailRate;
-  if (!room || !room.total || room.total.amount == null) return null;
-  const fees = Array.isArray(room.taxesAndFees) ? room.taxesAndFees : [];
-  const taxesFees = fees.filter((f) => f.included).reduce((sum, f) => sum + (f.amount || 0), 0);
-  const dueAtProperty = fees.filter((f) => !f.included).reduce((sum, f) => sum + (f.amount || 0), 0);
+  const booked = Array.isArray(payload.bookedRooms) ? payload.bookedRooms : [];
+  const rates = booked.map((r) => r && r.rate && r.rate.retailRate).filter((r) => r && r.total && r.total.amount != null);
+  if (!rates.length) return null;
+
+  let itemizedTotal = 0, taxesFees = 0, dueAtProperty = 0;
+  for (const rate of rates) {
+    itemizedTotal += rate.total.amount || 0;
+    const fees = Array.isArray(rate.taxesAndFees) ? rate.taxesAndFees : [];
+    taxesFees     += fees.filter((f) => f.included).reduce((sum, f) => sum + (f.amount || 0), 0);
+    dueAtProperty += fees.filter((f) => !f.included).reduce((sum, f) => sum + (f.amount || 0), 0);
+  }
+  const roomCount = Math.max(1, order.rooms || 1);
+  // Short array (legacy row, provider hiccup) → trust the order's own
+  // confirmed total instead of an incomplete sum, never understate the charge.
+  const trustworthy = rates.length >= roomCount;
+  const roomRate = trustworthy ? itemizedTotal - taxesFees : (Number(order.total_amount) || 0) - dueAtProperty;
   return {
-    roomRate: room.total.amount - taxesFees,
-    taxesFees,
-    dueAtProperty,
-    currency: room.total.currency || order.total_currency || 'USD',
+    roomRate, taxesFees, dueAtProperty,
+    currency: (rates[0].total && rates[0].total.currency) || order.total_currency || 'USD',
+    roomCount,
+    perRoomRate: roomCount > 1 ? roomRate / roomCount : null,
   };
 }
 
@@ -246,7 +258,8 @@ function hotelSections(order, live, content, opts) {
   const pb = hotelPriceBreakdown(order);
   if (pb) {
     html += '<div class="bk-kv-block">' +
-      kvRow('Room rate', money(pb.roomRate, pb.currency)) +
+      kvRow(pb.roomCount > 1 ? 'Room rate · ' + pb.roomCount + ' rooms' : 'Room rate', money(pb.roomRate, pb.currency)) +
+      (pb.perRoomRate != null ? kvRow('Per room rate', money(pb.perRoomRate, pb.currency)) : '') +
       kvRow('Taxes & fees', money(pb.taxesFees, pb.currency)) +
       (pb.dueAtProperty > 0 ? kvRow('Due at property', money(pb.dueAtProperty, pb.currency)) : '') +
       '</div>';
@@ -722,7 +735,8 @@ function tripSummary(hotel, flight, live, content) {
   if (fpb && fpb.taxes != null) priceRows += kvSubRow('Flight taxes & fees', money(fpb.taxes, fpb.currency));
 
   priceRows += kvGroupRow('Total hotel cost', money(hotel.total_amount, hotel.total_currency));
-  priceRows += kvSubRow('Hotel rate', money(roomRate, roomCurrency));
+  priceRows += kvSubRow(hpb && hpb.roomCount > 1 ? 'Hotel rate · ' + hpb.roomCount + ' rooms' : 'Hotel rate', money(roomRate, roomCurrency));
+  if (hpb && hpb.perRoomRate != null) priceRows += kvSubRow('Per room rate', money(hpb.perRoomRate, roomCurrency));
   if (perNight != null) priceRows += kvSubRow('Per night rate', money(perNight, roomCurrency));
   if (hpb) priceRows += kvSubRow('Hotel taxes & fees', money(hpb.taxesFees, hpb.currency));
   if (hpb && hpb.dueAtProperty > 0) priceRows += kvSubRow('Due at property', money(hpb.dueAtProperty, hpb.currency));
