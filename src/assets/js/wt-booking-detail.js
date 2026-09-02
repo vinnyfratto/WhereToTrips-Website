@@ -776,6 +776,7 @@ function hotelMeta(order) {
     order.check_in && order.check_out ? shortDate(order.check_in) + ' – ' + shortDate(order.check_out) : '',
     order.nights ? plural(order.nights, 'night') : '',
     order.guests ? plural(order.guests, 'guest') : '',
+    order.rooms ? plural(order.rooms, 'room') : '',
   ].filter(Boolean).join(' · ');
 }
 
@@ -828,6 +829,7 @@ export function renderDetail(ctx, item) {
               : ''),
           hotel.nights ? plural(hotel.nights, 'night') : '',
           flight && flight.passengers ? plural(flight.passengers, 'traveller') : '',
+          hotel.rooms ? plural(hotel.rooms, 'room') : '',
         ].filter(Boolean).join(' · ');
 
         // Real property photos for the hotel section's own header, distinct
