@@ -28,10 +28,10 @@
 
 import { maybeOptOutInternal } from './wt-internal-accounts.js';
 import {
-  COUNTRIES, COUNTRY_NAME, GENDERS, TITLES, DOC_TYPES, SEAT_CLASSES, STOP_PREFS,
+  AIRLINES, COUNTRIES, COUNTRY_NAME, GENDERS, TITLES, DOC_TYPES,
   BUDGET_FLEX, HOTEL_LOYALTY, BASE_VIBES, BASE_VIBE_CAP,
 } from './wt-profile-data.js';
-import { AIRLINE_NAMES } from './wt-airlines.js';
+import { AIRLINE_NAMES, airlineLogo, airlineLogoFallback } from './wt-airlines.js';
 
 // ── Small helpers ───────────────────────────────────────────────────
 
@@ -168,44 +168,137 @@ export function describeLoyalty(lp) {
   return hit ? hit.name : lp.code;
 }
 
+/** Programme codes with a bundled wordmark. World of Hyatt has no artwork yet
+ *  and shows its monogram, exactly as in the app. */
+const HOTEL_PROGRAM_LOGOS = [
+  'marriott_bonvoy', 'hilton_honors', 'ihg_one_rewards', 'wyndham_rewards',
+  'choice_privileges', 'accor_live_limitless', 'best_western_rewards', 'radisson_rewards',
+];
+
+function initialsOf(name) {
+  return String(name).trim().split(/\s+/).slice(0, 2)
+    .map((w) => (w[0] || '').toUpperCase()).join('');
+}
+
+/** The mark beside a saved membership — the app's ProgramMark, in HTML.
+ *  Airlines resolve to a real logo off the same CDN the app uses. Hotel
+ *  PROGRAMMES have no CDN, so the eight bundled wordmarks are served from
+ *  /assets/img/hotel-programs/; anything without artwork falls back to the
+ *  same curated monogram the app shows.
+ *
+ *  Wordmarks, not icons, so the hotel slot is wide and short and the artwork
+ *  is contained in it rather than squared off. */
+function loyaltyMark(lp) {
+  if (lp.type !== 'hotel') {
+    const code = String(lp.code || '').trim().toUpperCase();
+    if (IATA_AIRLINE_CODE.test(code)) {
+      return '<span class="loy-mark loy-mark-air"><img src="' + esc(airlineLogo(code)) +
+        '" alt="" loading="lazy" data-fallback="' + esc(airlineLogoFallback(code)) + '"' +
+        ' onerror="this.onerror=null;this.src=this.dataset.fallback" /></span>';
+    }
+    return '<span class="loy-mark loy-mono">' + esc(code.slice(0, 3)) + '</span>';
+  }
+  if (HOTEL_PROGRAM_LOGOS.indexOf(lp.code) >= 0) {
+    return '<span class="loy-mark loy-mark-hotel"><img src="/assets/img/hotel-programs/' +
+      esc(lp.code) + '.png" alt="" loading="lazy" /></span>';
+  }
+  const hit = HOTEL_LOYALTY.find((h) => h.code === lp.code);
+  const mono = (hit && hit.monogram) || initialsOf(lp.programName || '');
+  return '<span class="loy-mark loy-mono">' + esc(mono) + '</span>';
+}
+
+/** A saved membership, read-only: mark, then programme and number. */
+function loyaltyReadRow(lp) {
+  return '<li class="loy-saved">' + loyaltyMark(lp) +
+    '<span class="loy-saved-text">' +
+      '<span class="loy-saved-name">' + esc(describeLoyalty(lp)) + '</span>' +
+      '<span class="loy-saved-num">' + esc(lp.accountNumber || 'No membership number yet') + '</span>' +
+    '</span></li>';
+}
+
+/** Read view for the two rewards groups, shown under the Preferences grid. */
+function rewardsRead(p) {
+  const list = readLoyaltyPrograms({ loyalty_programs: p.loyalty_programs });
+  const group = (label, rows, empty) =>
+    '<h3 class="pv-sub-head">' + esc(label) + '</h3>' +
+    (rows.length
+      ? '<ul class="loy-saved-list">' + rows.map(loyaltyReadRow).join('') + '</ul>'
+      : emptyNote(empty));
+  return group('Flight Rewards', list.filter((lp) => lp.type !== 'hotel'), 'No frequent flyer programs saved.') +
+         group('Hotel Rewards',  list.filter((lp) => lp.type === 'hotel'), 'No hotel programs saved.');
+}
+
+/** One editable membership. The TYPE is the group it sits in, not a dropdown
+ *  on the row — same as the app, where answering "which airlines am I in?"
+ *  should not mean reading every row's type select. */
 function loyaltyRow(lp) {
   const isHotel = lp.type === 'hotel';
-  return '<div class="loy-row" data-loy data-id="' + esc(lp.id || uid()) + '">' +
-    '<div class="field"><label>Type</label>' +
-      '<select data-f="type"><option value="airline"' + (isHotel ? '' : ' selected') + '>Airline</option>' +
-      '<option value="hotel"' + (isHotel ? ' selected' : '') + '>Hotel</option></select></div>' +
-    '<div class="field"><label>Program</label>' +
-      '<input data-f="code" type="text" value="' + esc(lp.code || '') + '" ' +
-      'placeholder="' + (isHotel ? 'e.g. marriott_bonvoy' : 'Airline code, e.g. AA') + '" ' +
-      'list="loy-hotel-programs" /></div>' +
-    '<div class="field"><label>Program name <span class="hint">(if "other")</span></label>' +
-      '<input data-f="programName" type="text" value="' + esc(lp.programName || '') + '" /></div>' +
+  const codeField = isHotel
+    ? '<div class="field"><label>Program</label><select data-f="code"><option value=""></option>' +
+        HOTEL_LOYALTY.map((h) => '<option value="' + esc(h.code) + '"' +
+          (h.code === lp.code ? ' selected' : '') + '>' + esc(h.name) + '</option>').join('') +
+      '</select></div>' +
+      '<div class="field"><label>Program name <span class="hint">(if "other")</span></label>' +
+        '<input data-f="programName" type="text" value="' + esc(lp.programName || '') + '" /></div>'
+    : '<div class="field"><label>Airline</label>' +
+        '<input data-f="code" type="text" value="' + esc(lp.code || '') + '" ' +
+        'placeholder="Name or 2-letter code, e.g. AA" list="loy-airlines" /></div>';
+  return '<div class="loy-row" data-loy data-type="' + (isHotel ? 'hotel' : 'airline') + '" ' +
+    'data-id="' + esc(lp.id || uid()) + '">' + codeField +
     '<div class="field"><label>Member number</label>' +
       '<input data-f="accountNumber" type="text" value="' + esc(lp.accountNumber || '') + '" /></div>' +
     '<button type="button" class="btn btn-ghost btn-xs" data-remove-loy>Remove</button>' +
     '</div>';
 }
 
+/** Two headed groups, each with its own Add — the app's LoyaltyEditor. */
 function loyaltyEditor(programs) {
-  return '<div class="loy-list" data-loy-list>' + programs.map(loyaltyRow).join('') + '</div>' +
-    '<button type="button" class="pv-link-btn" data-add-loy>+ Add a program</button>' +
-    '<datalist id="loy-hotel-programs">' +
-      HOTEL_LOYALTY.map((h) => '<option value="' + esc(h.code) + '">' + esc(h.name) + '</option>').join('') +
+  const group = (label, type, rows) =>
+    '<div class="loy-group">' +
+      '<div class="loy-group-head"><h3 class="pv-sub-head">' + esc(label) + '</h3>' +
+        '<button type="button" class="pv-link-btn" data-add-loy="' + type + '">+ Add</button></div>' +
+      '<div class="loy-list" data-loy-list="' + type + '">' + rows.map(loyaltyRow).join('') + '</div>' +
+    '</div>';
+  return '<div class="loy-groups">' +
+      group('Flight Rewards', 'airline', programs.filter((lp) => lp.type !== 'hotel')) +
+      group('Hotel Rewards',  'hotel',   programs.filter((lp) => lp.type === 'hotel')) +
+    '</div>' +
+    '<datalist id="loy-airlines">' +
+      AIRLINES.map((a) => '<option value="' + esc(a.code) + '">' + esc(a.name) + '</option>').join('') +
     '</datalist>';
 }
 
-function readLoyaltyEditor(listEl) {
-  if (!listEl) return [];
-  return [...listEl.querySelectorAll('[data-loy]')].map((rowEl) => {
+/** Every row across BOTH groups. `scope` is the form, not one list: the type
+ *  comes from the group a row sits in now, so there is no per-row select to
+ *  read it off. */
+function readLoyaltyEditor(scope) {
+  if (!scope) return [];
+  return [...scope.querySelectorAll('[data-loy]')].map((rowEl) => {
     const v = readScope(rowEl);
+    const isHotel = rowEl.dataset.type === 'hotel';
     return {
       id: rowEl.dataset.id,
-      type: v.type === 'hotel' ? 'hotel' : 'airline',
-      code: v.type === 'hotel' ? (v.code || '').toLowerCase() : (v.code || '').toUpperCase(),
+      type: isHotel ? 'hotel' : 'airline',
+      // Airlines: resolve what was typed to a real IATA code where we can. The
+      // field is free text on purpose, but everything downstream matches a
+      // flight's two-character carrier code, so "United" saved verbatim would
+      // silently never match. Same resolver the app's editor runs on blur.
+      code: isHotel ? (v.code || '').toLowerCase() : resolveAirlineCode(v.code || ''),
       programName: v.programName || undefined,
       accountNumber: v.accountNumber || '',
     };
   }).filter((lp) => lp.code && lp.accountNumber);
+}
+
+/** A real IATA airline code: two characters, letters or a digit. */
+const IATA_AIRLINE_CODE = /^[A-Z0-9]{2}$/;
+
+/** Typed text -> a real IATA code where it is unambiguous, else left alone. */
+function resolveAirlineCode(typed) {
+  const v = String(typed).trim().toUpperCase();
+  if (!v || AIRLINES.some((a) => a.code === v)) return v;
+  const hits = AIRLINES.filter((a) => a.name.toUpperCase().indexOf(v) >= 0);
+  return hits.length === 1 ? hits[0].code : v;
 }
 
 // ── Saved travellers ────────────────────────────────────────────────
@@ -262,7 +355,7 @@ function readTravellers(listEl) {
       'redress_number', 'profile_photo']) {
       if (v[k]) t[k] = v[k];
     }
-    const lps = readLoyaltyEditor(card.querySelector('[data-loy-list]'));
+    const lps = readLoyaltyEditor(card);
     if (lps.length) t.loyaltyPrograms = lps;
     return t;
   }).filter((t) => t.given_name || t.family_name);
@@ -398,48 +491,51 @@ const SECTIONS = {
     }),
   },
 
+  // The app's Preferences screen, column for column: home airport, preferred
+  // airlines, budget flexibility, and Travel Rewards — which moved here out of
+  // the profile form, because frequent flyer numbers belong with the airlines
+  // they bias rather than under passports and addresses.
   flight: {
-    title: 'Flight preferences',
+    title: 'Preferences',
     blurb: 'These sync with the WhereTo app to shape what it suggests.',
     read: (p) => {
       const fp = p.flight_prefs || {};
       const airlines = Array.isArray(fp.preferredAirlines) ? fp.preferredAirlines : [];
       return readGrid([
         { label: 'Nearest airport', value: fp.nearestAirport },
-        { label: 'Seat class', value: labelOf(SEAT_CLASSES, fp.seatClass) },
-        { label: 'Stops', value: labelOf(STOP_PREFS, fp.stopCount) },
         { label: 'Budget flexibility', value: labelOf(BUDGET_FLEX, fp.budgetFlexibility) },
         {
           label: 'Preferred airlines', wide: true,
           value: airlines.map((c) => AIRLINE_NAMES[c] || c).join(', '),
         },
-      ]);
+      ]) + rewardsRead(p);
     },
     edit: (p) => {
       const fp = p.flight_prefs || {};
       return textField('fp_nearestAirport', 'Nearest airport', {
           value: fp.nearestAirport, hint: '(name or IATA code)', placeholder: 'e.g. JFK' }) +
-        row(selectField('fp_seatClass', 'Seat class', SEAT_CLASSES, { value: fp.seatClass }) +
-            selectField('fp_stopCount', 'Stops', STOP_PREFS, { value: fp.stopCount })) +
         row(textField('fp_preferredAirlines', 'Preferred airlines', {
               value: Array.isArray(fp.preferredAirlines) ? fp.preferredAirlines.join(', ') : '',
               hint: '(IATA codes, comma-separated)', placeholder: 'e.g. AA, DL, B6' }) +
-            selectField('fp_budgetFlexibility', 'Budget flexibility', BUDGET_FLEX, { value: fp.budgetFlexibility }));
+            selectField('fp_budgetFlexibility', 'Budget flexibility', BUDGET_FLEX, { value: fp.budgetFlexibility })) +
+        loyaltyEditor(readLoyaltyPrograms({ loyalty_programs: p.loyalty_programs }));
     },
-    collect: (v) => {
+    collect: (v, scope) => {
       const airlines = v.fp_preferredAirlines
         ? v.fp_preferredAirlines.split(',').map((s) => s.trim().toUpperCase()).filter(Boolean)
         : [];
-      // No dateFlex: nothing searches nearby dates off a profile preference,
-      // so it was a setting that changed nothing (the app dropped it too).
+      // No seatClass, stopCount or dateFlex. All three were settings that
+      // changed nothing, and all three left FlightPreferences in the app:
+      // stop count could only agree with the flight picker, which already
+      // prefers fewer stops; seat class never changed which flights came back,
+      // only which fare led; nothing ever searched nearby dates off a profile.
       return {
         flight_prefs: objOrNull({
           nearestAirport: v.fp_nearestAirport,
-          seatClass: v.fp_seatClass,
           preferredAirlines: airlines.length ? airlines : '',
-          stopCount: v.fp_stopCount,
           budgetFlexibility: v.fp_budgetFlexibility,
         }) || {},
+        loyalty_programs: readLoyaltyEditor(scope),
       };
     },
   },
@@ -466,24 +562,10 @@ const SECTIONS = {
     }),
   },
 
-  loyalty: {
-    title: 'Loyalty programs',
-    blurb: 'Airline and hotel membership numbers, passed through when a booking supports them.',
-    read: (p) => {
-      const list = readLoyaltyPrograms({ loyalty_programs: p.loyalty_programs });
-      if (!list.length) return emptyNote('No programs saved yet.');
-      return '<ul class="pv-list">' + list.map((lp) =>
-        '<li><span class="pv-list-name">' + esc(describeLoyalty(lp)) + '</span>' +
-        '<span class="pv-list-meta">' + esc(lp.accountNumber) + '</span></li>').join('') + '</ul>';
-    },
-    edit: (p) => loyaltyEditor(readLoyaltyPrograms({ loyalty_programs: p.loyalty_programs })),
-    collect: (v, scope) => ({ loyalty_programs: readLoyaltyEditor(scope.querySelector('[data-loy-list]')) }),
-  },
-
-  // The app keeps basic details, contact, document and loyalty on ONE screen
-  // behind its "My Profile" tile, so the website does too. The four parts stay
-  // separate definitions above — this composes them, and one Save writes the
-  // union of their columns.
+  // The app keeps basic details, contact and document on ONE screen behind its
+  // "My Profile" tile, so the website does too. The parts stay separate
+  // definitions above — this composes them, and one Save writes the union of
+  // their columns.
   profile: {
     title: 'Profile',
     blurb: 'Your own details, the way an airline needs them.',
@@ -580,7 +662,10 @@ const SECTIONS = {
 };
 
 /** The four the app shows together on its own Profile screen. */
-const PROFILE_PARTS = ['basic', 'contact', 'document', 'loyalty'];
+// Loyalty used to be the fourth part. It lives on Preferences now, with the
+// airlines and hotel brands it biases, rather than under passports and
+// addresses — same move the app made.
+const PROFILE_PARTS = ['basic', 'contact', 'document'];
 
 // ── The menu ────────────────────────────────────────────────────────
 // The same list the app's profile screen shows, in the same order, because
@@ -603,13 +688,24 @@ const MENU = [
     ],
   },
   {
-    label: 'Preferences',
+    // "Settings", not "Preferences" — it holds a row called Preferences, and a
+    // group repeating a row's own name reads as an echo.
+    label: 'Settings',
     rows: [
-      { key: 'flight', icon: 'tuning', title: 'Flight Preferences',
+      { key: 'flight', icon: 'tuning', title: 'Preferences',
         sub: (p) => {
           const fp = p.flight_prefs || {};
-          const bits = [fp.nearestAirport, labelOf(SEAT_CLASSES, fp.seatClass), labelOf(STOP_PREFS, fp.stopCount)]
-            .filter(Boolean);
+          const airlines = Array.isArray(fp.preferredAirlines) ? fp.preferredAirlines : [];
+          // Counts the saved memberships too: rewards live on this screen now,
+          // so someone with only those would otherwise read "Not set yet".
+          const rewards = readLoyaltyPrograms({ loyalty_programs: p.loyalty_programs })
+            .filter((lp) => lp.code && lp.accountNumber).length;
+          const bits = [
+            fp.nearestAirport,
+            airlines.length ? plural(airlines.length, 'airline') : '',
+            labelOf(BUDGET_FLEX, fp.budgetFlexibility),
+            rewards ? plural(rewards, 'rewards program') : '',
+          ].filter(Boolean);
           return bits.length ? bits.join(' · ') : 'Not set yet';
         } },
       { key: 'vibes', icon: 'compass', title: 'My Vibes',
@@ -913,7 +1009,15 @@ export async function initProfileForm(supabase, user, opts = {}) {
 
     const addLoy = e.target.closest('[data-add-loy]');
     if (addLoy) {
-      addLoy.previousElementSibling.insertAdjacentHTML('beforeend', loyaltyRow({ id: uid(), type: 'airline' }));
+      // The button sits in its group's head; the list is that group's own.
+      // A traveller card still has a single unlabelled list, so fall back to
+      // the sibling list there.
+      const type = addLoy.dataset.addLoy || 'airline';
+      const group = addLoy.closest('.loy-group');
+      const list = group
+        ? group.querySelector('[data-loy-list]')
+        : addLoy.previousElementSibling;
+      if (list) list.insertAdjacentHTML('beforeend', loyaltyRow({ id: uid(), type }));
       return;
     }
     const rmLoy = e.target.closest('[data-remove-loy]');

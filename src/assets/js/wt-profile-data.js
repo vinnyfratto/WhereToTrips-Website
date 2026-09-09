@@ -1072,19 +1072,9 @@ export const DOC_TYPES = [
   { value: 'identity_card', label: 'ID Card' },
 ];
 
-export const SEAT_CLASSES = [
-  { value: 'economy', label: 'Economy' },
-  { value: 'economy_plus', label: 'Economy Plus' },
-  { value: 'premium_economy', label: 'Premium Economy' },
-  { value: 'business', label: 'Business' },
-  { value: 'first', label: 'First' },
-];
-
-export const STOP_PREFS = [
-  { value: 'nonstop', label: 'Nonstop only' },
-  { value: '1_layover', label: 'Up to 1 layover' },
-  { value: '2_layovers', label: 'Up to 2 layovers' },
-];
+// SEAT_CLASSES and STOP_PREFS lived here. Both left FlightPreferences in the
+// app: stop count could only ever agree with the flight picker, which already
+// prefers fewer stops, and seat class never changed which flights came back.
 
 export const BUDGET_FLEX = [
   { value: 'none', label: 'Stick to my budget' },
@@ -1291,43 +1281,53 @@ export const AIRLINES = [
 export const HOTEL_LOYALTY = [
   {
     "code": "marriott_bonvoy",
-    "name": "Marriott Bonvoy"
+    "name": "Marriott Bonvoy",
+    "monogram": "MB"
   },
   {
     "code": "hilton_honors",
-    "name": "Hilton Honors"
+    "name": "Hilton Honors",
+    "monogram": "HH"
   },
   {
     "code": "world_of_hyatt",
-    "name": "World of Hyatt"
+    "name": "World of Hyatt",
+    "monogram": "WH"
   },
   {
     "code": "ihg_one_rewards",
-    "name": "IHG One Rewards"
+    "name": "IHG One Rewards",
+    "monogram": "IHG"
   },
   {
     "code": "wyndham_rewards",
-    "name": "Wyndham Rewards"
+    "name": "Wyndham Rewards",
+    "monogram": "WR"
   },
   {
     "code": "choice_privileges",
-    "name": "Choice Privileges"
+    "name": "Choice Privileges",
+    "monogram": "CP"
   },
   {
     "code": "accor_live_limitless",
-    "name": "Accor Live Limitless"
+    "name": "Accor Live Limitless",
+    "monogram": "ALL"
   },
   {
     "code": "best_western_rewards",
-    "name": "Best Western Rewards"
+    "name": "Best Western Rewards",
+    "monogram": "BW"
   },
   {
     "code": "radisson_rewards",
-    "name": "Radisson Rewards"
+    "name": "Radisson Rewards",
+    "monogram": "RR"
   },
   {
     "code": "other",
-    "name": "Other"
+    "name": "Other",
+    "monogram": ""
   }
 ];
 

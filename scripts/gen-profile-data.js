@@ -26,7 +26,10 @@ const COUNTRIES = eval(arrayLiteral(countriesSrc, 'export const COUNTRIES'));
 
 const loyaltySrc = fs.readFileSync(APP + '/hotelLoyaltyPrograms.ts', 'utf8');
 const HOTEL = eval(arrayLiteral(loyaltySrc, 'export const HOTEL_LOYALTY_PROGRAMS'))
-  .map((p) => ({ code: p.code, name: p.name })); // matchKeywords are app-side only
+  // matchKeywords are app-side only. monogram comes along because the website
+  // shows the same saved-membership row, and falls back to the same mark when
+  // a programme has no bundled wordmark.
+  .map((p) => ({ code: p.code, name: p.name, monogram: p.monogram || '' }));
 
 const airlinesSrc = fs.readFileSync(APP + '/airlines.ts', 'utf8');
 const AIRLINES = eval(arrayLiteral(airlinesSrc, 'export const AIRLINES: Airline[]'));
@@ -77,19 +80,9 @@ export const DOC_TYPES = [
   { value: 'identity_card', label: 'ID Card' },
 ];
 
-export const SEAT_CLASSES = [
-  { value: 'economy', label: 'Economy' },
-  { value: 'economy_plus', label: 'Economy Plus' },
-  { value: 'premium_economy', label: 'Premium Economy' },
-  { value: 'business', label: 'Business' },
-  { value: 'first', label: 'First' },
-];
-
-export const STOP_PREFS = [
-  { value: 'nonstop', label: 'Nonstop only' },
-  { value: '1_layover', label: 'Up to 1 layover' },
-  { value: '2_layovers', label: 'Up to 2 layovers' },
-];
+// SEAT_CLASSES and STOP_PREFS lived here. Both left FlightPreferences in the
+// app: stop count could only ever agree with the flight picker, which already
+// prefers fewer stops, and seat class never changed which flights came back.
 
 export const BUDGET_FLEX = [
   { value: 'none', label: 'Stick to my budget' },

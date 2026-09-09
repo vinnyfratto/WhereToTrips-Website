@@ -788,10 +788,15 @@
 
 /* ── Grouped rows — no cards, hairline separators ── */
 .ph-group { margin-bottom: 30px; }
+/* Amber and centred, so each group reads as a divider between the rows rather
+   than as another line of charcoal text among them — same change the app's
+   ProfileHome carries. --amber-deep, not --amber: at this size the bright one
+   washes out on the cream page. */
 .ph-group-label {
   font-family: var(--sans); font-weight: 700; font-size: 0.68rem;
-  letter-spacing: 1.6px; text-transform: uppercase; color: var(--navy);
-  margin: 0 0 4px 4px;
+  letter-spacing: 1.6px; text-transform: uppercase; color: var(--amber-deep);
+  text-align: center;
+  margin: 0 0 8px;
 }
 .ph-row {
   display: flex; align-items: center; gap: 14px; width: 100%;
@@ -983,13 +988,49 @@ button.vibe-chip:hover { border-color: var(--rust); }
 /* Repeatable rows — loyalty programs */
 .loy-list { display: flex; flex-direction: column; gap: 8px; }
 .loy-row {
-  display: grid; grid-template-columns: 110px 1fr 1fr 1fr auto; gap: 12px; align-items: end;
+  display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 12px; align-items: end;
   padding: 14px; border: 1px solid var(--wg200); border-radius: var(--radius-sm); background: var(--wg100);
 }
 .loy-row .field { margin-bottom: 0; }
 .loy-row .btn { width: auto; margin: 0 0 2px; }
 @media (max-width: 1100px) { .loy-row { grid-template-columns: 1fr 1fr; } .loy-row .btn { grid-column: 1 / -1; } }
 @media (max-width: 520px) { .loy-row { grid-template-columns: 1fr; } }
+
+/* Two headed groups, Flight Rewards and Hotel Rewards, each with its own Add —
+   the app's LoyaltyEditor. The group IS the type, so no row carries a type
+   select any more. */
+.loy-groups { display: flex; flex-direction: column; gap: 8px; }
+.loy-group-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.loy-group-head .pv-sub-head { margin-bottom: 12px; }
+.loy-group-head .pv-link-btn { padding: 0 0 12px; }
+
+/* A saved membership, read-only: the mark, then the programme and number.
+   Not the fields that produced it. */
+.loy-saved-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.loy-saved {
+  display: flex; align-items: center; gap: 14px;
+  padding: 10px 14px; border: 1px solid var(--wg200);
+  border-radius: var(--radius-sm); background: #fff;
+}
+.loy-saved-text { display: flex; flex-direction: column; min-width: 0; }
+.loy-saved-name { font-family: var(--sans); font-weight: 600; font-size: 0.92rem; color: var(--navy); }
+.loy-saved-num  { font-family: var(--sans); font-size: 0.8rem; color: var(--ink-soft); }
+
+/* The mark. Hotel programmes are landscape WORDMARKS (intrinsic ratios run
+   2.3 to 4.9), so their slot is wide and short and the artwork is contained
+   inside it, left-aligned, at its own shape — never squared off. Airlines are
+   roundels and tail fins, so theirs is near-square. No box behind real
+   artwork; only the monogram fallback needs a shape of its own. */
+.loy-mark { flex: 0 0 auto; display: flex; align-items: center; justify-content: flex-start; }
+.loy-mark img { max-width: 100%; max-height: 100%; object-fit: contain; object-position: left center; }
+.loy-mark-hotel { width: 84px; height: 26px; }
+.loy-mark-air   { width: 34px; height: 30px; }
+.loy-mono {
+  width: 34px; height: 30px; justify-content: center;
+  border: 1px solid var(--wg200); border-radius: 6px; background: var(--wg100);
+  font-family: var(--sans); font-weight: 600; font-size: 0.72rem;
+  letter-spacing: 0.5px; color: var(--navy);
+}
 
 /* Saved travellers — one disclosure per person, so a long list stays
    scannable and only the one being edited is open. */
