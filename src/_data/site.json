@@ -62,14 +62,6 @@
         {
           "label": "Explore",
           "href": "/whereto/explore/"
-        },
-        {
-          "label": "Chat",
-          "href": "/whereto/chat/"
-        },
-        {
-          "label": "Direct",
-          "href": "/whereto/direct/"
         }
       ]
     },
@@ -78,16 +70,8 @@
       "href": "/wander/",
       "children": [
         {
-          "label": "Wander",
-          "href": "/wander/"
-        },
-        {
           "label": "Wander Together",
           "href": "/wander/together/"
-        },
-        {
-          "label": "Wander as a Group",
-          "href": "/wander/as-a-group/"
         }
       ]
     }
@@ -211,7 +195,7 @@
     }
   ],
   "analytics": {
-    "posthogKey": "phc_kFkCtGbaD92SVz895WwsRCr2gFn9ip6hqiR4X67EqkqL",
-    "posthogHost": "https://us.i.posthog.com"
+    "posthogHost": "https://us.i.posthog.com",
+    "posthogKey": "phc_kFkCtGbaD92SVz895WwsRCr2gFn9ip6hqiR4X67EqkqL"
   }
 }
