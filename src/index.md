@@ -35,10 +35,10 @@ sections:
         title: You first
         text: You drive the details of the trip, not the other way around.
       - icon: compass
-        title: 11,000+ Vibes
+        title: 12,000+ Vibes
         text: We'll match your vibes to real destinations worldwide.
       - icon: plane
-        title: All major airlines
+        title: 900+ Destinations
         text: Book flights on all major airlines and all major hotels
       - icon: users-group-rounded
         title: Group travel
@@ -51,7 +51,7 @@ sections:
       pre: Scheduled to launch
       accent: October 2026
       post: ''
-    lede: It's about time the travel app industry got disrupted buy someone with the traveler's best interests.
+    lede: It's about time the travel app industry got disrupted by someone with the traveler's best interests.
     image:
       src: /media/oniPhone_2.png
       alt: Aerial view of a turquoise lagoon surrounded by white sand
