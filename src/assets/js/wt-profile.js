@@ -330,7 +330,7 @@ function travellerCard(t, open) {
       row('<div class="field"><label>Nationality</label><select data-f="nationality">' + countryOpts(t.nationality) + '</select></div>' +
           '<div class="field"><label>Document</label><select data-f="document_type">' + opts(DOC_TYPES, t.document_type) + '</select></div>') +
       row('<div class="field"><label>Document number</label><input data-f="document_number" type="text" value="' + esc(t.document_number || '') + '" /></div>' +
-          '<div class="field"><label>Expires</label><input data-f="document_expiry" type="date" value="' + esc(t.document_expiry || '') + '" /></div>') +
+          '<div class="field"><label>Expiration Date</label><input data-f="document_expiry" type="date" value="' + esc(t.document_expiry || '') + '" /></div>') +
       row('<div class="field"><label>Issuing country</label><select data-f="document_issuing_country">' + countryOpts(t.document_issuing_country) + '</select></div>' +
           '<div class="field"><label>Known Traveller number <span class="hint">(9 characters)</span></label>' +
           '<input data-f="known_traveller_number" type="text" maxlength="9" value="' + esc(t.known_traveller_number || '') + '" /></div>') +
@@ -462,7 +462,7 @@ const SECTIONS = {
       const td = p.travel_document || {};
       return readGrid([
         { label: 'Document', value: td.number ? labelOf(DOC_TYPES, td.type) + ' · ' + td.number : '' },
-        { label: 'Expires', value: fmtDate(td.expiry) },
+        { label: 'Expiration Date', value: fmtDate(td.expiry) },
         { label: 'Issuing country', value: COUNTRY_NAME[td.issuingCountry] || td.issuingCountry },
         { label: 'Known Traveller number', value: p.known_traveller_number },
         { label: 'Redress number', value: p.redress_number },
@@ -473,7 +473,7 @@ const SECTIONS = {
       return row(selectField('td_type', 'Document', DOC_TYPES, { value: td.type, blank: '—' }) +
                  textField('td_number', 'Document number', { value: td.number })) +
         row(selectField('td_issuingCountry', 'Issuing country', countryOptions, { value: td.issuingCountry, blank: '—' }) +
-            textField('td_expiry', 'Expires', { value: td.expiry, type: 'date' })) +
+            textField('td_expiry', 'Expiration Date', { value: td.expiry, type: 'date' })) +
         row(textField('known_traveller_number', 'Known Traveller number', {
               value: p.known_traveller_number, hint: '(TSA PreCheck / Global Entry, 9 characters)', maxlength: 9 }) +
             textField('redress_number', 'Redress number', { value: p.redress_number, hint: '(optional)' }));
