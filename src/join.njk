@@ -1,0 +1,78 @@
+---
+layout: layouts/base.njk
+title: "You're invited to a trip on WhereTo"
+description: "Tap to open the trip in the WhereTo app and plan it together."
+permalink: /join/
+eleventyExcludeFromCollections: true
+noindex: true
+---
+{#
+  Wander Together invite links land here: /join/?g=CODE (a group trip) or
+  /join/?t=CODE (a Together match trip). The app shares this address in its
+  invite texts and the invite email's button, so it has to read well in a
+  message preview and hand straight off to the app.
+
+  Replaces vinnyfratto.github.io/Wander_App/..., which stopped existing when
+  that repo went private: every invite link had been a GitHub "Site not found".
+
+  The code is read in the browser and never sent anywhere. The app route is
+  whereto:///group/CODE or whereto:///together/CODE, same as before.
+#}
+<link rel="stylesheet" href="/assets/account.css?v={{ buildTime }}" />
+<style>
+  .join-code {
+    display: inline-block; margin: 6px 0 26px; padding: 10px 18px;
+    border-radius: 10px; background: var(--wg100, #F2F4F6);
+    font-family: var(--mono, ui-monospace, monospace); font-size: 1.25rem;
+    letter-spacing: 3px; color: var(--navy);
+  }
+  .join-actions { display: flex; flex-direction: column; gap: 12px; }
+  .join-actions .btn { width: 100%; text-align: center; }
+  .join-note { color: var(--wg600); font-size: .95rem; margin: 22px 0 0; }
+  .join-stores { margin-top: 8px; font-size: .95rem; }
+  .join-stores a { color: var(--rust); font-weight: 600; }
+</style>
+
+<main class="acct">
+  <div class="acct-card" style="text-align:center;">
+    <div id="join-invite">
+      <p class="eyebrow">Wander Together</p>
+      <h1>You're invited to a trip</h1>
+      <p class="acct-sub">Open it in the WhereTo app to see the plan, vote on destinations and pick who's paying.</p>
+      <div class="join-code" id="join-code"></div>
+      <div class="join-actions">
+        <a class="btn btn-primary" id="join-open" href="#">Open in WhereTo</a>
+      </div>
+      <p class="join-note">Don't have the app yet? Install it, then tap your invite link again.</p>
+      <p class="join-stores">
+        <a href="https://play.google.com/store/apps/details?id=com.vcinnovationsgroup.whereto">Get it on Google Play</a>
+        <span style="color:var(--wg400);padding:0 8px;">|</span>
+        <span>App Store coming soon</span>
+      </p>
+    </div>
+
+    <div id="join-missing" style="display:none;">
+      <p class="eyebrow">Wander Together</p>
+      <h1>That invite link is incomplete</h1>
+      <p class="acct-sub">Ask the person who invited you to send the link again.</p>
+    </div>
+  </div>
+</main>
+
+<script>
+  (function () {
+    var params = new URLSearchParams(window.location.search);
+    var route  = params.get('g') ? 'group' : params.get('t') ? 'together' : '';
+    var code   = (params.get('g') || params.get('t') || '').replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+    if (!route || !code) {
+      document.getElementById('join-invite').style.display = 'none';
+      document.getElementById('join-missing').style.display = 'block';
+      return;
+    }
+    document.getElementById('join-code').textContent = code;
+    var deepLink = 'whereto:///' + route + '/' + code;
+    document.getElementById('join-open').href = deepLink;
+    // Try the app straight away; the page stays as the fallback if it isn't installed.
+    setTimeout(function () { window.location.href = deepLink; }, 600);
+  })();
+</script>

@@ -1,0 +1,25 @@
+---
+permalink: /auth/callback/index.html
+eleventyExcludeFromCollections: true
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Opening WhereTo</title>
+</head>
+<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;text-align:center;margin-top:48px;color:#313131;">
+  <p>Opening WhereTo...</p>
+  <p style="font-size:14px;color:#5C616A;">If nothing happens, open the WhereTo app on this phone.</p>
+  <script>
+    // Relay for links Supabase emails the APP (password reset). Supabase can
+    // only redirect to https, so it lands here and every query param and hash
+    // is handed to the app's own scheme, where app/auth/callback.tsx finishes
+    // the sign-in. Was vinnyfratto.github.io/Wander_App/auth/callback, which no
+    // longer exists.
+    window.location.replace('whereto://auth/callback' + window.location.search + window.location.hash);
+  </script>
+</body>
+</html>
