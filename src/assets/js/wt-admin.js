@@ -327,9 +327,10 @@ async function saveAffiliate(id) {
 // ── Commissions ─────────────────────────────────────────────────────
 const COMMISSION_STATUSES = ['none', 'pending', 'approved', 'paid', 'reversed', 'rejected'];
 const COM_COLS = [
-  { key: 'booking',    label: 'Booking',        val: (c) => (c.booking_reference || c.id || '').toLowerCase() },
+  { key: 'booking',    label: 'Booking',        val: (c) => (c.reference || c.id || '').toLowerCase() },
+  { key: 'kind',       label: 'Type',           val: (c) => c.booking_kind || '' },
   { key: 'affiliate',  label: 'Affiliate',      val: (c) => (affName(c) || '~~~').toLowerCase() },
-  { key: 'amount',     label: 'Booking amount', num: true, val: (c) => Number(c.total_amount || 0) },
+  { key: 'amount',     label: 'Booking amount', num: true, val: (c) => Number(c.booking_total || 0) },
   { key: 'commission', label: 'Commission',     num: true, val: (c) => Number(c.commission_amount || 0) },
   { key: 'status',     label: 'Status',         val: (c) => c.commission_status || '' },
   { key: 'date',       label: 'Date',           val: (c) => c.created_at || '' },
@@ -378,7 +379,7 @@ async function fetchCommissions() {
 function renderCommissionsTable() {
   const affOpts = affiliateCache.map((a) => `<option value="${a.id}">${esc(a.display_name || a.code)} (${esc(a.code)})</option>`).join('');
 
-  const col = COM_COLS.find((c) => c.key === comSort.key) || COM_COLS[5];
+  const col = COM_COLS.find((c) => c.key === comSort.key) || COM_COLS[COM_COLS.length - 1];
   const sorted = [...comData].sort((a, b) => {
     const av = col.val(a), bv = col.val(b);
     const r = col.num ? (av - bv) : (av < bv ? -1 : av > bv ? 1 : 0);
@@ -397,9 +398,10 @@ function renderCommissionsTable() {
          <button class="btn btn-ghost btn-xs" data-assign="${c.id}">Assign</button>`;
     const statusCell = `<select data-status="${c.id}">${COMMISSION_STATUSES.map((s) => `<option value="${s}" ${s === c.commission_status ? 'selected' : ''}>${s}</option>`).join('')}</select>`;
     const main = `<tr>
-      <td><a href="#" data-book="${c.id}">${esc(c.booking_reference || c.id.slice(0, 8))}</a></td>
+      <td><a href="#" data-book="${c.id}">${esc(c.reference || c.id.slice(0, 8))}</a></td>
+      <td>${esc(c.booking_kind || '—')}</td>
       <td>${affCell}</td>
-      <td class="num">${c.total_amount != null ? money(c.total_amount, c.total_currency) : '—'}</td>
+      <td class="num">${c.booking_total != null ? money(c.booking_total, c.booking_currency) : '—'}</td>
       <td class="num">${c.commission_amount != null ? money(c.commission_amount, c.commission_currency) : '—'}</td>
       <td>${statusCell}</td>
       <td>${date(c.created_at)}</td></tr>`;
@@ -409,14 +411,17 @@ function renderCommissionsTable() {
       const commLine = (aff && aff.commissions)
         ? `<br><span style="display:inline-block;margin-top:8px;">Affiliate commission — ${COMMISSION_CATS.map(([k, l]) => `${l}: <strong>${rateLabel(aff.commissions[k])}</strong>`).join(' &nbsp;·&nbsp; ')} &nbsp;·&nbsp; Duration: <strong>${aff.commission_duration_months || 36} months</strong>${aff.source ? ` &nbsp;·&nbsp; Source: <strong>${esc(aff.source)}</strong>` : ''}</span>`
         : '';
-      detail = `<tr class="adm-detail"><td colspan="6">
-        <strong>${esc(c.origin || '?')} → ${esc(c.destination || '?')}</strong>
-        &nbsp;·&nbsp; Depart ${c.departing_at ? date(c.departing_at) : '—'}
-        &nbsp;·&nbsp; ${c.passenger_count || 1} pax
-        &nbsp;·&nbsp; Order status: ${esc(c.status || '—')}
-        &nbsp;·&nbsp; Ref: ${esc(c.booking_reference || '—')}
-        &nbsp;·&nbsp; Total: ${money(c.total_amount, c.total_currency)}
-        &nbsp;·&nbsp; Order ID: ${esc(c.id)}
+      detail = `<tr class="adm-detail"><td colspan="7">
+        <strong>${esc(c.title || '?')}</strong>
+        ${c.where_ ? `&nbsp;·&nbsp; ${esc(c.where_)}` : ''}
+        &nbsp;·&nbsp; ${c.starts_on ? date(c.starts_on) : '—'}${c.ends_on ? ` to ${date(c.ends_on)}` : ''}
+        &nbsp;·&nbsp; Booking status: ${esc(c.booking_status || '—')}
+        &nbsp;·&nbsp; Ref: ${esc(c.reference || '—')}
+        &nbsp;·&nbsp; Total: ${money(c.booking_total, c.booking_currency)}
+        ${c.commission_hold_until ? `&nbsp;·&nbsp; Held until ${date(c.commission_hold_until)}` : ''}
+        ${c.note ? `&nbsp;·&nbsp; ${esc(c.note)}` : ''}
+        &nbsp;·&nbsp; Commission ID: ${esc(c.id)}
+        &nbsp;·&nbsp; ${esc(c.booking_kind || '')} order: ${esc(c.booking_id || '—')}
         ${commLine}
       </td></tr>`;
     }
@@ -425,7 +430,7 @@ function renderCommissionsTable() {
 
   $('#com-list').innerHTML = `<table class="adm-table">
     <thead><tr>${head}</tr></thead>
-    <tbody>${body || '<tr><td colspan="6">No orders.</td></tr>'}</tbody></table>`;
+    <tbody>${body || '<tr><td colspan="7">No bookings.</td></tr>'}</tbody></table>`;
 
   // Sort by column header.
   $('#com-list').querySelectorAll('th[data-sort]').forEach((th) => {
@@ -452,7 +457,7 @@ function renderCommissionsTable() {
     b.addEventListener('click', async () => {
       const sel = $(`[data-assign-sel="${b.dataset.assign}"]`);
       if (!sel || !sel.value) { msg('error', 'Pick an affiliate first.'); return; }
-      const r2 = await callAdmin('assign_affiliate', { order_id: b.dataset.assign, affiliate_id: sel.value });
+      const r2 = await callAdmin('assign_affiliate', { commission_id: b.dataset.assign, affiliate_id: sel.value });
       if (!r2.ok) { msg('error', 'Assign failed: ' + r2.error); return; }
       msg('success', 'Affiliate assigned + commission calculated.');
       fetchCommissions();
@@ -462,7 +467,7 @@ function renderCommissionsTable() {
   // Status dropdown — set directly (admin override / testing).
   $('#com-list').querySelectorAll('[data-status]').forEach((sel) => {
     sel.addEventListener('change', async () => {
-      const r2 = await callAdmin('set_commission_status', { order_id: sel.dataset.status, status: sel.value });
+      const r2 = await callAdmin('set_commission_status', { commission_id: sel.dataset.status, status: sel.value });
       if (!r2.ok) { msg('error', 'Failed: ' + r2.error); fetchCommissions(); return; }
       // keep the local row in sync so re-sorts/re-renders reflect it
       const row = comData.find((c) => c.id === sel.dataset.status);
