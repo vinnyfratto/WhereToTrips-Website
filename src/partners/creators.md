@@ -20,6 +20,20 @@ sections:
       alt: A travel creator at work
       transparent: false
     badge: null
+  - type: contact_form
+    eyebrow: Become a creator partner
+    title:
+      pre: Let's make something
+      accent: together
+      post: .
+    id: apply
+    background: true
+    body: Tell us about your audience and what you cover. We'll be in touch about partnering.
+    subject: Creator partner application — WhereTo
+    intent: creator_partner
+    buttonLabel: Apply to become a partner
+    company: true
+    placeholder: Your channels, audience size, and what you cover…
   - type: feature_split
     eyebrow: Why partner with WhereTo
     title:
@@ -39,66 +53,4 @@ sections:
     stats: []
     features: []
     cta: null
-  - type: tile_grid
-    eyebrow: What you get
-    title:
-      pre: Built for
-      accent: creators
-      post: .
-    id: ''
-    background: false
-    center: false
-    intro: ''
-    columns: 3
-    tiles:
-      - label: Affiliate revenue
-        blurb: Earn on the trips your audience books through WhereTo.
-        icon: 💰
-        image: ''
-        imageTransparent: false
-        href: ''
-      - label: Co-branded collections
-        blurb: Curate destination collections under your name.
-        icon: 🗂️
-        image: ''
-        imageTransparent: false
-        href: ''
-      - label: Featured profiles
-        blurb: A spot in the WhereTo creator directory as social proof.
-        icon: ⭐
-        image: ''
-        imageTransparent: false
-        href: ''
-      - label: Audience tools
-        blurb: Engagement tools and links built for travel creators.
-        icon: 📊
-        image: ''
-        imageTransparent: false
-        href: ''
-      - label: Early access
-        blurb: First look at new features before anyone else.
-        icon: 🚀
-        image: ''
-        imageTransparent: false
-        href: ''
-      - label: Real support
-        blurb: A partner team that actually answers.
-        icon: 🤝
-        image: ''
-        imageTransparent: false
-        href: ''
-  - type: contact_form
-    eyebrow: Become a creator partner
-    title:
-      pre: Let's make something
-      accent: together
-      post: .
-    id: apply
-    background: true
-    body: Tell us about your audience and what you cover. We'll be in touch about partnering.
-    subject: Creator partner application — WhereTo
-    intent: creator_partner
-    buttonLabel: Apply to become a partner
-    company: true
-    placeholder: Your channels, audience size, and what you cover…
 ---
