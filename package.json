@@ -1,6 +1,6 @@
 {
   "name": "wheretotrips-website",
-  "version": "1.22.1",
+  "version": "1.23.0",
   "description": "Marketing site for the WhereToTrips / Wander app",
   "scripts": {
     "build": "eleventy",

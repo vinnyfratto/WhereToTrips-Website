@@ -92,7 +92,7 @@ function switchTab(name) {
   document.querySelectorAll('.adm-panel').forEach((p) => { p.hidden = p.dataset.panel !== name; });
   if (!loaded[name]) {
     loaded[name] = true;
-    ({ invites: loadInvites, affiliates: loadAffiliates, content: loadContent, commissions: loadCommissions, payouts: loadPayouts }[name] || (() => {}))();
+    ({ applications: loadApplications, invites: loadInvites, affiliates: loadAffiliates, content: loadContent, commissions: loadCommissions, payouts: loadPayouts }[name] || (() => {}))();
   }
 }
 
@@ -129,6 +129,88 @@ function renderOverview(d) {
         <tbody>${rows || '<tr><td colspan="6">No affiliates yet.</td></tr>'}</tbody>
       </table></div>
     </div>`;
+}
+
+// ── Applications ────────────────────────────────────────────────────
+// Step 1 of the funnel, sitting in front of Invites so the tabs read in
+// the order the work happens. These also appear on /admin-submissions
+// with every other contact form, but that page can't act on one — and
+// the action an application needs is two tabs away, not two pages away.
+const APP_STATE_LABEL = { new: 'Needs review', invited: 'Invited', joined: 'Joined', expired: 'Invite expired' };
+// Amber is reserved for "this one needs you". An already-invited
+// applicant is waiting on THEM, so it goes grey - both states were
+// amber at first and the two were indistinguishable in the row.
+const APP_STATE_PILL  = { new: 'pending', invited: 'used', joined: 'approved', expired: 'expired' };
+
+async function loadApplications() {
+  panel('applications').innerHTML = `
+    <div class="adm-card">
+      <h3>Partner applications</h3>
+      <p class="acct-sub">Creators who applied through the site. "Invite" carries their name and email into the invite form — check the rates, then create it.</p>
+      <div id="app-list" class="adm-wrap-scroll">Loading…</div>
+    </div>`;
+  renderApplications();
+}
+
+async function renderApplications() {
+  const list = $('#app-list');
+  list.textContent = 'Loading…';
+  const r = await callAdmin('list_applications');
+  if (!r.ok) { list.innerHTML = '<p class="acct-sub">Could not load applications (' + esc(r.error || 'error') + ').</p>'; return; }
+
+  const rows = (r.rows || []).map((a) => `
+    <tr>
+      <td>${esc(a.name || '—')}</td>
+      <td>${esc(a.email || '—')}</td>
+      <td>${a.affiliate_code ? esc(a.affiliate_code) : esc(a.company || '—')}</td>
+      <td><span class="adm-pill ${APP_STATE_PILL[a.state] || 'pending'}">${esc(APP_STATE_LABEL[a.state] || a.state)}</span></td>
+      <td>${date(a.created_at)}</td>
+      <td>${a.message ? `<button class="btn btn-ghost btn-xs" data-app-note="${esc(a.id)}">Read</button>` : ''}</td>
+      <td>${a.email && a.state !== 'joined'
+        ? `<button class="btn btn-primary btn-xs" data-app-invite="${esc(a.id)}">${a.state === 'new' ? 'Invite' : 'Invite again'}</button>`
+        : ''}</td>
+    </tr>
+    ${a.message ? `<tr class="app-note" id="app-note-${esc(a.id)}" hidden><td colspan="7"><p class="acct-sub" style="white-space:pre-wrap; margin:0;">${esc(a.message)}</p></td></tr>` : ''}`).join('');
+
+  list.innerHTML = `<table class="adm-table">
+    <thead><tr><th>Name</th><th>Email</th><th>Company / Code</th><th>State</th><th>Applied</th><th></th><th></th></tr></thead>
+    <tbody>${rows || '<tr><td colspan="7">No applications yet.</td></tr>'}</tbody></table>`;
+
+  list.querySelectorAll('[data-app-note]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const row = $('#app-note-' + btn.dataset.appNote);
+      if (row) { row.hidden = !row.hidden; btn.textContent = row.hidden ? 'Read' : 'Hide'; }
+    });
+  });
+
+  list.querySelectorAll('[data-app-invite]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const app = (r.rows || []).find((x) => x.id === btn.dataset.appInvite);
+      if (app) inviteFromApplication(app);
+    });
+  });
+}
+
+// Hand the applicant over to the invite form rather than minting an
+// invite straight from here: the rates are a per-creator negotiation and
+// must not default themselves away behind a single click.
+async function inviteFromApplication(app) {
+  // Build the panel BEFORE switching: switchTab fires its loader without
+  // awaiting it, so switching first would leave us reaching for a form
+  // that isn't in the DOM yet. Marking it loaded keeps switchTab from
+  // rendering it a second time on top of the values we just filled in.
+  if (!loaded.invites) { loaded.invites = true; await loadInvites(); }
+  switchTab('invites');
+
+  const form = $('#inv-form');
+  if (!form) return;
+  if (form.elements.email) form.elements.email.value = app.email || '';
+  if (form.elements.intended_name) form.elements.intended_name.value = app.name || '';
+  // `source` is a fixed select of named programs, so it's left alone —
+  // assigning a value it has no option for sets it to nothing at all.
+  form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  (form.elements.flight_rate || form.elements.email)?.focus();
+  msg('success', 'Carried ' + (app.name || app.email) + ' over — set the rates, then create the invite.');
 }
 
 // ── Invites ─────────────────────────────────────────────────────────
