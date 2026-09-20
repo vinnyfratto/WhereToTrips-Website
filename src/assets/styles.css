@@ -925,24 +925,6 @@ footer { background: var(--footer); padding: 72px 0 40px; }
   color: var(--amber);
 }
 
-/* ── Gateway roundel (top-right) — the app's dashed azure badge ───── */
-.dest-roundel {
-  position: absolute;
-  top: 20px; right: 20px;
-  width: 38px; height: 38px;
-  display: grid; place-items: center;
-  border-radius: 50%;
-  background: var(--azure);
-  color: #fff;
-  font-family: var(--sans);
-  font-size: 11px; font-weight: 700; letter-spacing: .5px;
-}
-.dest-roundel::after {
-  content: '';
-  position: absolute; inset: 0;
-  border-radius: 50%;
-  border: 1.5px dashed #fff;
-}
 
 /* ── Flat-azure name banner ───────────────────────────────────────── */
 .dest-banner {
@@ -998,27 +980,18 @@ footer { background: var(--footer); padding: 72px 0 40px; }
   color: var(--ink-muted);
 }
 
-/* ── Button stack (azure primary over amber secondary) ────────────── */
-.dest-cta {
+/* ── Action row ─────────────────────────────────
+   One CTA, and it is the site's own .btn .btn-primary — no card-local
+   button variant, so it hovers exactly like every other button on the
+   page instead of inventing its own state. */
+.dest-actions {
   display: flex;
-  align-items: center; justify-content: center;
-  gap: 6px;
-  margin: 0 20px;
-  padding: 14px;
-  border-radius: var(--radius-md);
-  background: var(--azure);
-  color: #fff;
-  font-weight: 600; font-size: 15px;
-  text-decoration: none;
-  transition: background .2s ease;
+  padding: 0 20px 22px;
 }
-.dest-cta:hover { background: var(--azure-press); color: #fff; }
-.dest-cta .ico { font-size: 17px; }
-.dest-cta-amber {
-  margin-top: 10px; margin-bottom: 20px;
-  background: var(--amber);
+.dest-actions .btn {
+  flex: 1;
+  justify-content: center;
 }
-.dest-cta-amber:hover { background: var(--amber-deep); }
 
 @media (max-width: 960px) {
   .dest-grid { grid-template-columns: repeat(2, 1fr); }

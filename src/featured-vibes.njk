@@ -12,7 +12,9 @@ eleventyComputed:
   description: "{{ v.city }}, {{ v.country }} scores {{ v.displayScore }} for {{ v.vibeLabel }} in the WhereTo Vibe Engine. The full guide, every vibe this destination matches, and when to go."
 layout: layouts/base.njk
 ---
-{%- set months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"] -%}
+{#- Real three-letter abbreviations. A `truncate` on the full name gives
+    "Janu"/"Marc", which is not how anyone writes a month. -#}
+{%- set months = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"] -%}
 
 {# ── Hero: the card, opened up ──────────────────────────────────── #}
 <section class="vibe-hero">
@@ -72,7 +74,7 @@ layout: layouts/base.njk
       <div class="vibe-fact">
         <span class="vibe-fact-label">Best window</span>
         <span class="vibe-fact-value">
-          {%- for m in v.blog.bestWindow -%}{{ months[m] | truncate(4, true, "") }}{% if not loop.last %} · {% endif %}{%- endfor -%}
+          {%- for m in v.blog.bestWindow -%}{{ months[m] }}{% if not loop.last %} · {% endif %}{%- endfor -%}
         </span>
       </div>
       {% endif %}

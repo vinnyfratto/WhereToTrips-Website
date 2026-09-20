@@ -47,10 +47,6 @@
             <span class="dest-stamp-num">{{ v.displayScore }}</span>
           </span>
 
-          {#- Gateway roundel — the app's dashed azure badge, carrying this
-              destination's own airport code instead of the map toggle. -#}
-          {% if v.iata %}<span class="dest-roundel">{{ v.iata }}</span>{% endif %}
-
           {#- Flat azure banner + drop-cap destination name -#}
           <span class="dest-banner">
             <span class="dest-banner-name">{{ v.city | upper }}</span>
@@ -66,10 +62,12 @@
           </p>
         </div>
 
-        <a class="dest-cta" href="{{ href }}">Discover {{ v.city }}</a>
-        <a class="dest-cta dest-cta-amber" href="{{ href }}#guide">
-          {% icon "book-2" %}<span>Read the Vibe Guide</span>
-        </a>
+        {#- The site's own primary button, not a card-local variant: one CTA
+            per card, and it hovers the way every other button on the page
+            hovers. -#}
+        <div class="dest-actions">
+          <a class="btn btn-primary" href="{{ href }}">Discover {{ v.city }}</a>
+        </div>
       </article>
       {% endif %}
       {% endfor %}
