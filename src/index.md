@@ -73,7 +73,7 @@ sections:
       accent: Destination
       post: out.
     lede: |-
-      When you want to go on a trip, you usually know WHAT you can spend, WHEN you can go, WHO's coming, and the VIBE you want.
+      When you want to go on a trip, you usually know WHAT you can spend, WHEN you can go, WHO's coming, and the VIBE you want.<br>
       WhereTo Tips is built on a Vibe Engine that it built to understand travelers wants. Make a few easy selections and inputs, then browse through destinations that all match your criteria. All scored based on what you want to do and how much you want to spend.
     id: how
     steps:
