@@ -51,7 +51,7 @@ sections:
       pre: Scheduled to launch
       accent: October 2026
       post: ''
-    lede: It's about time the travel app industry got disrupted by someone with the traveler's best interests.
+    lede: It's about time the travel app industry got disrupted by someone with the traveler's best interests in mind.
     image:
       src: /media/oniPhone_2.png
       alt: Aerial view of a turquoise lagoon surrounded by white sand
@@ -72,15 +72,17 @@ sections:
       pre: Budget in. Vibe in.
       accent: Destination
       post: out.
-    lede: You usually know four things — what you can spend, when you can go, who's coming, and the vibe you want. WhereTo turns those into where.
+    lede: |-
+      When you want to go on a trip, you usually know WHAT you can spend, WHEN you can go, WHO's coming, and the VIBE you want.
+      WhereTo Tips is built on a Vibe Engine that it built to understand travelers wants. Make a few easy selections and inputs, then browse through destinations that all match your criteria. All scored based on what you want to do and how much you want to spend.
     id: how
     steps:
       - title: Tell us what you know
-        body: Budget, dates, trip length, who's coming.
+        body: Budget, dates, and who's coming.
       - title: Pick your vibe
-        body: An engine built on hundreds of travel styles, not ten generic tags.
-      - title: Get a ranked shortlist
-        body: Real destinations, each with a plain-English reason why it fits.
+        body: Over 12,000 individual interests (we call vibes) are mapped and scored across over 900 global destinations.
+      - title: Your destinations
+        body: The Vibe Engine will match you with destinations that meet your vibes. All scored, ranked, and bookable.
   - type: collection_grid
     eyebrow: Featured Travel Vibes
     title:
