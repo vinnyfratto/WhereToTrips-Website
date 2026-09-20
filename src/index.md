@@ -200,6 +200,6 @@ sections:
       accent: waiting
       post: .
     id: download
-    body: Free to download. No subscription. Just better travel.
-    formLabel: ''
+    body: Launching October 2026 on iOS and Android
+    formLabel: Notify me on launch
 ---
