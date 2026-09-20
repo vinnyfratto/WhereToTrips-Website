@@ -30,6 +30,10 @@ function esc(s) {
 }
 function date(s) { return s ? new Date(s).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—'; }
 
+const STATUS_LABEL = {
+  pending: 'In review', approved: 'Approved', rejected: 'Not approved',
+};
+
 const PLATFORM_LABEL = {
   instagram: 'Instagram', tiktok: 'TikTok', youtube: 'YouTube',
   facebook: 'Facebook', twitter: 'X / Twitter', blog: 'Blog / Website', other: 'Other',
@@ -50,23 +54,49 @@ export async function initContentSubmissions(supabase) {
 
   function empty() { list.innerHTML = '<p class="acct-sub">No recent submissions.</p>'; }
 
+  // The Share link column is the reason this table exists now. A pending
+  // row says so rather than showing a blank cell, because "nothing there
+  // yet" and "something is broken" look identical otherwise.
+  function shareCell(r) {
+    if (r.status === 'approved' && r.content_code) {
+      const url = location.origin + '/c/' + r.content_code;
+      return `<a href="#" data-copy-link="${esc(url)}" title="Click to copy">${esc(url)}</a>`;
+    }
+    if (r.status === 'rejected') return '<span class="acct-sub">Not approved</span>';
+    return '<span class="acct-sub">Pending review</span>';
+  }
+
   function renderList(rows) {
     if (!rows.length) { empty(); return; }
     list.innerHTML = `<table class="adm-table">
-      <thead><tr><th>Platform</th><th>Link</th><th>Title</th><th>Submitted</th></tr></thead>
+      <thead><tr><th>Platform</th><th>Link</th><th>Title</th><th>Status</th><th>Share link</th><th>Submitted</th></tr></thead>
       <tbody>${rows.map((r) => `
         <tr>
           <td>${esc(PLATFORM_LABEL[r.platform] || r.platform)}</td>
           <td><a href="${esc(r.content_url)}" target="_blank" rel="noopener noreferrer">View</a></td>
           <td>${esc(r.title || '—')}</td>
+          <td>${esc(STATUS_LABEL[r.status] || 'In review')}</td>
+          <td>${shareCell(r)}</td>
           <td>${date(r.created_at)}</td>
         </tr>`).join('')}</tbody></table>`;
+
+    list.querySelectorAll('[data-copy-link]').forEach((el) => {
+      el.addEventListener('click', async (ev) => {
+        ev.preventDefault();
+        try {
+          await navigator.clipboard.writeText(el.getAttribute('data-copy-link'));
+          const old = el.textContent;
+          el.textContent = 'Copied!';
+          setTimeout(() => { el.textContent = old; }, 1200);
+        } catch (_e) { /* clipboard blocked — the link is still readable */ }
+      });
+    });
   }
 
   async function loadSubmissions() {
     const { data, error } = await supabase
       .from('affiliate_content_submissions')
-      .select('id, platform, content_url, title, notes, created_at')
+      .select('id, platform, content_url, title, notes, status, content_code, review_note, created_at')
       .order('created_at', { ascending: false })
       .limit(50);
     // A read failure reads the same as an empty list on purpose: a partner
