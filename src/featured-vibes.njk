@@ -1,0 +1,179 @@
+---
+pagination:
+  data: featuredVibes
+  size: 1
+  alias: v
+  # Without this only the FIRST page lands in collections.all, so
+  # sitemap.xml would list one of the six.
+  addAllPagesToCollections: true
+permalink: "/featured-vibes/{{ v.slug }}/"
+eleventyComputed:
+  title: "{{ v.vibeLabel }} in {{ v.city }}, {{ v.country }} — WhereTo"
+  description: "{{ v.city }}, {{ v.country }} scores {{ v.displayScore }} for {{ v.vibeLabel }} in the WhereTo Vibe Engine. The full guide, every vibe this destination matches, and when to go."
+layout: layouts/base.njk
+---
+{%- set months = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"] -%}
+
+{# ── Hero: the card, opened up ──────────────────────────────────── #}
+<section class="vibe-hero">
+  <div class="vibe-hero-media" data-cycle style="--cycle-delay: 0s;">
+    {% for img in v.images %}
+    <img class="dest-photo-frame vibe-hero-frame{% if loop.first %} is-on{% endif %}"
+         src="{{ img.url }}"
+         alt="{% if loop.first %}{{ img.alt or (v.city + ', ' + v.country) }}{% endif %}"
+         {% if not loop.first %}aria-hidden="true"{% endif %}
+         loading="{% if loop.first %}eager{% else %}lazy{% endif %}" decoding="async" />
+    {% endfor %}
+    <span class="vibe-hero-scrim" aria-hidden="true"></span>
+  </div>
+
+  <div class="wrap vibe-hero-copy">
+    <span class="dest-stamp">
+      {% icon "star-fall" %}
+      <span class="dest-stamp-label">Vibe Score</span>
+      <span class="dest-stamp-num">{{ v.displayScore }}</span>
+    </span>
+    <span class="eyebrow">{{ v.vibeLabel }}</span>
+    <h1>{{ v.city }}<span class="vibe-hero-country">, {{ v.country }}</span></h1>
+    <p class="lede">{{ v.hook }}</p>
+    <p class="vibe-hero-swap">Most people book {{ v.insteadOf }}. The Vibe Engine sends you here.</p>
+    <div class="cta">
+      <a class="btn btn-primary" href="#download">Get the App to See My Matches</a>
+      <a class="btn btn-ghost" href="/#vibes">All featured vibes</a>
+    </div>
+  </div>
+</section>
+
+{# ── What the engine knows about this pairing ───────────────────── #}
+<section class="block tint">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Why it ranks</span>
+      <h2>{{ v.city }} for <span class="italic">{{ v.vibeLabel }}</span></h2>
+      {% if v.note %}<p class="lede">{{ v.note }}.</p>{% endif %}
+    </div>
+
+    <div class="vibe-facts reveal reveal-delay-1">
+      {% if v.iata %}
+      <div class="vibe-fact">
+        <span class="vibe-fact-label">Gateway airport</span>
+        <span class="vibe-fact-value">{{ v.iata }}</span>
+      </div>
+      {% endif %}
+      <div class="vibe-fact">
+        <span class="vibe-fact-label">Region</span>
+        <span class="vibe-fact-value">{{ v.subregion }}</span>
+      </div>
+      <div class="vibe-fact">
+        <span class="vibe-fact-label">Vibes matched</span>
+        <span class="vibe-fact-value">{{ v.otherVibes.length + 1 }}</span>
+      </div>
+      {% if v.blog.bestWindow and v.blog.bestWindow.length and v.blog.bestWindow.length < 12 %}
+      <div class="vibe-fact">
+        <span class="vibe-fact-label">Best window</span>
+        <span class="vibe-fact-value">
+          {%- for m in v.blog.bestWindow -%}{{ months[m] | truncate(4, true, "") }}{% if not loop.last %} · {% endif %}{%- endfor -%}
+        </span>
+      </div>
+      {% endif %}
+    </div>
+
+    {% if v.introBody %}
+    <div class="vibe-intro reveal reveal-delay-2">
+      {% if v.introTitle %}<h3>{{ v.introTitle }}</h3>{% endif %}
+      <p>{{ v.introBody }}</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+{# ── The full vibe guide ────────────────────────────────────────── #}
+<section class="block" id="guide">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">The vibe guide</span>
+      <h2>{{ v.blog.title }}</h2>
+      {% if v.blog.lastResearched %}
+      <p class="vibe-byline">Researched by hand · last updated {{ v.blog.lastResearched }}</p>
+      {% endif %}
+    </div>
+    <article class="vibe-prose reveal reveal-delay-1">
+      {{ v.blog.body | markdown | safe }}
+    </article>
+
+    {% if v.blog.sources.length %}
+    <div class="vibe-sources reveal">
+      <h4>Sources</h4>
+      <ul>
+        {% for src in v.blog.sources %}
+        <li>
+          {% if src.url %}<a href="{{ src.url }}" rel="nofollow noopener" target="_blank">{{ src.title or src.name or src.url }}</a>
+          {% else %}{{ src.title or src.name }}{% endif %}
+          {% if src.publisher %}<span> — {{ src.publisher }}</span>{% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+{# ── Every vibe this destination matches ────────────────────────── #}
+<section class="block tint">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">The full picture</span>
+      <h2>Every vibe <span class="italic">{{ v.city }}</span> matches</h2>
+      <p class="lede">One destination answers more than one mood. These are the other vibes {{ v.city }} ranks for in the Vibe Engine.</p>
+    </div>
+
+    <ul class="vibe-scores reveal reveal-delay-1">
+      <li class="vibe-score is-hero">
+        <span class="vibe-score-label">{{ v.vibeLabel }}</span>
+        <span class="vibe-score-bar" aria-hidden="true"><span style="width: {{ v.displayScore }}%;"></span></span>
+        <span class="vibe-score-num">{{ v.displayScore }}</span>
+      </li>
+      {% for o in v.otherVibes %}
+      <li class="vibe-score">
+        <span class="vibe-score-label">
+          {{ o.label }}
+          {% if o.note %}<em>{{ o.note }}</em>{% endif %}
+        </span>
+        <span class="vibe-score-bar" aria-hidden="true"><span style="width: {{ o.score }}%;"></span></span>
+        <span class="vibe-score-num">{{ o.score }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+    <p class="app-disclaimer reveal">Scores are how the Vibe Engine ranks this destination against everywhere else it knows. Your own matches are scored against your budget, dates and departure city in the app.</p>
+  </div>
+</section>
+
+{# ── The rest of the photos ─────────────────────────────────────── #}
+{% if v.images.length > 1 %}
+<section class="block">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">On the ground</span>
+      <h2>{{ v.city }}, <span class="italic">up close</span></h2>
+    </div>
+    <div class="vibe-gallery reveal reveal-delay-1">
+      {% for img in v.images %}
+      <figure>
+        <img src="{{ img.url }}" alt="{{ img.alt or (v.city + ', ' + v.country) }}" loading="lazy" decoding="async" />
+        {% if img.credit %}
+        <figcaption>
+          {% if img.creditUrl %}<a href="{{ img.creditUrl }}" rel="nofollow noopener" target="_blank">{{ img.credit }}</a>{% else %}{{ img.credit }}{% endif %}
+          {% if img.source %} / {{ img.source }}{% endif %}
+        </figcaption>
+        {% endif %}
+      </figure>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% set s = { id: "download", eyebrow: "Ready to wander?", title: { pre: "Find your ", accent: v.vibeLabel, post: " trip." }, body: "Real destinations, live pricing and booking, matched to your budget and your vibe — in the WhereTo app." } %}
+{% include "sections/cta_band.njk" %}
+
+<script src="/assets/js/wt-vibe-cards.js?v={{ buildTime }}" defer></script>

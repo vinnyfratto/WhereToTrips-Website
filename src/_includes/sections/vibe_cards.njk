@@ -1,0 +1,81 @@
+{#- ══════════════════════════════════════════════════════════════════
+    Featured Travel Vibes — the app's Destination Result card, on the web.
+
+    Mirrors app/search/results.tsx's DestinationCard piece for piece:
+    240px photo that cycles the destination's own images, the white Vibe
+    Score stamp top-left, the dashed azure roundel top-right, the flat
+    azure name banner across the bottom, an amber-ruled reason line, then
+    the azure "Discover <City>" CTA over the amber secondary.
+
+    Data: src/_data/featuredVibes.json (scripts/gen-featured-vibes.js).
+    ══════════════════════════════════════════════════════════════════ -#}
+<section class="block{% if s.background %} tint{% endif %}"{% if s.id %} id="{{ s.id }}"{% endif %}>
+  <div class="wrap">
+    {% if s.eyebrow or s.title or s.intro %}
+    <div class="sec-head{% if s.center %} center{% endif %} reveal">
+      {% if s.eyebrow %}<span class="eyebrow">{{ s.eyebrow }}</span>{% endif %}
+      {% if s.title %}<h2>{{ s.title.pre }} <span class="italic">{{ s.title.accent }}</span>{{ s.title.post }}</h2>{% endif %}
+      {% if s.intro %}<p class="lede">{{ s.intro }}</p>{% endif %}
+    </div>
+    {% endif %}
+
+    <div class="dest-grid reveal reveal-delay-1" style="--cols: {{ s.columns or 3 }};">
+      {% for v in featuredVibes %}
+      {% if not s.limit or loop.index <= s.limit %}
+      {%- set href = "/featured-vibes/" + v.slug + "/" -%}
+      <article class="dest-card">
+
+        {#- ── Photo: every image on file for this destination, crossfading.
+            The stagger (below) keeps six cards from flipping in lockstep. -#}
+        <a class="dest-photo" href="{{ href }}"
+           data-cycle
+           style="--cycle-delay: {{ loop.index0 * 1.4 }}s;"
+           aria-label="Explore {{ v.city }}, {{ v.country }}">
+          {% for img in v.images %}
+          <img class="dest-photo-frame{% if loop.first %} is-on{% endif %}"
+               src="{{ img.url }}"
+               alt="{% if loop.first %}{{ img.alt or (v.city + ', ' + v.country) }}{% endif %}"
+               {% if not loop.first %}aria-hidden="true"{% endif %}
+               loading="{% if loop.first %}lazy{% else %}lazy{% endif %}"
+               decoding="async" />
+          {% endfor %}
+
+          {#- Vibe Score stamp — white pill, amber numeral, charcoal serif label -#}
+          <span class="dest-stamp">
+            {% icon "star-fall" %}
+            <span class="dest-stamp-label">Vibe Score</span>
+            <span class="dest-stamp-num">{{ v.displayScore }}</span>
+          </span>
+
+          {#- Gateway roundel — the app's dashed azure badge, carrying this
+              destination's own airport code instead of the map toggle. -#}
+          {% if v.iata %}<span class="dest-roundel">{{ v.iata }}</span>{% endif %}
+
+          {#- Flat azure banner + drop-cap destination name -#}
+          <span class="dest-banner">
+            <span class="dest-banner-name">{{ v.city | upper }}</span>
+          </span>
+        </a>
+
+        {#- ── Why it scored — amber rule + the engine's own note ───────── -#}
+        <div class="dest-reason">
+          <span class="dest-reason-rule" aria-hidden="true"></span>
+          <p>
+            <strong>{{ v.vibeLabel }}</strong> — {{ v.hook }}
+            <span class="dest-reason-swap">Most people book {{ v.insteadOf }}.</span>
+          </p>
+        </div>
+
+        <a class="dest-cta" href="{{ href }}">Discover {{ v.city }}</a>
+        <a class="dest-cta dest-cta-amber" href="{{ href }}#guide">
+          {% icon "book-2" %}<span>Read the Vibe Guide</span>
+        </a>
+      </article>
+      {% endif %}
+      {% endfor %}
+    </div>
+
+    {% if s.footnote %}<p class="app-disclaimer reveal">{{ s.footnote }}</p>{% endif %}
+  </div>
+</section>
+<script src="/assets/js/wt-vibe-cards.js?v={{ buildTime }}" defer></script>

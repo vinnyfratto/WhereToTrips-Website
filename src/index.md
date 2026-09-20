@@ -86,19 +86,19 @@ sections:
         body: The Vibe Engine will match you with destinations that meet your vibes. All scored, ranked, and bookable.
       - title: Book your trip package
         body: Each returned destination comes with suggested hotel and flights to match your budget. Change either as you see fit.
-  - type: collection_grid
+  - type: vibe_cards
     eyebrow: Featured Travel Vibes
     title:
-      pre: Start with a
-      accent: feeling
+      pre: The place you'd never have
+      accent: thought of
       post: .
-    id: ''
+    id: vibes
     background: false
     center: true
-    intro: Browse by the experience you want. Each vibe maps to destinations around the globe. Mix and match vibes to find the dream trip you probably never thought of.
+    intro: Six vibes the engine scores near the top, matched to the destination almost nobody names first. Same feeling, fewer crowds, usually less money.
     columns: 3
-    collection: vibe
     limit: 6
+    footnote: Vibe scores are how the WhereTo Vibe Engine ranks these destinations. Your own matches are scored against your budget, dates and departure city in the app.
   - type: feature_split
     eyebrow: Wander Family Teaser
     title:

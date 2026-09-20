@@ -855,3 +855,342 @@ footer { background: var(--footer); padding: 72px 0 40px; }
   .nav-dropdown-menu a { margin-top: 0; transition: background .2s ease, color .2s ease; }
   html { scroll-behavior: auto; }
 }
+
+/* ════════════════════════════════════════════════════════════════════
+   Featured Travel Vibes — the app's Destination Result card, on the web
+
+   A deliberate port of app/search/results.tsx's DestinationCard: same
+   240px photo, same white Vibe Score stamp, same dashed azure roundel,
+   same flat-azure name banner (rgba(32,156,224,0.8)), same amber-ruled
+   reason line, same azure-over-amber button stack. Someone who has used
+   the app should recognise this card before they read a word of it.
+   Markup: src/_includes/sections/vibe_cards.njk
+   ════════════════════════════════════════════════════════════════════ */
+.dest-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 3), 1fr);
+  gap: 28px;
+}
+.dest-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.dest-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+
+/* ── Photo (cycles this destination's own images) ─────────────────── */
+.dest-photo {
+  position: relative;
+  display: block;
+  height: 240px;
+  overflow: hidden;
+  background: var(--wg300);
+}
+.dest-photo-frame {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1.1s ease;
+}
+.dest-photo-frame.is-on { opacity: 1; }
+
+/* ── Vibe Score stamp (top-left) ──────────────────────────────────── */
+.dest-stamp {
+  position: absolute;
+  top: 20px; left: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px 5px 8px;
+  background: #fff;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+.dest-stamp .ico { font-size: 18px; color: var(--amber); }
+.dest-stamp-label {
+  font-family: var(--serif);
+  font-size: 12px; line-height: 16px;
+  color: var(--navy);
+}
+.dest-stamp-num {
+  font-family: var(--serif);
+  font-style: italic; font-weight: 700;
+  font-size: 18px; line-height: 26px;
+  color: var(--amber);
+}
+
+/* ── Gateway roundel (top-right) — the app's dashed azure badge ───── */
+.dest-roundel {
+  position: absolute;
+  top: 20px; right: 20px;
+  width: 38px; height: 38px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: var(--azure);
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 11px; font-weight: 700; letter-spacing: .5px;
+}
+.dest-roundel::after {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  border: 1.5px dashed #fff;
+}
+
+/* ── Flat-azure name banner ───────────────────────────────────────── */
+.dest-banner {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 64px;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 18px 6px;
+  background: rgba(32, 156, 224, 0.8);
+}
+/* Block, not inline — ::first-letter only applies to block containers,
+   and the drop cap is what makes this read as the app's banner. */
+.dest-banner-name {
+  display: block;
+  max-width: 100%;
+  font-family: var(--serif);
+  font-weight: 700; font-style: italic;
+  font-size: 28px; line-height: 44px;
+  letter-spacing: .5px;
+  color: #fff;
+  text-shadow: 0 4px 1px rgba(0, 0, 0, .5);
+  white-space: nowrap;
+  /* No ellipsis and no clip: a destination name never loses a letter.
+     wt-vibe-cards.js measures and scales it down instead, the same way
+     the app's FitSmallCapsText does. */
+}
+.dest-banner-name::first-letter { font-size: 38px; }
+
+/* ── Why it scored ────────────────────────────────────────────────── */
+.dest-reason {
+  flex: 1;
+  display: flex;
+  gap: 10px;
+  padding: 20px 20px 14px;
+}
+.dest-reason-rule {
+  flex: 0 0 3px;
+  border-radius: 2px;
+  background: var(--amber);
+}
+.dest-reason p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+.dest-reason strong { color: var(--navy); font-weight: 600; }
+.dest-reason-swap {
+  display: block;
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+/* ── Button stack (azure primary over amber secondary) ────────────── */
+.dest-cta {
+  display: flex;
+  align-items: center; justify-content: center;
+  gap: 6px;
+  margin: 0 20px;
+  padding: 14px;
+  border-radius: var(--radius-md);
+  background: var(--azure);
+  color: #fff;
+  font-weight: 600; font-size: 15px;
+  text-decoration: none;
+  transition: background .2s ease;
+}
+.dest-cta:hover { background: var(--azure-press); color: #fff; }
+.dest-cta .ico { font-size: 17px; }
+.dest-cta-amber {
+  margin-top: 10px; margin-bottom: 20px;
+  background: var(--amber);
+}
+.dest-cta-amber:hover { background: var(--amber-deep); }
+
+@media (max-width: 960px) {
+  .dest-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .dest-grid { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dest-photo-frame { transition: none; }
+  .dest-card:hover { transform: none; }
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   Featured vibe detail page (/featured-vibes/<slug>/)
+   ════════════════════════════════════════════════════════════════════ */
+.vibe-hero {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: clamp(420px, 56vw, 620px);
+  padding: 0 0 clamp(36px, 5vw, 64px);
+  overflow: hidden;
+}
+.vibe-hero-media { position: absolute; inset: 0; }
+.vibe-hero-frame { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.vibe-hero-scrim {
+  position: absolute; inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(28, 34, 40, 0.20) 0%,
+    rgba(28, 34, 40, 0.42) 45%,
+    rgba(28, 34, 40, 0.82) 100%
+  );
+}
+.vibe-hero-copy { position: relative; z-index: 1; }
+.vibe-hero-copy .dest-stamp { position: static; display: inline-flex; margin-bottom: 18px; }
+.vibe-hero-copy .eyebrow { color: #fff; opacity: .9; }
+.vibe-hero-copy h1 {
+  color: #fff;
+  margin: 6px 0 14px;
+  text-shadow: 0 4px 18px rgba(0, 0, 0, .35);
+}
+.vibe-hero-country { font-size: .52em; font-style: italic; opacity: .85; }
+.vibe-hero-copy .lede { color: #fff; max-width: 640px; }
+.vibe-hero-swap {
+  margin-top: 10px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, .82);
+}
+.vibe-hero-copy .cta { margin-top: 26px; }
+
+/* ── Fact strip ───────────────────────────────────────────────────── */
+.vibe-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1px;
+  background: var(--wg200);
+  border: 1px solid var(--wg200);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.vibe-fact { background: #fff; padding: 20px 22px; }
+.vibe-fact-label {
+  display: block;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 1.2px; text-transform: uppercase;
+  color: var(--ink-muted);
+  margin-bottom: 6px;
+}
+.vibe-fact-value {
+  display: block;
+  font-family: var(--serif);
+  font-size: 20px; line-height: 1.3;
+  color: var(--navy);
+}
+.vibe-intro { max-width: 760px; margin: 36px auto 0; text-align: center; }
+.vibe-intro h3 { font-size: 24px; margin-bottom: 10px; }
+.vibe-intro p { color: var(--ink-soft); line-height: 1.75; }
+
+/* ── The guide itself ─────────────────────────────────────────────── */
+.vibe-byline {
+  font-size: 13px;
+  color: var(--ink-muted);
+  margin-top: 10px;
+}
+.vibe-prose { max-width: 760px; margin: 0 auto; }
+.vibe-prose h2 {
+  font-size: 27px;
+  margin: 40px 0 12px;
+  padding-top: 18px;
+  border-top: 1px solid var(--wg200);
+}
+.vibe-prose h2:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
+.vibe-prose h3 { font-size: 21px; margin: 28px 0 8px; }
+.vibe-prose p { color: var(--ink-soft); line-height: 1.8; margin-bottom: 16px; }
+.vibe-prose ul, .vibe-prose ol { margin: 0 0 18px 20px; color: var(--ink-soft); line-height: 1.8; }
+.vibe-prose li { margin-bottom: 8px; }
+.vibe-prose strong { color: var(--navy); }
+.vibe-prose a { color: var(--azure); }
+.vibe-sources {
+  max-width: 760px;
+  margin: 44px auto 0;
+  padding-top: 22px;
+  border-top: 1px solid var(--wg200);
+}
+.vibe-sources h4 {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 1.2px; text-transform: uppercase;
+  color: var(--ink-muted);
+  margin-bottom: 12px;
+}
+.vibe-sources ul { margin: 0; padding-left: 18px; }
+.vibe-sources li { font-size: 13px; color: var(--ink-muted); line-height: 1.7; margin-bottom: 6px; }
+.vibe-sources a { color: var(--ink-soft); }
+
+/* ── Score list ───────────────────────────────────────────────────── */
+.vibe-scores { list-style: none; margin: 0; padding: 0; max-width: 880px; margin-inline: auto; }
+.vibe-score {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 160px 42px;
+  align-items: center;
+  gap: 18px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--wg200);
+}
+.vibe-score-label { font-size: 15px; color: var(--navy); }
+.vibe-score-label em {
+  display: block;
+  font-style: normal;
+  font-size: 13px;
+  color: var(--ink-muted);
+  margin-top: 3px;
+}
+.vibe-score-bar {
+  height: 7px;
+  border-radius: 4px;
+  background: var(--wg200);
+  overflow: hidden;
+}
+.vibe-score-bar > span { display: block; height: 100%; border-radius: 4px; background: var(--azure); }
+.vibe-score-num {
+  font-family: var(--serif);
+  font-size: 19px;
+  text-align: right;
+  color: var(--navy);
+}
+.vibe-score.is-hero .vibe-score-label { font-weight: 700; }
+.vibe-score.is-hero .vibe-score-bar > span { background: var(--amber); }
+.vibe-score.is-hero .vibe-score-num { font-style: italic; font-weight: 700; color: var(--amber-deep); }
+
+/* ── Gallery ──────────────────────────────────────────────────────── */
+.vibe-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+}
+.vibe-gallery figure { margin: 0; }
+.vibe-gallery img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  display: block;
+}
+.vibe-gallery figcaption {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+.vibe-gallery figcaption a { color: var(--ink-muted); }
+
+@media (max-width: 720px) {
+  .vibe-score { grid-template-columns: minmax(0, 1fr) 42px; }
+  .vibe-score-bar { display: none; }
+}
