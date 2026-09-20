@@ -58,6 +58,30 @@ const ERRORS = {
   network:          'Network error — please try again.',
 };
 
+// ── password confirmation ───────────────────────────────────────────
+// The second field exists so a typo in the first one can't lock a new
+// partner out of the account we just minted their affiliate code on.
+function wirePasswordMatch() {
+  const pw = $('aff-password');
+  const pw2 = $('aff-password2');
+  const note = $('aff-pw-match');
+  if (!pw || !pw2 || !note) return;
+
+  const paint = () => {
+    // Stay quiet until they've actually started the second field — an
+    // empty box isn't a mismatch yet.
+    if (!pw2.value) { note.textContent = ''; note.style.color = ''; return; }
+    const ok = pw.value === pw2.value;
+    note.textContent = ok ? 'Passwords match.' : 'Passwords do not match.';
+    // Same two colours the .alert-success / .alert-error text uses — the
+    // site's --rust token is azure under the reskin, so a mismatch in it
+    // would read as an ordinary link, not a problem.
+    note.style.color = ok ? '#1f5b34' : '#8f2c1b';
+  };
+  pw.addEventListener('input', paint);
+  pw2.addEventListener('input', paint);
+}
+
 // ── boot ────────────────────────────────────────────────────────────
 async function init() {
   const root = $('wt-affsignup');
@@ -106,6 +130,7 @@ async function init() {
     loggedNote.style.display = 'block';
     $('aff-logged-email').textContent = sess.session.user.email || 'your account';
   } else {
+    wirePasswordMatch();
     if (v.email) $('aff-email').value = v.email;
     if (v.intended_name) {
       const parts = v.intended_name.split(' ');
@@ -140,7 +165,14 @@ async function init() {
       lastName  = (fd.get('last_name') || '').toString().trim();
       const email = (fd.get('email') || '').toString().trim();
       const password = (fd.get('password') || '').toString();
+      const confirm  = (fd.get('password_confirm') || '').toString();
       if (password.length < 8) { busy(btn, false); show('error', 'Password must be at least 8 characters.'); return; }
+      if (password !== confirm) {
+        busy(btn, false);
+        show('error', 'The two passwords do not match. Please re-type them.');
+        $('aff-password2').focus();
+        return;
+      }
 
       const { data: signUpData, error: signErr } = await supabase.auth.signUp({
         email, password,
