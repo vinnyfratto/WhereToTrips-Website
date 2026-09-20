@@ -6,6 +6,8 @@
     "displayScore": 96,
     "city": "Oaxaca",
     "country": "Mexico",
+    "state": null,
+    "placeLabel": "Mexico",
     "iata": "OAX",
     "region": "NA",
     "introTitle": "The Land of Seven Moles",
@@ -16,6 +18,7 @@
     "tier": "S",
     "note": "Weaving, black pottery and alebrijes from the villages around the city",
     "subregion": "Mexico",
+    "vibeCount": 7,
     "otherVibes": [
       {
         "key": "mexican_regional_cooking",
@@ -160,12 +163,222 @@
     ]
   },
   {
+    "slug": "savannah-historic-squares",
+    "insteadOf": "Charleston",
+    "hook": "Twenty-two oak-shaded squares of the original 1733 plan, still laid out exactly as drawn.",
+    "displayScore": 93,
+    "city": "Savannah",
+    "country": "United States",
+    "state": "Georgia",
+    "placeLabel": "Georgia",
+    "iata": "SAV",
+    "region": "NA",
+    "introTitle": "A City Laid Out in Squares",
+    "introBody": "Walk the old center of Savannah and every few blocks the street opens into a square: a small park with live oaks overhead, Spanish moss hanging down, a monument or fountain at the center. There are 22 of these squares, and they are the bones of the city, laid out by General James Oglethorpe when he founded Georgia's first town here in 1733. Almost three centuries later, people still cross them on the way to everywhere.\n\nThat original grid makes Savannah one of the largest historic districts in the country, protected as a National Historic Landmark. The blocks around the squares hold brick and clapboard houses, wrought-iron balconies, and churches from the 1700s and 1800s, shaded by the oaks the city was once nicknamed the Forest City for. It is a place built for walking, flat and cool underfoot and easy to cross on foot.\n\nThe town sits on a bluff above the Savannah River, and the old waterfront runs below on cobblestones once hauled over as ship ballast. River Street's former cotton warehouses now hold restaurants and shops, with cargo ships still sliding past on their way to the port. South of the squares, Forsyth Park spreads around a white cast-iron fountain, and students of the Savannah College of Art and Design fill studios all over the district.\n\nSpring is the show here, when azaleas and dogwoods bloom around the squares and the air turns soft and warm. Late fall is kind too. Either season is the time to wander the grid slowly, square by square, and let the old city unfold.",
+    "vibeKey": "historic_residential_districts",
+    "vibeLabel": "Historic Residential Districts",
+    "engineScore": 91,
+    "tier": "S",
+    "note": "Twenty-two surviving squares of the original Oglethorpe plan, all walkable",
+    "subregion": "US Southeast",
+    "vibeCount": 12,
+    "otherVibes": [
+      {
+        "key": "southern_comfort_cooking",
+        "label": "Southern Comfort Cooking",
+        "score": 88,
+        "tier": "A",
+        "note": null
+      },
+      {
+        "key": "historic_towns_homes",
+        "label": "Historic Towns & Antebellum Homes",
+        "score": 86,
+        "tier": "A",
+        "note": "Twenty-two squares and restored mansions under Spanish moss"
+      },
+      {
+        "key": "haunted_history",
+        "label": "Ghost Stories & Southern Gothic",
+        "score": 85,
+        "tier": "A",
+        "note": "Routinely called the most haunted city in America, and it leans in"
+      },
+      {
+        "key": "iconic_cityscapes",
+        "label": "Iconic Cityscapes & City Icons",
+        "score": 84,
+        "tier": "A",
+        "note": "Twenty-two oak-shaded squares, the largest landmark district"
+      },
+      {
+        "key": "architecture_design",
+        "label": "Architecture & Design",
+        "score": 82,
+        "tier": "A",
+        "note": "Oglethorpe’s grid: 22 squares of trust-preserved architecture"
+      },
+      {
+        "key": "romance_honeymoon",
+        "label": "Romance & Honeymoon",
+        "score": 80,
+        "tier": "A",
+        "note": "Spanish moss, squares and a walkable historic core"
+      },
+      {
+        "key": "destination_weddings",
+        "label": "Destination Weddings",
+        "score": 80,
+        "tier": "A",
+        "note": "Historic venues and squares, at lower cost than Charleston"
+      },
+      {
+        "key": "colonial_revolution",
+        "label": "Colonial & Revolutionary History",
+        "score": 78,
+        "tier": "A",
+        "note": "The last of the thirteen colonies, laid out in its founding squares"
+      },
+      {
+        "key": "film_tv_locations",
+        "label": "Film & TV Locations",
+        "score": 77,
+        "tier": "B",
+        "note": "Forrest Gump’s bench, Midnight in the Garden, and a standing film office"
+      },
+      {
+        "key": "nightlife_entertainment",
+        "label": "Nightlife & Entertainment Districts",
+        "score": 76,
+        "tier": "B",
+        "note": "Open-container strolls along River Street and the historic squares"
+      },
+      {
+        "key": "southern_food_cities",
+        "label": "City Dining & Southern Food",
+        "score": 76,
+        "tier": "B",
+        "note": "Lowcountry classics in the corridor's most romantic city"
+      }
+    ],
+    "blog": {
+      "title": "Historic Neighborhoods in the US Southeast",
+      "body": "## The Quick Read\nCharleston and Savannah are the two names everyone knows, and they earn it, but the interesting thing about this sub-region is how different the five districts are from each other. South of Broad in Charleston is pre-Revolutionary and antebellum housing at a density found almost nowhere else in the country. Savannah is a street plan rather than a set of buildings, twenty-two surviving squares from James Oglethorpe's 1733 layout. Old Louisville is Victorian, forty-plus blocks of it, the largest preservation district in America made up almost entirely of that one era. Richmond's Fan is eighty-five blocks of 1890s to 1930s rowhouses. Mobile's Oakleigh Garden District is smaller and quieter than any of them and older than Mobile's reputation suggests. All five were built on money whose sources are worth knowing, and the better ones now say so.\n\n## Why the US Southeast Delivers This\nPreservation here started early and stayed strict. Charleston passed the first historic district zoning ordinance in the United States in 1931, and the effect is visible on every block south of Broad Street: single houses turned side-on to the street with their piazzas facing the breeze, wrought iron, gas lamps, and very few gaps. The rules are why the district reads as a whole rather than a scatter of survivors.\n\nSavannah's case is different because what survived is the plan itself. Oglethorpe laid out wards around public squares in 1733, the city kept adding them until there were twenty-four by 1851, and twenty-two are in place today after Ellis Square was reclaimed from a parking garage in 2010. Walking it, you hit a square every couple of blocks, which slows traffic, breaks the grid and makes a hot city walkable. Civil engineers have honored the layout as a landmark of its kind, and it works as well now as it did before cars.\n\nThe third factor is that this region industrialized and suburbanized at different times, so the housing stock varies by decades rather than centuries. Old Louisville went up in the 1870s and after as a streetcar suburb for the newly wealthy, which is why it is Richardsonian and Queen Anne rather than Federal. Richmond's Fan filled in between roughly 1890 and 1930 as the city pushed west. Both are the same idea as Charleston, thirty to a hundred years later and in a different vocabulary.\n\nThe fourth thing is money, and it is not a comfortable subject. Charleston, Savannah and Mobile were built with wealth from slavery and from the trade in rice, cotton and timber that slavery produced, and the grandest houses on these streets are the most direct product of it. Charleston's Old Slave Mart Museum sits four blocks from the Battery. Any honest walk through these districts includes that, and the museums here increasingly lead with it rather than footnote it.\n\n## Where to Go\n\n### Charleston: South of Broad and the Battery\nThe peninsula's southern tip, where Meeting, Church and Tradd streets hold the highest concentration of pre-war housing in the city. White Point Garden and the Battery seawall close the walk at the water. Rainbow Row on East Bay is the photograph everyone takes and is best before nine.\n\n### Savannah: the Historic District squares\nStart at Chippewa or Madison and work north. Jones Street is the most photographed residential block, Monterey and Lafayette squares are the prettiest, and Forsyth Park at the south end is where the district ends and the city takes over.\n\n### Louisville: Old Louisville\nThird Street and St. James Court are the core, with the Belgravia and Fountain courts running as pedestrian walkways between them. Conrad-Caldwell House on St. James is the interior worth booking. The neighborhood is genuinely large, so pick a quadrant rather than trying for all of it.\n\n### Richmond: the Fan District\nNamed for the way its streets splay westward from Monroe Park. Monument Avenue runs through it, and the pedestals there have been a live public argument for years, which is part of what makes the district interesting rather than a distraction from it. Hanover and Grove avenues are the best residential walking.\n\n### Mobile: Oakleigh Garden District\nA compact grid of Creole cottages, Greek Revival and Victorian houses near downtown, on the National Register since 1972. The Oakleigh House Museum anchors it and Washington Square is the shaded middle. An hour and a half covers it comfortably.\n\n## When to Go\nThe rankings say year-round and the buildings are always there, but the Southeast has a genuine comfort season and it is not summer. March, April, October and November are the months to aim for. Charleston and Savannah in late March are close to perfect, with azaleas out and temperatures in the seventies.\n\nSpring is also house tour season, which is the only reliable way to see interiors. Charleston's Festival of Houses and Gardens runs in March and April, Savannah has its own tour in spring, and Old Louisville and the Fan both run holiday tours in December. If seeing inside matters, plan the trip around a tour calendar rather than hoping.\n\nJune through early September is hot and humid in all five, and Mobile and Savannah are the worst of it. Afternoon thunderstorms are routine. Hurricane season runs June through November with the peak in late August and September, which is worth knowing for Charleston, Savannah and Mobile in particular. Winter is mild, cheap and underrated, especially in Charleston, where a January walk is more pleasant than a July one by a wide margin.\n\n## What to Watch Out For\nThese are homes. Charleston's residents in particular have been dealing with visitors on their doorsteps for decades, and the polite conventions are simple: stay off the piazzas and steps, do not photograph through windows, and keep group tours to the sidewalk. Several Charleston streets now have restrictions on tour groups for exactly this reason.\n\nCarriage tours are the standard way people see Charleston and Savannah, and they are worth thinking about. They cover ground efficiently and the narration is often good, but the horses work in heat that regularly exceeds ninety degrees. Both cities have temperature rules that suspend tours, and walking gets you into the small streets carriages cannot enter anyway.\n\nThe interpretation gap is real. Outside of the museum houses, most of what you walk past is unlabeled, and the story you get from a general tour can be thin on who built these places and who was enslaved in them. Pair the walk with a specific site. The Old Slave Mart in Charleston, the Owens-Thomas House slave quarters in Savannah, and the Black History Museum in Richmond all do this work properly.\n\nMobile is the outlier in this group and should be treated as such. It is a genuinely good small district, not a two-day destination, and it makes most sense as a stop on a Gulf Coast drive rather than a trip of its own.\n\n## Who This Is (and Isn't) For\nSlow walkers, house people and anyone with an interest in American architecture will get more out of these five than out of almost any other sub-region, and the two headline cities deserve their scores. It also suits travelers who want history handled honestly, because the good museums here have moved a long way in the last decade.\n\nAnyone traveling in July and August should think hard about it, since the heat genuinely limits how long you can be outside. It offers little for children beyond the parks and the horses. And travelers hoping to tour house interiors on a whim will be frustrated, because outside tour season most of these doors stay shut.",
+      "topDestinations": "Charleston; Savannah; Louisville; Richmond",
+      "bestWindow": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "sources": [
+        {
+          "url": "https://www.charlestoncvb.com/plan-your-trip/tours-attractions~204/historic-sites~1146/",
+          "note": "The Charleston visitor bureau on the historic district, its houses and its museums.",
+          "title": "Historic Sites in Charleston"
+        },
+        {
+          "url": "https://www.tclf.org/landscapes/savannah-squares",
+          "note": "The Cultural Landscape Foundation on Oglethorpe's 1733 plan and the surviving squares.",
+          "title": "Savannah Squares"
+        },
+        {
+          "url": "https://www.savannahga.gov/350/Historic-Downtown-Squares",
+          "note": "The City of Savannah's own record of the squares and their dates.",
+          "title": "Historic Downtown Squares"
+        },
+        {
+          "url": "https://www.gotolouisville.com/neighborhoods/old-louisville/",
+          "note": "Louisville Tourism on the size and character of the Victorian district.",
+          "title": "Old Louisville"
+        },
+        {
+          "url": "https://www.planning.org/greatplaces/neighborhoods/2016/oldlouisville/",
+          "note": "The American Planning Association's designation and its account of how the district was built.",
+          "title": "Old Louisville, a Great Neighborhood"
+        },
+        {
+          "url": "https://www.visitrichmondva.com/about/neighborhoods/the-fan-richmond-va/",
+          "note": "Richmond Region Tourism on the Fan's scale and the years it was built.",
+          "title": "The Fan District"
+        },
+        {
+          "url": "https://www.mobile.org/blog/post/immersing-in-history-all-about-the-oakleigh-garden-historic-district/",
+          "note": "Visit Mobile on the district's listing, the house museum and Washington Square.",
+          "title": "The Oakleigh Garden Historic District"
+        }
+      ],
+      "wordCount": 1239,
+      "lastResearched": "2026-09-01"
+    },
+    "images": [
+      {
+        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/5f31b051-0b34-43c0-b4e2-15eab3c63001/river-street-savannah-georgia-usa-2026-03-24-11-38-02-utc.jpg",
+        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/5f31b051-0b34-43c0-b4e2-15eab3c63001/river-street-savannah-georgia-usa-2026-03-24-11-38-02-utc.jpg",
+        "alt": "River Street, Savannah, Georgia, USA",
+        "credit": "SeanPavone",
+        "creditUrl": "https://elements.envato.com/search/photos/738e0037-e85f-4ff4-826b-dae9268004b9?itemType=photos&term=Savannah+GA&filter.context=lifestyle",
+        "source": "envato"
+      },
+      {
+        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/5f31b051-0b34-43c0-b4e2-15eab3c63001/savannah-georgia-fountain-2026-03-24-11-40-36-utc.jpg",
+        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/5f31b051-0b34-43c0-b4e2-15eab3c63001/savannah-georgia-fountain-2026-03-24-11-40-36-utc.jpg",
+        "alt": "Savannah Georgia Fountain",
+        "credit": "SeanPavone",
+        "creditUrl": "https://elements.envato.com/search/photos/b1765e06-045b-4685-8673-6355f14c0645?itemType=photos&term=Savannah+GA",
+        "source": "envato"
+      },
+      {
+        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/5f31b051-0b34-43c0-b4e2-15eab3c63001/friends-taking-selfie-on-park-bench-savannah-geo-2026-01-09-08-36-30-utc.jpg",
+        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/5f31b051-0b34-43c0-b4e2-15eab3c63001/friends-taking-selfie-on-park-bench-savannah-geo-2026-01-09-08-36-30-utc.jpg",
+        "alt": "Friends taking selfie on park bench, Savannah, Georgia, USA",
+        "credit": "Image-Source",
+        "creditUrl": "https://elements.envato.com/search/photos/520d2565-747c-4eb8-81ff-e5ee4abf158d?itemType=photos&term=Savannah+GA&filter.number_of_people=1+person&filter.number_of_people=2+people&filter.number_of_people=3%2B+people",
+        "source": "envato"
+      },
+      {
+        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/5f31b051-0b34-43c0-b4e2-15eab3c63001/pathway-through-a-green-park-with-trees-2026-03-18-05-41-38-utc.jpg",
+        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/5f31b051-0b34-43c0-b4e2-15eab3c63001/pathway-through-a-green-park-with-trees-2026-03-18-05-41-38-utc.jpg",
+        "alt": "Pathway through a green park with trees",
+        "credit": "wirestock",
+        "creditUrl": "https://elements.envato.com/search/photos/15923f5a-201e-4226-89e0-67a7fed866d4?itemType=photos&term=Savannah+GA",
+        "source": "envato"
+      },
+      {
+        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/5f31b051-0b34-43c0-b4e2-15eab3c63001/savannah-georgia-usa-riverfront-promenade-2026-03-24-11-25-32-utc.jpg",
+        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/5f31b051-0b34-43c0-b4e2-15eab3c63001/savannah-georgia-usa-riverfront-promenade-2026-03-24-11-25-32-utc.jpg",
+        "alt": "Savannah, Georgia, USA riverfront promenade",
+        "credit": "SeanPavone",
+        "creditUrl": "https://elements.envato.com/search/photos/8c7b6ede-989c-4320-85cc-955d36c649ba?itemType=photos&term=Savannah+GA",
+        "source": "envato"
+      },
+      {
+        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/5f31b051-0b34-43c0-b4e2-15eab3c63001/savannah-georgia-usa-tree-lined-way-2026-03-24-11-30-52-utc.jpg",
+        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/5f31b051-0b34-43c0-b4e2-15eab3c63001/savannah-georgia-usa-tree-lined-way-2026-03-24-11-30-52-utc.jpg",
+        "alt": "Savannah, Georgia, USA Tree Lined Way",
+        "credit": "SeanPavone",
+        "creditUrl": "https://elements.envato.com/search/photos/409e7ec8-872d-4134-9641-bde1e1171428?itemType=photos&term=Savannah+GA&filter.context=lifestyle",
+        "source": "envato"
+      }
+    ]
+  },
+  {
     "slug": "san-sebastian-michelin-fine-dining",
     "insteadOf": "Paris",
     "hook": "More Michelin stars per head than anywhere on earth, in a beach town of 190,000.",
     "displayScore": 94,
     "city": "San Sebastian",
     "country": "Spain",
+    "state": null,
+    "placeLabel": "Spain",
     "iata": "EAS",
     "region": "EU",
     "introTitle": "A Bay Curved Like a Shell",
@@ -176,6 +389,7 @@
     "tier": "A",
     "note": "The most Michelin stars per capita in the world",
     "subregion": "Western Europe",
+    "vibeCount": 7,
     "otherVibes": [
       {
         "key": "global_coastal_seafood",
@@ -325,35 +539,87 @@
     ]
   },
   {
-    "slug": "crete-mediterranean-coastal-cooking",
-    "insteadOf": "Santorini",
-    "hook": "Same sea, same light, a quarter of the crowd, and the food people actually come back for.",
+    "slug": "thessaloniki-world-class-museums",
+    "insteadOf": "Athens",
+    "hook": "The Vergina gold, Philip II's own tomb treasure, is here. Not in Athens.",
     "displayScore": 91,
-    "city": "Heraklion",
+    "city": "Thessaloniki",
     "country": "Greece",
-    "iata": "HER",
+    "state": null,
+    "placeLabel": "Greece",
+    "iata": "SKG",
     "region": "EU",
-    "introTitle": "A Working Port Beside a Minoan Palace",
-    "introBody": "At the mouth of Heraklion's old harbor sits a squat Venetian sea fort, the Koules, its walls still carved with the winged lion of Venice. Fishing boats and ferries pass beneath it, and behind rise the massive ramparts the Venetians threw around the city, among the longest in the Mediterranean. This is the biggest city on Crete, a port that works for a living rather than posing for photographs.\n\nIts real fame lies just outside town. About five kilometers south is Knossos, the largest palace of the Minoans, the Bronze Age people who built Europe's earliest advanced civilization here more than 3,500 years ago. This is the ground that grew the myth of King Minos, the Labyrinth, and the Minotaur. To make sense of it, walk through the Archaeological Museum in the center of town, which holds the world's richest collection of Minoan art, frescoes, and the still-undeciphered Phaistos Disc.\n\nHeraklion itself rewards a slow wander. Market streets sell Cretan cheese, honey, and herbs, the Morosini fountain still runs beneath its stone lions, and cafes fill the squares in the evening. The writer Nikos Kazantzakis, who gave the world Zorba the Greek, is buried on the old walls under a line he chose himself: he hopes for nothing, fears nothing, and so is free.\n\nBeyond the city, vineyards climb the hills to the south, part of one of the oldest wine regions in Europe. Come in spring or autumn, when the ruins are quiet, the air is warm, and the island is at its most welcoming.",
-    "vibeKey": "mediterranean_coastal_cooking",
-    "vibeLabel": "Mediterranean Coastal Cooking",
-    "engineScore": 84,
+    "introTitle": "A Long Promenade Facing Mount Olympus",
+    "introBody": "The best introduction to Thessaloniki is a walk along its waterfront. A wide promenade runs for several kilometers beside the Thermaic Gulf, from the port past cafes, gardens, and a row of tall steel umbrellas to the White Tower, the round stone keep that has become the city's symbol. On clear days you can look across the water and pick out the snow on Mount Olympus, home of the ancient gods, standing at the far side of the bay.\n\nThis is Greece's second city, and one of its oldest, founded in 315 BC and named for Thessalonike, a half-sister of Alexander the Great. Later it grew into the second city of the Byzantine Empire, and centuries of Ottoman rule followed. All of that is still visible: a Roman rotunda and triumphal arch, dozens of Byzantine churches, Ottoman baths, and the old upper town of Ano Poli, which climbs to the surviving city walls.\n\nThessaloniki likes to eat, and many Greeks call it the best place in the country to do it. Its markets and small tavernas draw on a mixed heritage, with dishes carried by refugees from Asia Minor a century ago, sweet and savory bougatsa in the morning, sesame koulouri rings sold from street carts, and long evenings over mezze and tsipouro. A large student population keeps the streets awake.\n\nAt the center, Aristotelous Square opens grandly onto the sea, the natural gathering point of the city. Come in spring or autumn, when the promenade is at its best and the light lies soft over the gulf.",
+    "vibeKey": "world_class_museums",
+    "vibeLabel": "World-Class Museums",
+    "engineScore": 88,
     "tier": "A",
-    "note": null,
+    "note": "The Vergina gold is here, not in Athens",
     "subregion": "Mediterranean",
+    "vibeCount": 9,
     "otherVibes": [
       {
-        "key": "wellness_fitness_resorts",
-        "label": "Wellness & Fitness Resorts",
-        "score": 76,
+        "key": "greek_taverna_dining",
+        "label": "Greek Taverna Dining",
+        "score": 91,
+        "tier": "S",
+        "note": null
+      },
+      {
+        "key": "historic_old_towns",
+        "label": "Historic Old Towns",
+        "score": 87,
+        "tier": "A",
+        "note": "The upper town, the part that survived the 1917 fire"
+      },
+      {
+        "key": "ancient_ruins",
+        "label": "Ancient Ruins & Archaeology",
+        "score": 81,
+        "tier": "A",
+        "note": "The Rotunda, Arch of Galerius, and Roman Forum form part of the UNESCO-listed \"Paleochristian and Byzantine Monuments of Thessaloniki\" (15 sites)"
+      },
+      {
+        "key": "food_markets_cuisine",
+        "label": "Food Markets & Culinary",
+        "score": 81,
+        "tier": "A",
+        "note": "Ladadika district, Modiano and Kapani markets, and specialties like bougatsa give Thessaloniki a reputation as Greece's food capital"
+      },
+      {
+        "key": "nightlife_clubbing",
+        "label": "Nightlife & Clubbing",
+        "score": 80,
+        "tier": "A",
+        "note": "Aristotelous Square, Ladadika, and Valaoritou Street bars are fueled by Aristotle University, the largest student population in Greece"
+      },
+      {
+        "key": "medieval_castles_fortresses",
+        "label": "Medieval Castles & Fortresses",
+        "score": 80,
         "tier": "B",
-        "note": "Cretan training camps and coastal running"
+        "note": "An Ottoman tower on Byzantine walls, on a Roman city"
+      },
+      {
+        "key": "art_culture_cities",
+        "label": "Art & Culture Cities",
+        "score": 78,
+        "tier": "A",
+        "note": "Byzantine museums and churches"
+      },
+      {
+        "key": "sports_stadiums",
+        "label": "Sports & Stadiums",
+        "score": 77,
+        "tier": "B",
+        "note": "PAOK play in front of a stand that does not sit down"
       }
     ],
     "blog": {
-      "title": "Greek & Mediterranean Cuisine in the Mediterranean",
-      "body": "## The Quick Read\nThe six cities here are close enough to share a shopping basket and far enough apart to cook differently with it. Istanbul has the largest and most layered food culture of the group, built on Ottoman court cooking, Anatolian regional traditions and the Greek, Armenian and Jewish kitchens that were part of the city for centuries. Thessaloniki is the food capital of Greece and most Greeks will say so, its cooking shaped by refugees from Asia Minor after 1922. Athens has the range and the markets. Crete has the diet that gave the Mediterranean diet its name and its evidence base. Santorini has the volcanic soil that produces small, intense tomatoes and capers. Larnaca has the Cypriot version, with halloumi and the meze.\n\n## Why the Mediterranean Delivers This\nA shared climate, a shared set of crops, and a history of populations moving around the same sea for three thousand years.\n\nThe agricultural base is the constant. Olive, wheat, grape and pulse grow across the whole basin, and the climate, wet mild winters and hot dry summers, suits all four. That combination produced a way of eating that is old, consistent and largely vegetable-based, with meat as an occasional item and fish where the coast allows. What varies is the seasoning, the technique and the outside influence.\n\nCrete is where that got measured. The Seven Countries Study, begun in the 1950s by Ancel Keys, examined diet and heart disease across several populations, and the Cretan cohort showed remarkably low rates of cardiovascular disease despite a high fat intake, nearly all of it olive oil. That finding is the origin of the term Mediterranean diet, and the food it described is Cretan village cooking: wild greens, pulses, barley rusks, olive oil in quantity, cheese, small amounts of meat and a lot of vegetables. Crete still eats this way in its villages, and the horta, the wild greens gathered from the hillsides, are a genuine part of the diet rather than a restaurant flourish.\n\nThessaloniki's food is the product of a population exchange. After the Greco-Turkish War and the 1923 treaty, well over a million Orthodox Christians moved from Anatolia to Greece and around half a million Muslims moved the other way. Thessaloniki received an enormous number of the arrivals, who brought Anatolian cooking with them: the spicing, the bougatsa, the soutzoukakia, the peppers and the general influence that separates northern Greek food from southern. The city had also been substantially Sephardic Jewish for four centuries before the Holocaust, and that kitchen left traces too. The result is that Thessaloniki cooks with more spice, more heat and more variety than Athens, and Greeks travel there to eat.\n\nIstanbul is the deepest of them. Ottoman palace cuisine developed at Topkapi over centuries with hundreds of cooks and a formalised repertoire, and it drew from Anatolia, the Balkans, the Levant, Persia and the Caucasus. Below the court, the city held Greek, Armenian and Jewish communities with their own restaurant traditions, and the meyhane, the tavern serving meze with raki, is a direct inheritance from them. Regional Anatolian cooking arrived with twentieth-century migration: Gaziantep for kebab and baklava, the Black Sea for anchovy and cornbread, the southeast for spice.\n\nSantorini's contribution is agricultural and specific. The island is volcanic, has almost no rainfall and no fresh water, and its vines are trained in low baskets on the ground to catch the sea mist. The soil produces a very small, intensely flavoured tomato, white aubergine, fava made from a local split pea, and capers. Assyrtiko, the white grape, produces a mineral wine that is unlike anything else in Greece.\n\nCyprus sits between Greek and Levantine. Halloumi, the squeaking grilling cheese, is the export, but the meze culture, the kleftiko lamb cooked in a sealed oven, the souvla and the commandaria dessert wine are the local shape of it.\n\nPrices are low in Greece and Turkey and moderate in Cyprus.\n\n## Where to Go\n\n### Istanbul\nThe meyhane, the taverns serving cold and hot meze with raki, which is the city's evening institution and comes from its Greek and Armenian past. The Spice Bazaar and the Kadikoy market on the Asian side, which is the better one. Balik ekmek, the grilled fish sandwich, from the Eminonu waterfront. Regional Anatolian restaurants: Gaziantep for kebab and baklava, the Black Sea for hamsi. Ottoman palace dishes at the restaurants that specialise in them. Breakfast, which in Turkey is an enormous spread rather than a meal. And the Bosphorus fish restaurants.\n\n### Athens\nThe central market, Varvakios, for the meat, fish and the tavernas inside it. Psiri and Koukaki for the modern Greek restaurants. Souvlaki and gyros from the street, which is the national fast food. Wild greens, fava, and the vegetable dishes that make up most of the traditional repertoire. The islands' produce arriving daily. Greek wine, which has improved enormously and is still cheap. And the mezedopoleia, the small-plate places, which is how Athens eats out.\n\n### Thessaloniki\nBougatsa for breakfast, the filo pastry with semolina custard or cheese, which is a Thessaloniki institution. The Modiano and Kapani markets. Soutzoukakia, the spiced meatballs in tomato sauce, which came from Asia Minor. The ouzeri and tsipouradika, where small plates arrive with each round of spirits. Ladadika, the old warehouse district, for the restaurants. And the general Anatolian spicing that separates northern Greek cooking from the rest.\n\n### Heraklion\nCretan village cooking: wild greens, pulses, barley rusks with tomato and cheese, and olive oil in quantity. Raki, called tsikoudia here, which arrives free at the end of every meal. Local cheeses: graviera, mizithra and the fresh ones. The Heraklion market. Dakos, the rusk salad, which is the emblematic dish. Snails, which Crete eats seriously. And the mountain villages inland, where the cooking is better than in the resorts.\n\n### Santorini\nThe small intense tomatoes grown without irrigation, and tomatokeftedes, the fritters made from them. Fava, the split pea purée, which has protected designation status here. White aubergine, a local variety. Capers and caper leaves. Assyrtiko wine from the basket-trained vines, tasted at the wineries. And the cliff-edge restaurants, which charge for the view rather than the food.\n\n### Larnaca\nMeze, which in Cyprus means a long sequence of small dishes rather than a starter. Halloumi, grilled rather than raw, which is how it is eaten locally. Kleftiko, lamb slow-cooked in a sealed clay oven. Souvla, the large-cut grilled meat. Village bread and the local olives. Commandaria, the sweet wine claimed as the oldest named wine still in production. And the tavernas in the villages inland rather than the seafront.\n\n## When to Go\nSpring and autumn across the whole basin.\n\nApril to June is the best window: warm, everything open, the wild greens and spring vegetables at their peak, and the crowds not yet arrived.\n\nSeptember to October is the other good window: hot early, the grape and olive harvests happening, sea still warm and the islands emptying.\n\nJuly and August are very hot across the region, above 35C regularly, and the islands are at their most crowded and expensive. Santorini in particular is difficult.\n\nNovember to March is low season: mild on the coast, cool inland, many island businesses closed and prices at their lowest. Istanbul, Athens and Thessaloniki all work year-round.\n\nGreek Orthodox Easter, which usually falls later than the Western date, is the biggest food event of the year and worth timing for.\n\nRamadan changes eating hours in Istanbul, with iftar meals after sunset being a genuine spectacle.\n\n## What to Watch Out For\nSantorini and the other main islands close substantially from November to March, with many restaurants, hotels and ferry routes shutting entirely.\n\nCliff-edge restaurants in Santorini charge for the view. The food inland at Pyrgos, Megalochori and Emporio is better and cheaper.\n\nGreek tavernas frequently bring dessert or raki free at the end; refusing it is unnecessary.\n\nOrdering meze in Cyprus commits you to a long sequence of dishes, often fifteen or twenty, and it is a great deal of food.\n\nIstanbul's tourist-facing restaurants in Sultanahmet are poor value. Kadikoy, Karakoy and Besiktas are where the eating is.\n\nRestaurant touts on the streets of Istanbul and in Athens' Plaka are a sign to keep walking.\n\nAugust closures are common in Athens and Thessaloniki as the cities empty for holidays.\n\nFerry schedules between the islands are seasonal and reduce sharply outside summer; a spring itinerary needs checking.\n\n## Who This Is (and Isn't) For\nTravellers who want to understand what the Mediterranean diet actually is should eat in a Cretan mountain village, because the wild greens, barley rusks and olive oil that produced the research finding are still the everyday food there rather than a health-tourism product. Anyone in Greece for food should go to Thessaloniki over Athens, since Greeks themselves do.\n\nTravellers who want the widest range in one city should take Istanbul, where Ottoman court cooking, Anatolian regional food and the old Greek and Armenian meyhane tradition all still operate. Anyone visiting the islands between November and March will find much of them shut. And visitors who book a Santorini table for the caldera view should understand they are buying the view, and that the villages inland cook better.",
-      "topDestinations": "Istanbul; Athens; Thessaloniki; Heraklion",
+      "title": "World-Class Museums in the Mediterranean",
+      "body": "## The Quick Read\nThe Acropolis Museum was built to make an argument. It stands three hundred metres from the Parthenon with a top floor rotated to align exactly with the temple and glazed on all four sides, so that the surviving marbles are displayed in the same orientation and the same light as they were carved for, with the building itself visible through the glass. The gaps where the Parthenon Marbles removed by Lord Elgin should be are filled with plaster casts, deliberately obvious. The ground floor has a glass walkway over an excavated Athenian neighbourhood that was found when they dug the foundations, and you look down at it as you walk in.\n\n## Why the Mediterranean Delivers This\nEverything portable that came out of Pompeii is in one building in Naples. The National Archaeological Museum holds the frescoes, the mosaics including the enormous Alexander Mosaic from the House of the Faun, the bronzes from the Villa of the Papyri and the Farnese collection of classical sculpture, which means the excavated sites are largely stripped and the museum is where the objects actually are. Seeing the site without the museum, or the museum without the site, is doing half of it.\n\nAthens made the same argument architecturally. The Acropolis Museum, opened in 2009, is built over an excavated ancient neighbourhood with glass floors so you walk above it, and its top floor is aligned exactly with the Parthenon and glazed on all sides, with the surviving frieze arranged in its original order and gaps where the sculptures in London would go. The building is an argument about the Parthenon Marbles made in concrete and glass.\n\nTurkey's Zeugma Mosaic Museum in Gaziantep exists because of a dam. When the Birecik reservoir was about to flood a Roman city on the Euphrates, a rescue excavation lifted the mosaics, and they now fill one of the largest mosaic museums in the world.\n\nTunisia's Bardo holds the largest collection of Roman mosaics anywhere, in a former Ottoman palace.\n\n## Where to Go\n### Italy\nThe Vatican Museums need a booked timed ticket and an early or late slot; the Sistine Chapel is at the end and the route is one-way. The Uffizi and the Accademia in Florence both need booking, and the Uffizi is hung chronologically so the Renaissance unfolds in order.\n\nNaples's National Archaeological Museum is central and underrated, and the Secret Cabinet of erotic material from Pompeii requires no separate ticket now. Venice has the Accademia for Venetian painting and the Peggy Guggenheim in the palazzo she lived in on the Grand Canal.\n\nSicily adds the Valley of the Temples at Agrigento, seven Doric temples better preserved than almost anything in Greece outside Athens.\n\n### Greece and Turkey\nAthens's Acropolis Museum and the National Archaeological Museum are two separate essentials, the first for the Parthenon material and the second for everything else including the Mycenaean gold. Heraklion's museum on Crete holds the Knossos frescoes and the Phaistos Disc.\n\nIstanbul's Topkapi and the Archaeological Museums are adjacent, the latter holding the Alexander Sarcophagus. Ankara's Museum of Anatolian Civilizations covers Hittite and Neolithic Anatolia in an Ottoman bedesten and is the best single museum in Turkey. Gaziantep's Zeugma is a three-hour flight or a long drive from Istanbul and is worth it.\n\n### North Africa and the Adriatic\nThe Bardo in Tunis is fifteen minutes from the medina and holds room after room of Roman floor mosaics lifted from sites across the country. Dubrovnik's Rector's Palace was the entire government of the Republic and is now the city museum.\n\n## When to Go\nYear-round. These are indoor institutions and they are the obvious answer to a Mediterranean summer afternoon.\n\nNovember to March is quietest and cheapest across the region, and the major museums are considerably more pleasant.\n\nMost close one day a week, commonly Monday or Tuesday, and several close on national holidays that catch visitors out.\n\n## What to Watch Out For\nThe Vatican Museums are the single most crowded major museum in Europe in summer, with queues that can exceed two hours without a booked ticket. Book online, and note that skip-the-line tour resellers charge many times the official price.\n\nPhotography rules vary and are enforced. The Sistine Chapel bans photography entirely and staff will tell you so loudly.\n\nDress codes apply at the Vatican, covering shoulders and knees, and at any mosque or church you visit alongside. This is enforced at the door.\n\n## Who This Is (and Isn't) For\nRight for anyone visiting the archaeological sites, since in this region the objects and the ruins have usually been separated and both halves are needed.\n\nWrong for anyone hoping to do the Vatican Museums quickly, since nine miles of galleries funnel toward the Sistine Chapel and the crowd moves as one. Go to Naples's Archaeological Museum on the same trip as Pompeii, ideally the day before, and the ruins will make sense.",
+      "topDestinations": "The Vatican Museums; The Acropolis Museum & the National Archaeological; The Uffizi & the Accademia; Topkapi & the Istanbul Archaeological Museums",
       "bestWindow": [
         1,
         2,
@@ -370,86 +636,76 @@
       ],
       "sources": [
         {
-          "url": "https://www.discovergreece.com/experiences/gastronomy",
-          "note": "The Greek tourism organisation on the regional cuisines and the diet.",
-          "title": "Greek gastronomy"
+          "url": "https://www.theacropolismuseum.gr/",
+          "note": "The building, the alignment and the casts.",
+          "title": "Acropolis Museum"
         },
         {
-          "url": "https://www.discovergreece.com/attica/athens",
-          "note": "The capital, its markets and its food districts.",
-          "title": "Athens"
+          "url": "https://www.museivaticani.va/",
+          "note": "Galleries, tickets and the Sistine Chapel.",
+          "title": "Musei Vaticani"
         },
         {
-          "url": "https://www.discovergreece.com/macedonia/thessaloniki",
-          "note": "The Asia Minor influence and why Greeks rate the city for food.",
-          "title": "Thessaloniki"
+          "url": "https://mannapoli.it/",
+          "note": "The Pompeii material and the Farnese collection.",
+          "title": "Museo Archeologico Nazionale di Napoli"
         },
         {
-          "url": "https://www.discovergreece.com/crete",
-          "note": "The island's villages, produce and the Cretan diet.",
-          "title": "Crete"
-        },
-        {
-          "url": "https://www.discovergreece.com/cyclades/santorini",
-          "note": "The volcanic agriculture, the tomatoes, the fava and the wine.",
-          "title": "Santorini"
-        },
-        {
-          "url": "https://www.visitcyprus.com/discover-cyprus/gastronomy/",
-          "note": "The meze, the halloumi and the island's own tradition.",
-          "title": "Cypriot gastronomy"
+          "url": "https://muze.gov.tr/",
+          "note": "The rescue excavation and the collection.",
+          "title": "Zeugma Mosaic Museum"
         }
       ],
-      "wordCount": 1535,
-      "lastResearched": "2026-09-01"
+      "wordCount": 823,
+      "lastResearched": "2026-08-27"
     },
     "images": [
       {
-        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/499d88fb-f194-4a0e-9c5a-42fcb70b8fec/fetched-heraklion-pexels-1785537002326-0.jpg",
-        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/499d88fb-f194-4a0e-9c5a-42fcb70b8fec/fetched-heraklion-pexels-1785537002326-0.jpg",
-        "alt": "Beautiful view of Heraklion harbor with sailboats and cityscape under a blue sky.",
-        "credit": "Norbert Velescu",
-        "creditUrl": "https://www.pexels.com/@norbert-velescu-2169962",
+        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/4bde6870-efd0-4629-87c1-2ff28f1b8cee/fetched-thessaloniki-pexels-1785537722069-0.jpg",
+        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/4bde6870-efd0-4629-87c1-2ff28f1b8cee/fetched-thessaloniki-pexels-1785537722069-0.jpg",
+        "alt": "Historic White Tower in Thessaloniki with lush greenery and clear sky",
+        "credit": "Dimitris Mourousiadis",
+        "creditUrl": "https://www.pexels.com/@dimi",
         "source": "pexels"
       },
       {
-        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/499d88fb-f194-4a0e-9c5a-42fcb70b8fec/fetched-heraklion-pexels-1785537005364-1.jpg",
-        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/499d88fb-f194-4a0e-9c5a-42fcb70b8fec/fetched-heraklion-pexels-1785537005364-1.jpg",
-        "alt": "Majestic view of Koules Fortress reflected in calm waters at Heraklion harbor during twilight.",
-        "credit": "GEORGE DESIPRIS",
-        "creditUrl": "https://www.pexels.com/@george-desipris",
-        "source": "pexels"
-      },
-      {
-        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/499d88fb-f194-4a0e-9c5a-42fcb70b8fec/fetched-heraklion-pexels-1785537007291-2.jpg",
-        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/499d88fb-f194-4a0e-9c5a-42fcb70b8fec/fetched-heraklion-pexels-1785537007291-2.jpg",
-        "alt": "View of the Heraklion sea wall and harbor with ferries docked on a cloudy day in Greece.",
+        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/4bde6870-efd0-4629-87c1-2ff28f1b8cee/fetched-thessaloniki-pexels-1785537724641-1.jpg",
+        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/4bde6870-efd0-4629-87c1-2ff28f1b8cee/fetched-thessaloniki-pexels-1785537724641-1.jpg",
+        "alt": "Stunning aerial night view of Thessaloniki's illuminated waterfront in Greece.",
         "credit": "K",
         "creditUrl": "https://www.pexels.com/@kelly",
         "source": "pexels"
       },
       {
-        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/499d88fb-f194-4a0e-9c5a-42fcb70b8fec/fetched-heraklion-pexels-1785537009038-3.jpg",
-        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/499d88fb-f194-4a0e-9c5a-42fcb70b8fec/fetched-heraklion-pexels-1785537009038-3.jpg",
-        "alt": "An aerial view of Heraklion, Greece, showcasing the vibrant cityscape blending modern buildings with ancient fortifications.",
+        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/4bde6870-efd0-4629-87c1-2ff28f1b8cee/fetched-thessaloniki-pexels-1785537726550-2.jpg",
+        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/4bde6870-efd0-4629-87c1-2ff28f1b8cee/fetched-thessaloniki-pexels-1785537726550-2.jpg",
+        "alt": "Aerial view of Thessaloniki's urban architecture, showcasing densely packed buildings and mountains in the background.",
         "credit": "K",
         "creditUrl": "https://www.pexels.com/@kelly",
         "source": "pexels"
       },
       {
-        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/499d88fb-f194-4a0e-9c5a-42fcb70b8fec/fetched-heraklion-openverse-1785537011070-4.jpg",
-        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/499d88fb-f194-4a0e-9c5a-42fcb70b8fec/fetched-heraklion-openverse-1785537011070-4.jpg",
-        "alt": "Agios Minas Cathedral, Plateia Agiou Mina, Heraklion, Greece",
-        "credit": "w_lemay",
-        "creditUrl": "https://www.flickr.com/photos/59081381@N03",
-        "source": "openverse"
+        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/4bde6870-efd0-4629-87c1-2ff28f1b8cee/fetched-thessaloniki-pexels-1785537728595-3.jpg",
+        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/4bde6870-efd0-4629-87c1-2ff28f1b8cee/fetched-thessaloniki-pexels-1785537728595-3.jpg",
+        "alt": "A sprawling aerial view of Thessaloniki, capturing the dense urban landscape under daylight.",
+        "credit": "K",
+        "creditUrl": "https://www.pexels.com/@kelly",
+        "source": "pexels"
       },
       {
-        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/499d88fb-f194-4a0e-9c5a-42fcb70b8fec/fetched-heraklion-openverse-1785537013286-5.jpg",
-        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/499d88fb-f194-4a0e-9c5a-42fcb70b8fec/fetched-heraklion-openverse-1785537013286-5.jpg",
-        "alt": "Windows, Agios Minas Cathedral, Plateia Agiou Mina, Heraklion, Greece",
-        "credit": "w_lemay",
-        "creditUrl": "https://www.flickr.com/photos/59081381@N03",
+        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/4bde6870-efd0-4629-87c1-2ff28f1b8cee/fetched-thessaloniki-pexels-1785537730706-4.jpg",
+        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/4bde6870-efd0-4629-87c1-2ff28f1b8cee/fetched-thessaloniki-pexels-1785537730706-4.jpg",
+        "alt": "Bustling street scene in Thessaloniki, Greece with historic Rotunda in the background.",
+        "credit": "Natalia Sevruk",
+        "creditUrl": "https://www.pexels.com/@natalia-sevruk-636238602",
+        "source": "pexels"
+      },
+      {
+        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/4bde6870-efd0-4629-87c1-2ff28f1b8cee/fetched-thessaloniki-openverse-1785537732510-5.jpg",
+        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/4bde6870-efd0-4629-87c1-2ff28f1b8cee/fetched-thessaloniki-openverse-1785537732510-5.jpg",
+        "alt": "Museum of Byzantine Culture, Thessaloniki, Greece",
+        "credit": "Tilemahos Efthimiadis",
+        "creditUrl": "https://www.flickr.com/photos/64379474@N00",
         "source": "openverse"
       }
     ]
@@ -461,6 +717,8 @@
     "displayScore": 97,
     "city": "Quebec City",
     "country": "Canada",
+    "state": null,
+    "placeLabel": "Canada",
     "iata": "YQB",
     "region": "NA",
     "introTitle": "The Only Walled City North of Mexico",
@@ -471,6 +729,7 @@
     "tier": "S",
     "note": "The only walled city north of Mexico, a UNESCO old town that reads as Europe",
     "subregion": "Eastern Canada",
+    "vibeCount": 8,
     "otherVibes": [
       {
         "key": "historic_residential_districts",
@@ -657,146 +916,14 @@
     ]
   },
   {
-    "slug": "kanazawa-cherry-blossoms",
-    "insteadOf": "Kyoto",
-    "hook": "One of Japan's three great gardens, 400 cherry trees, and free entry at peak bloom.",
-    "displayScore": 92,
-    "city": "Kanazawa",
-    "country": "Japan",
-    "iata": "KMQ",
-    "region": "AS",
-    "introTitle": "A Castle Town of Gardens and Gold",
-    "introBody": "Kanazawa grew rich a long time ago and kept the look of it. Under the Maeda lords, this was the seat of one of the wealthiest domains in old Japan, and the money went into gardens, crafts, and fine districts rather than war. The city sits on the Sea of Japan coast, between the mountains and the water, and because it came through the last war without bombing, its old quarters still stand much as they did.\n\nAt the center is Kenroku-en, counted among the three great gardens of Japan. The Maeda family shaped it over generations, starting in the 1670s, into a wide landscape of ponds, streams, teahouses, and old pines braced with ropes and poles against the winter snow. Next to it stand the walls and gates of Kanazawa Castle, the family's former stronghold, set in its own broad grounds.\n\nThe old town is made for walking. In Nagamachi, earth-walled lanes run past the former homes of samurai. In the Higashi Chaya district, wooden teahouses line a short street where geisha still perform. Kanazawa is also Japan's center for gold leaf, beaten so thin it lifts on a breath, and the workshops turn out almost all of the country's supply; you will see it on lacquerware, on crafts, and even folded into ice cream.\n\nFor contrast, the round glass 21st Century Museum of Contemporary Art sits near the old castle, and the seafood stalls of Omicho Market have fed the city for centuries. Spring and autumn are the easiest seasons here, when the garden is at its best and the coast is mild before the heavy winter snow.",
-    "vibeKey": "cherry_blossoms",
-    "vibeLabel": "Cherry Blossoms",
-    "engineScore": 82,
-    "tier": "A",
-    "note": "Kenrokuen Garden, one of Japan's Three Great Gardens, hosts roughly 400 cherry trees of about 40 varieties, with admission free during peak bloom",
-    "subregion": "East Asia",
-    "otherVibes": [
-      {
-        "key": "world_class_museums",
-        "label": "World-Class Museums",
-        "score": 83,
-        "tier": "A",
-        "note": "The SANAA-designed 21st Century Museum of Contemporary Art draws over one million visitors a year to its circular glass building and installations like Leandro Erlich's The Swimming Pool"
-      },
-      {
-        "key": "historic_old_towns",
-        "label": "Historic Old Towns",
-        "score": 79,
-        "tier": "A",
-        "note": "Preserved geisha chaya and samurai districts beside Kenrokuen garden"
-      },
-      {
-        "key": "sushi_kaiseki",
-        "label": "Sushi & Kaiseki",
-        "score": 78,
-        "tier": "A",
-        "note": "Kaga kaiseki and Sea of Japan seafood at the Omicho market"
-      }
-    ],
-    "blog": {
-      "title": "Cherry Blossoms in East Asia",
-      "body": "## The Quick Read\nFor one fleeting week each spring, East Asia turns pink, and the experience is one of the most beloved in travel. Japan is the heart of it, and Kyoto leads, where the blossoms fall over centuries-old temples along the Philosopher's Path and Maruyama Park. Tokyo is just behind, with classic hanami picnics in Ueno Park, boats on the Chidorigafuchi moat, and the lantern-lit Meguro River. Korea has its own beloved season, with the Yeouido festival in Seoul and the country's biggest celebration at Jinhae. The catch that defines this whole vibe is timing: full bloom lasts only about a week, the exact dates shift year to year, and you usually book months ahead and gamble on catching it. That short, unpredictable window is why even the best destinations land in the high-A range rather than at the top of the scale. This guide ranks the places by how special the blossom experience really is, and explains how to play the timing.\n\n## Why East Asia Delivers This\nThe cherry blossom is woven deep into the culture here and carries real meaning. In Japan, hanami, the custom of gathering under the blooming trees to eat, drink, and admire them, goes back over a thousand years, and the brief, fragile bloom is tied to a whole aesthetic about the beauty of impermanence. Korea has its own equally cherished beotkkot season. The result is that when the trees flower, entire countries shift their attention outdoors, parks fill with picnicking families, and the mood is genuinely festive in a way a simple sightseeing trip is not.\n\nThe scale and setting are what make it worth traveling for. Japan has tens of thousands of trees in single locations, blossoms framing temples, castles, moats, and Mount Fuji, and evening illuminations that turn the flowers luminous after dark. Korea lines its rivers, lakes, and palace grounds with them and throws festivals around the peak. The bloom also rolls across the region over several weeks, starting in the warm south and moving north and uphill, which means a flexible traveler can chase it. Few natural events are so beautiful, so culturally loaded, and so widely celebrated at once.\n\n## Where to Go\n\n### Kyoto and Tokyo: the heart of hanami\nKyoto is the most atmospheric place to see the blossoms, where they fall over the temples and gardens that already define the city. The Philosopher's Path, the weeping cherries of Maruyama Park, the riverside at Arashiyama, and the evening illuminations at temples like Kiyomizu-dera make it the classic choice, with bloom usually arriving in the last days of March and peaking in early April. Tokyo runs a close second and offers the full hanami experience: picnics under the trees in Ueno Park and Shinjuku Gyoen, rowboats beneath the blossoms on the Chidorigafuchi moat, and the food stalls and lanterns along the Meguro River. Tokyo typically blooms a few days before Kyoto, around late March.\n\n### Yoshino, Osaka, and northern Japan\nFor sheer scale, Yoshino in Nara prefecture is unmatched, around 30,000 cherry trees planted in tiers up a sacred mountainside, blooming in waves from the lower to the upper slopes through early and mid-April, a hanami site revered for centuries. Osaka adds the grounds of Osaka Castle and the famous one-week cherry passage at the old Mint. Further north, where the bloom comes later, Hirosaki Castle in Aomori is one of the country's great spots, its moat carpeted with fallen petals into a pink raft in late April and early May, a good option for travelers who miss the main-island peak.\n\n### Korea: Seoul and Jinhae\nKorea's season is just as celebrated. Seoul lines the Yeouido riverside and Seokchon Lake with trees and frames its palaces in blossom, usually peaking in the first week or so of April. The country's biggest event is the Jinhae Gunhangje Festival in the south, where the Yeojwacheon stream and the cherry tunnel over the old railway tracks at Gyeonghwa Station draw huge crowds in late March and early April. Korea's bloom starts earlier in the south, on Jeju and around Busan, and reaches Seoul a week or so later.\n\n### Mount Fuji, Wuhan, and Taiwan\nFor the single most iconic image, the Chureito Pagoda near Mount Fuji frames a five-story pagoda, cherry blossoms, and the volcano in one shot, peaking in mid-April, though you need both the bloom and a clear Fuji to line up. China has its own strong scene, led by Wuhan, where the university campus and East Lake hold some of the country's finest cherry trees, blooming in mid to late March. Taiwan blooms earliest of all, in February and March, with a different, deeper-pink species on Yangmingshan above Taipei and at the mountain resort of Wuling Farm, a useful early-season alternative.\n\n## When to Go\nThe window is narrow and the timing is the whole game. Across central Japan, including Tokyo, Kyoto, and Osaka, the bloom generally arrives in the last week of March and peaks in the first week of April, with full bloom lasting only about a week before the petals fall. The bloom moves predictably with geography and elevation: Taiwan flowers in February, the warm south of Korea and Japan in late March, the main Japanese cities in early April, and the far north, like Hirosaki and Hokkaido, into late April and early May. Forecasts are published and updated through late winter, so watch them closely as your dates approach. The single best strategy is to build in a few days of flexibility and a plan to chase the bloom north or uphill if it runs early or late, because the difference between a bare branch and full bloom can be just a few days.\n\n## What to Watch Out For\nThe timing gamble is the defining challenge. You will usually book flights and hotels months ahead, when prices are at their annual peak and the popular places sell out, yet you cannot know the exact bloom dates that far out, so you are betting on the forecast. Build flexibility into your itinerary, consider multiple cities at different latitudes to hedge, and accept that you might catch the peak, the early buds, or the falling petals. Crowds are intense, since this is the single busiest travel week in Japan, so the famous spots are packed and the best picnic spaces go early. Mind the etiquette at hanami: do not break branches or climb the trees, do not hog huge areas, and clean up after your picnic. Sort the mainland visa if Wuhan is on your list. And remember that wind and rain can strip the blossoms in a day, so when they are at their peak, go and see them rather than saving it for later.\n\n## Who This Is (and Isn't) For\nThis vibe is for travelers who want to witness one of the world's great natural and cultural events, who find beauty in something fleeting, and who will join the picnics and the festival crowds rather than seek solitude. It rewards flexibility, a willingness to watch the forecasts and adjust, and an acceptance that the timing is never guaranteed.\n\nIt is a weaker fit for travelers on fixed dates who cannot adjust if the bloom shifts, for those who dislike crowds and peak-season prices, and for anyone who needs certainty. The blossoms are glorious but genuinely unreliable, which is why this is a vibe to approach with flexible plans and realistic expectations. For those who embrace that, catching full bloom in Kyoto or Seoul is one of the most rewarding experiences in travel.",
-      "topDestinations": "Kyoto; Tokyo; Yoshino; Seoul",
-      "bestWindow": [
-        3,
-        4
-      ],
-      "sources": [
-        {
-          "url": "https://www.klook.com/en-US/blog/cherry-blossom-forecast-japan/",
-          "note": "bloom dates and top spots across Japan",
-          "title": "Klook - Japan Cherry Blossom Forecast and Spots 2025"
-        },
-        {
-          "url": "https://www.klook.com/en-US/blog/cherry-blossom-forecast-korea/",
-          "note": "Korea's bloom timeline and viewing locations",
-          "title": "Klook - Korea Cherry Blossom Forecast and Spots 2025"
-        },
-        {
-          "url": "https://english.visitkorea.or.kr/svc/contents/contentsView.do?vcontsId=221451",
-          "note": "official Korean bloom forecast by region",
-          "title": "Visit Korea - 2025 Cherry Blossom Forecast"
-        },
-        {
-          "url": "https://www.thewomtravel.com/destinations/travel-news/cherry-blossom-bloom.html",
-          "note": "peak-bloom dates for Tokyo, Kyoto, Osaka, and beyond",
-          "title": "The Wom Travel - Cherry Blossoms 2025: Dates and Guide for Japan"
-        },
-        {
-          "url": "https://inmykorea.com/where-to-see-cherry-blossoms-in-korea-and-seoul/",
-          "note": "Seoul, Jinhae, and Busan blossom spots",
-          "title": "In My Korea - Where to See Cherry Blossoms in Korea 2025: Seoul and Beyond"
-        },
-        {
-          "url": "https://www.pelago.com/en-US/articles/cherry-blossoms-in-korea-guide/",
-          "note": "the Jinhae festival and Korean bloom timing",
-          "title": "Pelago - Cherry Blossoms in Korea 2025 Forecast"
-        }
-      ],
-      "wordCount": 1230,
-      "lastResearched": "2026-06-22"
-    },
-    "images": [
-      {
-        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/23218de9-b145-4ae4-b00a-ca8796152e8e/fetched-kanazawa-pexels-1785560440824-2.jpg",
-        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/23218de9-b145-4ae4-b00a-ca8796152e8e/fetched-kanazawa-pexels-1785560440824-2.jpg",
-        "alt": "Scenic view of Kanazawa city with cherry blossoms in full bloom during springtime.",
-        "credit": "Marek Piwnicki",
-        "creditUrl": "https://www.pexels.com/@marek-piwnicki-3907296",
-        "source": "pexels"
-      },
-      {
-        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/23218de9-b145-4ae4-b00a-ca8796152e8e/fetched-kanazawa-openverse-1785560446710-5.jpg",
-        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/23218de9-b145-4ae4-b00a-ca8796152e8e/fetched-kanazawa-openverse-1785560446710-5.jpg",
-        "alt": "Kanazawa, Japan Love",
-        "credit": "Qu1m",
-        "creditUrl": "https://www.flickr.com/photos/96076734@N00",
-        "source": "openverse"
-      },
-      {
-        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/23218de9-b145-4ae4-b00a-ca8796152e8e/fetched-kanazawa-openverse-1785560448600-6.jpg",
-        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/23218de9-b145-4ae4-b00a-ca8796152e8e/fetched-kanazawa-openverse-1785560448600-6.jpg",
-        "alt": "Kanazawa, Japan.",
-        "credit": "RG in TLV",
-        "creditUrl": "https://www.flickr.com/photos/30845197@N00",
-        "source": "openverse"
-      },
-      {
-        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/23218de9-b145-4ae4-b00a-ca8796152e8e/fetched-kanazawa-pixabay-1785560450753-7.jpg",
-        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/23218de9-b145-4ae4-b00a-ca8796152e8e/fetched-kanazawa-pixabay-1785560450753-7.jpg",
-        "alt": "kenrokuen, kanazawa, japan, hokuriku, kenrokuen, kanazawa, kanazawa, kanazawa, kanazawa, kanazawa",
-        "credit": "departure46",
-        "creditUrl": "https://pixabay.com/users/departure46-261317/",
-        "source": "pixabay"
-      },
-      {
-        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/23218de9-b145-4ae4-b00a-ca8796152e8e/fetched-kanazawa-pexels-1785560452522-8.jpg",
-        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/23218de9-b145-4ae4-b00a-ca8796152e8e/fetched-kanazawa-pexels-1785560452522-8.jpg",
-        "alt": "Scenic view of traditional Japanese street architecture in Kanazawa, Japan.",
-        "credit": "Bruna Santos",
-        "creditUrl": "https://www.pexels.com/@brunafisantos",
-        "source": "pexels"
-      },
-      {
-        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/23218de9-b145-4ae4-b00a-ca8796152e8e/fetched-kanazawa-pexels-1785560454443-9.jpg",
-        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/23218de9-b145-4ae4-b00a-ca8796152e8e/fetched-kanazawa-pexels-1785560454443-9.jpg",
-        "alt": "Explore the historic charm of Kanazawa's Higashi Chaya District with its classic wooden architecture.",
-        "credit": "Jeremy Wong",
-        "creditUrl": "https://www.pexels.com/@jeremy-wong-122443920",
-        "source": "pexels"
-      }
-    ]
-  },
-  {
     "slug": "chiang-mai-living-temples",
     "insteadOf": "Bangkok",
     "hook": "Hundreds of working temples you can sit in, not queue through.",
     "displayScore": 95,
     "city": "Chiang Mai",
     "country": "Thailand",
+    "state": null,
+    "placeLabel": "Thailand",
     "iata": "CNX",
     "region": "AS",
     "introTitle": "A Moated Square in the Mountains",
@@ -807,6 +934,7 @@
     "tier": "A",
     "note": "Hundreds of working wats, monk chats, meditation retreats",
     "subregion": "Southeast Asia",
+    "vibeCount": 9,
     "otherVibes": [
       {
         "key": "night_safari_parks",

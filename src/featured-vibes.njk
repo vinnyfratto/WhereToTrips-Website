@@ -36,7 +36,8 @@ layout: layouts/base.njk
       <span class="dest-stamp-num">{{ v.displayScore }}</span>
     </span>
     <span class="eyebrow">{{ v.vibeLabel }}</span>
-    <h1>{{ v.city }}<span class="vibe-hero-country">, {{ v.country }}</span></h1>
+    <h1>{{ v.city }}<span class="vibe-hero-country">, {{ v.placeLabel }}</span></h1>
+    <p class="vibe-hero-region">{{ v.subregion }}</p>
     <p class="lede">{{ v.hook }}</p>
     <p class="vibe-hero-swap">Most people book {{ v.insteadOf }}. The Vibe Engine sends you here.</p>
     <div class="cta">
@@ -49,7 +50,7 @@ layout: layouts/base.njk
 {# ── What the engine knows about this pairing ───────────────────── #}
 <section class="block tint">
   <div class="wrap">
-    <div class="sec-head reveal">
+    <div class="sec-head center reveal">
       <span class="eyebrow">Why it ranks</span>
       <h2>{{ v.city }} for <span class="italic">{{ v.vibeLabel }}</span></h2>
       {% if v.note %}<p class="lede">{{ v.note }}.</p>{% endif %}
@@ -92,9 +93,13 @@ layout: layouts/base.njk
 {# ── The full vibe guide ────────────────────────────────────────── #}
 <section class="block" id="guide">
   <div class="wrap">
-    <div class="sec-head reveal">
-      <span class="eyebrow">The vibe guide</span>
-      <h2>{{ v.blog.title }}</h2>
+    <div class="sec-head center reveal">
+      {#- "the Mediterranean" / "the US Southeast", but "Mexico" and
+          "Southeast Asia" take no article. -#}
+      {%- set needsThe = v.subregion == "Mediterranean" or v.subregion.substring(0, 3) == "US " -%}
+      <span class="eyebrow">The vibe guide for {% if needsThe %}the {% endif %}{{ v.subregion }}</span>
+      <h2>{% if needsThe %}The {% endif %}{{ v.subregion }} at its <span class="italic">best</span></h2>
+      <p class="lede">{{ v.blog.title }}</p>
       {% if v.blog.lastResearched %}
       <p class="vibe-byline">Researched by hand · last updated {{ v.blog.lastResearched }}</p>
       {% endif %}
@@ -123,7 +128,7 @@ layout: layouts/base.njk
 {# ── Every vibe this destination matches ────────────────────────── #}
 <section class="block tint">
   <div class="wrap">
-    <div class="sec-head reveal">
+    <div class="sec-head center reveal">
       <span class="eyebrow">The full picture</span>
       <h2>Every vibe <span class="italic">{{ v.city }}</span> matches</h2>
       <p class="lede">One destination answers more than one mood. These are the other vibes {{ v.city }} ranks for in the Vibe Engine.</p>
@@ -154,7 +159,7 @@ layout: layouts/base.njk
 {% if v.images.length > 1 %}
 <section class="block">
   <div class="wrap">
-    <div class="sec-head reveal">
+    <div class="sec-head center reveal">
       <span class="eyebrow">On the ground</span>
       <h2>{{ v.city }}, <span class="italic">up close</span></h2>
     </div>

@@ -30,9 +30,26 @@ const path = require("path");
 
 const { url: SB_URL, anonKey: SB_KEY } = require("../src/_data/supabase.json");
 
-/* ── The picks ──────────────────────────────────────────────────────
+/* ── The picks ───────────────────────────────────────
    Six top-tier vibes deliberately matched to the destination people
-   DON'T think of first. `insteadOf` is the hook line on the card. */
+   DON'T think of first. `insteadOf` is the hook line on the card.
+
+   Every pick has to carry a DEPTH of ranked vibes, not just one good
+   one — the Explore page's "every vibe this place matches" list is the
+   proof the engine is real, and a destination with two rows makes it
+   look thin. Heraklion was the lesson: the only Cretan gateway in the
+   engine, and it holds exactly two ranking rows (Mediterranean Coastal
+   Cooking and Wellness & Fitness Resorts, and the second has no blog).
+   That is a genuine coverage gap in the engine, not a rendering bug.
+   Thessaloniki carries the Greek slot instead — nine ranked vibes, the
+   same "not the postcard island" story, and a better line than either:
+   the Vergina gold is in Thessaloniki, not Athens. Revisit Crete once
+   the engine has scored it properly.
+
+   `state` exists only for US picks. The engine has no state column
+   (`vibe_destination_rankings.admin_area` reads "United States" for
+   almost every US row), and a US card must never say "United States"
+   — it says Georgia. One pick, one hand-checked value. */
 const PICKS = [
   {
     slug: "oaxaca-artisan-craft-workshops",
@@ -43,6 +60,14 @@ const PICKS = [
     hook: "Everyone flies to the beach. The best craft villages in the Americas are an hour inland.",
   },
   {
+    slug: "savannah-historic-squares",
+    city: "Savannah", country: "United States", state: "Georgia",
+    vibeKey: "historic_residential_districts", subregion: "US Southeast",
+    displayScore: 93,
+    insteadOf: "Charleston",
+    hook: "Twenty-two oak-shaded squares of the original 1733 plan, still laid out exactly as drawn.",
+  },
+  {
     slug: "san-sebastian-michelin-fine-dining",
     city: "San Sebastian", country: "Spain",
     vibeKey: "michelin_fine_dining", subregion: "Western Europe",
@@ -51,12 +76,12 @@ const PICKS = [
     hook: "More Michelin stars per head than anywhere on earth, in a beach town of 190,000.",
   },
   {
-    slug: "crete-mediterranean-coastal-cooking",
-    city: "Heraklion", country: "Greece",
-    vibeKey: "mediterranean_coastal_cooking", subregion: "Mediterranean",
+    slug: "thessaloniki-world-class-museums",
+    city: "Thessaloniki", country: "Greece",
+    vibeKey: "world_class_museums", subregion: "Mediterranean",
     displayScore: 91,
-    insteadOf: "Santorini",
-    hook: "Same sea, same light, a quarter of the crowd, and the food people actually come back for.",
+    insteadOf: "Athens",
+    hook: "The Vergina gold, Philip II's own tomb treasure, is here. Not in Athens.",
   },
   {
     slug: "quebec-city-french-heritage",
@@ -67,14 +92,6 @@ const PICKS = [
     hook: "The only walled city north of Mexico, and a shorter flight than most of Europe.",
   },
   {
-    slug: "kanazawa-cherry-blossoms",
-    city: "Kanazawa", country: "Japan",
-    vibeKey: "cherry_blossoms", subregion: "East Asia",
-    displayScore: 92,
-    insteadOf: "Kyoto",
-    hook: "One of Japan's three great gardens, 400 cherry trees, and free entry at peak bloom.",
-  },
-  {
     slug: "chiang-mai-living-temples",
     city: "Chiang Mai", country: "Thailand",
     vibeKey: "living_temples_spiritual", subregion: "Southeast Asia",
@@ -83,6 +100,10 @@ const PICKS = [
     hook: "Hundreds of working temples you can sit in, not queue through.",
   },
 ];
+
+/* A pick below this many ranked vibes is a coverage gap, not a feature.
+   The generator refuses rather than shipping a two-row destination. */
+const MIN_VIBES = 6;
 
 /* Images per card. Six is what the app's result card cycles. */
 const MAX_IMAGES = 6;
@@ -134,6 +155,12 @@ function pickImages(rows) {
     );
     const hero = rankings.find((r) => r.vibe_key === pick.vibeKey);
     if (!hero) throw new Error(`${pick.city} has no ranking row for ${pick.vibeKey}`);
+    if (rankings.length < MIN_VIBES) {
+      throw new Error(
+        `${pick.city} holds only ${rankings.length} ranked vibes (min ${MIN_VIBES}). ` +
+        `Pick a destination the engine has actually covered, or score this one first.`
+      );
+    }
 
     // ── the sub-region blog behind that vibe ──────────────────────
     const [blog] = await sb(
@@ -159,6 +186,10 @@ function pickImages(rows) {
 
       city:    dest.city,
       country: dest.country,
+      state:   pick.state || null,
+      // What the card prints beside the sub-region. A US destination
+      // reads "Georgia", never "United States".
+      placeLabel: pick.state || dest.country,
       iata:    dest.iata,
       region:  dest.region,
       introTitle: dest.intro_title || null,
@@ -170,6 +201,7 @@ function pickImages(rows) {
       tier:        hero.tier,
       note:        hero.note || null,
       subregion:   pick.subregion,
+      vibeCount:   rankings.length,
 
       // Everything else this destination ranks for — the Explore page's
       // "every vibe this place matches" list. Hero vibe excluded; it has
@@ -191,7 +223,7 @@ function pickImages(rows) {
       images,
     });
 
-    console.log(`  ✓ ${pick.city} — ${hero.vibe_label} (engine ${hero.score}, ${images.length} images)`);
+    console.log(`  ✓ ${pick.city}, ${pick.state || dest.country} — ${hero.vibe_label} (engine ${hero.score}, ${rankings.length} vibes, ${images.length} images)`);
   }
 
   const dest = path.join(__dirname, "..", "src", "_data", "featuredVibes.json");

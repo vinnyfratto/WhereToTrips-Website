@@ -53,6 +53,17 @@
           </span>
         </a>
 
+        {#- Where this is. A US destination reads its state, never
+            "United States" — see the generator's `placeLabel`. -#}
+        <p class="dest-place">
+          <span>{{ v.placeLabel }}</span>
+          {#- Oaxaca's sub-region IS "Mexico"; printing it twice reads as a bug. -#}
+          {% if v.subregion != v.placeLabel %}
+          <span class="dest-place-sep" aria-hidden="true">·</span>
+          <span class="dest-place-region">{{ v.subregion }}</span>
+          {% endif %}
+        </p>
+
         {#- ── Why it scored — amber rule + the engine's own note ───────── -#}
         <div class="dest-reason">
           <span class="dest-reason-rule" aria-hidden="true"></span>
