@@ -40,10 +40,6 @@
         {
           "label": "Destinations",
           "href": "/destinations/"
-        },
-        {
-          "label": "Insights",
-          "href": "/insights/"
         }
       ]
     },
@@ -51,10 +47,6 @@
       "label": "WhereTo",
       "href": "/whereto/",
       "children": [
-        {
-          "label": "WhereTo",
-          "href": "/whereto/"
-        },
         {
           "label": "Discover",
           "href": "/whereto/discover/"
