@@ -95,7 +95,7 @@ sections:
     id: ''
     background: false
     center: true
-    intro: Browse by the experience you want. Each vibe maps to real destinations and typical budgets.
+    intro: Browse by the experience you want. Each vibe maps to destinations around the globe. Mix and match vibes to find the dream trip you probably never thought of.
     columns: 3
     collection: vibe
     limit: 6
