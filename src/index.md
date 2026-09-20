@@ -73,7 +73,8 @@ sections:
       accent: Destination
       post: out.
     lede: |-
-      When you want to go on a trip, you usually know WHAT you can spend, WHEN you can go, WHO's coming, and the VIBE you want.<br>
+      When you want to go on a trip, you usually know WHAT you can spend, WHEN you can go, WHO's coming, and the VIBE you want.
+
       WhereTo Tips is built on a Vibe Engine that it built to understand travelers wants. Make a few easy selections and inputs, then browse through destinations that all match your criteria. All scored based on what you want to do and how much you want to spend.
     id: how
     steps:
@@ -83,6 +84,8 @@ sections:
         body: Over 12,000 individual interests (we call vibes) are mapped and scored across over 900 global destinations.
       - title: Your destinations
         body: The Vibe Engine will match you with destinations that meet your vibes. All scored, ranked, and bookable.
+      - title: Book your trip package
+        body: Each returned destination comes with suggested hotel and flights to match your budget. Change either as you see fit.
   - type: collection_grid
     eyebrow: Featured Travel Vibes
     title:
