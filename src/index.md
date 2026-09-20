@@ -70,7 +70,7 @@ sections:
     eyebrow: How it works
     title:
       pre: 12,000+ Vibes, 900+ Destinations.
-      accent: New kind of travel app
+      accent: A new kind of travel app
       post: ''
     lede: |-
       When you want to go on a trip, you usually know HOW MUCH you can spend, WHEN you can go, WHO's coming, and the VIBE you want.
