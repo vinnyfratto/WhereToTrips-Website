@@ -209,18 +209,12 @@ async function inviteFromApplication(app) {
   // `source` is a fixed select of named programs, so it's left alone —
   // assigning a value it has no option for sets it to nothing at all.
   form.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  (form.elements.flight_rate || form.elements.email)?.focus();
-  msg('success', 'Carried ' + (app.name || app.email) + ' over — set the rates, then create the invite.');
+  (form.elements.revenue_share_percent || form.elements.email)?.focus();
+  msg('success', 'Carried ' + (app.name || app.email) + ' over — check the revenue share, then create the invite.');
 }
 
 // ── Invites ─────────────────────────────────────────────────────────
 async function loadInvites() {
-  const commissionRow = (k, label, def) => `
-    <div class="adm-form-row adm-comm-row">
-      <div class="field comm-label"><label>${label}</label></div>
-      <div class="field"><label class="hint">Rate</label><input name="${k}_rate" type="number" step="0.01" min="0" value="${def}" /></div>
-      <div class="field"><label class="hint">Type</label><select name="${k}_type"><option value="percent">percent</option><option value="flat">flat</option></select></div>
-    </div>`;
   panel('invites').innerHTML = `
     <div class="adm-card">
       <h3>Create invite</h3>
@@ -236,11 +230,14 @@ async function loadInvites() {
             </select>
           </div>
         </div>
-        <p class="adm-subhead">Commissions</p>
-        ${commissionRow('flight', 'Flight Commission', 0.02)}
-        ${commissionRow('hotel', 'Hotel Commission', 0.08)}
-        ${commissionRow('car', 'Car Rental Commission', 0.05)}
-        ${commissionRow('insurance', 'Trip Insurance Commission', 0.08)}
+        <p class="adm-subhead">Revenue share</p>
+        <div class="adm-form-row">
+          <div class="field">
+            <label>Revenue Share %</label>
+            <input name="revenue_share_percent" type="number" step="1" min="0" max="100" value="30" />
+            <span class="hint" style="display:block; margin-top:6px; max-width:46ch;">Their share of the commission WhereTo earns on a booking, not of what the traveller pays. Whole number, so 30 means 30%.</span>
+          </div>
+        </div>
         <div class="adm-form-row" style="margin-top:10px;">
           <div class="field"><label>Commission Duration (months)</label><input name="commission_duration_months" type="number" value="36" min="1" /></div>
           <div class="field"><label>Expires (days)</label><input name="expires_days" type="number" value="30" min="1" /></div>
@@ -260,10 +257,7 @@ async function loadInvites() {
     const r = await callAdmin('create_invite', {
       email: fd.get('email'), intended_name: fd.get('intended_name'), source: fd.get('source'),
       commission_duration_months: fd.get('commission_duration_months'), expires_days: fd.get('expires_days'),
-      flight_rate: fd.get('flight_rate'), flight_type: fd.get('flight_type'),
-      hotel_rate: fd.get('hotel_rate'), hotel_type: fd.get('hotel_type'),
-      car_rate: fd.get('car_rate'), car_type: fd.get('car_type'),
-      insurance_rate: fd.get('insurance_rate'), insurance_type: fd.get('insurance_type'),
+      revenue_share_percent: fd.get('revenue_share_percent'),
     });
     if (!r.ok) { msg('error', 'Create failed: ' + r.error); return; }
     const link = SITE + '/AffiliateSignUp/?invite=' + r.token;
@@ -296,7 +290,7 @@ async function renderInviteList() {
       <td>${i.state === 'pending' ? `<button class="btn btn-ghost btn-xs" data-revoke="${i.id}">Revoke</button>` : ''}</td>
     </tr>`).join('');
   $('#inv-list').innerHTML = `<table class="adm-table">
-    <thead><tr><th>Email</th><th>Name</th><th>Rate</th><th>Expires</th><th>State</th><th></th></tr></thead>
+    <thead><tr><th>Email</th><th>Name</th><th>Rev share</th><th>Expires</th><th>State</th><th></th></tr></thead>
     <tbody>${rows || '<tr><td colspan="6">No invites yet.</td></tr>'}</tbody></table>`;
   $('#inv-list').querySelectorAll('[data-revoke]').forEach((b) => {
     b.addEventListener('click', async () => {
