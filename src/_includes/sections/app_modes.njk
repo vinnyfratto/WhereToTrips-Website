@@ -28,7 +28,7 @@
           <span class="mode-tile-img">
             {% for src in m.images %}
             <img class="dest-photo-frame{% if loop.first %} is-on{% endif %}"
-                 {% if loop.first %}src="{{ src }}"{% else %}data-src="{{ src }}"{% endif %}
+                 {% if loop.first %}src="{{ src | thumb(560) }}"{% else %}data-src="{{ src | thumb(560) }}"{% endif %}
                  alt="{% if loop.first %}{{ m.title }}{% endif %}"
                  {% if not loop.first %}aria-hidden="true"{% endif %}
                  loading="{% if loop.first %}eager{% else %}lazy{% endif %}" decoding="async" />

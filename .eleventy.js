@@ -38,6 +38,27 @@ module.exports = function (eleventyConfig) {
   const md = require("markdown-it")({ html: true, linkify: true, breaks: false });
   eleventyConfig.addFilter("markdown", (str) => (str ? md.render(String(str)) : ""));
 
+  // ── Image resizing ─────────────────────────────────────────────────────────
+  // The Vibe Engine's photos are stored at full size: the category and
+  // collection banners are 1600-1800px wide, and the destination stock shots
+  // are bigger still. Dropping those straight into a 230px tile meant a page
+  // with 100 of them spent ten-plus seconds painting white boxes, which is
+  // indistinguishable from the images being broken.
+  //
+  // weserv, not Supabase's own transform endpoint — same rule the app follows
+  // (see the app's src/utils/imageSource.ts). Usage:
+  //   <img src="{{ someUrl | thumb(560) }}">
+  // Non-http values (a local /media/ path) pass through untouched, since
+  // weserv cannot reach them.
+  eleventyConfig.addFilter("thumb", (url, width = 600, quality = 72) => {
+    if (!url || typeof url !== "string") return url;
+    if (!/^https?:\/\//i.test(url)) return url;
+    // weserv takes the URL without its scheme.
+    const bare = url.replace(/^https?:\/\//i, "");
+    return `https://images.weserv.nl/?url=${encodeURIComponent(bare)}` +
+           `&w=${width}&q=${quality}&we&output=jpg`;
+  });
+
   // ── Solar icons ────────────────────────────────────────────────────────────
   // Same set/renderer as the app (@iconify-json/solar, bold-duotone). Usage:
   //   {% icon "compass" %}  or  {% icon "compass", "big" %}  (adds class ico-big)

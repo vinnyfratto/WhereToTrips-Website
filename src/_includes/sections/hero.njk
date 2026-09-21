@@ -65,7 +65,7 @@
       <span class="hero-img hero-img-cycle" data-cycle style="--cycle-delay: 0s;">
         {% for c in engineStats.categories %}
         <img class="dest-photo-frame{% if loop.first %} is-on{% endif %}"
-             {% if loop.first %}src="{{ c.image }}"{% else %}data-src="{{ c.image }}"{% endif %}
+             {% if loop.first %}src="{{ c.image | thumb(1100) }}"{% else %}data-src="{{ c.image | thumb(1100) }}"{% endif %}
              alt="{% if loop.first %}{{ s.image.alt or c.name }}{% endif %}"
              {% if not loop.first %}aria-hidden="true"{% endif %}
              loading="{% if loop.first %}eager{% else %}lazy{% endif %}" decoding="async" />
