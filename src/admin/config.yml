@@ -274,6 +274,37 @@ collections:
                   - { label: "Second paragraph", name: body, widget: text, required: false }
                   - { label: "NOTE: the four tiles (titles, photos, descriptions, the long read) come from scripts/gen-app-modes.js, not from here.", name: _note, widget: hidden, required: false }
 
+              - name: no_ads
+                label: No ads / no data sales
+                fields:
+                  - { name: id, widget: string, required: false }
+                  - { label: "Tinted background", name: background, widget: boolean, default: false, required: false }
+                  - { name: eyebrow, widget: string, required: false }
+                  - label: Title
+                    name: title
+                    widget: object
+                    required: false
+                    fields:
+                      - { name: pre, widget: string }
+                      - { name: accent, widget: string }
+                      - { name: post, widget: string, required: false }
+                  - { name: lede, widget: text, required: false }
+                  - label: Points
+                    name: points
+                    widget: list
+                    fields:
+                      - { name: title, widget: string }
+                      - { name: body, widget: text }
+                  - { label: "Closing line", name: closer, widget: text, required: false }
+                  - label: Link
+                    name: link
+                    widget: object
+                    required: false
+                    fields:
+                      - { name: label, widget: string }
+                      - { name: href, widget: string }
+                  - { label: "CAUTION: every claim in this section must match the signed Privacy Statement (Section 4 for no-sale, Section 2 for what we do collect). Do not add a promise the policy does not already make.", name: _warn, widget: hidden, required: false }
+
               - name: highlights
                 label: Highlights bar (overlaps the hero)
                 fields:

@@ -109,24 +109,28 @@ sections:
     body: We flip the traditional model on its head by just asking you what you actually want to do and experience, then show you what destinations match. There are four ways to find the trip that was built for you.
     id: ways
     background: true
-  - type: chat
-    eyebrow: Conversational Search
+  - type: no_ads
+    eyebrow: No ads. Not now, not later.
     title:
-      pre: |-
-        Stop filtering.
-        Just
-      accent: ask
+      pre: The only thing we sell you
+      accent: is a trip
       post: .
-    lede: Tell WhereTo what you're thinking, in plain words, and get real destinations back instantly. No forms. No date grids. Just a conversation.
-    image:
-      src: /media/chat.jpg
-      alt: Person relaxing on a terrace with a phone and a view
-      transparent: false
-    id: chat
-    examples:
-      - A beach week under $2k in April
-      - Somewhere in Europe with great food, any time in June
-      - Warm, not too far, leaving this weekend
+    lede: And none of it comes with in-app ads. Not Google's, not Amazon's, not anybody's. Our travelers are too important to be sold to.
+    id: no-ads
+    background: false
+    points:
+      - title: There is no ad slot to sell
+        body: No banner across the bottom. No sponsored result wearing a badge. No full-screen thing you have to close before you can get back to picking a hotel. We did not build one and we are not going to.
+      - title: What you tell us stays with us
+        body: Your budget, your dates, who is coming, the places you looked at twice. We do not sell personal information, and we do not hand it to anyone for their own marketing. That is in our Privacy Statement, not just on this page.
+      - title: Nobody buys their way up your list
+        body: No hotel and no airline pays us to sit higher in your results. The order you see is the order the Vibe Engine scored, against your budget and the vibes you picked. If something is at the top, it is because it fit.
+      - title: We do watch the app, not you
+        body: Which screens people get stuck on, what crashed, how long a search took. We use that to fix things. It is not a profile of you, and it is not for rent.
+    closer: We would rather be paid for finding you a good trip than for showing you somebody else's.
+    link:
+      label: Read the Privacy Statement
+      href: /legal/privacy/
   - type: video_banner
     eyebrow: See it in action
     title:

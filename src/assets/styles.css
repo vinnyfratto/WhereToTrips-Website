@@ -1300,3 +1300,48 @@ footer { background: var(--footer); padding: 72px 0 40px; }
 @media (prefers-reduced-motion: reduce) {
   .mode-tile:hover { transform: none; }
 }
+
+/* ════════════════════════════════════════════════════════════════════
+   No ads, ever — sections/no_ads.njk
+
+   No boxes around the points (house default): a short amber rule, a
+   heading, the text. The claims carry the section; a card border would
+   just make it look like an infographic.
+   ════════════════════════════════════════════════════════════════════ */
+.noads-points {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(32px, 4vw, 52px);
+  max-width: 980px;
+  margin: 0 auto;
+}
+.noads-rule {
+  display: block;
+  width: 34px; height: 2px;
+  border-radius: 1px;
+  background: var(--amber);
+  margin-bottom: 14px;
+}
+.noads-point h3 { font-size: 23px; line-height: 1.25; margin-bottom: 10px; }
+.noads-point p { color: var(--ink-soft); line-height: 1.75; }
+.noads-closer {
+  max-width: 720px;
+  margin: clamp(44px, 5vw, 68px) auto 0;
+  text-align: center;
+  font-family: var(--serif);
+  font-size: clamp(21px, 2.4vw, 28px);
+  line-height: 1.4;
+  color: var(--navy);
+}
+.noads-link { margin-top: 18px; text-align: center; }
+.noads-link a {
+  font-size: 12px; font-weight: 700;
+  letter-spacing: 1.2px; text-transform: uppercase;
+  color: var(--azure);
+  text-decoration: none;
+}
+.noads-link a:hover { text-decoration: underline; }
+
+@media (max-width: 760px) {
+  .noads-points { grid-template-columns: 1fr; }
+}

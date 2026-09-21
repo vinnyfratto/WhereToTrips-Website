@@ -1,0 +1,49 @@
+{#- ══════════════════════════════════════════════════════════════════
+    No ads, ever.
+
+    Every claim here has to survive being read next to the signed
+    Privacy Statement, so each one is pinned to something already
+    written there:
+      - "does not sell personal information" and "we do not share your
+        personal information with third parties for their own
+        independent marketing purposes" are Section 4, verbatim.
+      - the diagnostics point is Section 2's device-and-usage row
+        (device type, OS, app version, crash logs, interaction data,
+        24 months). We DO measure that, so saying "we don't track you"
+        would be a lie and would undercut everything around it.
+    Do not add a claim here that the policy does not already make.
+
+    No boxes around the points (house default) — a rule, a heading and
+    the text.
+    ══════════════════════════════════════════════════════════════════ -#}
+<section class="block{% if s.background %} tint{% endif %}"{% if s.id %} id="{{ s.id }}"{% endif %}>
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      {% if s.eyebrow %}<span class="eyebrow">{{ s.eyebrow }}</span>{% endif %}
+      {% if s.title %}<h2>{{ s.title.pre }} <span class="italic">{{ s.title.accent }}</span>{{ s.title.post }}</h2>{% endif %}
+      {% if s.lede %}<p class="lede">{{ s.lede }}</p>{% endif %}
+    </div>
+
+    {% if s.points %}
+    <div class="noads-points reveal reveal-delay-1">
+      {% for p in s.points %}
+      <div class="noads-point">
+        <span class="noads-rule" aria-hidden="true"></span>
+        <h3>{{ p.title }}</h3>
+        <p>{{ p.body }}</p>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if s.closer %}
+    <p class="noads-closer reveal reveal-delay-2">{{ s.closer }}</p>
+    {% endif %}
+
+    {% if s.link %}
+    <p class="noads-link reveal reveal-delay-2">
+      <a href="{{ s.link.href }}">{{ s.link.label }} <span aria-hidden="true">&rarr;</span></a>
+    </p>
+    {% endif %}
+  </div>
+</section>
