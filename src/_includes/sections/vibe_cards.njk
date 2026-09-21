@@ -55,11 +55,15 @@
 
         {#- Where this is. A US destination reads its state, never
             "United States" — see the generator's `placeLabel`. -#}
+        {#- Either part can be absent: the generator nulls placeLabel when
+            it would just repeat the destination's name (Bonaire), and the
+            sub-region is dropped when the two are the same word. -#}
         <p class="dest-place">
-          <span>{{ v.placeLabel }}</span>
-          {#- Oaxaca's sub-region IS "Mexico"; printing it twice reads as a bug. -#}
-          {% if v.subregion != v.placeLabel %}
+          {% if v.placeLabel %}<span>{{ v.placeLabel }}</span>{% endif %}
+          {% if v.placeLabel and v.subregion != v.placeLabel %}
           <span class="dest-place-sep" aria-hidden="true">·</span>
+          {% endif %}
+          {% if v.subregion != v.placeLabel %}
           <span class="dest-place-region">{{ v.subregion }}</span>
           {% endif %}
         </p>

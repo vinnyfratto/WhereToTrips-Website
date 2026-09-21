@@ -56,12 +56,18 @@ const { url: SB_URL, anonKey: SB_KEY } = require("../src/_data/supabase.json");
    — it says Georgia. One pick, one hand-checked value. */
 const PICKS = [
   {
-    slug: "oaxaca-artisan-craft-workshops",
-    city: "Oaxaca", country: "Mexico",
-    vibeKey: "artisan_craft_workshops", subregion: "Mexico",
+    // A swap has to be like for like. Oaxaca sat here against Cancun for
+    // a while and it was a bad pair: one is a beach week, the other is
+    // craft villages in the hills, and nobody choosing between them is
+    // choosing between them. Bonaire against Aruba is a real one. Same
+    // ABC chain, same dry sun, same hurricane-belt exemption, same
+    // flights, and a beach trip either way.
+    slug: "bonaire-reef-snorkeling",
+    city: "Bonaire", country: "Bonaire",
+    vibeKey: "reef_snorkeling", subregion: "Caribbean",
     displayScore: 96,
-    insteadOf: "Cancún",
-    hook: "Everyone flies to the beach. The best craft villages in the Americas are an hour inland.",
+    insteadOf: "Aruba",
+    hook: "Aruba sells you the beach. Here the water is the trip, and you walk into it from the road.",
   },
   {
     slug: "savannah-historic-squares",
@@ -206,8 +212,14 @@ function pickImages(rows) {
       country: dest.country,
       state:   pick.state || null,
       // What the card prints beside the sub-region. A US destination
-      // reads "Georgia", never "United States".
-      placeLabel: pick.state || dest.country,
+      // reads "Georgia", never "United States" — and an island that is
+      // its own country prints nothing, because "Bonaire · Bonaire"
+      // reads as a bug.
+      placeLabel: (() => {
+        const label = pick.state || dest.country;
+        const name  = pick.displayName || dest.city;
+        return label === name ? null : label;
+      })(),
       iata:    dest.iata,
       region:  dest.region,
       introTitle: dest.intro_title || null,

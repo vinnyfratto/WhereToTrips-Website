@@ -8,8 +8,8 @@ pagination:
   addAllPagesToCollections: true
 permalink: "/featured-vibes/{{ v.slug }}/"
 eleventyComputed:
-  title: "{{ v.vibeLabel }} in {{ v.city }}, {{ v.country }} — WhereTo"
-  description: "{{ v.city }}, {{ v.country }} scores {{ v.displayScore }} for {{ v.vibeLabel }} in the WhereTo Vibe Engine. The full guide, every vibe this destination matches, and when to go."
+  title: "{{ v.vibeLabel }} in {{ v.city }}{% if v.placeLabel %}, {{ v.placeLabel }}{% endif %} — WhereTo"
+  description: "{{ v.city }}{% if v.placeLabel %}, {{ v.placeLabel }}{% endif %} scores {{ v.displayScore }} for {{ v.vibeLabel }} in the WhereTo Vibe Engine. The full guide, every vibe this destination matches, and when to go."
 layout: layouts/base.njk
 ---
 {#- Real three-letter abbreviations. A `truncate` on the full name gives
@@ -36,7 +36,7 @@ layout: layouts/base.njk
       <span class="dest-stamp-num">{{ v.displayScore }}</span>
     </span>
     <span class="eyebrow">{{ v.vibeLabel }}</span>
-    <h1>{{ v.city }}<span class="vibe-hero-country">, {{ v.placeLabel }}</span></h1>
+    <h1>{{ v.city }}{% if v.placeLabel %}<span class="vibe-hero-country">, {{ v.placeLabel }}</span>{% endif %}</h1>
     <p class="vibe-hero-region">{{ v.subregion }}</p>
     <p class="lede">{{ v.hook }}</p>
     <p class="vibe-hero-swap">Most people book {{ v.insteadOf }}. The Vibe Engine sends you here.</p>

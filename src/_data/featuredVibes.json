@@ -1,242 +1,205 @@
 [
   {
-    "slug": "oaxaca-artisan-craft-workshops",
-    "insteadOf": "Cancún",
-    "hook": "Everyone flies to the beach. The best craft villages in the Americas are an hour inland.",
+    "slug": "bonaire-reef-snorkeling",
+    "insteadOf": "Aruba",
+    "hook": "Aruba sells you the beach. Here the water is the trip, and you walk into it from the road.",
     "displayScore": 96,
-    "city": "Oaxaca",
-    "gateway": "Oaxaca",
-    "country": "Mexico",
+    "city": "Bonaire",
+    "gateway": "Bonaire",
+    "country": "Bonaire",
     "state": null,
-    "placeLabel": "Mexico",
-    "iata": "OAX",
+    "placeLabel": null,
+    "iata": "BON",
     "region": "NA",
-    "introTitle": "The Land of Seven Moles",
-    "introBody": "Oaxaca spreads across a wide valley where three arms of highland meet, framed on every side by the folds of the Sierra Madre. The city center is low and colonial, built in green and honey-colored stone, with a shaded main square where the day starts slowly over coffee and hot chocolate. At around 1,550 meters, the air stays mild, and the light falls sharp against the mountains.\n\nPeople have gathered in this valley for thousands of years. On a leveled hilltop just outside the city stand the ruins of Monte Albán, a Zapotec capital begun around 500 BC and lived in for more than a thousand years, its plazas and pyramids looking out over the whole basin. Oaxaca remains one of the most indigenous parts of Mexico, home to Zapotec, Mixtec, and many other peoples who still speak their own languages.\n\nThat depth shows up on the plate. Oaxaca is widely called the food capital of Mexico, known for its many kinds of mole, the dark and layered sauces, and for mezcal, the smoky agave spirit distilled in villages across the valley. The surrounding towns each have a craft of their own, from black pottery to woven rugs colored with cochineal and indigo.\n\nThe calendar fills with festivals, and the markets run every day, stacked with chilies, chocolate, and fresh cheese. The dry months from October to April bring clear, warm days and cool evenings, a good time to walk the city, climb to the ruins, and drive out to the villages and their workshops.",
-    "vibeKey": "artisan_craft_workshops",
-    "vibeLabel": "Artisan Craft Workshops",
-    "engineScore": 94,
+    "introTitle": "Where the Reef Starts at the Roadside",
+    "introBody": "On Bonaire you can dive the reef without a boat. Yellow stones set along the coast road mark dozens of named sites, and at most of them you park, carry your tank a few steps to the water, and swim out over coral that begins close to shore. The whole coastline is a protected marine park, set aside in 1979, with more than eighty dive sites and reefs that have stayed healthy for decades. This is one of the most reliable shore-diving spots anywhere.\n\nThe island lies in the southern Caribbean off Venezuela, the B in the ABC islands with Aruba and Curaçao, and it is dry and low, covered in cactus and divi-divi trees. Kralendijk, the small capital, sits on the sheltered west coast, a row of low pastel buildings looking across a narrow channel to the flat, uninhabited islet of Klein Bonaire, itself ringed by reef.\n\nThe south end of the island is given over to salt. Bright pans in shades of pink and white stretch across the flats, worked for sea salt as they have been for centuries, and among them wade some of the Caribbean's largest flocks of flamingos, drawn by the tiny shrimp in the brine. Bonaire is one of the few places where the birds breed, and you see them at the water's edge along the road.\n\nThe rougher north holds Washington-Slagbaai, an old plantation turned national park of hills, salt lakes, and rocky coast. Warm, dry, and steady, Bonaire sits outside the hurricane belt, so conditions hold up through the year, though the calmest, clearest water tends to come in spring and fall.",
+    "vibeKey": "reef_snorkeling",
+    "vibeLabel": "Reef Snorkeling",
+    "engineScore": 90,
     "tier": "S",
-    "note": "Weaving, black pottery and alebrijes from the villages around the city",
-    "subregion": "Mexico",
-    "vibeCount": 16,
+    "note": "Shore-entry marine park, Klein Bonaire drift",
+    "subregion": "Caribbean",
+    "vibeCount": 11,
     "otherVibes": [
       {
-        "key": "mexican_regional_cooking",
-        "label": "Regional Mexican Cooking",
-        "score": 91,
-        "tier": "S",
-        "note": null,
+        "key": "scuba_diving",
+        "label": "Scuba Diving: Walls & Wrecks",
+        "score": 89,
+        "tier": "A",
+        "note": "80+ shore sites, Hilma Hooker, best value",
         "place": null
       },
       {
-        "key": "artisan_crafts",
-        "label": "Artisan Crafts & Markets",
-        "score": 90,
-        "tier": "S",
-        "note": "Alebrijes, black pottery, Teotitlan rugs and the richest craft villages in Mexico",
-        "place": "Oaxaca (Valles Centrales)"
-      },
-      {
-        "key": "oaxaca_cuisine",
-        "label": "Oaxacan & Regional Cuisine",
-        "score": 90,
-        "tier": "S",
-        "note": "Seven moles, tlayudas, chapulines and the mezcal-soaked heart of Mexican cooking",
-        "place": null
-      },
-      {
-        "key": "dia_de_muertos",
-        "label": "Day of the Dead",
-        "score": 90,
-        "tier": "S",
-        "note": "Marigold altars, candlelit comparsas and the most atmospheric Muertos in the country",
-        "place": "Oaxaca City"
-      },
-      {
-        "key": "colonial_cities",
-        "label": "Colonial Cities & Pueblos Magicos",
-        "score": 88,
-        "tier": "A",
-        "note": "Carved-stone streets, Santo Domingo and the deepest craft-and-food culture in Mexico",
-        "place": "Oaxaca City"
-      },
-      {
-        "key": "agave_spirits",
-        "label": "Tequila & Mezcal Trails",
-        "score": 88,
-        "tier": "A",
-        "note": "Smoky small-batch mezcal from village palenques across the Tlacolula valley",
-        "place": "Oaxaca (mezcal palenques)"
-      },
-      {
-        "key": "urban_dining",
-        "label": "Urban Fine Dining & Food Scene",
-        "score": 87,
-        "tier": "A",
-        "note": "The mole and mezcal capital, from market comedores to Origen and Los Danzantes",
-        "place": "Oaxaca City"
-      },
-      {
-        "key": "maya_ruins",
-        "label": "Maya Ruins",
-        "score": 87,
-        "tier": "A",
-        "note": "The Zapotec mountaintop capital of plazas and carved Danzantes above Oaxaca City",
-        "place": "Monte Alban"
-      },
-      {
-        "key": "street_food_tacos",
-        "label": "Street Food & Tacos",
+        "key": "reef_diving_snorkeling",
+        "label": "Reef Diving & Snorkeling",
         "score": 86,
         "tier": "A",
-        "note": "Tlayudas, memelas and the smoke of the Mercado 20 de Noviembre meat hall",
-        "place": "Oaxaca City"
+        "note": "The shore-dive capital of the Caribbean, healthy reef off the ABC islands [Caribbean-pass overlap]",
+        "place": null
       },
       {
-        "key": "boutique_haciendas",
-        "label": "Boutique Haciendas & Historic Inns",
-        "score": 85,
-        "tier": "A",
-        "note": "Convent and townhouse conversions like Quinta Real around the carved-stone centre",
-        "place": "Oaxaca City"
-      },
-      {
-        "key": "world_class_museums",
-        "label": "World-Class Museums",
+        "key": "kite_windsurfing",
+        "label": "Kitesurfing & Windsurfing",
         "score": 81,
         "tier": "A",
-        "note": "The cultures-of-Oaxaca museum in a gilded ex-convent, with Monte Alban's treasure",
-        "place": "Oaxaca (Santo Domingo & Rufino Tamayo)"
+        "note": "Windsurfing mecca, flat shallow bay",
+        "place": "Bonaire (Lac Bay)"
       },
       {
-        "key": "mariachi_folklore",
-        "label": "Mariachi, Charreria & Folklore",
-        "score": 81,
-        "tier": "A",
-        "note": "The July Guelaguetza, the great gathering of Oaxaca's regional dances and dress",
-        "place": "Oaxaca (Guelaguetza)"
-      },
-      {
-        "key": "waterfalls_canyons",
-        "label": "Waterfalls & Canyons",
-        "score": 79,
-        "tier": "A",
-        "note": "Petrified mineral waterfalls and infinity pools on a cliff edge above the valley",
-        "place": "Hierve el Agua (Oaxaca)"
-      },
-      {
-        "key": "nightlife_cantinas",
-        "label": "Nightlife, Cantinas & Bars",
+        "key": "kitesurfing",
+        "label": "Kitesurfing & Windsurfing",
         "score": 78,
         "tier": "A",
-        "note": "Rooftop mezcal bars and courtyard cantinas, lower-key but deeply local",
-        "place": "Oaxaca City"
+        "note": "Reliable cross-shore wind and flat water off the ABC islands [Caribbean-pass overlap]",
+        "place": "Bonaire & Curacao"
       },
       {
-        "key": "gardens_parks",
-        "label": "Gardens & Green Spaces",
-        "score": 73,
+        "key": "wildlife_birding",
+        "label": "Wildlife & Birding",
+        "score": 75,
         "tier": "B",
-        "note": "A walled garden of only Oaxacan natives, behind Santo Domingo",
-        "place": "Jardin Etnobotanico de Oaxaca"
+        "note": "Resident flamingo colonies in the salt pans and Washington Slagbaai",
+        "place": "Bonaire (flamingos)"
+      },
+      {
+        "key": "sea_turtle_encounters",
+        "label": "Sea Turtle Encounters",
+        "score": 74,
+        "tier": "B",
+        "note": "Conservation-backed snorkel",
+        "place": "Bonaire (Klein Bonaire)"
+      },
+      {
+        "key": "desert_landscapes",
+        "label": "Desert & Cactus Landscapes",
+        "score": 72,
+        "tier": "B",
+        "note": "Bonaire’s arid north: salt pans, flamingos and an empty coast road",
+        "place": "Washington Slagbaai"
+      },
+      {
+        "key": "sailing_island_hopping",
+        "label": "Sailing & Island-Hopping",
+        "score": 68,
+        "tier": "B",
+        "note": "A short crossing to an uninhabited island with the best shore diving",
+        "place": "Klein Bonaire"
+      },
+      {
+        "key": "hiking_national_parks",
+        "label": "Rainforest & Volcano Hiking",
+        "score": 65,
+        "tier": "B",
+        "note": "Bonaire’s high point and the park loop, on your own schedule",
+        "place": "Brandaris & Slagbaai loop"
+      },
+      {
+        "key": "island_cuisine",
+        "label": "Island Cuisine & Street Food",
+        "score": 65,
+        "tier": "B",
+        "note": "Goat stew, fresh snapper and the Kralendijk waterfront",
+        "place": "Bonairian & Antillean"
       }
     ],
     "blog": {
-      "title": "Local Design & Artisan Goods in Mexico",
-      "body": "## The Quick Read\nOaxaca is the best craft destination in the Americas and the reason is the villages. Teotitlán del Valle weaves rugs on treadle looms using natural dyes, indigo, pomegranate and cochineal among them, in designs drawn from Mitla's stonework or from the weaver's own hand. San Bartolo Coyotepec makes barro negro, the burnished black pottery, in a tradition that runs back more than two thousand years. San Martín Tilcajete and San Antonio Arrazola carve alebrijes, the fantastical animals cut from copal wood and painted in dense colour. Each village does one thing, they are all within an hour of the city, and you buy in the workshop from the family that made it. Mexico City is the design capital: Roma and Condesa shops selling Mexican makers, and the Museo de Arte Popular.\n\n## Why Mexico Delivers This\nMexican craft survived because it never stopped being useful. Pottery, weaving, basketry and woodwork continued as village economies through the colonial period and into the twentieth century, and the post-revolutionary state actively promoted them as national culture rather than treating them as folklore to be preserved in a museum. The result is living trades with living markets, and in Oaxaca specifically the concentration is extraordinary.\n\nThe village specialisation is the thing to understand. Oaxaca's craft is not spread evenly; it is concentrated by settlement, with each village working one material to a very high standard. Teotitlán del Valle weaves wool. San Bartolo Coyotepec makes black clay. Santa María Atzompa makes green-glazed pottery. San Martín Tilcajete and Arrazola carve and paint copal wood. Ocotlán does painted ceramics and knives. Jalietza weaves on backstrap looms. Each is a short drive from Oaxaca city, several have a market day, and the workshops are family homes with the courtyard open.\n\nThe dyeing is worth its own note in Teotitlán. The natural dye tradition uses cochineal, an insect farmed on nopal cactus that produces a deep red and was one of the most valuable exports of colonial Mexico, alongside indigo, pomegranate rind, marigold and pericón. Weavers demonstrate the process, and the difference between naturally and synthetically dyed rugs is both visible and heavily priced.\n\nBarro negro has its own history. The pottery of San Bartolo was traditionally matte grey until a potter named Doña Rosa developed the burnishing technique in the mid twentieth century that produces the black sheen the village is now known for. It is an example of a tradition changing within living memory and becoming more famous for it.\n\nMexico City is where all of it is gathered and sold at the design end. Roma and Condesa hold shops working with Mexican makers on contemporary pieces, the Museo de Arte Popular holds the national collection and a very good shop, and the Ciudadela craft market brings work from across the country into one hall.\n\n## Where to Go\n\n### Oaxaca\nTeotitlán del Valle for wool rugs on treadle looms with natural dyes, with weavers demonstrating the process. San Bartolo Coyotepec for barro negro black pottery. San Martín Tilcajete and San Antonio Arrazola for alebrijes carved from copal. Santa María Atzompa for green-glazed ceramics. Ocotlán and Jalietza for painted ceramics and backstrap weaving. All are within about an hour of the city and most workshops are family homes. In the city itself, the markets and the textile museum, plus the shops around the zócalo that buy from the villages.\n\n### Mexico City\nRoma and Condesa for the design shops selling contemporary Mexican makers. The Museo de Arte Popular for the national folk art collection and its shop. La Ciudadela craft market for work from across the country under one roof. The Coyoacán and San Ángel markets at weekends for the mixed craft and art trade.\n\n## When to Go\nYear-round for the workshops, with the festival calendar worth timing.\n\nOctober and November are the peak for Oaxaca, with Día de Muertos at the start of November turning the city into one of the great festivals in the Americas. Everything books out months ahead and prices double.\n\nJuly brings the Guelaguetza, Oaxaca's indigenous dance festival, which fills the city for two weeks and brings craft from across the state.\n\nNovember to April is the dry season and the most comfortable window across both cities.\n\nMay to October is the rainy season, with afternoon downpours rather than all-day rain, and it is the cheaper and quieter half of the year.\n\nVillage market days matter. Several of the craft villages and the surrounding towns hold weekly markets, and going on the day is a different and better experience.\n\nWorkshops in the villages are generally open through the week during daylight, and calling ahead through a hotel or guide is the reliable way to arrange a demonstration.\n\n## What to Watch Out For\nBuying in the village rather than in the city market means the money goes to the maker and the price is usually lower. It also means arranging transport, and a shared taxi or a hired driver for a day is the standard solution.\n\nNatural versus synthetic dye is the main quality question with Oaxacan rugs, and it is a large price difference. Weavers demonstrate the dye materials and will explain; a market stall in the city may not.\n\nMachine-made and imported imitations of alebrijes and black pottery are sold in the tourist areas. In the villages you watch the carving and the firing.\n\nBargaining is normal in markets and less appropriate in a workshop where a price has been set for a piece that took weeks.\n\nShipping is arranged by the larger workshops and by shops in the city, and matters for anything ceramic.\n\nSpanish is the working language in the villages, and several weavers speak Zapotec first. A guide or a translation app makes a considerable difference.\n\n## Who This Is (and Isn't) For\nTravellers who want to buy craft from the person who made it should base themselves in Oaxaca for a week and spend the days in the villages, because the concentration and the quality there are unmatched in the Americas and the whole thing is cheap by any international standard. Anyone with less time should still do a single village day, which changes what the objects mean.\n\nTravellers who want contemporary design rather than traditional craft should use Mexico City's Roma and Condesa shops. Anyone visiting Oaxaca around Día de Muertos should book months ahead. And visitors who buy only in the city market should know that the same objects are cheaper and better an hour away, and the money reaches the maker.",
-      "topDestinations": "Oaxaca; Mexico City",
+      "title": "Reef Snorkeling in the Caribbean",
+      "body": "## The Quick Read\nThis is the vibe for anyone who wants to see a living reef without strapping on a\ntank or paying for a certification course. The Caribbean makes it easy because a lot\nof its best coral sits in shallow, warm, clear water you can reach from a beach or a\nshort boat ride. If you can float and breathe through a tube, you are in. Bonaire and\nCuraçao are the gold standard for walking straight off the sand onto a wall of fish.\nGrand Cayman, the Tobago Cays, and the US Virgin Islands give you the famous\npostcard moments. This guide ranks where the water actually delivers and where the\nhype outruns the reef.\n\n## Why the Caribbean Delivers This\nTwo things separate Caribbean snorkeling from a lot of the world. First, access. In\nmuch of the region the reef hugs the coast, so you do not need a long boat transfer\nto deep water. On the leeward (western) side of islands like Bonaire and Curaçao,\nthe reef starts in waist-deep water a few kicks from shore and drops into a coral\nslope. Second, clarity. The Caribbean Sea runs warm and low on plankton compared to\ncolder, richer oceans, which trades some big-animal action for visibility that\nregularly hits 60 to 100 feet. That clear water is the whole point when your face is\ntwelve inches from the coral.\n\nThe honest caveat up front: Caribbean reefs have taken a beating over the last two\ndecades from warming water, hurricanes, and a coral disease that has spread across\nthe region. You will still see beautiful, healthy reef, but you will also see bleached\nand broken sections, and a few once-famous spots are shadows of what older guidebooks\npromised. The destinations below are ranked partly on which reefs are holding up.\n\n## Where to Go\n\n### Bonaire: the one to beat\nBonaire is built for this. The entire coastline is a protected marine park, the\nleeward shore is calm almost year-round, and dozens of sites are marked with yellow\nstones on the roadside so you can park, walk in, and snorkel a healthy reef on your\nown schedule. Klein Bonaire, the uninhabited islet a short water-taxi ride offshore,\nis the standout for a drift snorkel over coral in excellent shape. You pay a nature\nfee that funds the park, and you should. The trade-off: Bonaire is flat, dry, and\nquiet, so if you want nightlife or lush scenery to go with your reef, look elsewhere.\n\n### Curaçao: Bonaire's easier, livelier cousin\nCuraçao offers a lot of the same shore-entry magic with more to do above water and\nslightly easier flights. Playa Lagun, Tugboat Beach, and the Director's Bay area put\nhealthy coral and turtles within an easy swim of the sand. Klein Curaçao, a day-trip\nboat ride away, has clear water but a long, sometimes rough crossing. The reefs here\nare generally in good condition and far less crowded than the big resort islands.\n\n### Grand Cayman: famous spots, easy logistics\nCayman is where you go if you want the well-known set pieces with good\ninfrastructure. The coral gardens off the west side, Eden Rock and Devil's Grotto\nright off the Georgetown shoreline, and the Cemetery Reef are all accessible. The\ncatch is that Cayman is expensive and the most famous attraction, Stingray City, is a\nsandbar full of tour boats, not a reef. Go for the reefs, treat the stingrays as a\nbonus, and book the first boat of the day to beat the cruise crowds.\n\n### St. John, US Virgin Islands: Trunk Bay and turtle grass\nTwo-thirds of St. John is national park, and that protection shows underwater. Trunk\nBay has a marked underwater trail that is genuinely good for first-timers and kids.\nMaho Bay and Waterlemon Cay reliably turn up green turtles grazing the sea grass. The\nappeal here is that you are in the US, so no passport hassle and familiar logistics,\nreached by a quick ferry from St. Thomas.\n\n### Tobago Cays, Grenadines: the wild card\nThis is the most beautiful entry on the list and the hardest to reach. The Tobago\nCays are an uninhabited national park in the Grenadines, anchored by Horseshoe Reef\nand a roped-off turtle sanctuary where green turtles are almost guaranteed. There is\nno hotel, no dock, no shop. You get here by chartered boat or a day-trip from Union\nIsland, which means real planning and real cost. The reward is snorkeling that feels\nlike you found it yourself.\n\n### Belize Cayes: the barrier reef bonus (cross-border note)\nStrictly speaking Belize sits on the Central American mainland, but no honest\nCaribbean reef list can skip the Belize Barrier Reef, the second largest on earth.\nFrom Ambergris Caye, the Hol Chan Marine Reserve and Shark Ray Alley deliver dense\nfish life, nurse sharks, and rays in shallow, protected water. If your trip can reach\nSan Pedro, the snorkeling rivals anything in the island Caribbean.\n\n### Worth a swim: Turks & Caicos, Aruba, the Exumas, St. Lucia\nProvidenciales in Turks and Caicos has easy shore reefs at Bight Reef and Smith's\nReef right off Grace Bay. Aruba is calm and beginner-friendly at Boca Catalina and\nthe Antilla wreck, though its reefs are thinner. The Exumas pair clear water with\nquirky extras like Thunderball Grotto. St. Lucia's Anse Chastanet reef sits right\nunder the Pitons, which is a hard view to top.\n\n## When to Go\nCaribbean snorkeling works year-round, but the sweet spot is roughly April through\nAugust, when seas are calmest and visibility is at its best. Winter (December to\nMarch) brings northern swells that can stir up the water and kick up surge on\nnorth-facing sites, though leeward shores like Bonaire and Curaçao stay protected.\nThe thing to plan around is hurricane season, which peaks in September and October.\nStorms disrupt travel and cloud the water for days afterward. If you book\nin those two months, build in flexibility and keep an eye on the forecast.\n\n## What to Watch Out For\nReef health varies site to site, so manage expectations. Some heavily trafficked\nspots are bleached or broken, and a tour brochure photo may be ten years old. Ask\noperators directly what the reef looks like right now.\n\nSunscreen matters more than people think. Oxybenzone and octinoxate damage coral,\nand several destinations have banned them outright. Pack a mineral (zinc oxide)\nsunscreen and you will avoid both reef damage and an awkward conversation at the\npark gate.\n\nCurrent and boat traffic are the two real hazards. Drift sites like Klein Bonaire are\nwonderful but will carry you, so know your exit before you get in. On islands without\nstrong marine enforcement, snorkelers and boats share water that is not always well\nmarked, so a brightly colored float or buoy is cheap insurance. Finally, do not stand\non, touch, or feed the reef. Beyond the damage, fire coral and the occasional spiny\nurchin will end your day fast.\n\n## Who This Is (and Isn't) For\nThis vibe is ideal for travelers who want a genuine wildlife encounter with a low\nbarrier to entry: families with kids who can swim, couples who want an easy shared\nadventure, and anyone curious about the underwater world who is not ready to commit\nto scuba. It rewards independence, since the best value is often a rental mask and a\nwalk off the beach rather than a packaged tour.\n\nIt is a weaker fit if you need big pelagic action like sharks and large rays on every\nswim, which is more a scuba experience at depth, or if you are not a confident\nswimmer, since the best reefs usually involve some open water and mild current.",
+      "topDestinations": "Bonaire; Curaçao; Grand Cayman; St. John (USVI); Tobago Cays; Belize Cayes",
       "bestWindow": [
-        1,
-        2,
-        3,
         4,
         5,
         6,
         7,
-        8,
-        9,
-        10,
-        11,
-        12
+        8
       ],
       "sources": [
         {
-          "url": "https://www.roughguides.com/mexico/oaxaca/",
-          "note": "Rough Guides on the craft villages, their specialisms and the dyes.",
-          "title": "Oaxaca travel guide"
+          "url": "https://www.fodors.com/world/caribbean/experiences/news/photos/16-best-dive-and-snorkel-destinations-in-the-caribbean",
+          "note": "Bonaire shore access, Buck Island trail, regional overview",
+          "title": "Fodor's - 16 Best Dive and Snorkel Destinations in the Caribbean"
         },
         {
-          "url": "https://www.nationalgeographic.com/travel/article/artisans-are-reviving-oaxaca-ancient-pottery-of-the-night",
-          "note": "National Geographic on barro negro and the San Bartolo tradition.",
-          "title": "Oaxaca's ancient pottery of the night"
+          "url": "https://www.frommers.com/destinations/caribbean/the-best-snorkeling",
+          "note": "Bonaire 2024 standing, Klein Bonaire drift, Tobago Cays/Grenadines",
+          "title": "Frommer's - The Best Snorkeling in the Caribbean"
         },
         {
-          "url": "https://www.atlasobscura.com/places/alebrijes-in-san-martin-tilcajete",
-          "note": "Atlas Obscura on the carving village and its workshops.",
-          "title": "Alebrijes of San Martín Tilcajete"
+          "url": "https://www.sandals.com/blog/best-snorkeling-in-the-caribbean/",
+          "note": "island-by-island shore reef comparison",
+          "title": "Sandals - The Best Snorkeling in the Caribbean: Top 12 Islands"
         },
         {
-          "url": "https://www.atlasobscura.com/places/museo-de-arte-popular",
-          "note": "The Mexico City folk art museum and its collection.",
-          "title": "Museo de Arte Popular"
+          "url": "https://www.lonelyplanet.com/articles/best-places-to-dive-in-caribbean",
+          "note": "Bonaire, reef condition context",
+          "title": "Lonely Planet - 8 of the best dive sites in the Caribbean"
         },
         {
-          "url": "https://www.atlasobscura.com/things-to-do/mexico/crafts",
-          "note": "The wider national craft map.",
-          "title": "Places tagged crafts in Mexico"
+          "url": "https://www.bvisail.com/top-caribbean-snorkeling-destinations/",
+          "note": "Tobago Cays Horseshoe Reef, turtle/ray/shark life",
+          "title": "BVI Yacht Charters - Top Caribbean Snorkeling Destinations 2025"
+        },
+        {
+          "url": "https://seadream.com/blog/top-7-caribbean-snorkeling-spots",
+          "note": "Buck Island reef monument, St. Croix",
+          "title": "SeaDream - Top Caribbean Snorkeling Spots"
+        },
+        {
+          "url": "https://www.snorkeling-report.com/region/snorkeling-caribbean-islands/",
+          "note": "site-level detail and conditions across islands",
+          "title": "Snorkeling Report - Snorkeling the Caribbean Islands"
         }
       ],
-      "wordCount": 1089,
-      "lastResearched": "2026-09-01"
+      "wordCount": 1950,
+      "lastResearched": "2026-06-15"
     },
     "images": [
       {
-        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/6cda2996-d626-4472-9478-cd0207bedace/fetched-oaxaca-pexels-1785555931862-2.jpg",
-        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/6cda2996-d626-4472-9478-cd0207bedace/fetched-oaxaca-pexels-1785555931862-2.jpg",
-        "alt": "Vibrant parade with people in traditional attire showcasing Oaxacan culture in a city street.",
-        "credit": "Amar  Preciado",
-        "creditUrl": "https://www.pexels.com/@amar",
+        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/d45e4cfc-44b7-4d9c-985b-5401609d9fad/fetched-bonaire-pixabay-1785552044653-6.jpg",
+        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/d45e4cfc-44b7-4d9c-985b-5401609d9fad/fetched-bonaire-pixabay-1785552044653-6.jpg",
+        "alt": "sea, nature, sunset, pier, coast, shore, waves, caribbean, bonaire",
+        "credit": "Gewoon",
+        "creditUrl": "https://pixabay.com/users/gewoon-3800347/",
+        "source": "pixabay"
+      },
+      {
+        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/d45e4cfc-44b7-4d9c-985b-5401609d9fad/fetched-bonaire-pixabay-1785552045489-7.jpg",
+        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/d45e4cfc-44b7-4d9c-985b-5401609d9fad/fetched-bonaire-pixabay-1785552045489-7.jpg",
+        "alt": "sea, sunset, boats, horizon, clouds, caribbean, nature, bonaire",
+        "credit": "Gewoon",
+        "creditUrl": "https://pixabay.com/users/gewoon-3800347/",
+        "source": "pixabay"
+      },
+      {
+        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/d45e4cfc-44b7-4d9c-985b-5401609d9fad/fetched-bonaire-pixabay-1785552049398-11.jpg",
+        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/d45e4cfc-44b7-4d9c-985b-5401609d9fad/fetched-bonaire-pixabay-1785552049398-11.jpg",
+        "alt": "sea, caribbean, bonaire, ocean, turquoise, nature, web",
+        "credit": "GabiHa",
+        "creditUrl": "https://pixabay.com/users/gabiha-4029211/",
+        "source": "pixabay"
+      },
+      {
+        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/d45e4cfc-44b7-4d9c-985b-5401609d9fad/fetched-bonaire-pexels-1785552039811-0.jpg",
+        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/d45e4cfc-44b7-4d9c-985b-5401609d9fad/fetched-bonaire-pexels-1785552039811-0.jpg",
+        "alt": "A hawksbill sea turtle gracefully swimming underwater in the vibrant blue Caribbean sea off Bonaire.",
+        "credit": "Zack Gilbert",
+        "creditUrl": "https://www.pexels.com/@zack-gilbert-2159535417",
         "source": "pexels"
       },
       {
-        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/6cda2996-d626-4472-9478-cd0207bedace/fetched-oaxaca-pexels-1785555930040-0.jpg",
-        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/6cda2996-d626-4472-9478-cd0207bedace/fetched-oaxaca-pexels-1785555930040-0.jpg",
-        "alt": "Vibrant street festival featuring traditional costumes and joyful celebration in Oaxaca.",
-        "credit": "Amar  Preciado",
-        "creditUrl": "https://www.pexels.com/@amar",
+        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/d45e4cfc-44b7-4d9c-985b-5401609d9fad/fetched-bonaire-pexels-1785552040597-1.jpg",
+        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/d45e4cfc-44b7-4d9c-985b-5401609d9fad/fetched-bonaire-pexels-1785552040597-1.jpg",
+        "alt": "Diver exploring colorful coral reef underwater in Kralendijk, Bonaire.",
+        "credit": "Pascal Ingelrest",
+        "creditUrl": "https://www.pexels.com/@pin70",
         "source": "pexels"
       },
       {
-        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/6cda2996-d626-4472-9478-cd0207bedace/fetched-oaxaca-pexels-1785555930954-1.jpg",
-        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/6cda2996-d626-4472-9478-cd0207bedace/fetched-oaxaca-pexels-1785555930954-1.jpg",
-        "alt": "A stunning example of colonial architecture in Oaxaca, featuring a grand wooden door and intricate stonework.",
-        "credit": "Ina Ramírez",
-        "creditUrl": "https://www.pexels.com/@ina-ramirez-903018949",
-        "source": "pexels"
-      },
-      {
-        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/6cda2996-d626-4472-9478-cd0207bedace/fetched-oaxaca-pexels-1785555932638-3.jpg",
-        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/6cda2996-d626-4472-9478-cd0207bedace/fetched-oaxaca-pexels-1785555932638-3.jpg",
-        "alt": "A historic church in Oaxaca, Mexico, stands prominently as dusk approaches, with mountains in the background.",
-        "credit": "Daniel Arenas",
-        "creditUrl": "https://www.pexels.com/@daniel-arenas-1618870607",
-        "source": "pexels"
-      },
-      {
-        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/6cda2996-d626-4472-9478-cd0207bedace/fetched-oaxaca-pexels-1785555933375-4.jpg",
-        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/6cda2996-d626-4472-9478-cd0207bedace/fetched-oaxaca-pexels-1785555933375-4.jpg",
-        "alt": "The Santo Domingo de Guzmán church captured with agave plants in the foreground, Oaxaca, Mexico.",
-        "credit": "Miguel González",
-        "creditUrl": "https://www.pexels.com/@mikegles",
-        "source": "pexels"
-      },
-      {
-        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/6cda2996-d626-4472-9478-cd0207bedace/fetched-oaxaca-pexels-1785555934379-5.jpg",
-        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/6cda2996-d626-4472-9478-cd0207bedace/fetched-oaxaca-pexels-1785555934379-5.jpg",
-        "alt": "Aerial view of Oaxaca City, Mexico, surrounded by mountains and a vast sky, perfect for travel and nature enthusiasts.",
-        "credit": "Jhovani  Morales",
-        "creditUrl": "https://www.pexels.com/@jhovani-morales-242490132",
+        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/d45e4cfc-44b7-4d9c-985b-5401609d9fad/fetched-bonaire-pexels-1785552041445-2.jpg",
+        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/d45e4cfc-44b7-4d9c-985b-5401609d9fad/fetched-bonaire-pexels-1785552041445-2.jpg",
+        "alt": "Beautiful coastal view with a pier extending into the turquoise Caribbean Sea in Bonaire.",
+        "credit": "Attie Heunis",
+        "creditUrl": "https://www.pexels.com/@attie",
         "source": "pexels"
       }
     ]
