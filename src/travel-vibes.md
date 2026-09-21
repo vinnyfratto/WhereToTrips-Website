@@ -9,13 +9,13 @@ sections:
       pre: "What a place is actually "
       accent: "good at"
       post: "."
-    lede: "A vibe is a thing you want to do on a trip. Eat somewhere that takes its food seriously. Dive off a beach instead of a boat. Sit in a temple that people still use. We score every destination against every vibe it genuinely delivers, and we do it one at a time."
+    lede: "A vibe is a thing you want to do on a trip. Eat somewhere that takes its food seriously. Dive off a beach instead of a boat. Sit in a temple people still use. We score every destination against every vibe it genuinely delivers, one at a time."
     primaryBtn:
       label: "Notify me on launch"
       href: "/notify-launch/"
     image:
       src: "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/diving_snorkeling/image_1.jpg"
-      alt: "A snorkeller over a shallow reef in clear water"
+      alt: "A snorkeler over a shallow reef in clear water"
 
   - type: engine_stats
     eyebrow: "The shape of it"
@@ -23,10 +23,10 @@ sections:
       pre: "Big underneath, "
       accent: "short on screen"
       post: "."
-    lede: "The engine reasons in a much larger vocabulary than it ever shows you. That is the point of it."
+    lede: "The engine reasons in a much bigger vocabulary than it shows you. That's the point."
     set: "vibes"
     background: true
-    body: "A destination is scored against a travel style only when it delivers a real version of that experience. Technically having an activity is not enough, or every coastal town would rank for diving and the list would be useless."
+    body: "A destination gets scored for a travel style only when it delivers a real version of it. Technically having the activity isn't enough, or every coastal town would rank for diving and the list would be useless."
 
   - type: steps
     eyebrow: "How a score is made"
@@ -37,13 +37,13 @@ sections:
     center: true
     steps:
       - title: "How distinctive is it here"
-        body: "Is this place known for it, or does it merely have one? This counts for the most, because it is the difference between a recommendation and a coincidence."
+        body: "Is the place known for it, or does it just happen to have one? Weighted heaviest, because it's the difference between a recommendation and a coincidence."
       - title: "How good is it"
-        body: "The condition of the actual thing. A reef that is alive. A food scene that is still there and not a memory."
+        body: "The condition of the actual thing. A reef that's alive. A food scene that's still there and not a memory."
       - title: "How much of it is there"
         body: "One famous restaurant is not a food destination. A week of them is."
       - title: "How hard is it to reach"
-        body: "Real routes from real airports. A perfect answer you cannot get to is not an answer."
+        body: "Real routes from real airports. A perfect answer you can't get to isn't an answer."
       - title: "How reliable is it"
         body: "Across seasons, weather and opening times. Some places are a ten in May and a four in August."
       - title: "What does it cost you"
@@ -55,8 +55,8 @@ sections:
       pre: "Then we throw most of it "
       accent: "away"
       post: "."
-    lede: "The engine holds 690+ separate travel styles, because that is what it takes to score the world honestly. Nobody wants to scroll 690 of anything."
-    body: "So they get merged. Near-twins collapse into one. Regional wordings for the same idea become the same idea. What is left is 147 vibes you pick from, sitting on 24 collections, and every one of them still points back at the full set of scored rows underneath. You pick a short list. The engine searches the long one."
+    lede: "The engine holds 690+ separate travel styles, because that's what it takes to score the world honestly. Nobody wants to scroll through 690 of anything."
+    body: "So they get merged. Near-twins collapse into one, and regional wordings for the same idea become the same idea. What's left is 147 vibes across 24 collections, each still pointing back at every scored row underneath. You pick from the short list. The engine searches the long one."
     image:
       src: "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/local_cuisine_regional_specialties/image_2.jpg"
       alt: "A regional dish being prepared at a market stall"
@@ -77,7 +77,7 @@ sections:
       pre: "Twenty-four collections of "
       accent: "things to do"
       post: "."
-    lede: "Every collection opens into the specific vibes underneath it. These are the same collections and the same photos the app's picker uses."
+    lede: "Every collection opens into the vibes underneath it. Same collections, same photos as the app's picker."
     id: "collections"
     background: true
     footnote: "Live matching, current pricing and booking all happen in the WhereTo app."

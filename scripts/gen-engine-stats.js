@@ -150,9 +150,9 @@ const withPlus = (n) => `${n.toLocaleString("en-US")}+`;
     { key: "styles", display: withPlus(floorTo(engineKeys, 10)), label: "travel styles scored",
       note: "The full vocabulary the engine reasons in, before any of it reaches you.", exact: engineKeys },
     { key: "canonical", display: String(canonical), label: "vibes you actually pick from",
-      note: "What those styles collapse into once the duplicates and near-twins are merged.", exact: canonical },
+      note: "What those styles collapse into once the near-twins are merged.", exact: canonical },
     { key: "collections", display: String(shelvesCount), label: "collections to browse",
-      note: "The shelves those vibes sit on, so the picker is a short list and not a wall.", exact: shelvesCount },
+      note: "What those vibes are grouped under, so the picker is a short list and not a wall.", exact: shelvesCount },
   ];
 
   const destinationsStats = [
@@ -161,7 +161,7 @@ const withPlus = (n) => `${n.toLocaleString("en-US")}+`;
     { key: "countries", display: String(countries), label: "countries and territories",
       note: "Where those destinations are, not where an airline happens to fly.", exact: countries },
     { key: "gateways", display: withPlus(floorTo(gateways, 100)), label: "gateway airports",
-      note: "The airport is how you get there. It is not the thing you are choosing.", exact: gateways },
+      note: "The airport is how you get there. It isn't the thing you're choosing.", exact: gateways },
     { key: "places", display: withPlus(floorTo(editorialRows, 1000)), label: "places scored around them",
       note: "Towns, ruins, coastlines and traditions you reach from those gateways.", exact: editorialRows },
   ];

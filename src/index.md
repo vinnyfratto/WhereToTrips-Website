@@ -120,11 +120,11 @@ sections:
     background: false
     points:
       - title: There is no ad slot to sell
-        body: No banner across the bottom. No sponsored result wearing a badge. No full-screen thing you have to close before you can get back to picking a hotel. We did not build one and we are not going to.
+        body: No banner across the bottom. No sponsored result wearing a badge. No full-screen thing you have to close before you can get back to picking a hotel. We didn't build one and we aren't going to.
       - title: What you tell us stays with us
-        body: Your budget, your dates, who is coming, the places you looked at twice. We do not sell personal information, and we do not hand it to anyone for their own marketing. That is in our Privacy Statement, not just on this page.
+        body: Your budget, your dates, who's coming, the places you looked at twice. We don't sell personal information, and we don't hand it to anyone for their own marketing. That's in our Privacy Statement, not just on this page.
       - title: Nobody buys their way up your list
-        body: No hotel and no airline pays us to sit higher in your results. The order you see is the order the Vibe Engine scored, against your budget and the vibes you picked. If something is at the top, it is because it fit.
+        body: No hotel and no airline pays us to sit higher in your results. The order you see is the order the Vibe Engine scored, against your budget and the vibes you picked. If something's at the top, it's because it fit.
       - title: We do watch the app, just not you
         body: We monitor which screens people get stuck on, what crashed, how long a search took. We use that to fix things and it would be irresponsible for us not to. But the way we look at it, your traffic and interests are yours and aren't for sale.
     closer: Our business is finding you a great trip you might not have otherwise known about. We aren't interested in becoming ad space for Google, Amazon and the others.

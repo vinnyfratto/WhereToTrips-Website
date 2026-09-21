@@ -9,7 +9,7 @@ sections:
       pre: "Places, not "
       accent: "airport codes"
       post: "."
-    lede: "Most travel search starts with a three-letter code and calls that a destination. An airport is how you get somewhere. It is not the thing you are choosing."
+    lede: "Most travel search starts with a three-letter code and calls that a destination. An airport is how you get somewhere. It isn't the thing you're choosing."
     primaryBtn:
       label: "Notify me on launch"
       href: "/notify-launch/"
@@ -23,7 +23,7 @@ sections:
       pre: "Every one of them "
       accent: "checked"
       post: "."
-    lede: "This is not a list of everywhere a plane lands. It is the set of places we are willing to put in front of you."
+    lede: "Not a list of everywhere a plane lands. The set of places we're willing to put in front of you."
     set: "destinations"
     background: true
 
@@ -34,16 +34,16 @@ sections:
       accent: "stay on the list"
       post: "."
     center: true
-    lede: "A destination fails any one of these and it comes out, however appealing it is."
+    lede: "Fail any one of these and the place comes off the list, however appealing it is."
     steps:
       - title: "Can you sleep there"
-        body: "Measured hotel inventory, counted for real rather than assumed. A beautiful place with nine rooms is not somewhere we can send you."
+        body: "Measured hotel inventory, counted rather than assumed. A beautiful place with nine rooms isn't somewhere we can send you."
       - title: "Can you get there"
         body: "Checked against actual passenger traffic between US airports and that region, not against how close the nearest runway happens to be."
       - title: "Should you go right now"
-        body: "Current State Department advisories, by name and by region. Whole countries have come off the list, and a few came back on."
+        body: "Current State Department advisories, by name and by region. Whole countries have come off the list. A few came back on."
       - title: "Is it worth the trip"
-        body: "Scored against the vibes it genuinely delivers. A place that clears the first three and is good at nothing in particular does not make the cut either."
+        body: "Scored against the vibes it genuinely delivers. Clearing the first three and being good at nothing in particular doesn't get you on the list."
 
   - type: gateway_example
     eyebrow: "One airport, opened up"
@@ -51,9 +51,9 @@ sections:
       pre: "You fly into Naples. You are not "
       accent: "going to Naples"
       post: "."
-    lede: "Or rather, not only. NAP is the gateway. Here is what the engine has scored behind it, each thing on its own merits, with its strongest vibe and its score. Pompeii is not Naples. The Amalfi Coast is not Naples. You still get to all of them from one flight."
+    lede: "Or not only. NAP is the gateway. Here's what the engine scored behind it, each on its own merits. Pompeii isn't Naples. The Amalfi Coast isn't Naples. You still reach all of it on one flight."
     id: "gateway"
-    footnote: "These are live rows from the Vibe Engine, not an illustration. Every destination in the app opens up the same way."
+    footnote: "Live rows from the Vibe Engine, not an illustration. Every destination in the app opens up the same way."
 
   - type: feature_split
     eyebrow: "Why it matters"
@@ -62,7 +62,7 @@ sections:
       accent: "one town over"
       post: "."
     lede: "When the engine scores places rather than airports, the thing you are looking for stops having to share a name with a runway."
-    body: "It is why a search for Roman ruins can return Pompeii and route you through Naples, why coastal cliff hiking can return the Path of the Gods, and why the food answer and the beach answer can be the same trip. You book one flight. The scoring already knows the rest is reachable."
+    body: "It's why a search for Roman ruins returns Pompeii and routes you through Naples, why coastal cliff hiking returns the Path of the Gods, and why the food answer and the beach answer can be the same trip. You book one flight. The scoring already knows the rest is reachable."
     image:
       src: "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/mountains_scenic_landscapes/image_2.jpg"
       alt: "A cliff road above a stretch of coastline"
@@ -96,7 +96,7 @@ sections:
       pre: "Or start from a "
       accent: "shortlist"
       post: "."
-    intro: "A few we have already narrowed down, for when you would rather be handed four options than build your own."
+    intro: "A few we've already narrowed down, for when you'd rather be handed four options than build your own."
     id: "lists"
     center: true
     columns: 2

@@ -9,7 +9,7 @@ sections:
       pre: "You know the region. We'll find the "
       accent: "spot"
       post: "."
-    lede: "Say you're thinking Europe, the Mediterranean. That narrows it to a few hundred places, which is not the same as narrowing it down."
+    lede: "Say you're thinking Europe, the Mediterranean. That narrows it to a few hundred places, which isn't the same as narrowing it down."
     primaryBtn:
       label: "Notify me on launch"
       href: "/notify-launch/"
@@ -42,7 +42,7 @@ sections:
       accent: "the math"
       post: "."
     lede: "Every destination carries its score and what went into it: how distinctive the experience is there, how good it is, how much of it there is, how easy it is to reach, how reliable it is by season, and what it costs."
-    body: "If a place is at the top of your list, you can see why. If it is at the bottom, you can see that too, which is usually the more useful half."
+    body: "If a place is at the top of your list, you can see why. If it's at the bottom, you can see that too, which is usually the more useful half."
     image:
       src: "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/local_cuisine_regional_specialties/image_1.jpg"
       alt: "A market table of regional produce and prepared dishes"

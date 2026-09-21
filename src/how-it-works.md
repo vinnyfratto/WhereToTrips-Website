@@ -34,10 +34,10 @@ sections:
       pre: "The part that does the "
       accent: "work"
       post: "."
-    lede: "The engine is not a filter on a list of hotels. It is a scored map of what places are actually good at, built destination by destination."
+    lede: "The engine isn't a filter on a list of hotels. It's a scored map of what places are actually good at, built destination by destination."
     id: "engine"
     background: false
-    body: "Every guide behind those scores is researched from sources published in the last two years, and every destination is scored on the same six things: how distinctive the experience is there, how good it is, how much of it there is, how easy it is to reach, how reliable it is across the seasons, and what it costs you."
+    body: "Every guide behind those scores is researched from sources published in the last two years, and every destination is scored on the same six things: how distinctive the experience is there, how good it is, how much of it there is, how easy it is to reach, how reliable it is by season, and what it costs you."
 
   - type: steps
     eyebrow: "What the engine weighs"
@@ -45,7 +45,7 @@ sections:
       pre: "Why a place ends up "
       accent: "on your list"
       post: "."
-    lede: "A destination has to clear the practical things before the fun ones count for anything."
+    lede: "A place has to clear the practical things before the fun ones count for anything."
     id: "scoring"
     background: true
     steps:
@@ -54,7 +54,7 @@ sections:
       - title: "Can you actually get there"
         body: "Real routes and real connections from where you are, in the dates you gave us."
       - title: "Is it any good right then"
-        body: "Season, weather and what is open. A place can be the right answer in April and the wrong one in August."
+        body: "Season, weather and what's open. A place can be the right answer in April and the wrong one in August."
       - title: "Does it match your vibes"
         body: "Scored against what you picked, not against what a hotel paid to promote."
 
@@ -64,10 +64,10 @@ sections:
       pre: "Twenty-four collections of "
       accent: "things to do"
       post: "."
-    lede: "This is the picker, not a tag cloud. Every collection opens into the specific travel styles underneath it, and every one of those is scored against real destinations."
+    lede: "This is the picker, not a tag cloud. Every collection opens into the travel styles underneath it, and each of those is scored against real destinations."
     id: "collections"
     background: false
-    footnote: "The collections and photos here are the same ones you see in the app."
+    footnote: "Same collections, same photos as the app."
 
   - type: cta_band
     id: "download"

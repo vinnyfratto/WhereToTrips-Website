@@ -9,7 +9,7 @@ sections:
       pre: "Start with a feeling, end with a "
       accent: "destination"
       post: "."
-    lede: "For when you have no idea where to go, and every list you have looked at so far started with an airport."
+    lede: "For when you have no idea where to go, and every list you've looked at so far started with an airport."
     primaryBtn:
       label: "Notify me on launch"
       href: "/notify-launch/"
@@ -29,9 +29,9 @@ sections:
       - title: "Pick a few kinds of trip"
         body: "Beach & Water. Nature & Outdoors. Health & Wellness. Ten to choose from, and you can take more than one."
       - title: "Tell us the practical part"
-        body: "Your home airport, your dates, your budget, and who is coming with you."
+        body: "Your home airport, your dates, your budget, and who's coming with you."
       - title: "Choose your vibes"
-        body: "We show you the vibes that fit what you have picked so far. You choose what you actually want to do and experience."
+        body: "We show you the vibes that fit what you've picked so far. You choose what you actually want to do."
       - title: "Get your shortlist"
         body: "Ranked, priced, and made of places rather than airports. Flights and hotels attached to each one."
 
@@ -54,7 +54,7 @@ sections:
       - icon: "check-circle"
         label: "Only places you can actually reach on the dates you gave us"
       - icon: "check-circle"
-        label: "Every other vibe that destination is good for, in case it changes your mind"
+        label: "Every other vibe that place is good for, in case it changes your mind"
 
   - type: cta_band
     id: "download"

@@ -49,14 +49,14 @@
       "key": "canonical",
       "display": "147",
       "label": "vibes you actually pick from",
-      "note": "What those styles collapse into once the duplicates and near-twins are merged.",
+      "note": "What those styles collapse into once the near-twins are merged.",
       "exact": 147
     },
     {
       "key": "collections",
       "display": "24",
       "label": "collections to browse",
-      "note": "The shelves those vibes sit on, so the picker is a short list and not a wall.",
+      "note": "What those vibes are grouped under, so the picker is a short list and not a wall.",
       "exact": 24
     }
   ],
@@ -79,7 +79,7 @@
       "key": "gateways",
       "display": "1,100+",
       "label": "gateway airports",
-      "note": "The airport is how you get there. It is not the thing you are choosing.",
+      "note": "The airport is how you get there. It isn't the thing you're choosing.",
       "exact": 1152
     },
     {

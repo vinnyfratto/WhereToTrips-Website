@@ -107,7 +107,7 @@ const PICKS = [
     vibeKey: "living_temples_spiritual", subregion: "Southeast Asia",
     displayScore: 95,
     insteadOf: "Bangkok",
-    hook: "Hundreds of working temples you can sit in, not queue through.",
+    hook: "Hundreds of working temples you can sit in, not line up for.",
   },
 ];
 

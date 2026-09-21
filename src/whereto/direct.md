@@ -9,7 +9,7 @@ sections:
       pre: "You already know. "
       accent: "Go"
       post: "."
-    lede: "Not every trip needs deciding. Sometimes it is your sister's wedding, or the same week in the same town you take every year."
+    lede: "Not every trip needs deciding. Sometimes it's your sister's wedding, or the same week in the same town you take every year."
     primaryBtn:
       label: "Notify me on launch"
       href: "/notify-launch/"
@@ -27,7 +27,7 @@ sections:
     background: true
     steps:
       - title: "Where and when"
-        body: "Type the destination and your dates. No vibes, no questionnaire, no shortlist you did not ask for."
+        body: "Type the destination and your dates. No vibes, no questionnaire, no shortlist you didn't ask for."
       - title: "What you want to spend"
         body: "The same budget that everything else in the app is priced against, so nothing arrives as a surprise at checkout."
       - title: "Book it"
