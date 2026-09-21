@@ -36,7 +36,7 @@
                {% if loop.first %}src="{{ img.url }}"{% else %}data-src="{{ img.url }}"{% endif %}
                alt="{% if loop.first %}{{ img.alt or (v.city + ', ' + v.country) }}{% endif %}"
                {% if not loop.first %}aria-hidden="true"{% endif %}
-               loading="lazy"
+               loading="{% if loop.first %}eager{% else %}lazy{% endif %}"
                decoding="async" />
           {% endfor %}
 

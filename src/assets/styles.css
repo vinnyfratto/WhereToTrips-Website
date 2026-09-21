@@ -1333,8 +1333,11 @@ footer { background: var(--footer); padding: 72px 0 40px; }
   display: block;
   font-family: var(--serif);
   font-weight: 700; font-style: italic;
-  font-size: clamp(34px, 4.2vw, 54px);
-  line-height: 1.05;
+  /* Sized so "2.8 million+" stays on one line in a quarter-width column;
+     at the old 54px it broke after "2.8" and read as two numbers. */
+  font-size: clamp(27px, 3vw, 42px);
+  line-height: 1.1;
+  white-space: nowrap;
   color: var(--amber);
 }
 .stat-label {
