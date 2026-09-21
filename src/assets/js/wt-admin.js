@@ -230,17 +230,14 @@ async function loadInvites() {
             </select>
           </div>
         </div>
-        <p class="adm-subhead">Revenue share</p>
+        <p class="adm-subhead">Terms</p>
         <div class="adm-form-row">
-          <div class="field">
-            <label>Revenue Share %</label>
-            <input name="revenue_share_percent" type="number" step="1" min="0" max="100" value="30" />
-            <span class="hint" style="display:block; margin-top:6px; max-width:46ch;">Their share of the commission WhereTo earns on a booking, not of what the traveller pays. Whole number, so 30 means 30%.</span>
-          </div>
-        </div>
-        <div class="adm-form-row" style="margin-top:10px;">
+          <div class="field"><label>Revenue Share %</label><input name="revenue_share_percent" type="number" step="1" min="0" max="100" value="30" /></div>
           <div class="field"><label>Commission Duration (months)</label><input name="commission_duration_months" type="number" value="36" min="1" /></div>
           <div class="field"><label>Expires (days)</label><input name="expires_days" type="number" value="30" min="1" /></div>
+        </div>
+        <p class="hint" style="margin:0 0 14px;">Revenue share is their cut of the commission WhereTo earns on a booking, not of what the traveller pays. Whole number, so 30 means 30%.</p>
+        <div class="adm-form-row" style="justify-content:flex-end;">
           <button type="submit" class="btn btn-primary btn-xs">Create invite</button>
         </div>
       </form>

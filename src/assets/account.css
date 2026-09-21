@@ -50,9 +50,13 @@
 .field input[type="password"],
 .field input[type="tel"],
 .field input[type="url"],
-/* date inputs size to their content and skip the shared border/padding
-   unless they are named here — the profile now asks for several. */
+/* date and number inputs size to their content and skip the shared
+   border/padding unless they are named here. Every number field on the
+   site rendered as a raw browser box until this was added: the admin
+   invite form, the per-affiliate rates, and the CRM's audience size and
+   tax year. */
 .field input[type="date"],
+.field input[type="number"],
 .field select,
 .field textarea {
   width: 100%;
