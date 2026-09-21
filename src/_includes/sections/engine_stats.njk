@@ -14,8 +14,13 @@
       {% if s.lede %}<p class="lede">{{ s.lede }}</p>{% endif %}
     </div>
 
+    {#- `set` picks which four numbers to print: the general set, or the
+        ones tuned for /travel-vibes/ and /destinations/. -#}
+    {%- set group = engineStats.vibesStats if s.set == "vibes"
+                    else (engineStats.destinationsStats if s.set == "destinations"
+                    else engineStats.stats) -%}
     <div class="stat-row reveal reveal-delay-1">
-      {% for st in engineStats.stats %}
+      {% for st in group %}
       <div class="stat">
         <span class="stat-num">{{ st.display }}</span>
         <span class="stat-label">{{ st.label }}</span>

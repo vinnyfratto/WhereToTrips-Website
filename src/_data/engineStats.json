@@ -30,6 +30,160 @@
       "exact": 692
     }
   ],
+  "vibesStats": [
+    {
+      "key": "matches",
+      "display": "12,000+",
+      "label": "scored vibe matches",
+      "note": "One row per place per travel style, each with its own score.",
+      "exact": 12936
+    },
+    {
+      "key": "styles",
+      "display": "690+",
+      "label": "travel styles scored",
+      "note": "The full vocabulary the engine reasons in, before any of it reaches you.",
+      "exact": 692
+    },
+    {
+      "key": "canonical",
+      "display": "147",
+      "label": "vibes you actually pick from",
+      "note": "What those styles collapse into once the duplicates and near-twins are merged.",
+      "exact": 147
+    },
+    {
+      "key": "collections",
+      "display": "24",
+      "label": "collections to browse",
+      "note": "The shelves those vibes sit on, so the picker is a short list and not a wall.",
+      "exact": 24
+    }
+  ],
+  "destinationsStats": [
+    {
+      "key": "destinations",
+      "display": "1,000+",
+      "label": "destinations you can book",
+      "note": "Each one checked for real hotels, real flights and current advisories.",
+      "exact": 1025
+    },
+    {
+      "key": "countries",
+      "display": "155",
+      "label": "countries and territories",
+      "note": "Where those destinations are, not where an airline happens to fly.",
+      "exact": 155
+    },
+    {
+      "key": "gateways",
+      "display": "1,100+",
+      "label": "gateway airports",
+      "note": "The airport is how you get there. It is not the thing you are choosing.",
+      "exact": 1152
+    },
+    {
+      "key": "places",
+      "display": "8,000+",
+      "label": "places scored around them",
+      "note": "Towns, ruins, coastlines and traditions you reach from those gateways.",
+      "exact": 8338
+    }
+  ],
+  "gateway": {
+    "iata": "NAP",
+    "city": "Naples",
+    "country": "Italy",
+    "totalRows": 45,
+    "vibeCount": 35,
+    "placeCount": 27,
+    "places": [
+      {
+        "place": "Pompeii & Herculaneum",
+        "vibe": "War & Modern History",
+        "score": 91,
+        "tier": "S",
+        "note": "Two towns stopped at one hour on one day in 79 AD"
+      },
+      {
+        "place": "Naples",
+        "vibe": "Regional Cuisine",
+        "score": 90,
+        "tier": "S",
+        "note": "UNESCO lists it as intangible heritage, and this is where it was described"
+      },
+      {
+        "place": "Amalfi (Path of the Gods)",
+        "vibe": "Coastal Cliff & Trail Hiking",
+        "score": 88,
+        "tier": "A",
+        "note": "Cliff-edge views, moderate, iconic half-day"
+      },
+      {
+        "place": "Amalfi Coast (Positano, Ravello)",
+        "vibe": "Luxury, Glamour & Superyachts",
+        "score": 88,
+        "tier": "A",
+        "note": "The most dramatic setting for cliffside luxury"
+      },
+      {
+        "place": "Capri (Blue Grotto)",
+        "vibe": "Sea Caves & Blue Lagoons",
+        "score": 87,
+        "tier": "A",
+        "note": "The original glowing sea cave, plus a stunning coast"
+      },
+      {
+        "place": "Capri",
+        "vibe": "Luxury, Glamour & Superyachts",
+        "score": 87,
+        "tier": "A",
+        "note": "Timeless chic, designer shopping, yacht set"
+      },
+      {
+        "place": "Vesuvius",
+        "vibe": "Volcanoes & Geothermal",
+        "score": 87,
+        "tier": "A",
+        "note": "You walk the rim, then walk the town it buried"
+      },
+      {
+        "place": "Vesuvius & Pompeii",
+        "vibe": "Volcanoes & Geothermal",
+        "score": 87,
+        "tier": "A",
+        "note": "You walk the rim, then walk the town it buried"
+      },
+      {
+        "place": "Ischia",
+        "vibe": "Thermal Springs & Spa Towns",
+        "score": 85,
+        "tier": "A",
+        "note": "Whole island of thermal parks and beach springs"
+      },
+      {
+        "place": "The Amalfi Coast",
+        "vibe": "Iconic Beaches",
+        "score": 85,
+        "tier": "A",
+        "note": "A UNESCO coastline where the villages are stacked up the cliff"
+      },
+      {
+        "place": "The Amalfi Drive",
+        "vibe": "Coastal Drives & Cliffs",
+        "score": 84,
+        "tier": "A",
+        "note": "The SS163 along the cliff, and the bus drivers who do it daily"
+      },
+      {
+        "place": "The National Archaeological Museum, Naples",
+        "vibe": "World-Class Museums",
+        "score": 84,
+        "tier": "A",
+        "note": "Everything portable that came out of Pompeii is in this building"
+      }
+    ]
+  },
   "categories": [
     {
       "code": "cities_urban",

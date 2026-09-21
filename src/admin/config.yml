@@ -299,6 +299,11 @@ collections:
                       - { name: post, widget: string, required: false }
                   - { name: lede, widget: text, required: false }
                   - { label: "Paragraph under the numbers", name: body, widget: text, required: false }
+                  - label: "Which four numbers"
+                    name: set
+                    widget: select
+                    required: false
+                    options: ["", "vibes", "destinations"]
                   - { label: "NOTE: the numbers themselves are counted by scripts/gen-engine-stats.js. Never type one in by hand; re-run the script.", name: _note, widget: hidden, required: false }
 
               - name: vibe_collections
@@ -319,6 +324,24 @@ collections:
                   - { label: "Max collections (empty = all 24)", name: limit, widget: number, required: false }
                   - { label: "Footnote under the grid", name: footnote, widget: text, required: false }
                   - { label: "NOTE: the collections and their photos come from scripts/gen-engine-stats.js, not from here.", name: _note, widget: hidden, required: false }
+
+              - name: gateway_example
+                label: One gateway opened up (live Vibe Engine rows)
+                fields:
+                  - { name: id, widget: string, required: false }
+                  - { label: "Tinted background", name: background, widget: boolean, default: false, required: false }
+                  - { name: eyebrow, widget: string, required: false }
+                  - label: Title
+                    name: title
+                    widget: object
+                    required: false
+                    fields:
+                      - { name: pre, widget: string }
+                      - { name: accent, widget: string }
+                      - { name: post, widget: string, required: false }
+                  - { name: lede, widget: text, required: false }
+                  - { label: "Footnote under the list", name: footnote, widget: text, required: false }
+                  - { label: "NOTE: the gateway and its scored places come from scripts/gen-engine-stats.js (currently Naples / NAP). Change it there, not here.", name: _note, widget: hidden, required: false }
 
               - name: highlights
                 label: Highlights bar (overlaps the hero)

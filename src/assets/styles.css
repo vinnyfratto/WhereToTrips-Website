@@ -1412,3 +1412,28 @@ footer { background: var(--footer); padding: 72px 0 40px; }
    width at all: it resolved to 0px and the hero photo was invisible on
    every phone while looking perfect on desktop. Stretch it explicitly. */
 .hero-media-cycle { align-self: stretch; width: 100%; }
+
+/* ── One gateway, opened up (sections/gateway_example.njk) ────────── */
+.gw-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  max-width: 880px;
+  margin: 0 auto 28px;
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+.gw-code {
+  font-family: var(--sans);
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 1.4px;
+  color: #fff;
+  background: var(--azure);
+  border-radius: var(--radius-sm);
+  padding: 5px 10px;
+}
+.gw-arrow { color: var(--wg400); }
+.gw-count strong { font-family: var(--serif); font-size: 19px; color: var(--navy); }
+.gw-sep { color: var(--wg400); }

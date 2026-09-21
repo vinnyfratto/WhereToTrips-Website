@@ -1,42 +1,93 @@
 ---
 layout: layouts/page.njk
-title: "Travel Vibes — Browse trips by mood | WhereTo"
-description: "Browse travel by the experience you want — adventure, beach, foodie, romantic, hidden gems and more. Each vibe maps to real destinations, matched to your budget in the WhereTo app."
+title: "Travel Vibes — How WhereTo scores what a place is good at"
+description: "A vibe is a thing you want to do on a trip. WhereTo scores every destination against every vibe it genuinely delivers, on six measures, then collapses 690+ travel styles into 147 you actually pick from across 24 collections."
 sections:
   - type: hero
     eyebrow: "Travel Vibes"
     title:
-      pre: "Start with a "
-      accent: "feeling"
+      pre: "What a place is actually "
+      accent: "good at"
       post: "."
-    lede: "Before you know the destination, you know the mood. Start there — ten starting vibes, each linking to matching destinations and the WhereTo module built to find it."
+    lede: "A vibe is a thing you want to do on a trip. Eat somewhere that takes its food seriously. Dive off a beach instead of a boat. Sit in a temple that people still use. We score every destination against every vibe it genuinely delivers, and we do it one at a time."
     primaryBtn:
-      label: "Explore the vibes"
-      href: "#vibes"
-    ghostBtn:
-      label: "See how it works"
-      href: "/how-it-works/"
+      label: "Notify me on launch"
+      href: "/notify-launch/"
     image:
-      src: "/media/vibes.jpg"
-      alt: "Aerial view of a turquoise lagoon surrounded by white sand"
+      src: "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/diving_snorkeling/image_1.jpg"
+      alt: "A snorkeller over a shallow reef in clear water"
 
-  - type: collection_grid
-    id: "vibes"
-    background: true
-    eyebrow: "Ten ways to wander"
+  - type: engine_stats
+    eyebrow: "The shape of it"
     title:
-      pre: "Pick your "
-      accent: "vibe"
+      pre: "Big underneath, "
+      accent: "short on screen"
       post: "."
-    intro: "Each vibe links to real destinations and typical budgets. Your live, personalized matches happen in the app."
-    collection: "vibe"
-    columns: 3
+    lede: "The engine reasons in a much larger vocabulary than it ever shows you. That is the point of it."
+    set: "vibes"
+    background: true
+    body: "A destination is scored against a travel style only when it delivers a real version of that experience. Technically having an activity is not enough, or every coastal town would rank for diving and the list would be useless."
+
+  - type: steps
+    eyebrow: "How a score is made"
+    title:
+      pre: "Six questions, asked the same way "
+      accent: "every time"
+      post: "."
+    center: true
+    steps:
+      - title: "How distinctive is it here"
+        body: "Is this place known for it, or does it merely have one? This counts for the most, because it is the difference between a recommendation and a coincidence."
+      - title: "How good is it"
+        body: "The condition of the actual thing. A reef that is alive. A food scene that is still there and not a memory."
+      - title: "How much of it is there"
+        body: "One famous restaurant is not a food destination. A week of them is."
+      - title: "How hard is it to reach"
+        body: "Real routes from real airports. A perfect answer you cannot get to is not an answer."
+      - title: "How reliable is it"
+        body: "Across seasons, weather and opening times. Some places are a ten in May and a four in August."
+      - title: "What does it cost you"
+        body: "Counted last and weighted least, because cheap and disappointing helps nobody."
+
+  - type: feature_split
+    eyebrow: "From 690 to 147"
+    title:
+      pre: "Then we throw most of it "
+      accent: "away"
+      post: "."
+    lede: "The engine holds 690+ separate travel styles, because that is what it takes to score the world honestly. Nobody wants to scroll 690 of anything."
+    body: "So they get merged. Near-twins collapse into one. Regional wordings for the same idea become the same idea. What is left is 147 vibes you pick from, sitting on 24 collections, and every one of them still points back at the full set of scored rows underneath. You pick a short list. The engine searches the long one."
+    image:
+      src: "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/local_cuisine_regional_specialties/image_2.jpg"
+      alt: "A regional dish being prepared at a market stall"
+    flip: true
+    features:
+      - icon: "check-circle"
+        label: "Pick a vibe, and every destination scored for it comes back ranked"
+      - icon: "check-circle"
+        label: "Pick several, and the engine finds where they overlap"
+      - icon: "check-circle"
+        label: "Every score carries its six numbers, so you can see the reasoning"
+      - icon: "check-circle"
+        label: "Scored within a region first, so second place actually means something"
+
+  - type: vibe_collections
+    eyebrow: "What you pick from"
+    title:
+      pre: "Twenty-four collections of "
+      accent: "things to do"
+      post: "."
+    lede: "Every collection opens into the specific vibes underneath it. These are the same collections and the same photos the app's picker uses."
+    id: "collections"
+    background: true
+    footnote: "Live matching, current pricing and booking all happen in the WhereTo app."
 
   - type: cta_band
+    id: "download"
     eyebrow: "Ready to wander?"
     title:
-      pre: "Find your "
-      accent: "vibe"
+      pre: "Start from what you want "
+      accent: "to do"
       post: "."
-    body: "Tell WhereTo your budget and your vibe — and get real destinations back."
+    body: "Pick your vibes in the WhereTo app and get back destinations that are scored against them, priced for your budget and bookable."
 ---
