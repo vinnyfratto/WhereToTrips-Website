@@ -1360,28 +1360,28 @@ footer { background: var(--footer); padding: 72px 0 40px; }
 }
 
 /* ════════════════════════════════════════════════════════════════════
-   The 24 vibe shelves — sections/shelf_mosaic.njk
+   The 24 vibe collections — sections/vibe_collections.njk
    ════════════════════════════════════════════════════════════════════ */
-.shelf-grid {
+.collection-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 18px;
 }
-.shelf-tile {
+.collection-tile {
   margin: 0;
   background: var(--card);
   border-radius: var(--radius-md);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
 }
-.shelf-tile-img {
+.collection-tile-img {
   position: relative;
   display: block;
   aspect-ratio: 4 / 3;
   background: var(--wg100);
   overflow: hidden;
 }
-.shelf-tile figcaption {
+.collection-tile figcaption {
   display: block;
   padding: 12px 14px 14px;
   font-family: var(--serif);
@@ -1392,9 +1392,13 @@ footer { background: var(--footer); padding: 72px 0 40px; }
 
 @media (max-width: 960px) {
   .stat-row { grid-template-columns: repeat(2, 1fr); }
-  .shelf-grid { grid-template-columns: repeat(3, 1fr); }
+  .collection-grid { grid-template-columns: repeat(3, 1fr); }
 }
 @media (max-width: 560px) {
-  .shelf-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
-  .shelf-tile figcaption { font-size: 13px; padding: 10px 11px 12px; }
+  .collection-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .collection-tile figcaption { font-size: 13px; padding: 10px 11px 12px; }
 }
+
+/* Hero photo that cycles (sections/hero.njk, `imageCycle`). Same box as
+   .hero-img; the frames stack inside it and crossfade. */
+.hero-img-cycle { position: relative; display: block; overflow: hidden; }

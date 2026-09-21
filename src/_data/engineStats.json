@@ -26,8 +26,60 @@
       "key": "styles",
       "display": "690+",
       "label": "distinct travel styles",
-      "note": "Grouped into 147 you actually pick from, across 24 shelves.",
+      "note": "Grouped into 147 you actually pick from, across 24 collections.",
       "exact": 692
+    }
+  ],
+  "categories": [
+    {
+      "code": "cities_urban",
+      "name": "Cities & Shopping",
+      "image": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/categories/cities_urban/image_1.jpg"
+    },
+    {
+      "code": "history_heritage",
+      "name": "Culture & History",
+      "image": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/categories/history_heritage/image_1.jpg"
+    },
+    {
+      "code": "coast_sea",
+      "name": "Beaches & Water",
+      "image": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/categories/coast_sea/image_1.jpg"
+    },
+    {
+      "code": "nature_outdoors",
+      "name": "Nature & Wildlife",
+      "image": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/categories/nature_outdoors/image_1.jpg"
+    },
+    {
+      "code": "food_drink",
+      "name": "Food & Drink",
+      "image": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/categories/food_drink/image_1.jpg"
+    },
+    {
+      "code": "stays_wellness",
+      "name": "Resorts & Romance",
+      "image": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/categories/stays_wellness/image_1.jpg"
+    },
+    {
+      "code": "active_scenic",
+      "name": "Adventure & Outdoors",
+      "image": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/categories/active_scenic/image_1.jpg"
+    },
+    {
+      "code": "culture_events",
+      "name": "Entertainment & Events",
+      "image": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/categories/culture_events/image_1.jpg"
+    },
+    {
+      "code": "family_attractions",
+      "name": "Family & Attractions",
+      "image": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/categories/family_attractions/mother-and-child-share-a-lollipop-at-carnival-2026-03-24-21-39-46-utc.jpg"
+    },
+    {
+      "code": "wellness_relaxation",
+      "name": "Wellness & Relaxation",
+      "image": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/categories/wellness_relaxation/mature-woman-wearing-robe-outdoors-on-lounger-drin-2026-03-10-03-19-59-utc.jpg"
     }
   ],
   "shelves": [

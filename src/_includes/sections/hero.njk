@@ -57,7 +57,23 @@
       {% endif %}
     </div>
     <div class="hero-media reveal reveal-delay-1">
+      {#- `imageCycle: categories` stacks the ten top-level vibe categories
+          and crossfades them, rather than showing one stock photo. Same
+          layered-opacity mechanism as the vibe cards (wt-vibe-cards.js),
+          so it never swaps a src and flashes an empty box. -#}
+      {% if s.imageCycle == "categories" and engineStats.categories %}
+      <span class="hero-img hero-img-cycle" data-cycle style="--cycle-delay: 0s;">
+        {% for c in engineStats.categories %}
+        <img class="dest-photo-frame{% if loop.first %} is-on{% endif %}"
+             src="{{ c.image }}"
+             alt="{% if loop.first %}{{ s.image.alt or c.name }}{% endif %}"
+             {% if not loop.first %}aria-hidden="true"{% endif %}
+             loading="{% if loop.first %}eager{% else %}lazy{% endif %}" decoding="async" />
+        {% endfor %}
+      </span>
+      {% else %}
       <img class="hero-img{% if s.image.transparent %} img-transparent{% endif %}" src="{{ s.image.src }}" alt="{{ s.image.alt }}" loading="eager" />
+      {% endif %}
       {% if s.badge %}
       <div class="hero-badge">
         <span class="pulse"></span>
@@ -71,3 +87,4 @@
   </div>
 </section>
 {% endif %}
+{% if s.imageCycle %}<script src="/assets/js/wt-vibe-cards.js?v={{ buildTime }}" defer></script>{% endif %}

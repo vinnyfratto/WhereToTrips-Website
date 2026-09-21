@@ -1,5 +1,12 @@
 {#- ══════════════════════════════════════════════════════════════════
-    The 24 vibe shelves, with the photos the app uses for them.
+    The 24 vibe collections, with the photos the app uses for them.
+
+    "Shelf" is the internal word for these (vibe_shelves in Supabase,
+    shelves in the Vibes Engine content tree). The website says
+    COLLECTION, because nobody outside the codebase says shelf. Note it
+    is deliberately not "vibe groups" either: "group" already means a
+    group of travellers in Wander Together, and that word has to keep
+    meaning one thing.
 
     Same photos as the in-app picker (vibe_shelves.image_1..3), pulled
     by scripts/gen-engine-stats.js. Each tile cycles its own three
@@ -15,11 +22,11 @@
       {% if s.lede %}<p class="lede">{{ s.lede }}</p>{% endif %}
     </div>
 
-    <div class="shelf-grid reveal reveal-delay-1">
+    <div class="collection-grid reveal reveal-delay-1">
       {% for sh in engineStats.shelves %}
       {% if not s.limit or loop.index <= s.limit %}
-      <figure class="shelf-tile" data-cycle style="--cycle-delay: {{ loop.index0 * 0.45 }}s;">
-        <span class="shelf-tile-img">
+      <figure class="collection-tile" data-cycle style="--cycle-delay: {{ loop.index0 * 0.45 }}s;">
+        <span class="collection-tile-img">
           {% for src in sh.images %}
           <img class="dest-photo-frame{% if loop.first %} is-on{% endif %}"
                src="{{ src }}"

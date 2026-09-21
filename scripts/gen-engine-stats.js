@@ -3,7 +3,8 @@
    gen-engine-stats.js
 
    Writes src/_data/engineStats.json — the real size of the Vibe Engine,
-   plus the 24 vibe shelves and their photos, for /how-it-works/.
+   plus the 10 categories and the 24 vibe collections with their photos,
+   for /how-it-works/.
 
    Every number on that page is counted here rather than typed into a
    template, because a marketing stat that quietly goes stale is worse
@@ -108,12 +109,28 @@ const withPlus = (n) => `${n.toLocaleString("en-US")}+`;
       key: "styles",
       display: withPlus(floorTo(engineKeys, 10)),
       label: "distinct travel styles",
-      note: `Grouped into ${canonical} you actually pick from, across ${shelvesCount} shelves.`,
+      note: `Grouped into ${canonical} you actually pick from, across ${shelvesCount} collections.`,
       exact: engineKeys,
     },
   ];
 
-  // The shelves, with their photos — the picker you see in the app.
+  // The ten top-level categories, one photo each. The How It Works hero
+  // cycles these, so it is showing the actual top of the taxonomy rather
+  // than a stock shot of a laptop.
+  const { rows: catRows } = await sb(
+    "vibe_categories",
+    "select=code,display_name,sort_order,image_1&enabled=is.true&order=sort_order"
+  );
+  const categories = catRows
+    .filter((r) => r.image_1)
+    .map((r) => ({ code: r.code, name: r.display_name, image: r.image_1 }));
+  if (categories.length < catRows.length) {
+    throw new Error(`Categories with no image_1: ${catRows.filter((r) => !r.image_1).map((r) => r.code).join(", ")}`);
+  }
+
+  // The 24 vibe collections, with their photos — the picker you see in
+  // the app. "Shelf" is the internal word for these; the website calls
+  // them collections, because nobody outside the codebase says shelf.
   const { rows: shelfRows } = await sb(
     "vibe_shelves",
     "select=code,display_name,blurb,sort_order,image_1,image_2,image_3&enabled=is.true&order=sort_order"
@@ -125,14 +142,15 @@ const withPlus = (n) => `${n.toLocaleString("en-US")}+`;
     images: [r.image_1, r.image_2, r.image_3].filter(Boolean),
   }));
   const missing = shelves.filter((s) => !s.images.length).map((s) => s.code);
-  if (missing.length) throw new Error(`Shelves with no image: ${missing.join(", ")}`);
+  if (missing.length) throw new Error(`Collections with no image: ${missing.join(", ")}`);
 
-  const out = { generated: new Date().toISOString().slice(0, 10), stats, shelves };
+  const out = { generated: new Date().toISOString().slice(0, 10), stats, categories, shelves };
   const dest = path.join(__dirname, "..", "src", "_data", "engineStats.json");
   fs.writeFileSync(dest, JSON.stringify(out, null, 2) + "\n");
 
   for (const s of stats) console.log(`  ✓ ${s.display} ${s.label}  (exact ${s.exact.toLocaleString("en-US")})`);
-  console.log(`  ✓ ${shelves.length} shelves, ${shelves.reduce((n, s) => n + s.images.length, 0)} photos`);
+  console.log(`  ✓ ${categories.length} categories, one photo each`);
+  console.log(`  ✓ ${shelves.length} collections, ${shelves.reduce((n, s) => n + s.images.length, 0)} photos`);
   console.log(`\nWrote → ${path.relative(process.cwd(), dest)}`);
 })().catch((err) => {
   console.error("FAILED:", err.message);

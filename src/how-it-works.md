@@ -17,8 +17,8 @@ sections:
       label: "Browse the vibes"
       href: "/travel-vibes/"
     image:
-      src: "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/mountains_scenic_landscapes/image_1.jpg"
-      alt: "An alpine valley in autumn, a village beside a lake under snow-capped peaks"
+      alt: "The ten kinds of trip WhereTo starts from, from beaches and food to cities and wildlife"
+    imageCycle: "categories"
 
   - type: app_modes
     eyebrow: "Four ways in"
@@ -61,16 +61,16 @@ sections:
       - title: "Does it match your vibes"
         body: "Scored against what you picked, not against what a hotel paid to promote."
 
-  - type: shelf_mosaic
+  - type: vibe_collections
     eyebrow: "What you pick from"
     title:
-      pre: "Twenty-four shelves of "
+      pre: "Twenty-four collections of "
       accent: "things to do"
       post: "."
-    lede: "This is the picker, not a tag cloud. Every shelf opens into the specific travel styles underneath it, and every one of those is scored against real destinations."
-    id: "shelves"
+    lede: "This is the picker, not a tag cloud. Every collection opens into the specific travel styles underneath it, and every one of those is scored against real destinations."
+    id: "collections"
     background: false
-    footnote: "The shelves and photos here are the same ones you see in the app."
+    footnote: "The collections and photos here are the same ones you see in the app."
 
   - type: cta_band
     id: "download"
