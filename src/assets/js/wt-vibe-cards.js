@@ -55,6 +55,9 @@
     var i = 0;
     var timer = null;
     var visible = true;
+    var z = 1;
+
+    frames[0].style.zIndex = z;
 
     function next() {
       // Walk forward to the next frame that has actually decoded. If none
@@ -63,8 +66,18 @@
         var n = (i + step) % frames.length;
         if (n === i) break;
         if (frames[n].complete && frames[n].naturalWidth > 0) {
-          frames[i].classList.remove('is-on');
+          // Fade the NEW frame in ON TOP, and leave the old one fully
+          // opaque underneath until it has finished. Cross-fading both at
+          // once (old 1->0 while new 0->1) leaves them at 0.5 each in the
+          // middle, which composites to a half-transparent card and shows
+          // the grey box behind it: a visible white blink, once per swap,
+          // on 29 boxes. It reads as an image failing to load, which is
+          // exactly what it got reported as.
+          var outgoing = frames[i];
+          z += 1;
+          frames[n].style.zIndex = z;
           frames[n].classList.add('is-on');
+          setTimeout(function () { outgoing.classList.remove('is-on'); }, FADE + 80);
           i = n;
           break;
         }
