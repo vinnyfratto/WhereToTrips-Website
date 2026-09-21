@@ -21,7 +21,7 @@ layout: layouts/base.njk
   <div class="vibe-hero-media" data-cycle style="--cycle-delay: 0s;">
     {% for img in v.images %}
     <img class="dest-photo-frame vibe-hero-frame{% if loop.first %} is-on{% endif %}"
-         src="{{ img.url }}"
+         {% if loop.first %}src="{{ img.url }}"{% else %}data-src="{{ img.url }}"{% endif %}
          alt="{% if loop.first %}{{ img.alt or (v.city + ', ' + v.country) }}{% endif %}"
          {% if not loop.first %}aria-hidden="true"{% endif %}
          loading="{% if loop.first %}eager{% else %}lazy{% endif %}" decoding="async" />

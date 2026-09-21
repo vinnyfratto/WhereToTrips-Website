@@ -13,9 +13,6 @@ sections:
     primaryBtn:
       label: "Notify me on launch"
       href: "/notify-launch/"
-    ghostBtn:
-      label: "Browse the vibes"
-      href: "/travel-vibes/"
     image:
       alt: "The ten kinds of trip WhereTo starts from, from beaches and food to cities and wildlife"
     imageCycle: "categories"

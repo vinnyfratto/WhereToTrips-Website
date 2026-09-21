@@ -33,10 +33,10 @@
            aria-label="Explore {{ v.city }}, {{ v.country }}">
           {% for img in v.images %}
           <img class="dest-photo-frame{% if loop.first %} is-on{% endif %}"
-               src="{{ img.url }}"
+               {% if loop.first %}src="{{ img.url }}"{% else %}data-src="{{ img.url }}"{% endif %}
                alt="{% if loop.first %}{{ img.alt or (v.city + ', ' + v.country) }}{% endif %}"
                {% if not loop.first %}aria-hidden="true"{% endif %}
-               loading="{% if loop.first %}lazy{% else %}lazy{% endif %}"
+               loading="lazy"
                decoding="async" />
           {% endfor %}
 

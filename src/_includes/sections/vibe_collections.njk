@@ -29,7 +29,7 @@
         <span class="collection-tile-img">
           {% for src in sh.images %}
           <img class="dest-photo-frame{% if loop.first %} is-on{% endif %}"
-               src="{{ src }}"
+               {% if loop.first %}src="{{ src }}"{% else %}data-src="{{ src }}"{% endif %}
                alt="{% if loop.first %}{{ sh.name }}{% endif %}"
                {% if not loop.first %}aria-hidden="true"{% endif %}
                loading="lazy" decoding="async" />
