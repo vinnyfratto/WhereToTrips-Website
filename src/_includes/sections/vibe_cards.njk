@@ -33,7 +33,8 @@
            aria-label="Explore {{ v.city }}, {{ v.country }}">
           {% for img in v.images %}
           <img class="dest-photo-frame{% if loop.first %} is-on{% endif %}"
-               {% if loop.first %}src="{{ img.url | thumb(760) }}"{% else %}data-src="{{ img.url | thumb(760) }}"{% endif %}
+               {% if loop.first %}src="{{ img.url | thumb(760) }}" srcset="{{ img.url | thumbSet([420, 760]) }}"{% else %}data-src="{{ img.url | thumb(760) }}" data-srcset="{{ img.url | thumbSet([420, 760]) }}"{% endif %}
+               sizes="(max-width: 560px) 92vw, (max-width: 960px) 46vw, 31vw"
                alt="{% if loop.first %}{{ img.alt or (v.city + ', ' + v.country) }}{% endif %}"
                {% if not loop.first %}aria-hidden="true"{% endif %}
                loading="{% if loop.first %}eager{% else %}lazy{% endif %}"

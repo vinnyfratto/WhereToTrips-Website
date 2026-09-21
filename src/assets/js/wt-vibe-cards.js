@@ -37,12 +37,17 @@
   var FADE  = 1100;   // must match .dest-photo-frame's transition
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-  /* Give the deferred frames their src. Idempotent. */
+  /* Give the deferred frames their src. Idempotent.
+     srcset goes on FIRST: setting src alone would start a fetch of the
+     fallback, and only then get overridden by the responsive candidate. */
   function hydrate(box) {
     var pending = box.querySelectorAll('img[data-src]');
     for (var i = 0; i < pending.length; i++) {
-      pending[i].src = pending[i].getAttribute('data-src');
-      pending[i].removeAttribute('data-src');
+      var img = pending[i];
+      var set = img.getAttribute('data-srcset');
+      if (set) { img.srcset = set; img.removeAttribute('data-srcset'); }
+      img.src = img.getAttribute('data-src');
+      img.removeAttribute('data-src');
     }
   }
 

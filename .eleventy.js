@@ -59,6 +59,22 @@ module.exports = function (eleventyConfig) {
            `&w=${width}&q=${quality}&we&output=jpg`;
   });
 
+  // The same image at several widths, as a srcset. A phone shows these
+  // tiles at ~160px and the hero at ~340px; without this it downloaded the
+  // desktop sizes anyway, which is most of a mobile page's weight for
+  // pixels nobody can see. Pair it with a `sizes` attribute or the browser
+  // assumes 100vw and picks the largest.
+  //   srcset="{{ url | thumbSet([360, 560]) }}" sizes="(max-width: 960px) 46vw, 23vw"
+  eleventyConfig.addFilter("thumbSet", (url, widths = [400, 800], quality = 72) => {
+    if (!url || typeof url !== "string") return "";
+    if (!/^https?:\/\//i.test(url)) return "";
+    const bare = url.replace(/^https?:\/\//i, "");
+    return widths
+      .map((w) => `https://images.weserv.nl/?url=${encodeURIComponent(bare)}` +
+                  `&w=${w}&q=${quality}&we&output=jpg ${w}w`)
+      .join(", ");
+  });
+
   // ── Solar icons ────────────────────────────────────────────────────────────
   // Same set/renderer as the app (@iconify-json/solar, bold-duotone). Usage:
   //   {% icon "compass" %}  or  {% icon "compass", "big" %}  (adds class ico-big)

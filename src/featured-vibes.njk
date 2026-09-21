@@ -21,7 +21,8 @@ layout: layouts/base.njk
   <div class="vibe-hero-media" data-cycle style="--cycle-delay: 0s;">
     {% for img in v.images %}
     <img class="dest-photo-frame vibe-hero-frame{% if loop.first %} is-on{% endif %}"
-         {% if loop.first %}src="{{ img.url | thumb(1100) }}"{% else %}data-src="{{ img.url | thumb(1100) }}"{% endif %}
+         {% if loop.first %}src="{{ img.url | thumb(1100) }}" srcset="{{ img.url | thumbSet([640, 1100, 1600]) }}"{% else %}data-src="{{ img.url | thumb(1100) }}" data-srcset="{{ img.url | thumbSet([640, 1100, 1600]) }}"{% endif %}
+         sizes="100vw"
          alt="{% if loop.first %}{{ img.alt or (v.city + ', ' + v.country) }}{% endif %}"
          {% if not loop.first %}aria-hidden="true"{% endif %}
          loading="{% if loop.first %}eager{% else %}lazy{% endif %}" decoding="async" />
@@ -166,7 +167,9 @@ layout: layouts/base.njk
     <div class="vibe-gallery reveal reveal-delay-1">
       {% for img in v.images %}
       <figure>
-        <img src="{{ img.url | thumb(760) }}" alt="{{ img.alt or (v.city + ', ' + v.country) }}" loading="lazy" decoding="async" />
+        <img src="{{ img.url | thumb(760) }}" srcset="{{ img.url | thumbSet([420, 760]) }}"
+             sizes="(max-width: 560px) 92vw, (max-width: 960px) 46vw, 31vw"
+             alt="{{ img.alt or (v.city + ', ' + v.country) }}" loading="lazy" decoding="async" />
         {% if img.credit %}
         <figcaption>
           {% if img.creditUrl %}<a href="{{ img.creditUrl }}" rel="nofollow noopener" target="_blank">{{ img.credit }}</a>{% else %}{{ img.credit }}{% endif %}

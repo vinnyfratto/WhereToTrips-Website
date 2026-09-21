@@ -29,7 +29,8 @@
         <span class="collection-tile-img">
           {% for src in sh.images %}
           <img class="dest-photo-frame{% if loop.first %} is-on{% endif %}"
-               {% if loop.first %}src="{{ src | thumb(560) }}"{% else %}data-src="{{ src | thumb(560) }}"{% endif %}
+               {% if loop.first %}src="{{ src | thumb(560) }}" srcset="{{ src | thumbSet([360, 560]) }}"{% else %}data-src="{{ src | thumb(560) }}" data-srcset="{{ src | thumbSet([360, 560]) }}"{% endif %}
+               sizes="(max-width: 560px) 46vw, (max-width: 960px) 31vw, 23vw"
                alt="{% if loop.first %}{{ sh.name }}{% endif %}"
                {% if not loop.first %}aria-hidden="true"{% endif %}
                loading="{% if loop.first %}eager{% else %}lazy{% endif %}" decoding="async" />
