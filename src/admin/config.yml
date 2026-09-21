@@ -283,6 +283,43 @@ collections:
                       - { name: href, widget: string }
                   - { label: "CAUTION: every claim in this section must match the signed Privacy Statement (Section 4 for no-sale, Section 2 for what we do collect). Do not add a promise the policy does not already make.", name: _warn, widget: hidden, required: false }
 
+              - name: engine_stats
+                label: Vibe Engine by the numbers
+                fields:
+                  - { name: id, widget: string, required: false }
+                  - { label: "Tinted background", name: background, widget: boolean, default: false, required: false }
+                  - { name: eyebrow, widget: string, required: false }
+                  - label: Title
+                    name: title
+                    widget: object
+                    required: false
+                    fields:
+                      - { name: pre, widget: string }
+                      - { name: accent, widget: string }
+                      - { name: post, widget: string, required: false }
+                  - { name: lede, widget: text, required: false }
+                  - { label: "Paragraph under the numbers", name: body, widget: text, required: false }
+                  - { label: "NOTE: the numbers themselves are counted by scripts/gen-engine-stats.js. Never type one in by hand; re-run the script.", name: _note, widget: hidden, required: false }
+
+              - name: shelf_mosaic
+                label: Vibe shelves (photos from the app's picker)
+                fields:
+                  - { name: id, widget: string, required: false }
+                  - { label: "Tinted background", name: background, widget: boolean, default: false, required: false }
+                  - { name: eyebrow, widget: string, required: false }
+                  - label: Title
+                    name: title
+                    widget: object
+                    required: false
+                    fields:
+                      - { name: pre, widget: string }
+                      - { name: accent, widget: string }
+                      - { name: post, widget: string, required: false }
+                  - { name: lede, widget: text, required: false }
+                  - { label: "Max shelves (empty = all 24)", name: limit, widget: number, required: false }
+                  - { label: "Footnote under the grid", name: footnote, widget: text, required: false }
+                  - { label: "NOTE: the shelves and their photos come from scripts/gen-engine-stats.js, not from here.", name: _note, widget: hidden, required: false }
+
               - name: highlights
                 label: Highlights bar (overlaps the hero)
                 fields:
@@ -615,7 +652,7 @@ collections:
             widget: select
             default: pre
             options:
-              - { label: "Pre-launch (Join Early Access)", value: pre }
+              - { label: "Pre-launch (Notify me on launch)", value: pre }
               - { label: "Post-launch (Get the App + store badges)", value: post }
           - label: "Nav CTA (pre / post launch)"
             name: cta

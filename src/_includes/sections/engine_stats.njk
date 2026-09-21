@@ -1,0 +1,29 @@
+{#- ══════════════════════════════════════════════════════════════════
+    The Vibe Engine, by the numbers.
+
+    Every figure is counted by scripts/gen-engine-stats.js and rounded
+    DOWN with a "+", never up. `exact` travels in the JSON beside each
+    one so the rounding can always be checked. Do not hand-type a number
+    into this template; re-run the generator instead.
+    ══════════════════════════════════════════════════════════════════ -#}
+<section class="block{% if s.background %} tint{% endif %}"{% if s.id %} id="{{ s.id }}"{% endif %}>
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      {% if s.eyebrow %}<span class="eyebrow">{{ s.eyebrow }}</span>{% endif %}
+      {% if s.title %}<h2>{{ s.title.pre }} <span class="italic">{{ s.title.accent }}</span>{{ s.title.post }}</h2>{% endif %}
+      {% if s.lede %}<p class="lede">{{ s.lede }}</p>{% endif %}
+    </div>
+
+    <div class="stat-row reveal reveal-delay-1">
+      {% for st in engineStats.stats %}
+      <div class="stat">
+        <span class="stat-num">{{ st.display }}</span>
+        <span class="stat-label">{{ st.label }}</span>
+        {% if st.note %}<span class="stat-note">{{ st.note }}</span>{% endif %}
+      </div>
+      {% endfor %}
+    </div>
+
+    {% if s.body %}<p class="stat-body reveal reveal-delay-2">{{ s.body }}</p>{% endif %}
+  </div>
+</section>

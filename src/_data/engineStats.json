@@ -1,0 +1,275 @@
+{
+  "generated": "2026-09-21",
+  "stats": [
+    {
+      "key": "vibes",
+      "display": "12,000+",
+      "label": "scored vibe matches",
+      "note": "Every destination in the engine, scored against every vibe it genuinely delivers.",
+      "exact": 12936
+    },
+    {
+      "key": "destinations",
+      "display": "1,000+",
+      "label": "destinations",
+      "note": "Real places you can fly to and book, not a list of airports.",
+      "exact": 1025
+    },
+    {
+      "key": "words",
+      "display": "2.8 million+",
+      "label": "words of destination and vibe writing",
+      "note": "Across 2,363 guides, researched by hand rather than generated.",
+      "exact": 2801773
+    },
+    {
+      "key": "styles",
+      "display": "690+",
+      "label": "distinct travel styles",
+      "note": "Grouped into 147 you actually pick from, across 24 shelves.",
+      "exact": 692
+    }
+  ],
+  "shelves": [
+    {
+      "code": "iconic_cities_landmarks",
+      "name": "Cities, Landmarks & Neighborhoods",
+      "blurb": "The big-name cities and the buildings people recognise, from capitals and skylines to futuristic waterfronts.",
+      "images": [
+        "https://elements-resized.envatousercontent.com/envato-dam-assets-production/EVA/TRX/57/ea/b2/e1/af/v1_E10/E10HKIDA.jpg?w=1600&cf_fit=scale-down&q=85&format=auto&s=cc005bda5f1d8e4c9a04c4cf708f8d83595174823a33cc43fad10dc50571b1ca",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/cities_nightlife/image_1_v2.jpg",
+        "https://elements-resized.envatousercontent.com/envato-dam-assets-production/EVA/TRX/e6/b5/96/7a/d1/v1_E10/E101L17U.jpg?w=1600&cf_fit=scale-down&q=85&format=auto&s=7f14cc0a09de3d9481bf924c945ee832b4002a197d88bc8b10bd519069b0a499"
+      ]
+    },
+    {
+      "code": "markets_local_shopping",
+      "name": "Shopping & Markets",
+      "blurb": "Three shopping vibes at opposite ends of the scale, from covered souks and bazaars to air-conditioned mega malls.",
+      "images": [
+        "https://elements-resized.envatousercontent.com/envato-dam-assets-production/EVA/TRX/6d/c3/74/39/0b/v1_E10/E1070197.jpg?w=1600&cf_fit=scale-down&q=85&format=auto&s=0d55a23543c0f5f31dc67ac60a20c220a38192711dd7e562cd8ec2df6bfa6892",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/markets_local_shopping/image_2.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/markets_local_shopping/image_3.jpg"
+      ]
+    },
+    {
+      "code": "historic_towns_villages",
+      "name": "History, Castles & Old Towns",
+      "blurb": "Nine vibes covering the last few centuries, from colonial old towns and medinas to wartime sites and ghost tours.",
+      "images": [
+        "https://elements-resized.envatousercontent.com/envato-dam-assets-production/EVA/TRX/21/4f/e5/80/d3/v1_E10/E109KELR.jpg?w=1600&cf_fit=scale-down&q=85&format=auto&s=d9f11e76ad7f49a59032d0481824a63ea47cf6bea4e0348306b806a85c4ce45a",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/coffee_tea_sweets/image_1.jpg",
+        "https://elements-resized.envatousercontent.com/envato-dam-assets-production/EVA/TRX/b5/0e/02/d9/3a/v1_E10/E10FEXV.jpg?w=1600&cf_fit=scale-down&q=85&format=auto&s=5356c35b4fa1f5cf514792e14f4038861f58356e658c3994247e35d00d470e93"
+      ]
+    },
+    {
+      "code": "local_culture_traditions",
+      "name": "Local Culture, Museums & Art",
+      "blurb": "Living culture rather than preserved history, across crafts, indigenous communities, floating markets, rodeo and more.",
+      "images": [
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/museums_art_creative_culture/image_3.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/local_culture_traditions/image_2.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/local_culture_traditions/image_3.jpg"
+      ]
+    },
+    {
+      "code": "sacred_religious_heritage",
+      "name": "Sacred & Religious Heritage",
+      "blurb": "Places of worship and pilgrimage across six traditions, most of them still in active use rather than preserved as museums.",
+      "images": [
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/sacred_religious_heritage/image_1.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/sacred_religious_heritage/image_2.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/sacred_religious_heritage/image_3.jpg"
+      ]
+    },
+    {
+      "code": "in_the_water",
+      "name": "Beaches, Coasts & Islands",
+      "blurb": "Five ways to spend time on a coast, from famous stretches of sand to working harbours and quiet regional beaches.",
+      "images": [
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/water/image_1_v2.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/in_the_water/image_2.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/in_the_water/image_3_v2.jpg"
+      ]
+    },
+    {
+      "code": "lakes_rivers_waterfalls",
+      "name": "Lakes, Rivers & Waterfalls",
+      "blurb": null,
+      "images": [
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/land_nature/image_1_v2.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/water/image_2_v2.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/lakes_rivers_waterfalls/image_3.jpg"
+      ]
+    },
+    {
+      "code": "boating_fishing_water_adventures",
+      "name": "Boating & Water Adventures",
+      "blurb": "Eight ways to spend a day on or in the water, from sailing and kayaking to cenotes, houseboats and cruise ports.",
+      "images": [
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/on_the_water/image_1_v2.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/on_the_water/image_2_v2.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/on_the_water/image_3_v2.jpg"
+      ]
+    },
+    {
+      "code": "fishing_marine_wildlife",
+      "name": "Fishing & Marine Wildlife",
+      "blurb": null,
+      "images": [
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/water/image_3_v2.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/fishing_marine_wildlife/image_2.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/fishing_marine_wildlife/image_3.jpg"
+      ]
+    },
+    {
+      "code": "diving_snorkeling",
+      "name": "Diving, Snorkeling & Surfing",
+      "blurb": "Getting under the surface, from reef snorkelling off a beach to wreck and cave dives that need a certification.",
+      "images": [
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/diving_snorkeling/image_1.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/diving_snorkeling/image_2.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/surfing_board_sports/image_3.jpg"
+      ]
+    },
+    {
+      "code": "mountains_scenic_landscapes",
+      "name": "Mountains, Scenic Landscapes & Seasons",
+      "blurb": "Landscape you travel through rather than to, across mountain roads, scenic trains, lakes, deserts, highlands and hill country.",
+      "images": [
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/mountains_scenic_landscapes/image_1.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/mountains_scenic_landscapes/image_2.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/mountains_scenic_landscapes/image_3.jpg"
+      ]
+    },
+    {
+      "code": "natural_wonders",
+      "name": "Parks, Wilderness & Natural Wonders",
+      "blurb": "Nine kinds of landscape worth travelling for, from canyons and waterfalls to glaciers, fjords, caves and salt flats.",
+      "images": [
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/wildlife/image_1_v2.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/wildlife/image_2_v2.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/wildlife/image_3_v2.jpg"
+      ]
+    },
+    {
+      "code": "wildlife_watching",
+      "name": "Wildlife & Safaris",
+      "blurb": "Seven ways to see animals in the wild, from whales and sea turtles to birds, flamingos and reef life.",
+      "images": [
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/wildlife_watching/image_1.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/wildlife_watching/image_2.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/wildlife_watching/image_3.jpg"
+      ]
+    },
+    {
+      "code": "local_cuisine_regional_specialties",
+      "name": "Local Food & Culinary Culture",
+      "blurb": "Eating what a place is actually known for, from regional barbecue and coastal seafood to whole cities built on their food.",
+      "images": [
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/local_cuisine_regional_specialties/image_1.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/local_cuisine_regional_specialties/image_2.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/local_cuisine_regional_specialties/image_3.jpg"
+      ]
+    },
+    {
+      "code": "world_cuisine",
+      "name": "World Cuisine",
+      "blurb": "Thirteen of the world's major cuisines, for picking a destination by what you want to be eating all week.",
+      "images": [
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/world_cuisine/image_1.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/world_cuisine/image_2.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/world_cuisine/image_3.jpg"
+      ]
+    },
+    {
+      "code": "wine_vineyards",
+      "name": "Wine, Beer, Spirits & Cafe Culture",
+      "blurb": "Wine regions to visit rather than bottles to buy, spanning classic estates, new-world valleys and volcanic vineyards.",
+      "images": [
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/beer_spirits_tastings/image_1.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/wine_vineyards/image_2.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/wine_vineyards/image_3.jpg"
+      ]
+    },
+    {
+      "code": "resorts_all_inclusives",
+      "name": "Resorts, Romance & Luxury",
+      "blurb": "Trips where the hotel is the destination, across beach resorts, all-inclusives, golf, mountain, safari camps and private islands.",
+      "images": [
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/stays_romance/image_1_v2.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/stays_romance/image_2_v2.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/stays_romance/image_3_v2.jpg"
+      ]
+    },
+    {
+      "code": "hiking_trekking",
+      "name": "Hiking, Trekking & Cycling",
+      "blurb": "Walking of every length, from a coastal afternoon to multi-day treks and summit climbs.",
+      "images": [
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/land_nature/image_2_v2.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/land_nature/image_3_v2.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/hiking_trekking/image_3.jpg"
+      ]
+    },
+    {
+      "code": "climbing_high_adrenaline",
+      "name": "Adventure & Winter Sports",
+      "blurb": "The frightening end of the outdoors, from rock climbing and whitewater to zip lines and adventure-sport towns.",
+      "images": [
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/active_adventure/image_1_v2.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/active_adventure/image_2_v2.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/climbing_high_adrenaline/image_3.jpg"
+      ]
+    },
+    {
+      "code": "nightlife",
+      "name": "Nightlife, Music & Festivals",
+      "blurb": "Six versions of a night out, from rooftop bars and beach clubs to local cantinas and serious club scenes.",
+      "images": [
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/cities_nightlife/image_2_v2.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/nightlife/image_2.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/nightlife/image_3.jpg"
+      ]
+    },
+    {
+      "code": "sports_sporting_events",
+      "name": "Shows, Sports & Casinos",
+      "blurb": "Watching and playing, from stadium atmospheres and motorsport weekends to links golf and resort courses.",
+      "images": [
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/sports_sporting_events/image_1.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/sports_sporting_events/image_2.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/sports_sporting_events/image_3.jpg"
+      ]
+    },
+    {
+      "code": "theme_parks",
+      "name": "Family Trips & Theme Parks",
+      "blurb": "Four takes on the theme park, from the big resort destinations to regional coaster parks and smaller family sites.",
+      "images": [
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/theme_parks/image_1.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/coffee_tea_sweets/image_3.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/neighborhoods_local_life/image_3.jpg"
+      ]
+    },
+    {
+      "code": "hot_springs_thermal_baths",
+      "name": "Hot Springs, Onsen & Thermal Baths",
+      "blurb": "Hot water out of the ground, from Japanese onsen and grand European bathhouses to wild springs in the mountains and desert.",
+      "images": [
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/hot_springs_thermal_baths/image_1.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/hot_springs_thermal_baths/image_2.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/hot_springs_thermal_baths/image_3.jpg"
+      ]
+    },
+    {
+      "code": "spas_pampering",
+      "name": "Relax, Spa & Yoga",
+      "blurb": "Bathing traditions and spa resorts across five cultures, from hammams and saunas to seawater therapy.",
+      "images": [
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/spas_pampering/image_1_v2.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/spas_pampering/image_2_v2.jpg",
+        "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/spas_pampering/image_3_v2.jpg"
+      ]
+    }
+  ]
+}

@@ -131,53 +131,6 @@ sections:
     link:
       label: Read the Privacy Statement
       href: /legal/privacy/
-  - type: video_banner
-    eyebrow: See it in action
-    title:
-      pre: A trip planned in
-      accent: minutes
-      post: .
-    image:
-      src: /media/hero/mountains.jpg
-    id: ''
-    body: Tell WhereTo your budget and your vibe. Watch it surface destinations, flights, and stays that actually fit.
-    href: /app/
-    playLabel: Get the app
-  - type: testimonial
-    eyebrow: What travelers say
-    title:
-      pre: Loved by people who
-      accent: wander
-      post: .
-    id: ''
-    background: true
-    intro: ''
-    items:
-      - quote: I never would have thought to search Albania. WhereTo matched my budget to a coastline I now can't stop talking about.
-        name: Maya R.
-        location: Austin, TX
-        initials: ''
-      - quote: We planned a five-person trip without a single 40-message group chat. Everyone set their vibe and it just found the overlap.
-        name: Devin K.
-        location: Chicago, IL
-        initials: ''
-      - quote: I told it warm, not too far, under two grand. It gave me three places I'd never considered.
-        name: Priya S.
-        location: Seattle, WA
-        initials: ''
-  - type: collection_grid
-    eyebrow: From the blog
-    title:
-      pre: Travel smarter with our
-      accent: Insights
-      post: .
-    id: ''
-    background: true
-    center: true
-    intro: Budgeting, group trips, and getting more out of every mile.
-    columns: 3
-    collection: insight
-    limit: 3
   - type: cta_band
     eyebrow: Ready to wander?
     title:

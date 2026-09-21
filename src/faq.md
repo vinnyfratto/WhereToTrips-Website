@@ -1,7 +1,7 @@
 ---
 layout: layouts/page.njk
 title: "FAQ — WhereTo travel app"
-description: "Answers to common questions about WhereTo: how recommendations are generated, where booking happens, whether the app is free, what early access means, and how Wander Together privacy works."
+description: "Answers to common questions about WhereTo: how recommendations are generated, where booking happens, whether the app is free, when it launches, and how Wander Together privacy works."
 sections:
   - type: faq_accordion
     eyebrow: "FAQ"
@@ -21,7 +21,7 @@ sections:
       - q: "How does group privacy work in Wander?"
         a: "Each participant enters their own budget and preferences, and organizers see group-level input and voting — not each individual's private budget breakdown. Group financial information is handled carefully by design, not exposed by default."
       - q: "Is WhereTo available now?"
-        a: "PRODUCTION NOTE: update per current launch stage — early access, beta, or public availability language, confirmed with product before publish. WhereTo is currently in pre-launch; join Early Access to be notified when it opens."
+        a: "PRODUCTION NOTE: update per current launch stage — early access, beta, or public availability language, confirmed with product before publish. WhereTo is currently in pre-launch; leave your email on the Notify Me at Launch page and we will tell you the moment it opens."
 
   - type: cta_band
     eyebrow: "Still curious?"
