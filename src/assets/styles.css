@@ -487,7 +487,7 @@ a.tile:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border
 .tile-img { width: 100%; height: 160px; object-fit: cover; border-radius: var(--radius-sm); margin-bottom: 16px; }
 
 /* ── "Image on Transparent" flag ──────────────────────────
-   Photo placements (hero/feature/chat/tile/hero-img) default to a
+   Photo placements (hero/feature/tile/hero-img) default to a
    cropped, rounded, drop-shadowed card sized by a tall fixed-height
    clamp — that height exists to reserve layout space for a photo crop.
    For a transparent-background image (device mockups, cutouts) that
@@ -544,32 +544,6 @@ a.card-photo:hover .card-photo-body { transform: translateX(-50%) translateY(-4p
 }
 .card-photo-link span { transition: transform .25s ease; }
 a.card-photo:hover .card-photo-link span { transform: translateX(4px); }
-
-/* ── Chat section ─────────────────────────────── */
-.chat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(36px, 5vw, 72px); align-items: center; }
-.chat-text h2 {
-  font-size: clamp(32px, 4vw, 50px); line-height: 1.1;
-  margin: 16px 0 20px; white-space: pre-line;
-}
-.chat-bubbles { display: flex; flex-direction: column; gap: 12px; margin-top: 32px; }
-.bubble {
-  background: var(--cream); border: 1px solid var(--wg200);
-  border-radius: 18px 18px 18px 4px; padding: 14px 20px;
-  font-family: var(--serif); font-style: italic; font-size: 16px;
-  color: var(--navy); box-shadow: var(--shadow-sm);
-  animation: floatIn .6s ease both;
-}
-.bubble:nth-child(2) { animation-delay: .15s; }
-.bubble:nth-child(3) { animation-delay: .3s; }
-@keyframes floatIn {
-  from { opacity: 0; transform: translateX(-12px); }
-  to   { opacity: 1; transform: none; }
-}
-.chat-img-wrap { position: relative; }
-.chat-img {
-  width: 100%; height: clamp(360px, 44vw, 520px); object-fit: cover;
-  border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
-}
 
 /* ── Testimonials ─────────────────────────────── */
 .testimonial-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
@@ -766,9 +740,9 @@ footer { background: var(--footer); padding: 72px 0 40px; }
   .hero-copy > .lede { order: 4; }
   .hero-copy > .cta { order: 5; margin-top: 22px; }
   .hero-img { height: clamp(260px, 58vw, 400px); }
-  .feature-split, .feature-split.flip, .chat-grid { grid-template-columns: 1fr; }
+  .feature-split, .feature-split.flip { grid-template-columns: 1fr; }
   .feature-split.flip .feature-text { order: 0; }
-  .feature-img, .chat-img { height: clamp(280px, 60vw, 420px); }
+  .feature-img { height: clamp(280px, 60vw, 420px); }
   .steps-grid { grid-template-columns: repeat(2, 1fr); }
   .tile-grid { grid-template-columns: repeat(2, 1fr); }
   .testimonial-grid { grid-template-columns: 1fr; max-width: 620px; margin: 0 auto; }

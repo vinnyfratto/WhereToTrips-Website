@@ -31,7 +31,7 @@ sections:
     tiles:
       - { label: "Discover", icon: "🧭", blurb: "“I have no idea where to go.”", href: "/whereto/discover/" }
       - { label: "Explore", icon: "🗺️", blurb: "“I know the region, not the spot.”", href: "/whereto/explore/" }
-      - { label: "Chat", icon: "💬", blurb: "“I'd rather just talk it through.”", href: "/whereto/chat/" }
+      - { label: "Wander Together", icon: "💼", blurb: "“We need to agree on one trip.”", href: "/wander/together/" }
       - { label: "Direct", icon: "🎯", blurb: "“I already know where I'm going.”", href: "/whereto/direct/" }
 
   - type: cta_band

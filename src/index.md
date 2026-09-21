@@ -115,7 +115,7 @@ sections:
       pre: The only thing we sell you
       accent: is a trip
       post: .
-    lede: And none of it comes with in-app ads. Not Google's, not Amazon's, not anybody's. Our travelers are too important to be sold to.
+    lede: And none of it comes with in-app ads. Not Google's, not Amazon's, not anybody's. You are too important to us to be treated as someone else's ad revenue.
     id: no-ads
     background: false
     points:
@@ -125,9 +125,9 @@ sections:
         body: Your budget, your dates, who is coming, the places you looked at twice. We do not sell personal information, and we do not hand it to anyone for their own marketing. That is in our Privacy Statement, not just on this page.
       - title: Nobody buys their way up your list
         body: No hotel and no airline pays us to sit higher in your results. The order you see is the order the Vibe Engine scored, against your budget and the vibes you picked. If something is at the top, it is because it fit.
-      - title: We do watch the app, not you
-        body: Which screens people get stuck on, what crashed, how long a search took. We use that to fix things. It is not a profile of you, and it is not for rent.
-    closer: We would rather be paid for finding you a good trip than for showing you somebody else's.
+      - title: We do watch the app, just not you
+        body: We monitor which screens people get stuck on, what crashed, how long a search took. We use that to fix things and it would be irresponsible for us not to. But the way we look at it, your traffic and interests are yours and aren't for sale.
+    closer: Our business is finding you a great trip you might not have otherwise known about. We aren't interested in becoming ad space for Google, Amazon and the others.
     link:
       label: Read the Privacy Statement
       href: /legal/privacy/

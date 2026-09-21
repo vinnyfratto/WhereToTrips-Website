@@ -77,14 +77,13 @@ sections:
   - type: tile_grid
     eyebrow: "Module Map"
     title:
-      pre: "Six modules. "
+      pre: "Five modules. "
       accent: "One"
       post: " underlying engine."
     columns: 3
     tiles:
       - { label: "WhereTo: Discover", icon: "🧭", blurb: "No destination in mind, we find it from scratch.", href: "/whereto/discover/" }
       - { label: "WhereTo: Explore", icon: "🗺️", blurb: "You know the region, we find your exact spot in it.", href: "/whereto/explore/" }
-      - { label: "WhereTo: Chat", icon: "💬", blurb: "A conversational interface to talk your way to a recommendation.", href: "/whereto/chat/" }
       - { label: "WhereTo: Direct", icon: "🎯", blurb: "You already know where you're going, skip straight to planning.", href: "/whereto/direct/" }
       - { label: "Wander Together", icon: "💑", blurb: "Built for two travelers to find common ground.", href: "/wander/together/" }
       - { label: "Wander as a Group", icon: "🧳", blurb: "Built to reconcile a whole group's vibes and budgets.", href: "/wander/as-a-group/" }

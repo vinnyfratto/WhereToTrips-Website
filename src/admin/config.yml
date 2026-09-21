@@ -141,28 +141,6 @@ collections:
                       - { name: label, widget: string }
                       - { name: href, widget: string }
 
-              - name: chat
-                label: Conversational search
-                fields:
-                  - { name: id, widget: string, required: false }
-                  - { name: eyebrow, widget: string, required: false }
-                  - label: Title
-                    name: title
-                    widget: object
-                    fields:
-                      - { name: pre, widget: string }
-                      - { name: accent, widget: string }
-                      - { name: post, widget: string, required: false }
-                  - { name: lede, widget: text, required: false }
-                  - { label: Example messages, name: examples, widget: list, field: { name: example, widget: string } }
-                  - label: Image
-                    name: image
-                    widget: object
-                    fields:
-                      - { name: src, widget: image }
-                      - { name: alt, widget: string }
-                      - { label: "Image on Transparent (skip the white card + shadow)", name: transparent, widget: boolean, default: false, required: false }
-
               - name: steps
                 label: Steps
                 fields:
