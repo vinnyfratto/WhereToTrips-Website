@@ -1,5 +1,5 @@
 // ───────────────────────────────────────────────────────────────────
-//  wt-admin-submissions.js — internal early-access / contact admin panel.
+//  wt-admin-submissions.js — internal signup / contact admin panel.
 //  Every data call goes through the `admin` edge fn, which verifies the
 //  caller is in the `admins` table server-side — same gate as the
 //  affiliate admin (wt-admin.js). No admin capability is reachable from

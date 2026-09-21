@@ -21,7 +21,7 @@ sections:
       - q: "How does group privacy work in Wander?"
         a: "Each participant enters their own budget and preferences, and organizers see group-level input and voting — not each individual's private budget breakdown. Group financial information is handled carefully by design, not exposed by default."
       - q: "Is WhereTo available now?"
-        a: "PRODUCTION NOTE: update per current launch stage — early access, beta, or public availability language, confirmed with product before publish. WhereTo is currently in pre-launch; leave your email on the Notify Me at Launch page and we will tell you the moment it opens."
+        a: "Not yet. WhereTo is in pre-launch and arrives on iOS and Android in October 2026. Leave your email on the Notify Me at Launch page and we will tell you the moment it opens."
 
   - type: cta_band
     eyebrow: "Still curious?"

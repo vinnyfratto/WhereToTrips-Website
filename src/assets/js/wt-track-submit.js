@@ -1,6 +1,6 @@
 // ───────────────────────────────────────────────────────────────────
 //  wt-track-submit.js — handles every marketing-site form submission
-//  (contact, early access, beta signup, notify-launch). Intercepts the
+//  (contact, beta signup, notify-launch). Intercepts the
 //  native submit, posts straight to capture-submission (durable record +
 //  branded Resend admin email), and shows an inline success/error state.
 //  Web3Forms is no longer in the loop — this used to be a fire-and-forget

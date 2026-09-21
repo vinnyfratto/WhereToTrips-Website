@@ -101,7 +101,7 @@ const withPlus = (n) => `${n.toLocaleString("en-US")}+`;
       key: "words",
       display: `${millions} million+`,
       label: "words of destination and vibe writing",
-      note: `Across ${blogs.toLocaleString("en-US")} guides, researched by hand rather than generated.`,
+      note: `Across ${blogs.toLocaleString("en-US")} guides, one per travel style per region.`,
       exact: words,
     },
     {

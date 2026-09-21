@@ -17,8 +17,8 @@ sections:
       label: "Browse the vibes"
       href: "/travel-vibes/"
     image:
-      src: "/media/chat.jpg"
-      alt: "A traveler planning on a phone with a view"
+      src: "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/mountains_scenic_landscapes/image_1.jpg"
+      alt: "An alpine valley in autumn, a village beside a lake under snow-capped peaks"
 
   - type: app_modes
     eyebrow: "Four ways in"
@@ -40,7 +40,7 @@ sections:
     lede: "The engine is not a filter on a list of hotels. It is a scored map of what places are actually good at, built destination by destination."
     id: "engine"
     background: false
-    body: "None of it is generated. Every guide behind those scores was researched and written by hand, from sources published in the last two years, and every destination is scored on the same six things: how distinctive the experience is there, how good it is, how much of it there is, how easy it is to reach, how reliable it is across the seasons, and what it costs you."
+    body: "Every guide behind those scores is researched from sources published in the last two years, and every destination is scored on the same six things: how distinctive the experience is there, how good it is, how much of it there is, how easy it is to reach, how reliable it is across the seasons, and what it costs you."
 
   - type: steps
     eyebrow: "What the engine weighs"
