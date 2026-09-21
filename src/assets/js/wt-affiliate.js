@@ -1,7 +1,7 @@
 // ───────────────────────────────────────────────────────────────────
 //  wt-affiliate.js — promo-link capture (Step 2).
 //  Handles WhereToTrips.com/promo/<code-or-vanity-slug> and the per-post
-//  WhereToTrips.com/c/<content-code>.
+//  WhereToTrips.com/promo/<code-or-vanity-slug>/<content-code>.
 //
 //  Static-host strategy (DECISION): GitHub Pages can't serve a dynamic
 //  /promo/:code, so the pretty path is caught by 404.html (the Pages
@@ -11,12 +11,11 @@
 //   3. set a first-party last-click cookie wt_ref (60-day) [+ wt_ref_click],
 //   4. redirect to the signup page so attribution flows into signUp metadata.
 //
-//  /c/<content-code> is the same flow with one difference: the link names
-//  a post, not a partner, so who gets the credit is only known once the
-//  edge function answers. The cookie is set from that response rather than
-//  up front — which also means a failed call leaves no attribution at all,
-//  where a /promo/ link would still have credited the partner offline.
-//  Worth it: without it there is no way to tell which post did the work.
+//  A per-post link is the same flow with one more segment. Because the
+//  partner is still the FIRST segment, the wt_ref cookie is set up front
+//  exactly as before — a failed or slow click call costs the per-post
+//  detail, never the partner's credit. That is the whole reason the link
+//  reads /promo/<partner>/<post> rather than naming only the post.
 // ───────────────────────────────────────────────────────────────────
 const cfg = window.WT_SUPABASE || {};
 const REF_DAYS = 60;
@@ -30,8 +29,8 @@ function setCookie(name, value, days) {
     (location.protocol === 'https:' ? '; Secure' : '');
 }
 
-// Pull the code from /promo/<code> (also accepts the legacy /affiliate/<code>)
-// or ?ref=/?code= fallback.
+// Pull the partner from /promo/<code> (also accepts the legacy
+// /affiliate/<code>) or the ?ref=/?code= fallback.
 export function extractCode() {
   const m = location.pathname.match(/\/(?:promo|affiliate)\/([^/?#]+)/i);
   if (m && m[1]) return decodeURIComponent(m[1]);
@@ -39,22 +38,24 @@ export function extractCode() {
   return q.get('ref') || q.get('code') || null;
 }
 
-// Pull the per-post code from /c/<content-code>.
+// Pull the post from the second segment of /promo/<partner>/<content-code>.
+// A code is only unique within its partner, so it is never read on its own.
 export function extractContentCode() {
-  const m = location.pathname.match(/^\/c\/([^/?#]+)/i);
+  const m = location.pathname.match(/\/(?:promo|affiliate)\/[^/?#]+\/([^/?#]+)/i);
   return m && m[1] ? decodeURIComponent(m[1]) : null;
 }
 
 export async function run() {
+  const code = extractCode();
   const contentCode = extractContentCode();
-  const code = contentCode ? null : extractCode();
-  if (!contentCode && !code) { window.location.replace('/'); return; }
+  if (!code) { window.location.replace('/'); return; }
 
-  // For a /promo/ link the code IS the partner, so set the attribution
-  // cookie first (last-click wins) — the credit then survives even if the
-  // click-logging request is slow or fails. A /c/ link can't do this: it
-  // doesn't know whose post it is until the function says.
-  if (code) setCookie('wt_ref', code, REF_DAYS);
+  // The first segment IS the partner, so set the attribution cookie before
+  // anything else (last-click wins). The credit then survives even if the
+  // click-logging request is slow or fails; only the per-post detail, which
+  // lives server-side on the click row, depends on that call landing.
+  setCookie('wt_ref', code, REF_DAYS);
+  if (contentCode) setCookie('wt_content', contentCode, REF_DAYS);
 
   try {
     const res = await fetch(cfg.url + '/functions/v1/track-click', {
@@ -65,7 +66,7 @@ export async function run() {
         'Authorization': 'Bearer ' + cfg.anonKey,
       },
       body: JSON.stringify({
-        code: code || undefined,
+        code,
         content_code: contentCode || undefined,
         landing_path: location.pathname + location.search,
         referrer: document.referrer || null,
@@ -73,10 +74,6 @@ export async function run() {
     });
     if (res.ok) {
       const json = await res.json().catch(() => ({}));
-      if (json && json.valid && contentCode && json.affiliate_code) {
-        setCookie('wt_ref', json.affiliate_code, REF_DAYS);
-        setCookie('wt_content', contentCode, REF_DAYS);
-      }
       if (json && json.click_id) setCookie('wt_ref_click', json.click_id, REF_DAYS);
       // Unknown / inactive code, or a post that isn't approved: drop the
       // cookie so we don't mis-credit.
@@ -86,8 +83,8 @@ export async function run() {
       }
     }
   } catch (_e) {
-    // Network/edge errors are non-fatal for /promo/ — the cookie is already
-    // set. A /c/ link just loses this one click's attribution.
+    // Network/edge errors are non-fatal — the cookie is already set, so the
+    // partner keeps the credit either way.
   }
 
   window.location.replace(DEST);

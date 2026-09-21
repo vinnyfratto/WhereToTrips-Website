@@ -32,18 +32,12 @@ navActive: performance
       </div>
     </div>
 
-    {# Prominent code + share links #}
-    <div class="code-banner">
-      <p class="eyebrow">Your partner code</p>
-      <p class="code" id="dash-code">--------</p>
-      <p class="share-label">Share link</p>
-      <a href="#" data-copy id="dash-link">…</a>
-      <div id="dash-vanity-row" style="display:none;">
-        <p class="share-label">Custom link</p>
-        <a href="#" data-copy id="dash-vanity">…</a>
-      </div>
-      <p class="meta">Status: <strong id="dash-status">active</strong> &nbsp;·&nbsp; Source: <strong id="dash-source">—</strong></p>
-    </div>
+    {# The per-account code and its two share links used to sit here. Links
+       are per CONTENT now: a partner gets one when a post is approved, from
+       Submit content. A general code they could paste anywhere would sit
+       outside that and report nothing about which post did the work, so it
+       is no longer shown at all. The code still exists and still resolves —
+       it is the <partner> segment of every content link. #}
 
     {# Stat cards #}
     <div class="stat-grid">

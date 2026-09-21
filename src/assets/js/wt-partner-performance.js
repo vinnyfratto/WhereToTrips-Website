@@ -1,13 +1,12 @@
 // ───────────────────────────────────────────────────────────────────
 //  wt-partner-performance.js — /partner-dashboard/ (Performance).
-//  Code + share links, stat cards, charts, commission structure. Gated by
+//  Stat cards, charts and commission structure. Gated by
 //  wt-partner-shared.js's requirePartner(); numbers come from the
 //  get-affiliate-stats edge fn (server-side, caller-scoped).
 // ───────────────────────────────────────────────────────────────────
 import { requirePartner } from './wt-partner-shared.js';
 import Chart from 'https://esm.sh/chart.js@4/auto';
 
-const SITE = window.location.origin;
 const $ = (id) => document.getElementById(id);
 
 function cssVar(name, fallback) {
@@ -21,20 +20,6 @@ function money(n, currency) {
   } catch { return '$' + (n || 0).toFixed(2); }
 }
 
-function wireCopy(el, text) {
-  if (!el) return;
-  el.textContent = text;
-  el.setAttribute('data-copy', text);
-  el.addEventListener('click', async (e) => {
-    e.preventDefault();
-    try {
-      await navigator.clipboard.writeText(text);
-      const old = el.textContent;
-      el.textContent = 'Copied!';
-      setTimeout(() => { el.textContent = old; }, 1200);
-    } catch (_e) { /* clipboard blocked */ }
-  });
-}
 
 async function init() {
   const ctx = await requirePartner();
@@ -62,23 +47,30 @@ function rateLabel(cat) {
   return (v % 1 === 0 ? v.toFixed(0) : v.toFixed(1)) + '%';
 }
 
+// The per-account code and its share links used to be rendered here, into
+// a banner at the top of the page. Links are per CONTENT now, handed over
+// when a post is approved, so there is no general code to show.
 function renderIdentity(a) {
-  $('dash-code').textContent = a.code;
-  $('dash-status').textContent = a.status;
-  const src = $('dash-source'); if (src) src.textContent = a.source || 'Direct';
-
-  wireCopy($('dash-link'), SITE + '/promo/' + a.code);
-  if (a.vanity_slug) {
-    $('dash-vanity-row').style.display = 'block';
-    wireCopy($('dash-vanity'), SITE + '/promo/' + a.vanity_slug);
-  }
   renderCommissionStructure(a);
 }
 
 function renderCommissionStructure(a) {
   const el = $('commission-structure'); if (!el) return;
-  const c = a.commissions || DEFAULT_COMMISSIONS;
   const months = a.commission_duration_months || 36;
+
+  // A revenue share is one number covering everything, so it does not list
+  // per product. Partners on the old per-category rates still see theirs.
+  const rev = a.commissions && a.commissions.revenue_share;
+  if (rev || a.commission_type === 'revshare') {
+    const rate = Number(rev ? rev.rate : a.commission_rate) * 100;
+    const pct = (rate % 1 === 0 ? rate.toFixed(0) : rate.toFixed(1)) + '%';
+    el.innerHTML =
+      `<div class="comm-row"><span>Revenue share</span><strong>${pct} for ${months} months</strong></div>` +
+      `<p class="acct-sub" style="margin:10px 0 0;">Your share of the commission WhereTo earns on each booking your links bring in.</p>`;
+    return;
+  }
+
+  const c = a.commissions || DEFAULT_COMMISSIONS;
   el.innerHTML = COMMISSION_CATS.map(([k, label]) =>
     `<div class="comm-row"><span>${label}</span><strong>${rateLabel(c[k])} for ${months} months</strong></div>`
   ).join('');

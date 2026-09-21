@@ -39,7 +39,10 @@ const PLATFORM_LABEL = {
   facebook: 'Facebook', twitter: 'X / Twitter', blog: 'Blog / Website', other: 'Other',
 };
 
-export async function initContentSubmissions(supabase) {
+// `partner` carries the affiliate identity from requirePartner's stats: a
+// share link is /promo/<partner>/<content-code>, so the list can't build
+// one without knowing which partner it is looking at.
+export async function initContentSubmissions(supabase, partner) {
   const form = $('content-sub-form');
   const list = $('content-sub-list');
   const alertEl = $('content-sub-alert');
@@ -57,9 +60,14 @@ export async function initContentSubmissions(supabase) {
   // The Share link column is the reason this table exists now. A pending
   // row says so rather than showing a blank cell, because "nothing there
   // yet" and "something is broken" look identical otherwise.
+  // The partner segment is their chosen slug if they set one, otherwise
+  // their code. Neither is shown to them anywhere else any more — the link
+  // is the only place it surfaces.
+  const seg = (partner && (partner.vanity_slug || partner.code)) || null;
+
   function shareCell(r) {
-    if (r.status === 'approved' && r.content_code) {
-      const url = location.origin + '/c/' + r.content_code;
+    if (r.status === 'approved' && r.content_code && seg) {
+      const url = location.origin + '/promo/' + seg + '/' + r.content_code;
       return `<a href="#" data-copy-link="${esc(url)}" title="Click to copy">${esc(url)}</a>`;
     }
     if (r.status === 'rejected') return '<span class="acct-sub">Not approved</span>';

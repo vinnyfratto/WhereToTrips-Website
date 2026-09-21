@@ -10,7 +10,7 @@ import { initContentSubmissions } from './wt-content-submissions.js';
 async function init() {
   const ctx = await requirePartner();
   if (!ctx) return;
-  await initContentSubmissions(ctx.supabase);
+  await initContentSubmissions(ctx.supabase, ctx.stats && ctx.stats.affiliate);
 }
 
 if (document.readyState === 'loading') {

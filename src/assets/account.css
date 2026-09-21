@@ -799,6 +799,12 @@
 .ph-wide-tile--solid { background: var(--azure); border-color: var(--azure); }
 .ph-wide-tile--solid .ph-wide-tile-label,
 .ph-wide-tile--solid .ph-wide-tile-icon { color: #fff; }
+/* Solar's bold-duotone glyphs carry a 50%-opacity second layer. On white
+   that reads as depth; on azure it goes half-transparent and the icon
+   looks faded next to the label. Flattening it to one solid white shape
+   is what makes these read as filled rather than washed out. */
+.ph-wide-tile--solid .ph-wide-tile-icon svg,
+.ph-wide-tile--solid .ph-wide-tile-icon svg * { opacity: 1; }
 .ph-wide-tile--solid:hover { background: var(--azure-press); border-color: var(--azure-press); }
 
 /* ── Grouped rows — no cards, hairline separators ── */

@@ -486,7 +486,26 @@ async function renderContent() {
   });
 }
 
+const REVIEW_ERRORS = {
+  content_code_taken: 'This partner already uses that code on another post. Pick a different one.',
+};
+
 async function review(id, decision, btn) {
+  // Approving asks for the code first, because it is the visible half of
+  // the link the partner pastes into a caption. Left blank it is generated.
+  // It only has to be unique within THIS partner, so a word that actually
+  // means something is usually still free.
+  let code = '';
+  if (decision === 'approved') {
+    const typed = prompt('Code for this post: /promo/<partner>/<code>\n\nLetters, numbers and hyphens. Leave blank to generate one.');
+    if (typed === null) return;
+    code = typed.trim().toLowerCase();
+    if (code && !/^[a-z0-9-]{2,40}$/.test(code)) {
+      msg('error', 'Code must be 2 to 40 characters: lowercase letters, numbers or hyphens.');
+      return;
+    }
+  }
+
   // The note is optional on an approval and goes in the email; on a
   // rejection it is the only thing the partner will be told, so ask for it.
   const prompted = decision === 'rejected'
@@ -495,9 +514,9 @@ async function review(id, decision, btn) {
   if (decision === 'rejected' && prompted === null) return;
 
   btn.disabled = true;
-  const r = await callAdmin('review_content', { id, decision, review_note: prompted || '' });
+  const r = await callAdmin('review_content', { id, decision, review_note: prompted || '', content_code: code });
   btn.disabled = false;
-  if (!r.ok) { msg('error', 'Review failed: ' + r.error); return; }
+  if (!r.ok) { msg('error', REVIEW_ERRORS[r.error] || ('Review failed: ' + r.error)); return; }
   msg('success', decision === 'approved'
     ? 'Approved. Tracking link ' + r.tracking_url + (r.emailed ? ' emailed to the partner.' : ' — no email on file.')
     : 'Marked not approved' + (r.emailed ? ' and the partner was told.' : '.'));
