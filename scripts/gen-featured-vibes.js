@@ -35,16 +35,20 @@ const { url: SB_URL, anonKey: SB_KEY } = require("../src/_data/supabase.json");
    DON'T think of first. `insteadOf` is the hook line on the card.
 
    Every pick has to carry a DEPTH of ranked vibes, not just one good
-   one — the Explore page's "every vibe this place matches" list is the
-   proof the engine is real, and a destination with two rows makes it
-   look thin. Heraklion was the lesson: the only Cretan gateway in the
-   engine, and it holds exactly two ranking rows (Mediterranean Coastal
-   Cooking and Wellness & Fitness Resorts, and the second has no blog).
-   That is a genuine coverage gap in the engine, not a rendering bug.
-   Thessaloniki carries the Greek slot instead — nine ranked vibes, the
-   same "not the postcard island" story, and a better line than either:
-   the Vergina gold is in Thessaloniki, not Athens. Revisit Crete once
-   the engine has scored it properly.
+   one — the Explore page's vibe list is the proof the engine is real,
+   and a destination with two rows makes it look thin.
+
+   Crete was the lesson, and the lesson was about THIS FILE, not the
+   engine. An earlier version of this script counted a destination's
+   vibes through `vibe_destination_rankings.dest_id`, saw two rows for
+   Heraklion, and got Crete dropped from the six. That column is the
+   wrong lens. It is the EDITORIAL link — "this row names a place we
+   sell individually" — and it is null for 8,338 of the 12,936 ranking
+   rows BY DESIGN, because the rankings are a corpus of places you
+   reach from a gateway, not a list of gateways. Rows like "The Diktean
+   cave" and "Cretan raki & tsikoudia" are correctly unlinked. The app
+   matches on `iata` (src/lib/vibeRankings.ts) and so does this script
+   now. Heraklion carries 19 ranked vibes, not two.
 
    `state` exists only for US picks. The engine has no state column
    (`vibe_destination_rankings.admin_area` reads "United States" for
@@ -76,12 +80,12 @@ const PICKS = [
     hook: "More Michelin stars per head than anywhere on earth, in a beach town of 190,000.",
   },
   {
-    slug: "thessaloniki-world-class-museums",
-    city: "Thessaloniki", country: "Greece",
-    vibeKey: "world_class_museums", subregion: "Mediterranean",
+    slug: "crete-mediterranean-coastal-cooking",
+    city: "Heraklion", country: "Greece", displayName: "Crete",
+    vibeKey: "mediterranean_coastal_cooking", subregion: "Mediterranean",
     displayScore: 91,
-    insteadOf: "Athens",
-    hook: "The Vergina gold, Philip II's own tomb treasure, is here. Not in Athens.",
+    insteadOf: "Santorini",
+    hook: "Same sea, same light, a quarter of the crowd, and the food people come back for.",
   },
   {
     slug: "quebec-city-french-heritage",
@@ -148,11 +152,22 @@ function pickImages(rows) {
     );
     if (!dest) throw new Error(`No destination row for ${pick.city}, ${pick.country}`);
 
-    // ── every ranked vibe this destination holds ──────────────────
-    const rankings = await sb(
+    // ── every ranked vibe this GATEWAY reaches ──────────────────
+    // Keyed on iata, exactly as the app keys it (src/lib/vibeRankings.ts).
+    // Never dest_id — see the note on PICKS above.
+    const byIata = await sb(
       "vibe_destination_rankings",
-      `select=vibe_key,vibe_label,score,tier,note,subregion,best_months&dest_id=eq.${dest.id}&order=score.desc`
+      `select=vibe_key,vibe_label,destination,score,tier,note,subregion,best_months` +
+      `&iata=eq.${enc(dest.iata)}&order=score.desc`
     );
+    // One row per vibe, highest score wins: a gateway can carry the same
+    // vibe twice under two different place names.
+    const seen = new Set();
+    const rankings = byIata.filter((r) => {
+      if (seen.has(r.vibe_key)) return false;
+      seen.add(r.vibe_key);
+      return true;
+    });
     const hero = rankings.find((r) => r.vibe_key === pick.vibeKey);
     if (!hero) throw new Error(`${pick.city} has no ranking row for ${pick.vibeKey}`);
     if (rankings.length < MIN_VIBES) {
@@ -184,7 +199,10 @@ function pickImages(rows) {
       hook:        pick.hook,
       displayScore: pick.displayScore,
 
-      city:    dest.city,
+      // What the card calls it. The gateway is Heraklion; the place
+      // anyone is actually choosing is Crete.
+      city:    pick.displayName || dest.city,
+      gateway: dest.city,
       country: dest.country,
       state:   pick.state || null,
       // What the card prints beside the sub-region. A US destination
@@ -208,7 +226,18 @@ function pickImages(rows) {
       // its own block at the top of that page.
       otherVibes: rankings
         .filter((r) => r.vibe_key !== pick.vibeKey)
-        .map((r) => ({ key: r.vibe_key, label: r.vibe_label, score: r.score, tier: r.tier, note: r.note || null })),
+        .map((r) => ({
+          key: r.vibe_key, label: r.vibe_label, score: r.score, tier: r.tier,
+          note: r.note || null,
+          // The engine scores a PLACE, which is often not the gateway city:
+          // HER carries "The Diktean cave" and "Rethymno". Printing the
+          // gateway's own name over those rows would misattribute them.
+          // ...but "Crete" over a card already headlined Crete is noise,
+          // so the display name counts as the gateway's own name too.
+          place: r.destination && r.destination !== dest.city
+                 && r.destination !== (pick.displayName || dest.city)
+                 ? r.destination : null,
+        })),
 
       blog: {
         title:           blog.title,
@@ -223,7 +252,7 @@ function pickImages(rows) {
       images,
     });
 
-    console.log(`  ✓ ${pick.city}, ${pick.state || dest.country} — ${hero.vibe_label} (engine ${hero.score}, ${rankings.length} vibes, ${images.length} images)`);
+    console.log(`  ✓ ${pick.displayName || pick.city}, ${pick.state || dest.country} — ${hero.vibe_label} (engine ${hero.score}, ${rankings.length} vibes, ${images.length} images)`);
   }
 
   const dest = path.join(__dirname, "..", "src", "_data", "featuredVibes.json");

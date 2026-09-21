@@ -1094,12 +1094,6 @@ footer { background: var(--footer); padding: 72px 0 40px; }
 .vibe-intro p { color: var(--ink-soft); line-height: 1.75; }
 
 /* ── The guide itself ─────────────────────────────────────────────── */
-.vibe-byline {
-  font-size: 13px;
-  color: var(--ink-muted);
-  margin-top: 10px;
-  text-align: center;
-}
 .vibe-prose { max-width: 760px; margin: 0 auto; }
 .vibe-prose h2 {
   font-size: 27px;
@@ -1148,6 +1142,8 @@ footer { background: var(--footer); padding: 72px 0 40px; }
   color: var(--ink-muted);
   margin-top: 3px;
 }
+.vibe-score-label em strong { color: var(--ink-soft); font-weight: 600; }
+.vibe-fact-value em { font-style: normal; font-size: 15px; color: var(--ink-muted); }
 .vibe-score-bar {
   height: 7px;
   border-radius: 4px;

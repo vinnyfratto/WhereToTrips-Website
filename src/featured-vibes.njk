@@ -60,7 +60,7 @@ layout: layouts/base.njk
       {% if v.iata %}
       <div class="vibe-fact">
         <span class="vibe-fact-label">Gateway airport</span>
-        <span class="vibe-fact-value">{{ v.iata }}</span>
+        <span class="vibe-fact-value">{{ v.iata }}{% if v.gateway != v.city %} <em>{{ v.gateway }}</em>{% endif %}</span>
       </div>
       {% endif %}
       <div class="vibe-fact">
@@ -100,9 +100,6 @@ layout: layouts/base.njk
       <span class="eyebrow">The vibe guide for {% if needsThe %}the {% endif %}{{ v.subregion }}</span>
       <h2>{% if needsThe %}The {% endif %}{{ v.subregion }} at its <span class="italic">best</span></h2>
       <p class="lede">{{ v.blog.title }}</p>
-      {% if v.blog.lastResearched %}
-      <p class="vibe-byline">Researched by hand · last updated {{ v.blog.lastResearched }}</p>
-      {% endif %}
     </div>
     <article class="vibe-prose reveal reveal-delay-1">
       {{ v.blog.body | markdown | safe }}
@@ -130,8 +127,8 @@ layout: layouts/base.njk
   <div class="wrap">
     <div class="sec-head center reveal">
       <span class="eyebrow">The full picture</span>
-      <h2>Every vibe <span class="italic">{{ v.city }}</span> matches</h2>
-      <p class="lede">One destination answers more than one mood. These are the other vibes {{ v.city }} ranks for in the Vibe Engine.</p>
+      <h2>Every vibe <span class="italic">{{ v.city }}</span> reaches</h2>
+      <p class="lede">One destination answers more than one mood. The engine scores the places you can actually get to from here, so some of these name a town, a site or a tradition rather than the gateway itself.</p>
     </div>
 
     <ul class="vibe-scores reveal reveal-delay-1">
@@ -144,7 +141,10 @@ layout: layouts/base.njk
       <li class="vibe-score">
         <span class="vibe-score-label">
           {{ o.label }}
-          {% if o.note %}<em>{{ o.note }}</em>{% endif %}
+          {#- The engine scores a place, and it is often not the gateway:
+              HER carries "The Diktean cave" and "Rethymno". -#}
+          {% if o.place %}<em><strong>{{ o.place }}</strong>{% if o.note %} · {{ o.note }}{% endif %}</em>
+          {% elif o.note %}<em>{{ o.note }}</em>{% endif %}
         </span>
         <span class="vibe-score-bar" aria-hidden="true"><span style="width: {{ o.score }}%;"></span></span>
         <span class="vibe-score-num">{{ o.score }}</span>

@@ -5,6 +5,7 @@
     "hook": "Everyone flies to the beach. The best craft villages in the Americas are an hour inland.",
     "displayScore": 96,
     "city": "Oaxaca",
+    "gateway": "Oaxaca",
     "country": "Mexico",
     "state": null,
     "placeLabel": "Mexico",
@@ -18,49 +19,127 @@
     "tier": "S",
     "note": "Weaving, black pottery and alebrijes from the villages around the city",
     "subregion": "Mexico",
-    "vibeCount": 7,
+    "vibeCount": 16,
     "otherVibes": [
       {
         "key": "mexican_regional_cooking",
         "label": "Regional Mexican Cooking",
         "score": 91,
         "tier": "S",
-        "note": null
+        "note": null,
+        "place": null
       },
       {
         "key": "artisan_crafts",
         "label": "Artisan Crafts & Markets",
         "score": 90,
         "tier": "S",
-        "note": "Alebrijes, black pottery, Teotitlan rugs and the richest craft villages in Mexico"
+        "note": "Alebrijes, black pottery, Teotitlan rugs and the richest craft villages in Mexico",
+        "place": "Oaxaca (Valles Centrales)"
       },
       {
         "key": "oaxaca_cuisine",
         "label": "Oaxacan & Regional Cuisine",
         "score": 90,
         "tier": "S",
-        "note": "Seven moles, tlayudas, chapulines and the mezcal-soaked heart of Mexican cooking"
+        "note": "Seven moles, tlayudas, chapulines and the mezcal-soaked heart of Mexican cooking",
+        "place": null
+      },
+      {
+        "key": "dia_de_muertos",
+        "label": "Day of the Dead",
+        "score": 90,
+        "tier": "S",
+        "note": "Marigold altars, candlelit comparsas and the most atmospheric Muertos in the country",
+        "place": "Oaxaca City"
+      },
+      {
+        "key": "colonial_cities",
+        "label": "Colonial Cities & Pueblos Magicos",
+        "score": 88,
+        "tier": "A",
+        "note": "Carved-stone streets, Santo Domingo and the deepest craft-and-food culture in Mexico",
+        "place": "Oaxaca City"
       },
       {
         "key": "agave_spirits",
         "label": "Tequila & Mezcal Trails",
         "score": 88,
         "tier": "A",
-        "note": "Smoky small-batch mezcal from village palenques across the Tlacolula valley"
+        "note": "Smoky small-batch mezcal from village palenques across the Tlacolula valley",
+        "place": "Oaxaca (mezcal palenques)"
       },
       {
-        "key": "mariachi_folklore",
-        "label": "Mariachi, Charreria & Folklore",
-        "score": 81,
+        "key": "urban_dining",
+        "label": "Urban Fine Dining & Food Scene",
+        "score": 87,
         "tier": "A",
-        "note": "The July Guelaguetza, the great gathering of Oaxaca's regional dances and dress"
+        "note": "The mole and mezcal capital, from market comedores to Origen and Los Danzantes",
+        "place": "Oaxaca City"
+      },
+      {
+        "key": "maya_ruins",
+        "label": "Maya Ruins",
+        "score": 87,
+        "tier": "A",
+        "note": "The Zapotec mountaintop capital of plazas and carved Danzantes above Oaxaca City",
+        "place": "Monte Alban"
+      },
+      {
+        "key": "street_food_tacos",
+        "label": "Street Food & Tacos",
+        "score": 86,
+        "tier": "A",
+        "note": "Tlayudas, memelas and the smoke of the Mercado 20 de Noviembre meat hall",
+        "place": "Oaxaca City"
+      },
+      {
+        "key": "boutique_haciendas",
+        "label": "Boutique Haciendas & Historic Inns",
+        "score": 85,
+        "tier": "A",
+        "note": "Convent and townhouse conversions like Quinta Real around the carved-stone centre",
+        "place": "Oaxaca City"
       },
       {
         "key": "world_class_museums",
         "label": "World-Class Museums",
         "score": 81,
         "tier": "A",
-        "note": "The cultures-of-Oaxaca museum in a gilded ex-convent, with Monte Alban's treasure"
+        "note": "The cultures-of-Oaxaca museum in a gilded ex-convent, with Monte Alban's treasure",
+        "place": "Oaxaca (Santo Domingo & Rufino Tamayo)"
+      },
+      {
+        "key": "mariachi_folklore",
+        "label": "Mariachi, Charreria & Folklore",
+        "score": 81,
+        "tier": "A",
+        "note": "The July Guelaguetza, the great gathering of Oaxaca's regional dances and dress",
+        "place": "Oaxaca (Guelaguetza)"
+      },
+      {
+        "key": "waterfalls_canyons",
+        "label": "Waterfalls & Canyons",
+        "score": 79,
+        "tier": "A",
+        "note": "Petrified mineral waterfalls and infinity pools on a cliff edge above the valley",
+        "place": "Hierve el Agua (Oaxaca)"
+      },
+      {
+        "key": "nightlife_cantinas",
+        "label": "Nightlife, Cantinas & Bars",
+        "score": 78,
+        "tier": "A",
+        "note": "Rooftop mezcal bars and courtyard cantinas, lower-key but deeply local",
+        "place": "Oaxaca City"
+      },
+      {
+        "key": "gardens_parks",
+        "label": "Gardens & Green Spaces",
+        "score": 73,
+        "tier": "B",
+        "note": "A walled garden of only Oaxacan natives, behind Santo Domingo",
+        "place": "Jardin Etnobotanico de Oaxaca"
       }
     ],
     "blog": {
@@ -168,6 +247,7 @@
     "hook": "Twenty-two oak-shaded squares of the original 1733 plan, still laid out exactly as drawn.",
     "displayScore": 93,
     "city": "Savannah",
+    "gateway": "Savannah",
     "country": "United States",
     "state": "Georgia",
     "placeLabel": "Georgia",
@@ -181,84 +261,183 @@
     "tier": "S",
     "note": "Twenty-two surviving squares of the original Oglethorpe plan, all walkable",
     "subregion": "US Southeast",
-    "vibeCount": 12,
+    "vibeCount": 23,
     "otherVibes": [
       {
         "key": "southern_comfort_cooking",
         "label": "Southern Comfort Cooking",
         "score": 88,
         "tier": "A",
-        "note": null
+        "note": null,
+        "place": null
+      },
+      {
+        "key": "grand_resorts_inns",
+        "label": "Grand Resorts & Historic Inns",
+        "score": 86,
+        "tier": "A",
+        "note": "A Forbes five-star coastal landmark of spa, beach, and golf",
+        "place": "Sea Island (the Cloister)"
+      },
+      {
+        "key": "golf_resorts",
+        "label": "Golf",
+        "score": 86,
+        "tier": "A",
+        "note": "Sea Island: Seaside course, RSM Classic",
+        "place": "Golden Isles"
       },
       {
         "key": "historic_towns_homes",
         "label": "Historic Towns & Antebellum Homes",
         "score": 86,
         "tier": "A",
-        "note": "Twenty-two squares and restored mansions under Spanish moss"
+        "note": "Twenty-two squares and restored mansions under Spanish moss",
+        "place": null
       },
       {
         "key": "haunted_history",
         "label": "Ghost Stories & Southern Gothic",
         "score": 85,
         "tier": "A",
-        "note": "Routinely called the most haunted city in America, and it leans in"
+        "note": "Routinely called the most haunted city in America, and it leans in",
+        "place": null
       },
       {
         "key": "iconic_cityscapes",
         "label": "Iconic Cityscapes & City Icons",
         "score": 84,
         "tier": "A",
-        "note": "Twenty-two oak-shaded squares, the largest landmark district"
+        "note": "Twenty-two oak-shaded squares, the largest landmark district",
+        "place": null
+      },
+      {
+        "key": "family_friendly",
+        "label": "Family-Friendly Escapes",
+        "score": 82,
+        "tier": "A",
+        "note": "St. Simons pier, Jekyll Island turtle center and bike trails",
+        "place": "Golden Isles"
       },
       {
         "key": "architecture_design",
         "label": "Architecture & Design",
         "score": 82,
         "tier": "A",
-        "note": "Oglethorpe’s grid: 22 squares of trust-preserved architecture"
+        "note": "Oglethorpe’s grid: 22 squares of trust-preserved architecture",
+        "place": null
       },
       {
-        "key": "romance_honeymoon",
-        "label": "Romance & Honeymoon",
-        "score": 80,
+        "key": "gulf_coast_seafood",
+        "label": "Gulf & Chesapeake Seafood",
+        "score": 82,
         "tier": "A",
-        "note": "Spanish moss, squares and a walkable historic core"
+        "note": "Lowcountry boils, wild Georgia shrimp and Brunswick stew",
+        "place": "Golden Isles"
       },
       {
         "key": "destination_weddings",
         "label": "Destination Weddings",
         "score": 80,
         "tier": "A",
-        "note": "Historic venues and squares, at lower cost than Charleston"
+        "note": "Historic venues and squares, at lower cost than Charleston",
+        "place": null
+      },
+      {
+        "key": "beaches_islands",
+        "label": "Beach Towns & Barrier Islands",
+        "score": 80,
+        "tier": "A",
+        "note": "Upscale Lowcountry resort-and-golf beaches",
+        "place": "Hilton Head & SC islands"
+      },
+      {
+        "key": "charming_small_towns",
+        "label": "Charming Small Towns & Mountain Villages",
+        "score": 80,
+        "tier": "A",
+        "note": "Beaufort and Bluffton, waterfront charm and Gullah heritage",
+        "place": "Beaufort & the SC Lowcountry"
+      },
+      {
+        "key": "romance_honeymoon",
+        "label": "Romance & Honeymoon",
+        "score": 80,
+        "tier": "A",
+        "note": "Spanish moss, squares and a walkable historic core",
+        "place": null
       },
       {
         "key": "colonial_revolution",
         "label": "Colonial & Revolutionary History",
         "score": 78,
         "tier": "A",
-        "note": "The last of the thirteen colonies, laid out in its founding squares"
+        "note": "The last of the thirteen colonies, laid out in its founding squares",
+        "place": null
+      },
+      {
+        "key": "boutique_design_hotels",
+        "label": "Boutique & Design Hotels",
+        "score": 78,
+        "tier": "B",
+        "note": "Historic-district inns on the squares, most of them under thirty rooms",
+        "place": null
+      },
+      {
+        "key": "beaches_boardwalks",
+        "label": "Beach Towns & Boardwalks",
+        "score": 78,
+        "tier": "B",
+        "note": "St. Simons village and pier, Jekyll Island and Tybee-style Georgia beach life",
+        "place": "Golden Isles"
+      },
+      {
+        "key": "spa_wellness_retreats",
+        "label": "Spa & Wellness Retreats",
+        "score": 78,
+        "tier": "A",
+        "note": "A renowned coastal spa paired with the beach and golf",
+        "place": "Sea Island (the Cloister)"
       },
       {
         "key": "film_tv_locations",
         "label": "Film & TV Locations",
         "score": 77,
         "tier": "B",
-        "note": "Forrest Gump’s bench, Midnight in the Garden, and a standing film office"
+        "note": "Forrest Gump’s bench, Midnight in the Garden, and a standing film office",
+        "place": null
       },
       {
         "key": "nightlife_entertainment",
         "label": "Nightlife & Entertainment Districts",
         "score": 76,
         "tier": "B",
-        "note": "Open-container strolls along River Street and the historic squares"
+        "note": "Open-container strolls along River Street and the historic squares",
+        "place": null
       },
       {
         "key": "southern_food_cities",
         "label": "City Dining & Southern Food",
         "score": 76,
         "tier": "B",
-        "note": "Lowcountry classics in the corridor's most romantic city"
+        "note": "Lowcountry classics in the corridor's most romantic city",
+        "place": null
+      },
+      {
+        "key": "gardens_parks",
+        "label": "Gardens & Historic Estates",
+        "score": 74,
+        "tier": "B",
+        "note": "Forsyth Park and 22 squares, plus Bonaventure’s live oaks",
+        "place": "Callaway & Savannah squares"
+      },
+      {
+        "key": "art_towns_galleries",
+        "label": "Art Towns & Galleries",
+        "score": 74,
+        "tier": "B",
+        "note": "A design school that restored half the historic district",
+        "place": "Savannah & SCAD"
       }
     ],
     "blog": {
@@ -376,6 +555,7 @@
     "hook": "More Michelin stars per head than anywhere on earth, in a beach town of 190,000.",
     "displayScore": 94,
     "city": "San Sebastian",
+    "gateway": "San Sebastian",
     "country": "Spain",
     "state": null,
     "placeLabel": "Spain",
@@ -389,49 +569,71 @@
     "tier": "A",
     "note": "The most Michelin stars per capita in the world",
     "subregion": "Western Europe",
-    "vibeCount": 7,
+    "vibeCount": 9,
     "otherVibes": [
       {
         "key": "global_coastal_seafood",
         "label": "World Coastal Seafood Traditions",
         "score": 94,
         "tier": "S",
-        "note": null
+        "note": null,
+        "place": null
+      },
+      {
+        "key": "farm_to_table",
+        "label": "Regional Cuisine",
+        "score": 88,
+        "tier": "A",
+        "note": "More Michelin stars per head than almost anywhere, and the bar food is the point",
+        "place": "Basque pintxos"
       },
       {
         "key": "food_markets_cuisine",
         "label": "Food Markets & Regional Cuisine",
         "score": 84,
         "tier": "A",
-        "note": "The pintxo-bar crawl, Basque produce, world-class per capita"
+        "note": "The pintxo-bar crawl, Basque produce, world-class per capita",
+        "place": null
       },
       {
         "key": "iconic_landmarks",
         "label": "Iconic Landmarks & Monuments",
         "score": 81,
         "tier": "A",
-        "note": "La Concha's shell-shaped beach and promenade, among the world's most beautiful urban beaches"
+        "note": "La Concha's shell-shaped beach and promenade, among the world's most beautiful urban beaches",
+        "place": null
+      },
+      {
+        "key": "iconic_beaches",
+        "label": "Iconic Beaches",
+        "score": 81,
+        "tier": "A",
+        "note": "A near-perfect shell bay in the middle of a city",
+        "place": "La Concha, San Sebastian"
       },
       {
         "key": "atlantic_surf",
         "label": "Atlantic Surf Coast",
         "score": 79,
         "tier": "A",
-        "note": "City beach breaks, surf and fine dining in one trip"
+        "note": "City beach breaks, surf and fine dining in one trip",
+        "place": null
       },
       {
         "key": "festivals_events",
         "label": "Festivals & Events",
         "score": 77,
         "tier": "B",
-        "note": "San Sebastian International Film Festival, a FIAPF Category-A festival alongside Cannes/Venice/Berlin"
+        "note": "San Sebastian International Film Festival, a FIAPF Category-A festival alongside Cannes/Venice/Berlin",
+        "place": null
       },
       {
         "key": "luxury_romance",
         "label": "Luxury & Romance",
         "score": 72,
         "tier": "B",
-        "note": "Belle Epoque resort-town elegance rooted in 19th-century royal patronage"
+        "note": "Belle Epoque resort-town elegance rooted in 19th-century royal patronage",
+        "place": null
       }
     ],
     "blog": {
@@ -539,87 +741,176 @@
     ]
   },
   {
-    "slug": "thessaloniki-world-class-museums",
-    "insteadOf": "Athens",
-    "hook": "The Vergina gold, Philip II's own tomb treasure, is here. Not in Athens.",
+    "slug": "crete-mediterranean-coastal-cooking",
+    "insteadOf": "Santorini",
+    "hook": "Same sea, same light, a quarter of the crowd, and the food people come back for.",
     "displayScore": 91,
-    "city": "Thessaloniki",
+    "city": "Crete",
+    "gateway": "Heraklion",
     "country": "Greece",
     "state": null,
     "placeLabel": "Greece",
-    "iata": "SKG",
+    "iata": "HER",
     "region": "EU",
-    "introTitle": "A Long Promenade Facing Mount Olympus",
-    "introBody": "The best introduction to Thessaloniki is a walk along its waterfront. A wide promenade runs for several kilometers beside the Thermaic Gulf, from the port past cafes, gardens, and a row of tall steel umbrellas to the White Tower, the round stone keep that has become the city's symbol. On clear days you can look across the water and pick out the snow on Mount Olympus, home of the ancient gods, standing at the far side of the bay.\n\nThis is Greece's second city, and one of its oldest, founded in 315 BC and named for Thessalonike, a half-sister of Alexander the Great. Later it grew into the second city of the Byzantine Empire, and centuries of Ottoman rule followed. All of that is still visible: a Roman rotunda and triumphal arch, dozens of Byzantine churches, Ottoman baths, and the old upper town of Ano Poli, which climbs to the surviving city walls.\n\nThessaloniki likes to eat, and many Greeks call it the best place in the country to do it. Its markets and small tavernas draw on a mixed heritage, with dishes carried by refugees from Asia Minor a century ago, sweet and savory bougatsa in the morning, sesame koulouri rings sold from street carts, and long evenings over mezze and tsipouro. A large student population keeps the streets awake.\n\nAt the center, Aristotelous Square opens grandly onto the sea, the natural gathering point of the city. Come in spring or autumn, when the promenade is at its best and the light lies soft over the gulf.",
-    "vibeKey": "world_class_museums",
-    "vibeLabel": "World-Class Museums",
-    "engineScore": 88,
+    "introTitle": "A Working Port Beside a Minoan Palace",
+    "introBody": "At the mouth of Heraklion's old harbor sits a squat Venetian sea fort, the Koules, its walls still carved with the winged lion of Venice. Fishing boats and ferries pass beneath it, and behind rise the massive ramparts the Venetians threw around the city, among the longest in the Mediterranean. This is the biggest city on Crete, a port that works for a living rather than posing for photographs.\n\nIts real fame lies just outside town. About five kilometers south is Knossos, the largest palace of the Minoans, the Bronze Age people who built Europe's earliest advanced civilization here more than 3,500 years ago. This is the ground that grew the myth of King Minos, the Labyrinth, and the Minotaur. To make sense of it, walk through the Archaeological Museum in the center of town, which holds the world's richest collection of Minoan art, frescoes, and the still-undeciphered Phaistos Disc.\n\nHeraklion itself rewards a slow wander. Market streets sell Cretan cheese, honey, and herbs, the Morosini fountain still runs beneath its stone lions, and cafes fill the squares in the evening. The writer Nikos Kazantzakis, who gave the world Zorba the Greek, is buried on the old walls under a line he chose himself: he hopes for nothing, fears nothing, and so is free.\n\nBeyond the city, vineyards climb the hills to the south, part of one of the oldest wine regions in Europe. Come in spring or autumn, when the ruins are quiet, the air is warm, and the island is at its most welcoming.",
+    "vibeKey": "mediterranean_coastal_cooking",
+    "vibeLabel": "Mediterranean Coastal Cooking",
+    "engineScore": 84,
     "tier": "A",
-    "note": "The Vergina gold is here, not in Athens",
+    "note": null,
     "subregion": "Mediterranean",
-    "vibeCount": 9,
+    "vibeCount": 19,
     "otherVibes": [
       {
-        "key": "greek_taverna_dining",
-        "label": "Greek Taverna Dining",
-        "score": 91,
-        "tier": "S",
-        "note": null
+        "key": "family_coast",
+        "label": "Family-Friendly Coast",
+        "score": 86,
+        "tier": "A",
+        "note": "Big island, water parks, warm welcome, variety",
+        "place": null
       },
       {
-        "key": "historic_old_towns",
-        "label": "Historic Old Towns",
-        "score": 87,
+        "key": "all_inclusive_resorts",
+        "label": "All-Inclusive Resorts",
+        "score": 84,
         "tier": "A",
-        "note": "The upper town, the part that survived the 1917 fire"
+        "note": "Big scale, water parks, upscale and family brands",
+        "place": null
+      },
+      {
+        "key": "farm_to_table",
+        "label": "Regional Cuisine",
+        "score": 83,
+        "tier": "A",
+        "note": "The island the diet study was actually run on",
+        "place": null
+      },
+      {
+        "key": "world_class_museums",
+        "label": "World-Class Museums",
+        "score": 83,
+        "tier": "A",
+        "note": "Everything that came out of Knossos, including the frescoes",
+        "place": "The Heraklion Archaeological Museum"
       },
       {
         "key": "ancient_ruins",
         "label": "Ancient Ruins & Archaeology",
-        "score": 81,
+        "score": 82,
         "tier": "A",
-        "note": "The Rotunda, Arch of Galerius, and Roman Forum form part of the UNESCO-listed \"Paleochristian and Byzantine Monuments of Thessaloniki\" (15 sites)"
+        "note": "Heart of the Minoan world, with the great museum",
+        "place": "Crete (Knossos)"
       },
       {
         "key": "food_markets_cuisine",
         "label": "Food Markets & Culinary",
-        "score": 81,
+        "score": 82,
         "tier": "A",
-        "note": "Ladadika district, Modiano and Kapani markets, and specialties like bougatsa give Thessaloniki a reputation as Greece's food capital"
+        "note": "Fresh, healthy Cretan cuisine and taverna culture",
+        "place": null
+      },
+      {
+        "key": "historic_old_towns",
+        "label": "Historic Old Towns",
+        "score": 80,
+        "tier": "A",
+        "note": "The best-preserved Venetian old town in Greece, and a fortress above it",
+        "place": "Rethymno"
+      },
+      {
+        "key": "romance_honeymoon",
+        "label": "Romance & Honeymoon",
+        "score": 80,
+        "tier": "A",
+        "note": "Honeymoon resorts on a quiet gulf",
+        "place": "Crete (Elounda)"
+      },
+      {
+        "key": "luxury_glamour",
+        "label": "Luxury, Glamour & Superyachts",
+        "score": 80,
+        "tier": "A",
+        "note": "A discreet enclave of top resorts",
+        "place": "Crete (Elounda)"
+      },
+      {
+        "key": "bourbon_whiskey",
+        "label": "Spirits & Distilleries",
+        "score": 79,
+        "tier": "A",
+        "note": "Poured at the end of every meal on the island, without being ordered",
+        "place": "Cretan raki & tsikoudia"
+      },
+      {
+        "key": "coves_beach_hopping",
+        "label": "Hidden Coves & Beach-Hopping",
+        "score": 78,
+        "tier": "A",
+        "note": "The largest natural palm forest in Europe, growing onto the beach",
+        "place": "Vai & the Cretan east"
+      },
+      {
+        "key": "island_escapes",
+        "label": "Island Hopping",
+        "score": 78,
+        "tier": "A",
+        "note": "A Venetian fortress island that was a leper colony until 1957",
+        "place": "Spinalonga & Gramvousa"
+      },
+      {
+        "key": "caves_caverns",
+        "label": "Caves & Caverns",
+        "score": 78,
+        "tier": "A",
+        "note": "Where Zeus was born, according to the people who live above it",
+        "place": "The Diktean cave"
+      },
+      {
+        "key": "cultural_heritage_religious_ethnic",
+        "label": "Jewish & Minority Heritage",
+        "score": 77,
+        "tier": "B",
+        "note": "Rhyming couplets improvised at the table, and a three-string fiddle behind them",
+        "place": "Cretan mantinades & lyra"
+      },
+      {
+        "key": "wellness_fitness_resorts",
+        "label": "Wellness & Fitness Resorts",
+        "score": 76,
+        "tier": "B",
+        "note": "Cretan training camps and coastal running",
+        "place": null
       },
       {
         "key": "nightlife_clubbing",
         "label": "Nightlife & Clubbing",
-        "score": 80,
-        "tier": "A",
-        "note": "Aristotelous Square, Ladadika, and Valaoritou Street bars are fueled by Aristotle University, the largest student population in Greece"
-      },
-      {
-        "key": "medieval_castles_fortresses",
-        "label": "Medieval Castles & Fortresses",
-        "score": 80,
+        "score": 76,
         "tier": "B",
-        "note": "An Ottoman tower on Byzantine walls, on a Roman city"
+        "note": "Crete’s answer to Ayia Napa, and it knows exactly what it is",
+        "place": "Malia & Hersonissos"
       },
       {
-        "key": "art_culture_cities",
-        "label": "Art & Culture Cities",
-        "score": 78,
-        "tier": "A",
-        "note": "Byzantine museums and churches"
-      },
-      {
-        "key": "sports_stadiums",
-        "label": "Sports & Stadiums",
-        "score": 77,
+        "key": "cruise_departure_ports",
+        "label": "Cruise Departure Ports",
+        "score": 75,
         "tier": "B",
-        "note": "PAOK play in front of a stand that does not sit down"
+        "note": "The Crete call on most eastern Mediterranean itineraries",
+        "place": "Heraklion & Chania"
+      },
+      {
+        "key": "wine_country",
+        "label": "Wine Country & Tastings",
+        "score": 74,
+        "tier": "B",
+        "note": "Indigenous varieties, a rising island scene",
+        "place": null
       }
     ],
     "blog": {
-      "title": "World-Class Museums in the Mediterranean",
-      "body": "## The Quick Read\nThe Acropolis Museum was built to make an argument. It stands three hundred metres from the Parthenon with a top floor rotated to align exactly with the temple and glazed on all four sides, so that the surviving marbles are displayed in the same orientation and the same light as they were carved for, with the building itself visible through the glass. The gaps where the Parthenon Marbles removed by Lord Elgin should be are filled with plaster casts, deliberately obvious. The ground floor has a glass walkway over an excavated Athenian neighbourhood that was found when they dug the foundations, and you look down at it as you walk in.\n\n## Why the Mediterranean Delivers This\nEverything portable that came out of Pompeii is in one building in Naples. The National Archaeological Museum holds the frescoes, the mosaics including the enormous Alexander Mosaic from the House of the Faun, the bronzes from the Villa of the Papyri and the Farnese collection of classical sculpture, which means the excavated sites are largely stripped and the museum is where the objects actually are. Seeing the site without the museum, or the museum without the site, is doing half of it.\n\nAthens made the same argument architecturally. The Acropolis Museum, opened in 2009, is built over an excavated ancient neighbourhood with glass floors so you walk above it, and its top floor is aligned exactly with the Parthenon and glazed on all sides, with the surviving frieze arranged in its original order and gaps where the sculptures in London would go. The building is an argument about the Parthenon Marbles made in concrete and glass.\n\nTurkey's Zeugma Mosaic Museum in Gaziantep exists because of a dam. When the Birecik reservoir was about to flood a Roman city on the Euphrates, a rescue excavation lifted the mosaics, and they now fill one of the largest mosaic museums in the world.\n\nTunisia's Bardo holds the largest collection of Roman mosaics anywhere, in a former Ottoman palace.\n\n## Where to Go\n### Italy\nThe Vatican Museums need a booked timed ticket and an early or late slot; the Sistine Chapel is at the end and the route is one-way. The Uffizi and the Accademia in Florence both need booking, and the Uffizi is hung chronologically so the Renaissance unfolds in order.\n\nNaples's National Archaeological Museum is central and underrated, and the Secret Cabinet of erotic material from Pompeii requires no separate ticket now. Venice has the Accademia for Venetian painting and the Peggy Guggenheim in the palazzo she lived in on the Grand Canal.\n\nSicily adds the Valley of the Temples at Agrigento, seven Doric temples better preserved than almost anything in Greece outside Athens.\n\n### Greece and Turkey\nAthens's Acropolis Museum and the National Archaeological Museum are two separate essentials, the first for the Parthenon material and the second for everything else including the Mycenaean gold. Heraklion's museum on Crete holds the Knossos frescoes and the Phaistos Disc.\n\nIstanbul's Topkapi and the Archaeological Museums are adjacent, the latter holding the Alexander Sarcophagus. Ankara's Museum of Anatolian Civilizations covers Hittite and Neolithic Anatolia in an Ottoman bedesten and is the best single museum in Turkey. Gaziantep's Zeugma is a three-hour flight or a long drive from Istanbul and is worth it.\n\n### North Africa and the Adriatic\nThe Bardo in Tunis is fifteen minutes from the medina and holds room after room of Roman floor mosaics lifted from sites across the country. Dubrovnik's Rector's Palace was the entire government of the Republic and is now the city museum.\n\n## When to Go\nYear-round. These are indoor institutions and they are the obvious answer to a Mediterranean summer afternoon.\n\nNovember to March is quietest and cheapest across the region, and the major museums are considerably more pleasant.\n\nMost close one day a week, commonly Monday or Tuesday, and several close on national holidays that catch visitors out.\n\n## What to Watch Out For\nThe Vatican Museums are the single most crowded major museum in Europe in summer, with queues that can exceed two hours without a booked ticket. Book online, and note that skip-the-line tour resellers charge many times the official price.\n\nPhotography rules vary and are enforced. The Sistine Chapel bans photography entirely and staff will tell you so loudly.\n\nDress codes apply at the Vatican, covering shoulders and knees, and at any mosque or church you visit alongside. This is enforced at the door.\n\n## Who This Is (and Isn't) For\nRight for anyone visiting the archaeological sites, since in this region the objects and the ruins have usually been separated and both halves are needed.\n\nWrong for anyone hoping to do the Vatican Museums quickly, since nine miles of galleries funnel toward the Sistine Chapel and the crowd moves as one. Go to Naples's Archaeological Museum on the same trip as Pompeii, ideally the day before, and the ruins will make sense.",
-      "topDestinations": "The Vatican Museums; The Acropolis Museum & the National Archaeological; The Uffizi & the Accademia; Topkapi & the Istanbul Archaeological Museums",
+      "title": "Greek & Mediterranean Cuisine in the Mediterranean",
+      "body": "## The Quick Read\nThe six cities here are close enough to share a shopping basket and far enough apart to cook differently with it. Istanbul has the largest and most layered food culture of the group, built on Ottoman court cooking, Anatolian regional traditions and the Greek, Armenian and Jewish kitchens that were part of the city for centuries. Thessaloniki is the food capital of Greece and most Greeks will say so, its cooking shaped by refugees from Asia Minor after 1922. Athens has the range and the markets. Crete has the diet that gave the Mediterranean diet its name and its evidence base. Santorini has the volcanic soil that produces small, intense tomatoes and capers. Larnaca has the Cypriot version, with halloumi and the meze.\n\n## Why the Mediterranean Delivers This\nA shared climate, a shared set of crops, and a history of populations moving around the same sea for three thousand years.\n\nThe agricultural base is the constant. Olive, wheat, grape and pulse grow across the whole basin, and the climate, wet mild winters and hot dry summers, suits all four. That combination produced a way of eating that is old, consistent and largely vegetable-based, with meat as an occasional item and fish where the coast allows. What varies is the seasoning, the technique and the outside influence.\n\nCrete is where that got measured. The Seven Countries Study, begun in the 1950s by Ancel Keys, examined diet and heart disease across several populations, and the Cretan cohort showed remarkably low rates of cardiovascular disease despite a high fat intake, nearly all of it olive oil. That finding is the origin of the term Mediterranean diet, and the food it described is Cretan village cooking: wild greens, pulses, barley rusks, olive oil in quantity, cheese, small amounts of meat and a lot of vegetables. Crete still eats this way in its villages, and the horta, the wild greens gathered from the hillsides, are a genuine part of the diet rather than a restaurant flourish.\n\nThessaloniki's food is the product of a population exchange. After the Greco-Turkish War and the 1923 treaty, well over a million Orthodox Christians moved from Anatolia to Greece and around half a million Muslims moved the other way. Thessaloniki received an enormous number of the arrivals, who brought Anatolian cooking with them: the spicing, the bougatsa, the soutzoukakia, the peppers and the general influence that separates northern Greek food from southern. The city had also been substantially Sephardic Jewish for four centuries before the Holocaust, and that kitchen left traces too. The result is that Thessaloniki cooks with more spice, more heat and more variety than Athens, and Greeks travel there to eat.\n\nIstanbul is the deepest of them. Ottoman palace cuisine developed at Topkapi over centuries with hundreds of cooks and a formalised repertoire, and it drew from Anatolia, the Balkans, the Levant, Persia and the Caucasus. Below the court, the city held Greek, Armenian and Jewish communities with their own restaurant traditions, and the meyhane, the tavern serving meze with raki, is a direct inheritance from them. Regional Anatolian cooking arrived with twentieth-century migration: Gaziantep for kebab and baklava, the Black Sea for anchovy and cornbread, the southeast for spice.\n\nSantorini's contribution is agricultural and specific. The island is volcanic, has almost no rainfall and no fresh water, and its vines are trained in low baskets on the ground to catch the sea mist. The soil produces a very small, intensely flavoured tomato, white aubergine, fava made from a local split pea, and capers. Assyrtiko, the white grape, produces a mineral wine that is unlike anything else in Greece.\n\nCyprus sits between Greek and Levantine. Halloumi, the squeaking grilling cheese, is the export, but the meze culture, the kleftiko lamb cooked in a sealed oven, the souvla and the commandaria dessert wine are the local shape of it.\n\nPrices are low in Greece and Turkey and moderate in Cyprus.\n\n## Where to Go\n\n### Istanbul\nThe meyhane, the taverns serving cold and hot meze with raki, which is the city's evening institution and comes from its Greek and Armenian past. The Spice Bazaar and the Kadikoy market on the Asian side, which is the better one. Balik ekmek, the grilled fish sandwich, from the Eminonu waterfront. Regional Anatolian restaurants: Gaziantep for kebab and baklava, the Black Sea for hamsi. Ottoman palace dishes at the restaurants that specialise in them. Breakfast, which in Turkey is an enormous spread rather than a meal. And the Bosphorus fish restaurants.\n\n### Athens\nThe central market, Varvakios, for the meat, fish and the tavernas inside it. Psiri and Koukaki for the modern Greek restaurants. Souvlaki and gyros from the street, which is the national fast food. Wild greens, fava, and the vegetable dishes that make up most of the traditional repertoire. The islands' produce arriving daily. Greek wine, which has improved enormously and is still cheap. And the mezedopoleia, the small-plate places, which is how Athens eats out.\n\n### Thessaloniki\nBougatsa for breakfast, the filo pastry with semolina custard or cheese, which is a Thessaloniki institution. The Modiano and Kapani markets. Soutzoukakia, the spiced meatballs in tomato sauce, which came from Asia Minor. The ouzeri and tsipouradika, where small plates arrive with each round of spirits. Ladadika, the old warehouse district, for the restaurants. And the general Anatolian spicing that separates northern Greek cooking from the rest.\n\n### Heraklion\nCretan village cooking: wild greens, pulses, barley rusks with tomato and cheese, and olive oil in quantity. Raki, called tsikoudia here, which arrives free at the end of every meal. Local cheeses: graviera, mizithra and the fresh ones. The Heraklion market. Dakos, the rusk salad, which is the emblematic dish. Snails, which Crete eats seriously. And the mountain villages inland, where the cooking is better than in the resorts.\n\n### Santorini\nThe small intense tomatoes grown without irrigation, and tomatokeftedes, the fritters made from them. Fava, the split pea purée, which has protected designation status here. White aubergine, a local variety. Capers and caper leaves. Assyrtiko wine from the basket-trained vines, tasted at the wineries. And the cliff-edge restaurants, which charge for the view rather than the food.\n\n### Larnaca\nMeze, which in Cyprus means a long sequence of small dishes rather than a starter. Halloumi, grilled rather than raw, which is how it is eaten locally. Kleftiko, lamb slow-cooked in a sealed clay oven. Souvla, the large-cut grilled meat. Village bread and the local olives. Commandaria, the sweet wine claimed as the oldest named wine still in production. And the tavernas in the villages inland rather than the seafront.\n\n## When to Go\nSpring and autumn across the whole basin.\n\nApril to June is the best window: warm, everything open, the wild greens and spring vegetables at their peak, and the crowds not yet arrived.\n\nSeptember to October is the other good window: hot early, the grape and olive harvests happening, sea still warm and the islands emptying.\n\nJuly and August are very hot across the region, above 35C regularly, and the islands are at their most crowded and expensive. Santorini in particular is difficult.\n\nNovember to March is low season: mild on the coast, cool inland, many island businesses closed and prices at their lowest. Istanbul, Athens and Thessaloniki all work year-round.\n\nGreek Orthodox Easter, which usually falls later than the Western date, is the biggest food event of the year and worth timing for.\n\nRamadan changes eating hours in Istanbul, with iftar meals after sunset being a genuine spectacle.\n\n## What to Watch Out For\nSantorini and the other main islands close substantially from November to March, with many restaurants, hotels and ferry routes shutting entirely.\n\nCliff-edge restaurants in Santorini charge for the view. The food inland at Pyrgos, Megalochori and Emporio is better and cheaper.\n\nGreek tavernas frequently bring dessert or raki free at the end; refusing it is unnecessary.\n\nOrdering meze in Cyprus commits you to a long sequence of dishes, often fifteen or twenty, and it is a great deal of food.\n\nIstanbul's tourist-facing restaurants in Sultanahmet are poor value. Kadikoy, Karakoy and Besiktas are where the eating is.\n\nRestaurant touts on the streets of Istanbul and in Athens' Plaka are a sign to keep walking.\n\nAugust closures are common in Athens and Thessaloniki as the cities empty for holidays.\n\nFerry schedules between the islands are seasonal and reduce sharply outside summer; a spring itinerary needs checking.\n\n## Who This Is (and Isn't) For\nTravellers who want to understand what the Mediterranean diet actually is should eat in a Cretan mountain village, because the wild greens, barley rusks and olive oil that produced the research finding are still the everyday food there rather than a health-tourism product. Anyone in Greece for food should go to Thessaloniki over Athens, since Greeks themselves do.\n\nTravellers who want the widest range in one city should take Istanbul, where Ottoman court cooking, Anatolian regional food and the old Greek and Armenian meyhane tradition all still operate. Anyone visiting the islands between November and March will find much of them shut. And visitors who book a Santorini table for the caldera view should understand they are buying the view, and that the villages inland cook better.",
+      "topDestinations": "Istanbul; Athens; Thessaloniki; Heraklion",
       "bestWindow": [
         1,
         2,
@@ -636,76 +927,86 @@
       ],
       "sources": [
         {
-          "url": "https://www.theacropolismuseum.gr/",
-          "note": "The building, the alignment and the casts.",
-          "title": "Acropolis Museum"
+          "url": "https://www.discovergreece.com/experiences/gastronomy",
+          "note": "The Greek tourism organisation on the regional cuisines and the diet.",
+          "title": "Greek gastronomy"
         },
         {
-          "url": "https://www.museivaticani.va/",
-          "note": "Galleries, tickets and the Sistine Chapel.",
-          "title": "Musei Vaticani"
+          "url": "https://www.discovergreece.com/attica/athens",
+          "note": "The capital, its markets and its food districts.",
+          "title": "Athens"
         },
         {
-          "url": "https://mannapoli.it/",
-          "note": "The Pompeii material and the Farnese collection.",
-          "title": "Museo Archeologico Nazionale di Napoli"
+          "url": "https://www.discovergreece.com/macedonia/thessaloniki",
+          "note": "The Asia Minor influence and why Greeks rate the city for food.",
+          "title": "Thessaloniki"
         },
         {
-          "url": "https://muze.gov.tr/",
-          "note": "The rescue excavation and the collection.",
-          "title": "Zeugma Mosaic Museum"
+          "url": "https://www.discovergreece.com/crete",
+          "note": "The island's villages, produce and the Cretan diet.",
+          "title": "Crete"
+        },
+        {
+          "url": "https://www.discovergreece.com/cyclades/santorini",
+          "note": "The volcanic agriculture, the tomatoes, the fava and the wine.",
+          "title": "Santorini"
+        },
+        {
+          "url": "https://www.visitcyprus.com/discover-cyprus/gastronomy/",
+          "note": "The meze, the halloumi and the island's own tradition.",
+          "title": "Cypriot gastronomy"
         }
       ],
-      "wordCount": 823,
-      "lastResearched": "2026-08-27"
+      "wordCount": 1535,
+      "lastResearched": "2026-09-01"
     },
     "images": [
       {
-        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/4bde6870-efd0-4629-87c1-2ff28f1b8cee/fetched-thessaloniki-pexels-1785537722069-0.jpg",
-        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/4bde6870-efd0-4629-87c1-2ff28f1b8cee/fetched-thessaloniki-pexels-1785537722069-0.jpg",
-        "alt": "Historic White Tower in Thessaloniki with lush greenery and clear sky",
-        "credit": "Dimitris Mourousiadis",
-        "creditUrl": "https://www.pexels.com/@dimi",
+        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/499d88fb-f194-4a0e-9c5a-42fcb70b8fec/fetched-heraklion-pexels-1785537002326-0.jpg",
+        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/499d88fb-f194-4a0e-9c5a-42fcb70b8fec/fetched-heraklion-pexels-1785537002326-0.jpg",
+        "alt": "Beautiful view of Heraklion harbor with sailboats and cityscape under a blue sky.",
+        "credit": "Norbert Velescu",
+        "creditUrl": "https://www.pexels.com/@norbert-velescu-2169962",
         "source": "pexels"
       },
       {
-        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/4bde6870-efd0-4629-87c1-2ff28f1b8cee/fetched-thessaloniki-pexels-1785537724641-1.jpg",
-        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/4bde6870-efd0-4629-87c1-2ff28f1b8cee/fetched-thessaloniki-pexels-1785537724641-1.jpg",
-        "alt": "Stunning aerial night view of Thessaloniki's illuminated waterfront in Greece.",
+        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/499d88fb-f194-4a0e-9c5a-42fcb70b8fec/fetched-heraklion-pexels-1785537005364-1.jpg",
+        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/499d88fb-f194-4a0e-9c5a-42fcb70b8fec/fetched-heraklion-pexels-1785537005364-1.jpg",
+        "alt": "Majestic view of Koules Fortress reflected in calm waters at Heraklion harbor during twilight.",
+        "credit": "GEORGE DESIPRIS",
+        "creditUrl": "https://www.pexels.com/@george-desipris",
+        "source": "pexels"
+      },
+      {
+        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/499d88fb-f194-4a0e-9c5a-42fcb70b8fec/fetched-heraklion-pexels-1785537007291-2.jpg",
+        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/499d88fb-f194-4a0e-9c5a-42fcb70b8fec/fetched-heraklion-pexels-1785537007291-2.jpg",
+        "alt": "View of the Heraklion sea wall and harbor with ferries docked on a cloudy day in Greece.",
         "credit": "K",
         "creditUrl": "https://www.pexels.com/@kelly",
         "source": "pexels"
       },
       {
-        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/4bde6870-efd0-4629-87c1-2ff28f1b8cee/fetched-thessaloniki-pexels-1785537726550-2.jpg",
-        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/4bde6870-efd0-4629-87c1-2ff28f1b8cee/fetched-thessaloniki-pexels-1785537726550-2.jpg",
-        "alt": "Aerial view of Thessaloniki's urban architecture, showcasing densely packed buildings and mountains in the background.",
+        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/499d88fb-f194-4a0e-9c5a-42fcb70b8fec/fetched-heraklion-pexels-1785537009038-3.jpg",
+        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/499d88fb-f194-4a0e-9c5a-42fcb70b8fec/fetched-heraklion-pexels-1785537009038-3.jpg",
+        "alt": "An aerial view of Heraklion, Greece, showcasing the vibrant cityscape blending modern buildings with ancient fortifications.",
         "credit": "K",
         "creditUrl": "https://www.pexels.com/@kelly",
         "source": "pexels"
       },
       {
-        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/4bde6870-efd0-4629-87c1-2ff28f1b8cee/fetched-thessaloniki-pexels-1785537728595-3.jpg",
-        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/4bde6870-efd0-4629-87c1-2ff28f1b8cee/fetched-thessaloniki-pexels-1785537728595-3.jpg",
-        "alt": "A sprawling aerial view of Thessaloniki, capturing the dense urban landscape under daylight.",
-        "credit": "K",
-        "creditUrl": "https://www.pexels.com/@kelly",
-        "source": "pexels"
+        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/499d88fb-f194-4a0e-9c5a-42fcb70b8fec/fetched-heraklion-openverse-1785537011070-4.jpg",
+        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/499d88fb-f194-4a0e-9c5a-42fcb70b8fec/fetched-heraklion-openverse-1785537011070-4.jpg",
+        "alt": "Agios Minas Cathedral, Plateia Agiou Mina, Heraklion, Greece",
+        "credit": "w_lemay",
+        "creditUrl": "https://www.flickr.com/photos/59081381@N03",
+        "source": "openverse"
       },
       {
-        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/4bde6870-efd0-4629-87c1-2ff28f1b8cee/fetched-thessaloniki-pexels-1785537730706-4.jpg",
-        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/4bde6870-efd0-4629-87c1-2ff28f1b8cee/fetched-thessaloniki-pexels-1785537730706-4.jpg",
-        "alt": "Bustling street scene in Thessaloniki, Greece with historic Rotunda in the background.",
-        "credit": "Natalia Sevruk",
-        "creditUrl": "https://www.pexels.com/@natalia-sevruk-636238602",
-        "source": "pexels"
-      },
-      {
-        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/4bde6870-efd0-4629-87c1-2ff28f1b8cee/fetched-thessaloniki-openverse-1785537732510-5.jpg",
-        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/4bde6870-efd0-4629-87c1-2ff28f1b8cee/fetched-thessaloniki-openverse-1785537732510-5.jpg",
-        "alt": "Museum of Byzantine Culture, Thessaloniki, Greece",
-        "credit": "Tilemahos Efthimiadis",
-        "creditUrl": "https://www.flickr.com/photos/64379474@N00",
+        "url": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/499d88fb-f194-4a0e-9c5a-42fcb70b8fec/fetched-heraklion-openverse-1785537013286-5.jpg",
+        "thumb": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/499d88fb-f194-4a0e-9c5a-42fcb70b8fec/fetched-heraklion-openverse-1785537013286-5.jpg",
+        "alt": "Windows, Agios Minas Cathedral, Plateia Agiou Mina, Heraklion, Greece",
+        "credit": "w_lemay",
+        "creditUrl": "https://www.flickr.com/photos/59081381@N03",
         "source": "openverse"
       }
     ]
@@ -716,6 +1017,7 @@
     "hook": "The only walled city north of Mexico, and a shorter flight than most of Europe.",
     "displayScore": 97,
     "city": "Quebec City",
+    "gateway": "Quebec City",
     "country": "Canada",
     "state": null,
     "placeLabel": "Canada",
@@ -729,56 +1031,199 @@
     "tier": "S",
     "note": "The only walled city north of Mexico, a UNESCO old town that reads as Europe",
     "subregion": "Eastern Canada",
-    "vibeCount": 8,
+    "vibeCount": 25,
     "otherVibes": [
       {
         "key": "historic_residential_districts",
         "label": "Historic Residential Districts",
         "score": 90,
         "tier": "S",
-        "note": "Old Quebec is the only walled city north of Mexico, and people still live in it"
+        "note": "Old Quebec is the only walled city north of Mexico, and people still live in it",
+        "place": null
+      },
+      {
+        "key": "historic_old_towns",
+        "label": "Historic Old Towns",
+        "score": 90,
+        "tier": "S",
+        "note": "A UNESCO site, and the only walled city north of Mexico",
+        "place": "Old Quebec"
+      },
+      {
+        "key": "whale_watching",
+        "label": "Whale Watching",
+        "score": 89,
+        "tier": "A",
+        "note": "Blues, fins and humpbacks at the river mouth, plus belugas resident year-round",
+        "place": "Tadoussac & Saguenay"
       },
       {
         "key": "french_colonial_fusion",
         "label": "French Colonial Fusion",
         "score": 88,
         "tier": "A",
-        "note": null
+        "note": null,
+        "place": null
+      },
+      {
+        "key": "historic_sites_forts",
+        "label": "Historic Forts & Living History",
+        "score": 85,
+        "tier": "A",
+        "note": "The only fortified city walls in North America, the Citadelle and the Plains of Abraham",
+        "place": "Quebec City Fortifications"
+      },
+      {
+        "key": "architecture_design",
+        "label": "Architecture & Design",
+        "score": 84,
+        "tier": "A",
+        "note": "Reportedly the most photographed hotel in the world",
+        "place": "The Chateau Frontenac"
+      },
+      {
+        "key": "romance_honeymoon",
+        "label": "Romance & Getaways",
+        "score": 84,
+        "tier": "A",
+        "note": "A walled city with a castle hotel in the middle of it",
+        "place": "Old Quebec"
+      },
+      {
+        "key": "grand_railway_hotels",
+        "label": "Grand Railway Hotels",
+        "score": 83,
+        "tier": "A",
+        "note": "The towered 1893 landmark over Old Quebec, the most photographed hotel on earth",
+        "place": "Chateau Frontenac (Quebec City)"
       },
       {
         "key": "iconic_skylines_landmarks",
         "label": "Iconic Skylines & Landmarks",
         "score": 83,
         "tier": "A",
-        "note": "The Chateau Frontenac silhouette over the St. Lawrence, the most photographed hotel anywhere"
+        "note": "The Chateau Frontenac silhouette over the St. Lawrence, the most photographed hotel anywhere",
+        "place": null
+      },
+      {
+        "key": "winter_carnivals_skating",
+        "label": "Winter Carnivals & Skating",
+        "score": 82,
+        "tier": "A",
+        "note": "The world's largest winter carnival, Bonhomme, an ice palace and a river canoe race",
+        "place": "Quebec Winter Carnival"
       },
       {
         "key": "cruise_departure_ports",
         "label": "Cruise Ports & Departures",
         "score": 80,
         "tier": "A",
-        "note": "A UNESCO old town the ship ties up beneath, and a turnaround port for the season"
+        "note": "A UNESCO old town the ship ties up beneath, and a turnaround port for the season",
+        "place": null
+      },
+      {
+        "key": "niagara_waterfalls",
+        "label": "Niagara & Iconic Waterfalls",
+        "score": 79,
+        "tier": "A",
+        "note": "Taller than Niagara, with a suspension bridge, cable car and zip line near Quebec City",
+        "place": "Montmorency Falls"
+      },
+      {
+        "key": "indigenous_experiences",
+        "label": "Indigenous Experiences",
+        "score": 78,
+        "tier": "A",
+        "note": "A Huron-Wendat nation at Quebec City's edge, with a museum-hotel and longhouse village",
+        "place": "Wendake"
+      },
+      {
+        "key": "ski_winter_sports",
+        "label": "Skiing & Winter Sports",
+        "score": 77,
+        "tier": "B",
+        "note": "The biggest vertical east of the Rockies, dropping toward the frozen St. Lawrence",
+        "place": "Le Massif de Charlevoix"
       },
       {
         "key": "world_class_museums",
         "label": "World-Class Museums",
         "score": 77,
         "tier": "B",
-        "note": "The Musee de la civilisation and the national fine-arts museum on the Plains"
+        "note": "The Musee de la civilisation and the national fine-arts museum on the Plains",
+        "place": null
+      },
+      {
+        "key": "scenic_coastal_drives",
+        "label": "Scenic Coastal Drives",
+        "score": 77,
+        "tier": "B",
+        "note": "Mountains meeting the St. Lawrence through Baie-Saint-Paul to the whales at Tadoussac",
+        "place": "Charlevoix (Route 138)"
+      },
+      {
+        "key": "destination_weddings",
+        "label": "Destination Weddings",
+        "score": 77,
+        "tier": "B",
+        "note": "A chapel, a castle and a carriage, all inside the walls",
+        "place": "Old Quebec"
       },
       {
         "key": "cosmopolitan_dining",
         "label": "Cosmopolitan Dining",
         "score": 76,
         "tier": "B",
-        "note": "Classic French bistros, poutine and the old-world tables of Aux Anciens Canadiens"
+        "note": "Classic French bistros, poutine and the old-world tables of Aux Anciens Canadiens",
+        "place": null
+      },
+      {
+        "key": "atlantic_seafood",
+        "label": "Atlantic Seafood & Lobster",
+        "score": 76,
+        "tier": "B",
+        "note": "Sugar shacks within easy reach of the old city, tire d'erable pulled on snow",
+        "place": "Quebec City Region (Beauce)"
+      },
+      {
+        "key": "fall_foliage",
+        "label": "Fall Foliage",
+        "score": 74,
+        "tier": "B",
+        "note": "Mountain colour tumbling to the river, with the Le Massif ridgeline above",
+        "place": "Charlevoix"
+      },
+      {
+        "key": "christmas_markets",
+        "label": "Christmas & Winter Markets",
+        "score": 74,
+        "tier": "B",
+        "note": "A walled city that already looks the part, plus a hundred wooden chalets",
+        "place": "The German Christmas Market, Quebec City"
+      },
+      {
+        "key": "heritage_railways",
+        "label": "Scenic Rail",
+        "score": 73,
+        "tier": "B",
+        "note": "Along the St. Lawrence shore with the water on one side the whole way",
+        "place": "The Train de Charlevoix"
+      },
+      {
+        "key": "nordic_spa_wellness",
+        "label": "Nordic Spas & Wellness",
+        "score": 73,
+        "tier": "B",
+        "note": "A restored monastery turned heritage wellness hotel in the old city",
+        "place": "Le Monastere des Augustines (Quebec City)"
       },
       {
         "key": "nightlife_entertainment",
         "label": "Nightlife & Entertainment",
         "score": 71,
         "tier": "B",
-        "note": "Grande Allee terraces and a summer-festival calendar that runs hot"
+        "note": "Grande Allee terraces and a summer-festival calendar that runs hot",
+        "place": null
       }
     ],
     "blog": {
@@ -921,6 +1366,7 @@
     "hook": "Hundreds of working temples you can sit in, not queue through.",
     "displayScore": 95,
     "city": "Chiang Mai",
+    "gateway": "Chiang Mai",
     "country": "Thailand",
     "state": null,
     "placeLabel": "Thailand",
@@ -934,63 +1380,95 @@
     "tier": "A",
     "note": "Hundreds of working wats, monk chats, meditation retreats",
     "subregion": "Southeast Asia",
-    "vibeCount": 9,
+    "vibeCount": 12,
     "otherVibes": [
       {
         "key": "night_safari_parks",
         "label": "Night Safari Parks",
         "score": 93,
         "tier": "S",
-        "note": "Ethical elephant sanctuaries with genuine conservation credentials"
+        "note": "Ethical elephant sanctuaries with genuine conservation credentials",
+        "place": null
       },
       {
         "key": "artisan_craft_workshops",
         "label": "Artisan Craft Workshops",
         "score": 88,
         "tier": "A",
-        "note": "Northern Thai craft villages: silver, umbrellas, ceramics"
+        "note": "Northern Thai craft villages: silver, umbrellas, ceramics",
+        "place": null
       },
       {
         "key": "yoga_teacher_training",
         "label": "Yoga Teacher Training",
         "score": 86,
         "tier": "A",
-        "note": "Affordable yoga and movement studios; long-stay friendly"
+        "note": "Affordable yoga and movement studios; long-stay friendly",
+        "place": null
       },
       {
         "key": "elephant_sanctuaries",
         "label": "Ethical Elephant Encounters",
         "score": 85,
         "tier": "A",
-        "note": "Capital of ethical sanctuaries; Elephant Nature Park"
+        "note": "Capital of ethical sanctuaries; Elephant Nature Park",
+        "place": null
       },
       {
         "key": "street_food_markets",
         "label": "Street Food & Night Markets",
         "score": 83,
         "tier": "A",
-        "note": "Khao soi and a famous run of night markets"
+        "note": "Khao soi and a famous run of night markets",
+        "place": null
       },
       {
         "key": "cultural_festivals",
         "label": "Festivals & Ceremonies",
         "score": 82,
         "tier": "A",
-        "note": "Yi Peng sky lanterns + Songkran; the festival city"
+        "note": "Yi Peng sky lanterns + Songkran; the festival city",
+        "place": null
+      },
+      {
+        "key": "heritage_old_towns",
+        "label": "Heritage & Colonial Old Towns",
+        "score": 81,
+        "tier": "A",
+        "note": "Akha, Karen and Hmong villages, and how you visit matters",
+        "place": "The northern Thai hill tribes"
+      },
+      {
+        "key": "motorbike_road_trips",
+        "label": "Motorbike & Scenic Road Trips",
+        "score": 80,
+        "tier": "A",
+        "note": "1,864 curves on better roads; Pai and the northwest",
+        "place": "Mae Hong Son Loop"
       },
       {
         "key": "wellness_retreats",
         "label": "Wellness, Yoga & Detox Retreats",
         "score": 80,
         "tier": "A",
-        "note": "Affordable, spiritual yoga/meditation; avoid burning season"
+        "note": "Affordable, spiritual yoga/meditation; avoid burning season",
+        "place": null
+      },
+      {
+        "key": "rice_terraces_trekking",
+        "label": "Rice Terraces & Highland Trekking",
+        "score": 76,
+        "tier": "B",
+        "note": "Classic hill-tribe trekking; avoid burning season",
+        "place": "Chiang Mai & Mae Hong Son"
       },
       {
         "key": "family_friendly",
         "label": "Family-Friendly Escapes",
         "score": 74,
         "tier": "B",
-        "note": "Calm, affordable culture and ethical elephant visits"
+        "note": "Calm, affordable culture and ethical elephant visits",
+        "place": null
       }
     ],
     "blog": {
