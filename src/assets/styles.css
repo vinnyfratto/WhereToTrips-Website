@@ -1186,3 +1186,117 @@ footer { background: var(--footer); padding: 72px 0 40px; }
   .vibe-score { grid-template-columns: minmax(0, 1fr) 42px; }
   .vibe-score-bar { display: none; }
 }
+
+/* ════════════════════════════════════════════════════════════════════
+   Four ways in — the app's dashboard tiles, on the web
+
+   A port of app/index.tsx's PhotoTile. The proportions are the app's:
+   a 20px-radius white card, the photo filling the top 60%, an 8%-wide
+   azure rule, the title with its last word in azure bold italic, then
+   a light 11/15 description. Markup: sections/app_modes.njk
+   ════════════════════════════════════════════════════════════════════ */
+.modes-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(36px, 5vw, 72px);
+  align-items: center;
+}
+.modes-copy .lede { margin-top: 18px; }
+.modes-copy p + p { margin-top: 16px; color: var(--ink-soft); line-height: 1.75; }
+
+/* The app's 2x2. 48.4% cells with the gap between them, same as gridWrap. */
+.modes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+.mode-tile {
+  display: flex;
+  flex-direction: column;
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  text-decoration: none;
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.mode-tile:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+
+/* 60% photo / 40% body, exactly as the app splits the 247px tile. */
+.mode-tile-img {
+  position: relative;
+  display: block;
+  /* The app splits its 247px tile 60/40 photo-to-body. The body here
+     sizes to its own text, so this ratio is tuned to land the photo at
+     roughly the same 60% of the whole tile. */
+  aspect-ratio: 16 / 10;
+  min-height: 130px;
+  background: var(--wg100);
+  overflow: hidden;
+}
+.mode-tile-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 14px 12px 16px;
+}
+.mode-tile-rule {
+  width: 22px; height: 1px;
+  background: var(--azure);
+  margin-bottom: 7px;
+}
+.mode-tile-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin-bottom: 5px;
+  font-family: var(--serif);
+  font-size: clamp(16px, 1.5vw, 20px);
+  line-height: 1.25;
+  color: var(--navy);
+}
+.mode-tile-title .ico { flex: none; font-size: 14px; color: var(--amber); }
+/* The app renders the title's last word in azure bold italic. */
+.mode-tile-title em { font-style: italic; font-weight: 700; color: var(--azure); }
+/* Three lines, as the app caps it (numberOfLines={3}). It bounds the
+   body so the photo keeps roughly its 60% share, and the full text for
+   every mode is spelled out in the block below anyway. */
+.mode-tile-desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 1.4;
+  font-weight: 300;
+  color: var(--navy);
+}
+
+/* ── The longer read ─────────────────────────────────────────────── */
+.modes-detail {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px 48px;
+  margin-top: clamp(44px, 5vw, 72px);
+  padding-top: clamp(36px, 4vw, 56px);
+  border-top: 1px solid var(--wg200);
+}
+.mode-detail h3 { font-size: 24px; margin-bottom: 8px; }
+.mode-detail h3 a { color: var(--navy); text-decoration: none; }
+.mode-detail h3 a:hover .italic { text-decoration: underline; }
+.mode-detail p { color: var(--ink-soft); line-height: 1.75; font-size: 15px; }
+
+@media (max-width: 960px) {
+  .modes-split { grid-template-columns: 1fr; }
+  .modes-detail { grid-template-columns: 1fr; gap: 28px; }
+}
+@media (max-width: 480px) {
+  .mode-tile-desc { font-size: 11px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mode-tile:hover { transform: none; }
+}

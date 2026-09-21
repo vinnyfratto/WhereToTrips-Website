@@ -1,0 +1,61 @@
+{#- ══════════════════════════════════════════════════════════════════
+    Four ways in — the app's own dashboard tiles, on the web.
+
+    A port of app/index.tsx's PhotoTile: 2x2 grid, white card with a
+    20px radius, photo filling the top 60%, a short azure rule, then the
+    title with its LAST word in azure bold italic, then the description.
+    The photos are the same `Dashboard_Images-*` rows the phone rotates,
+    crossfading on the same idea (see wt-vibe-cards.js).
+
+    Data: src/_data/appModes.json (scripts/gen-app-modes.js).
+    ══════════════════════════════════════════════════════════════════ -#}
+<section class="block{% if s.background %} tint{% endif %}"{% if s.id %} id="{{ s.id }}"{% endif %}>
+  <div class="wrap">
+    <div class="modes-split">
+
+      {#- ── Left: why the app is shaped this way ─────────────────── -#}
+      <div class="modes-copy reveal">
+        {% if s.eyebrow %}<span class="eyebrow">{{ s.eyebrow }}</span>{% endif %}
+        {% if s.title %}<h2>{{ s.title.pre }} <span class="italic">{{ s.title.accent }}</span>{{ s.title.post }}</h2>{% endif %}
+        {% if s.lede %}<p class="lede">{{ s.lede }}</p>{% endif %}
+        {% if s.body %}<p>{{ s.body }}</p>{% endif %}
+      </div>
+
+      {#- ── Right: the four tiles ────────────────────────────────── -#}
+      <div class="modes-grid reveal reveal-delay-1">
+        {% for m in appModes %}
+        <a class="mode-tile" href="{{ m.href }}" data-cycle style="--cycle-delay: {{ loop.index0 * 1.1 }}s;">
+          <span class="mode-tile-img">
+            {% for src in m.images %}
+            <img class="dest-photo-frame{% if loop.first %} is-on{% endif %}"
+                 src="{{ src }}"
+                 alt="{% if loop.first %}{{ m.title }}{% endif %}"
+                 {% if not loop.first %}aria-hidden="true"{% endif %}
+                 loading="lazy" decoding="async" />
+            {% endfor %}
+          </span>
+          <span class="mode-tile-body">
+            <span class="mode-tile-rule" aria-hidden="true"></span>
+            <span class="mode-tile-title">
+              {% icon "double-alt-arrow-right" %}
+              <span>{% if m.titleLead %}{{ m.titleLead }} {% endif %}<em>{{ m.titleAccent }}</em></span>
+            </span>
+            <span class="mode-tile-desc">{{ m.short }}</span>
+          </span>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+
+    {#- ── What each one actually does ────────────────────────────── -#}
+    <div class="modes-detail reveal reveal-delay-2">
+      {% for m in appModes %}
+      <div class="mode-detail">
+        <h3><a href="{{ m.href }}">{% if m.titleLead %}{{ m.titleLead }} {% endif %}<span class="italic">{{ m.titleAccent }}</span></a></h3>
+        <p>{{ m.body }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+<script src="/assets/js/wt-vibe-cards.js?v={{ buildTime }}" defer></script>

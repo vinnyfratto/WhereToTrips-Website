@@ -99,35 +99,16 @@ sections:
     columns: 3
     limit: 6
     footnote: Vibe scores are how the WhereTo Vibe Engine ranks these destinations. Your own matches are scored against your budget, dates and departure city in the app.
-  - type: feature_split
-    eyebrow: Wander Family Teaser
+  - type: app_modes
+    eyebrow: Four ways in
     title:
-      pre: Traveling with someone? We'll get you
-      accent: both to yes
+      pre: Start with what you want
+      accent: to do
       post: .
-    lede: Two travelers, one shared vibe. A group of ten, a hundred opinions and a group chat that's gone quiet for three weeks. Wander reconciles everyone's budget, vibe, and calendar into a trip the whole group actually agrees on — no spiral required.
-    image:
-      src: /media/together.jpg
-      alt: Group of friends laughing together at an outdoor table
-      transparent: false
-    id: together
-    flip: true
+    lede: "Most travel apps start by asking what airport you're flying to. WhereTo Trips asks something better: what do you actually want to do when you get there?"
+    body: We flip the traditional model on its head by just asking you what you actually want to do and experience, then show you what destinations match. There are four ways to find the trip that was built for you.
+    id: ways
     background: true
-    body: ''
-    image2: null
-    stats: []
-    features:
-      - icon: check-circle
-        label: Invite your crew to a shared trip
-      - icon: check-circle
-        label: Everyone sets their own budget & vibe
-      - icon: check-circle
-        label: The engine finds where your group overlaps
-      - icon: check-circle
-        label: Vote, decide, and book together
-    cta:
-      label: Explore Wander
-      href: /wander/
   - type: chat
     eyebrow: Conversational Search
     title:

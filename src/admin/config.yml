@@ -256,6 +256,24 @@ collections:
                   - { label: "Footnote under the grid", name: footnote, widget: text, required: false }
                   - { label: "NOTE: the cards themselves (destinations, vibes, scores, photos) come from the Vibe Engine via scripts/gen-featured-vibes.js, not from here.", name: _note, widget: hidden, required: false }
 
+              - name: app_modes
+                label: Four ways in (app dashboard tiles + the long read)
+                fields:
+                  - { name: id, widget: string, required: false }
+                  - { label: "Tinted background", name: background, widget: boolean, default: true, required: false }
+                  - { name: eyebrow, widget: string, required: false }
+                  - label: Title
+                    name: title
+                    widget: object
+                    required: false
+                    fields:
+                      - { name: pre, widget: string }
+                      - { name: accent, widget: string }
+                      - { name: post, widget: string, required: false }
+                  - { name: lede, widget: text, required: false }
+                  - { label: "Second paragraph", name: body, widget: text, required: false }
+                  - { label: "NOTE: the four tiles (titles, photos, descriptions, the long read) come from scripts/gen-app-modes.js, not from here.", name: _note, widget: hidden, required: false }
+
               - name: highlights
                 label: Highlights bar (overlaps the hero)
                 fields:

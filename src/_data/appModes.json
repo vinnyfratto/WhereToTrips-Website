@@ -1,0 +1,64 @@
+[
+  {
+    "key": "discover",
+    "title": "WhereTo: Discover",
+    "titleLead": "WhereTo:",
+    "titleAccent": "Discover",
+    "href": "/whereto/discover/",
+    "short": "A few fun taps and your trip comes into focus",
+    "body": "Pick a few vacation types, like Beach & Water, Nature & Outdoors or Health & Wellness. Add your home airport, dates, budget and who's coming. We show you the vibes that fit what you've picked so far, and you choose what you want to do and experience. The Vibe Engine runs all of that against 12,000+ vibes across 900+ destinations worldwide and hands you a ranked, priced shortlist of places, not airports. You start with a mood and end with a destination.",
+    "images": [
+      "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/whereto-discover-dashboard/woman-in-bali-exploring-tropical-temples-and-garde-2026-03-24-13-00-10-utc.jpg",
+      "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/whereto-discover-dashboard/couple-of-beautiful-girls-visiting-bangkok-maining-2026-03-23-23-30-13-utc.jpg",
+      "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/whereto-discover-dashboard/beautiful-young-woman-caucasian-holding-man-s-hand-2026-03-26-08-48-34-utc.jpg",
+      "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/whereto-discover-dashboard/beautiful-girl-at-water-palace-in-bali-2026-03-20-01-01-02-utc.jpg"
+    ]
+  },
+  {
+    "key": "explore",
+    "title": "WhereTo: Explore",
+    "titleLead": "WhereTo:",
+    "titleAccent": "Explore",
+    "href": "/whereto/explore/",
+    "short": "Let your vibe carry you to exciting new places",
+    "body": "For when you know the general area. Say you're thinking Europe, The Mediterranean; we show you the vibes that region offers, you pick yours, and the engine finds and scores the destinations that match your trip. The results come back ranked on your input, and we show you the math.",
+    "images": [
+      "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/whereto-explore-dashboard/mother-and-teenage-daughter-traveling-together-lu-2026-01-06-09-45-58-utc.jpg",
+      "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/whereto-explore-dashboard/smiling-people-posing-outdoors-in-a-forest-2026-03-16-02-45-40-utc.jpg",
+      "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/whereto-explore-dashboard/a-team-of-travelers-looking-at-the-lake-in-austria-2026-03-19-10-13-37-utc.jpg",
+      "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/whereto-explore-dashboard/tourists-couple-taking-selfie-on-city-street-vaca-2026-03-24-10-21-52-utc.jpg",
+      "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/whereto-explore-dashboard/young-couple-traveler-looking-beautiful-cityscape-2026-01-08-22-47-51-utc.jpg"
+    ]
+  },
+  {
+    "key": "direct",
+    "title": "WhereTo: Direct",
+    "titleLead": "WhereTo:",
+    "titleAccent": "Direct",
+    "href": "/whereto/direct/",
+    "short": "Know where you are going? Head straight there",
+    "body": "For when you already know. Type in where, when and what you want to spend, then go straight to flights and hotels. No detours.",
+    "images": [
+      "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/whereto-direct-dashboard/airplane-7013022_1280.jpg",
+      "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/whereto-direct-dashboard/smiling-group-of-senior-friends-sitting-in-airport-2026-03-11-00-53-31-utc.jpg",
+      "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/whereto-direct-dashboard/happy-multiracial-friends-taking-selfie-in-airport-2026-01-09-11-29-44-utc.jpg",
+      "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/whereto-direct-dashboard/close-up-of-a-happy-family-standing-with-luggage-t-2026-01-11-08-41-49-utc.jpg"
+    ]
+  },
+  {
+    "key": "together",
+    "title": "Wander Together",
+    "titleLead": "Wander",
+    "titleAccent": "Together",
+    "href": "/wander/together/",
+    "short": "Everyone picks their own vibes, one trip emerges",
+    "body": "For the group chat that never decides anything. Everyone sets their own budget and their own vibes. The app finds where you all overlap and shows those destinations, scored for the group. Everyone votes in real time to narrow it down and pick the one. From there, one person can pay for the whole trip (think family vacation), or each traveler can pay their own way (think long weekend in the Caribbean with the girls). All in the app, all in real time. No spreadsheet. No mess.",
+    "images": [
+      "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/wander-together-dashboard/group-of-young-women-celebrating-with-confetti-2026-03-19-03-15-30-utc.jpg",
+      "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/wander-together-dashboard/group-of-friends-taking-selfie-in-the-city-2026-03-17-07-15-11-utc.jpg",
+      "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/wander-together-dashboard/happy-friends-explore-new-city-with-map-together-2026-01-08-22-50-54-utc.jpg",
+      "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/wander-together-dashboard/portrait-of-friends-walking-by-brooklyn-bridge-in-2026-03-10-04-01-30-utc.jpg",
+      "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/wander-together-dashboard/active-senior-couple-hiking-with-family-outdoors-2026-01-05-06-17-29-utc.jpg"
+    ]
+  }
+]
