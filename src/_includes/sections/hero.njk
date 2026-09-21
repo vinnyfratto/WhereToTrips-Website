@@ -73,7 +73,9 @@
         {% endfor %}
       </span>
       {% else %}
-      <img class="hero-img{% if s.image.transparent %} img-transparent{% endif %}" src="{{ s.image.src }}" alt="{{ s.image.alt }}" loading="eager" />
+      <img class="hero-img{% if s.image.transparent %} img-transparent{% endif %}"
+           src="{{ s.image.src | thumb(1100) }}" srcset="{{ s.image.src | thumbSet([480, 760, 1100]) }}"
+           sizes="(max-width: 960px) 92vw, 42vw" alt="{{ s.image.alt }}" loading="eager" />
       {% endif %}
       {% if s.badge %}
       <div class="hero-badge">

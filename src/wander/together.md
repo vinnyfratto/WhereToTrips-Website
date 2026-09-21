@@ -1,61 +1,67 @@
 ---
 layout: layouts/page.njk
-title: "Wander Together — One Perfect Getaway, Two People"
-description: "Two travelers, two sets of preferences, one trip. Wander Together finds the destination where your vibes actually overlap."
+title: "Wander Together — For the group chat that never decides anything"
+description: "Everyone sets their own budget and their own vibes. Wander Together finds where the group overlaps, scores those destinations for everyone, and the crew votes in real time. One person can pay, or everyone pays their own way."
 sections:
   - type: hero
     eyebrow: "Wander Together"
     title:
-      pre: "Two travelers, one perfect "
-      accent: "getaway"
+      pre: "For the group chat that never decides "
+      accent: "anything"
       post: "."
-    lede: "You want the mountains. They want the beach. Somewhere, there's a trip you're both actually excited about — we'll find it. Wander Together is a feature inside the WhereTo app for iOS and Android."
+    lede: "Three weeks of messages, four suggestions, nobody booking. Everyone sets their own budget and their own vibes, and the app finds where you all actually overlap."
     primaryBtn:
-      label: "Get the App to Start Planning Together"
-      href: "/app/"
-    ghostBtn:
-      label: "See Wander as a Group"
-      href: "/wander/as-a-group/"
+      label: "Notify me on launch"
+      href: "/notify-launch/"
     image:
-      src: "/media/together.jpg"
-      alt: "A group of friends laughing together at an outdoor table"
-
-  - type: feature_split
-    background: true
-    flip: true
-    eyebrow: "How it works"
-    title:
-      pre: "Both of you share preferences. The engine finds the "
-      accent: "overlap"
-      post: "."
-    lede: "Each traveler enters their own budget expectations, vibe preferences, and departure airport in the app."
-    body: "WhereTo's Vibe Engine scores destinations against both sets of inputs at once and surfaces the ones where you genuinely overlap — not just compromises, real matches."
-    image:
-      src: "/media/chat.jpg"
-      alt: "Coordinating a trip on a phone"
+      src: "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/cities_nightlife/image_2_v2.jpg"
+      alt: "A group out together at night in a lit-up city street"
 
   - type: steps
-    eyebrow: "How it works"
+    eyebrow: "How it goes"
     title:
-      pre: "Four steps to "
-      accent: "go"
+      pre: "Everyone answers for "
+      accent: "themselves"
       post: "."
+    center: true
+    background: true
     steps:
-      - title: "Invite your crew"
-        body: "Start a trip and bring your travel partner in."
-      - title: "Everyone shares a vibe"
-        body: "Each person sets their own budget, dates, and travel style."
-      - title: "The AI finds the overlap"
-        body: "WhereTo surfaces destinations that actually work for you both."
-      - title: "Vote and book together"
-        body: "Decide together and book in one flow — no spreadsheets."
+      - title: "Start a trip, invite the crew"
+        body: "One link. Nobody needs to be talked through anything."
+      - title: "Everyone sets their own"
+        body: "Their budget, their dates, their vibes. Privately. Nobody is looking at anybody else's number."
+      - title: "The app finds the overlap"
+        body: "Destinations that work for the whole group, scored for the group rather than for whoever shouted loudest."
+      - title: "Vote and pick one"
+        body: "In real time, in the app. The list narrows, and you end up with a destination instead of a thread."
+
+  - type: feature_split
+    eyebrow: "Then the awkward part"
+    title:
+      pre: "One person pays, or "
+      accent: "everyone does"
+      post: "."
+    lede: "Both ways are built in, because a family vacation and a long weekend in the Caribbean with the girls do not settle up the same way."
+    body: "One payer covers the whole trip, or each traveler pays their own way for their own seat and their own room. All of it in the app, all of it in real time. No spreadsheet. No mess. No chasing anyone for their half."
+    image:
+      src: "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/theme_parks/image_1.jpg"
+      alt: "A family on a ride at a theme park"
+    features:
+      - icon: "check-circle"
+        label: "Private budgets, shared result"
+      - icon: "check-circle"
+        label: "Live voting, so the decision happens while everyone is still paying attention"
+      - icon: "check-circle"
+        label: "Pay together or pay separately, decided per trip"
+      - icon: "check-circle"
+        label: "Works for two people and for ten"
 
   - type: cta_band
     id: "download"
-    eyebrow: "Ready to wander together?"
+    eyebrow: "Ready to wander?"
     title:
-      pre: "Get the app to start planning "
-      accent: "together"
+      pre: "Get everyone to "
+      accent: "yes"
       post: "."
-    body: "Wander Together lives in the WhereTo app. Share preferences with your travel partner and find where you both want to go."
+    body: "Wander Together runs in the WhereTo app, where the group votes, the pricing is live, and the trip gets booked."
 ---

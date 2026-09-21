@@ -1,43 +1,66 @@
 ---
 layout: layouts/page.njk
-title: "WhereTo: Explore — Narrow a Region to Your Perfect Spot"
-description: "Know you want Southeast Asia, the Mediterranean, or the Pacific Northwest? WhereTo narrows it down to your exact spot."
+title: "WhereTo: Explore — You know the region, we'll find the spot"
+description: "Thinking Europe, or the Mediterranean, but not sure where in it? Explore shows you the vibes that region offers, you pick yours, and the Vibe Engine scores the destinations that match. Booking happens in the WhereTo app."
 sections:
   - type: hero
     eyebrow: "WhereTo: Explore"
     title:
-      pre: "Pick a region, we'll find your "
-      accent: "perfect spot"
+      pre: "You know the region. We'll find the "
+      accent: "spot"
       post: "."
-    lede: "You already know the part of the world calling you. Let's find the exact place in it that fits your budget and vibe."
+    lede: "Say you're thinking Europe, the Mediterranean. That narrows it to a few hundred places, which is not the same as narrowing it down."
     primaryBtn:
-      label: "Get the App to Start Exploring"
-      href: "/app/"
-    ghostBtn:
-      label: "See all WhereTo modes"
-      href: "/whereto/"
+      label: "Notify me on launch"
+      href: "/notify-launch/"
     image:
-      src: "/media/hero/mountains.jpg"
-      alt: "Dramatic mountain range under shifting light"
+      src: "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/land_nature/image_1_v2.jpg"
+      alt: "A river running through a wide green valley under high ridges"
+
+  - type: steps
+    eyebrow: "How it goes"
+    title:
+      pre: "From a region to a "
+      accent: "shortlist"
+      post: "."
+    center: true
+    background: true
+    steps:
+      - title: "Pick where you're thinking"
+        body: "A region or a sub-region. The Mediterranean, Southeast Asia, the US Southeast, whatever you already have in your head."
+      - title: "See what it's actually good at"
+        body: "We show you the vibes that region genuinely offers, scored, rather than every tag in the system."
+      - title: "Pick the ones you want"
+        body: "Plus your dates, your budget and your home airport, so the answer is a trip and not a wish list."
+      - title: "Get it ranked"
+        body: "The destinations in that region that match, in order, with the flight and hotel priced."
 
   - type: feature_split
-    background: true
-    eyebrow: "Distinction callout"
+    eyebrow: "No black box"
     title:
-      pre: "Not blank-slate. "
-      accent: "Focused"
+      pre: "And we show you "
+      accent: "the math"
       post: "."
-    lede: "Discover starts from zero. Explore starts from a region you've already chosen — a country, a coastline, a continent — and narrows it down using your vibe and budget, so you land on the one spot in that region that's actually right for this trip."
+    lede: "Every destination carries its score and what went into it: how distinctive the experience is there, how good it is, how much of it there is, how easy it is to reach, how reliable it is by season, and what it costs."
+    body: "If a place is at the top of your list, you can see why. If it is at the bottom, you can see that too, which is usually the more useful half."
     image:
-      src: "/media/vibes.jpg"
-      alt: "Aerial view of a turquoise lagoon surrounded by white sand"
+      src: "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/local_cuisine_regional_specialties/image_1.jpg"
+      alt: "A market table of regional produce and prepared dishes"
+    flip: true
+    features:
+      - icon: "check-circle"
+        label: "Ranked on what you picked, never on what a hotel paid to promote"
+      - icon: "check-circle"
+        label: "Scored against the whole region, so second place means something"
+      - icon: "check-circle"
+        label: "Seasonal, so the right answer in April is allowed to be wrong in August"
 
   - type: cta_band
     id: "download"
-    eyebrow: "Ready?"
+    eyebrow: "Ready to wander?"
     title:
-      pre: "Get the app to start "
-      accent: "exploring"
+      pre: "Narrow it down "
+      accent: "properly"
       post: "."
-    body: "Name the region — WhereTo finds your exact spot in it."
+    body: "Explore runs in the WhereTo app, where the ranking comes back with live pricing and you can book it."
 ---

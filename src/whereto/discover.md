@@ -1,57 +1,67 @@
 ---
 layout: layouts/page.njk
-title: "WhereTo: Discover — Find a Destination From Scratch"
-description: "No destination in mind? Give us your vibe and budget — WhereTo's engine researches and recommends destinations from a blank slate."
+title: "WhereTo: Discover — Start with a feeling, end with a destination"
+description: "No idea where to go? Pick a few kinds of trip, add your airport, dates and budget, and the Vibe Engine hands back a ranked, priced shortlist of destinations. Planning and booking happen in the WhereTo app."
 sections:
   - type: hero
     eyebrow: "WhereTo: Discover"
     title:
-      pre: "Don't know where to go? "
-      accent: "We'll find it"
-      post: " for you."
-    lede: "This is the blank-slate search — the one for when you know you want a trip and nothing else."
+      pre: "Start with a feeling, end with a "
+      accent: "destination"
+      post: "."
+    lede: "For when you have no idea where to go, and every list you have looked at so far started with an airport."
     primaryBtn:
-      label: "Get the App to Start Discovering"
-      href: "/app/"
-    ghostBtn:
-      label: "See all WhereTo modes"
-      href: "/whereto/"
+      label: "Notify me on launch"
+      href: "/notify-launch/"
+    imageCycle: "categories"
     image:
-      src: "/media/vibes.jpg"
-      alt: "Aerial view of a turquoise lagoon surrounded by white sand"
+      alt: "The ten kinds of trip WhereTo starts from, from beaches and food to cities and wildlife"
+
+  - type: steps
+    eyebrow: "How it goes"
+    title:
+      pre: "Four screens, and you are "
+      accent: "looking at real places"
+      post: "."
+    center: true
+    background: true
+    steps:
+      - title: "Pick a few kinds of trip"
+        body: "Beach & Water. Nature & Outdoors. Health & Wellness. Ten to choose from, and you can take more than one."
+      - title: "Tell us the practical part"
+        body: "Your home airport, your dates, your budget, and who is coming with you."
+      - title: "Choose your vibes"
+        body: "We show you the vibes that fit what you have picked so far. You choose what you actually want to do and experience."
+      - title: "Get your shortlist"
+        body: "Ranked, priced, and made of places rather than airports. Flights and hotels attached to each one."
 
   - type: feature_split
-    background: true
-    eyebrow: "How it works"
+    eyebrow: "What comes back"
     title:
-      pre: "Vibe and budget in. A curated "
-      accent: "shortlist"
-      post: " out."
-    lede: "Tell WhereTo what you can spend and what kind of trip you're craving. The engine researches the world against those two constraints and hands back destinations that actually fit — not a mood board, a shortlist you can act on."
+      pre: "Destinations, "
+      accent: "scored"
+      post: " and priced."
+    lede: "The Vibe Engine runs everything you told it against 12,000+ scored vibe matches across 1,000+ destinations, then hands back the ones that actually fit."
     image:
-      src: "/media/hero.jpg"
-      alt: "A traveler weighing destination options"
-
-  - type: tile_grid
-    eyebrow: "Sample output preview"
-    title:
-      pre: "What you'll "
-      accent: "get"
-      post: "."
-    intro: "Illustrative preview, not live data."
-    columns: 2
-    tiles:
-      - { label: "Destination & estimated cost", icon: "📍", blurb: "Destination name and estimated cost range." }
-      - { label: "Fit label & reason why", icon: "✦", blurb: "A one-line fit label and a plain-English reason why." }
-      - { label: "The honest trade-off", icon: "⚖️", blurb: "What this destination isn't great at." }
-      - { label: "Save, compare, detail", icon: "🗂️", blurb: "Save, compare, and detail actions." }
+      src: "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/water/image_1_v2.jpg"
+      alt: "A quiet white-sand bay with turquoise water and granite boulders"
+    flip: true
+    features:
+      - icon: "check-circle"
+        label: "A score you can see the reasoning behind, not a black box"
+      - icon: "check-circle"
+        label: "Priced as a whole trip, flight and hotel together, from your airport"
+      - icon: "check-circle"
+        label: "Only places you can actually reach on the dates you gave us"
+      - icon: "check-circle"
+        label: "Every other vibe that destination is good for, in case it changes your mind"
 
   - type: cta_band
     id: "download"
-    eyebrow: "Ready?"
+    eyebrow: "Ready to wander?"
     title:
-      pre: "Get the app to start "
-      accent: "discovering"
-      post: "."
-    body: "Give us your vibe and budget — WhereTo researches and recommends from a blank slate."
+      pre: "You bring the mood. "
+      accent: "We'll bring"
+      post: " the map."
+    body: "Discover runs in the WhereTo app, where the shortlist comes back with live pricing and you can book it."
 ---

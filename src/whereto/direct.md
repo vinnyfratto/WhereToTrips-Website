@@ -1,46 +1,44 @@
 ---
-# PRODUCTION NOTE (per copy deck): Content for this module was not part of the
-# original one-pager; the copy below is a placeholder direction. Confirm final
-# positioning with product before this page ships.
 layout: layouts/page.njk
-title: "WhereTo: Direct — Skip Straight to Planning"
-description: "Already know where you're going? Skip the recommendation step and go straight into planning — budget, dates, and logistics, handled."
+title: "WhereTo: Direct — You already know, so go"
+description: "For when the destination is decided. Type in where, when and what you want to spend, and go straight to flights and hotels. No detours."
 sections:
   - type: hero
     eyebrow: "WhereTo: Direct"
     title:
-      pre: "Already know where you're going? "
-      accent: "Skip straight"
-      post: " to planning."
-    lede: "Not every trip needs a recommendation. Sometimes you just need the logistics handled fast."
-    primaryBtn:
-      label: "Get the App to Start Planning"
-      href: "/app/"
-    ghostBtn:
-      label: "See all WhereTo modes"
-      href: "/whereto/"
-    image:
-      src: "/media/hero.jpg"
-      alt: "A traveler using the WhereTo app"
-
-  - type: feature_split
-    background: true
-    eyebrow: "What still helps"
-    title:
-      pre: "Knowing the destination is step one, "
-      accent: "not the whole trip"
+      pre: "You already know. "
+      accent: "Go"
       post: "."
-    lede: "Once you tell WhereTo where you're headed, the app still does the heavy lifting on everything after that: matching your budget against real costs, checking your dates and trip length against flight and hotel availability from your domestic departure airport, and moving you straight into booking pathways for air and hotel."
+    lede: "Not every trip needs deciding. Sometimes it is your sister's wedding, or the same week in the same town you take every year."
+    primaryBtn:
+      label: "Notify me on launch"
+      href: "/notify-launch/"
     image:
-      src: "/media/vibes.jpg"
-      alt: "A destination revealed by starting with possibility"
+      src: "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/stays_romance/image_1_v2.jpg"
+      alt: "A quiet resort terrace looking out over the water at dusk"
+
+  - type: steps
+    eyebrow: "How it goes"
+    title:
+      pre: "Three things, then "
+      accent: "flights and hotels"
+      post: "."
+    center: true
+    background: true
+    steps:
+      - title: "Where and when"
+        body: "Type the destination and your dates. No vibes, no questionnaire, no shortlist you did not ask for."
+      - title: "What you want to spend"
+        body: "The same budget that everything else in the app is priced against, so nothing arrives as a surprise at checkout."
+      - title: "Book it"
+        body: "Straight to flights and hotels for that place, on those dates, inside that number. No detours."
 
   - type: cta_band
     id: "download"
-    eyebrow: "Ready?"
+    eyebrow: "Ready to wander?"
     title:
-      pre: "Get the app to start "
-      accent: "planning"
+      pre: "Skip the part you "
+      accent: "already did"
       post: "."
-    body: "Tell WhereTo where you're headed — it handles the budget, dates, and logistics from there."
+    body: "Direct runs in the WhereTo app, alongside the other three ways in, for the trips where the deciding is done."
 ---
