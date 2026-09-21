@@ -864,15 +864,27 @@ export async function initProfileForm(supabase, user, opts = {}) {
       'data-open="' + key + '"' + (key === active ? ' aria-current="true"' : '') + '>' +
         '<span class="ph-tile-icon">' + ico(icon) + '</span>' +
         '<span class="ph-tile-label">' + label + '</span></button>';
-    return '<div class="ph-tiles">' +
+    // A partner or admin comes here to get to their dashboard far more often
+    // than to edit their date of birth, so those go first and solid — the
+    // only filled surfaces on the page, which is what makes them findable
+    // without reading. Everyone else sees the tiles at the top as before,
+    // since the stack renders nothing when it is empty.
+    const wideTile = (href, icon, label, solid) =>
+      '<a class="ph-wide-tile' + (solid ? ' ph-wide-tile--solid' : '') + '" href="' + esc(href) + '">' +
+        '<span class="ph-wide-tile-label">' + esc(label) + '</span>' +
+        '<span class="ph-wide-tile-icon">' + ico(icon) + '</span></a>';
+
+    return (accountRows.length
+        ? '<div class="ph-wide-stack">' +
+            accountRows.map((r) => wideTile(r.href, r.icon, r.title, true)).join('') +
+          '</div>'
+        : '') +
+      '<div class="ph-tiles">' +
         tile('profile', 'user-circle', 'My<br />Profile') +
         tile('travellers', 'users-group-rounded', 'Travelers<br />&amp; Friends') +
       '</div>' +
-      '<a class="ph-wide-tile" href="/account/bookings/">' +
-        '<span class="ph-wide-tile-label">My Trips</span>' +
-        '<span class="ph-wide-tile-icon">' + ico('route') + '</span></a>' +
+      wideTile('/account/bookings/', 'route', 'My Trips', false) +
       MENU.map((g) => menuGroup(g.label, g.rows)).join('') +
-      menuGroup('Account', accountRows) +
       menuGroup('Policy', POLICY_ROWS) +
       '<button type="button" class="ph-logout" data-logout>' + ico('logout-2') + ' Log Out</button>';
   }

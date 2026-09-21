@@ -790,6 +790,17 @@
 .ph-wide-tile-label { font-family: var(--serif); color: var(--navy); font-size: 19px; line-height: 25px; }
 .ph-wide-tile-icon { font-size: 40px; color: var(--rust); line-height: 1; }
 
+/* Partner / Admin dashboard, above the tiles. Solid azure, inverted: the
+   only filled surfaces on a page of white cards, so the one thing these
+   accounts actually came for is findable without reading. The stack sets
+   the spacing so each tile's own margin does not have to. */
+.ph-wide-stack { display: grid; gap: 14px; margin-bottom: 14px; }
+.ph-wide-stack .ph-wide-tile { margin-bottom: 0; }
+.ph-wide-tile--solid { background: var(--azure); border-color: var(--azure); }
+.ph-wide-tile--solid .ph-wide-tile-label,
+.ph-wide-tile--solid .ph-wide-tile-icon { color: #fff; }
+.ph-wide-tile--solid:hover { background: var(--azure-press); border-color: var(--azure-press); }
+
 /* ── Grouped rows — no cards, hairline separators ── */
 .ph-group { margin-bottom: 30px; }
 /* Amber and centred, so each group reads as a divider between the rows rather
