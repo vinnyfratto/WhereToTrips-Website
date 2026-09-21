@@ -1404,4 +1404,11 @@ footer { background: var(--footer); padding: 72px 0 40px; }
 
 /* Hero photo that cycles (sections/hero.njk, `imageCycle`). Same box as
    .hero-img; the frames stack inside it and crossfade. */
-.hero-img-cycle { position: relative; display: block; overflow: hidden; }
+.hero-img-cycle { position: relative; display: block; width: 100%; overflow: hidden; }
+/* .hero-grid carries align-items:center, and at <=960px it becomes a flex
+   COLUMN, so its children shrink-to-fit instead of stretching. A plain
+   <img> survives that on its intrinsic width. This cycler is a <span>
+   whose only children are absolutely positioned, so it has no intrinsic
+   width at all: it resolved to 0px and the hero photo was invisible on
+   every phone while looking perfect on desktop. Stretch it explicitly. */
+.hero-media-cycle { align-self: stretch; width: 100%; }

@@ -56,7 +56,7 @@
       </div>
       {% endif %}
     </div>
-    <div class="hero-media reveal reveal-delay-1">
+    <div class="hero-media{% if s.imageCycle %} hero-media-cycle{% endif %} reveal reveal-delay-1">
       {#- `imageCycle: categories` stacks the ten top-level vibe categories
           and crossfades them, rather than showing one stock photo. Same
           layered-opacity mechanism as the vibe cards (wt-vibe-cards.js),
