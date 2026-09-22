@@ -1,0 +1,625 @@
+---
+title: The WhereTo Trips Partner Program — Texas Partner Pilot
+description: You bring the audience, we share the revenue. Earn 30% of what WhereTo Trips makes on every trip your audience books, for three years after they sign up with your link.
+layout: layouts/base.njk
+permalink: "/TexasPartners/"
+---
+{#- ══════════════════════════════════════════════════════════════════
+    Texas Partner Pilot — the web version of the creator info sheet
+    (WhereTo_Partner_InfoSheet_Combined.pdf, Sep 2026). One page, same
+    copy and same order as the printed sheet, so a creator who has the
+    PDF and a creator who has the link are reading the same thing.
+
+    The CSS lives here rather than in styles.css: it is one outreach
+    page's layout, not a section type any other page composes from,
+    and every other page would otherwise download it. Same call as
+    join.njk and techdocs.njk.
+
+    Numbers come from src/_data/engineStats.json and appModes.json, not
+    from the PDF — /destinations and /travel-vibes quote the same data
+    files, and a partner sheet that says 900 next to a site that says
+    1,000+ reads as one of them being wrong.
+    ══════════════════════════════════════════════════════════════════ -#}
+
+{#- The sheet's order, which is not appModes.json's order. -#}
+{%- set modeOrder = ["discover", "explore", "together", "direct"] -%}
+
+{#- Both data files are looked up by key with an inline loop. Nunjucks scopes
+    `set` to the loop body, so there is no hoisting a match out to a variable,
+    and `selectattr` here silently returns the whole list instead of filtering. -#}
+
+<style>
+  /* ── Shared scale ───────────────────────────────────────────────── */
+  .tp-hero h1, .tp-hero-panel h2, .tp-value h2, .tp-start h2, .tp-engine h2,
+  .tp-mail { overflow-wrap: break-word; }
+  .tp-eyebrow {
+    display: block; font-family: var(--sans); font-weight: 700;
+    font-size: 11px; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--azure); margin-bottom: 14px;
+  }
+  .tp-eyebrow-amber { color: var(--amber-deep); }
+  .tp-eyebrow-light { color: #7FC7EE; }
+  .tp-num {
+    font-family: var(--serif); font-weight: 400; color: var(--amber);
+    line-height: 1; letter-spacing: -0.01em;
+  }
+  .tp-p { color: var(--ink-soft); font-size: 15px; line-height: 1.7; margin: 0; }
+
+  /* ── 1. Hero + Vibe Engine ──────────────────────────────────────────
+     One grid, not two. On the sheet the photo column runs the whole
+     height of the page beside both blocks; splitting it per-block leaves
+     a short photo the amber panel almost entirely covers. */
+  .tp-hero { background: #fff; }
+  .tp-hero-grid {
+    display: grid; grid-template-columns: minmax(0, 34%) minmax(0, 66%);
+    align-items: stretch; gap: 0;
+  }
+  .tp-hero-media {
+    position: relative; overflow: hidden; min-height: 620px;
+    background: #2C2A27;
+  }
+  .tp-hero-media img {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; object-position: 50% 22%;
+  }
+  .tp-hero-stamp {
+    position: absolute; top: 40px; left: 40px; right: 40px; z-index: 2;
+    text-shadow: 0 2px 18px rgba(0,0,0,0.45);
+  }
+  .tp-hero-stamp img { position: static; width: 190px; height: auto; display: block; margin-bottom: 14px; }
+  .tp-hero-stamp .tp-pilot {
+    font-family: var(--sans); font-weight: 700; font-size: 20px; color: #fff;
+    display: block; letter-spacing: .01em;
+  }
+  .tp-hero-stamp .tp-date {
+    font-family: var(--serif); font-style: italic; font-size: 17px;
+    color: rgba(255,255,255,0.92); display: block; margin-top: 2px;
+  }
+  .tp-hero-panel {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
+    padding: 72px 40px 40px;
+    background: linear-gradient(180deg,
+      rgba(198,126,10,0) 0%, rgba(198,126,10,0.90) 34%, rgba(176,110,6,0.97) 100%);
+  }
+  .tp-hero-panel h2 {
+    color: #fff; font-size: clamp(24px, 3.1vw, 42px); line-height: 1.12;
+    margin: 0 0 18px;
+  }
+  .tp-hero-panel p {
+    color: rgba(255,255,255,0.94); font-size: 15px; line-height: 1.72; margin: 0;
+    max-width: 44ch;
+  }
+  .tp-hero-panel strong { color: #fff; font-weight: 700; }
+
+  .tp-hero-copy { padding: 44px clamp(24px, 3.4vw, 56px) 52px; min-width: 0; }
+  .tp-hero-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    gap: 20px; margin-bottom: 26px;
+  }
+  .tp-hero-head .tp-kicker {
+    font-family: var(--serif); font-style: italic; color: var(--amber);
+    font-size: clamp(17px, 1.6vw, 21px);
+  }
+  .tp-hero-head .tp-domain {
+    font-family: var(--sans); font-size: 13px; color: var(--ink-muted); white-space: nowrap;
+  }
+  .tp-hero-copy h1 {
+    font-size: clamp(29px, 4.6vw, 62px); line-height: 1.06; margin: 0 0 20px;
+  }
+  .tp-hero-copy h1 .italic { display: block; }
+  .tp-hero-lede {
+    color: var(--ink-soft); font-size: clamp(16px, 1.25vw, 18px); line-height: 1.7;
+    max-width: 52ch; margin: 0 0 34px;
+  }
+  .tp-hero-lede strong { color: var(--navy); font-weight: 700; }
+
+  .tp-stats {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid var(--wg200); border-bottom: 1px solid var(--wg200);
+  }
+  .tp-stat { padding: 22px 26px; }
+  .tp-stat + .tp-stat { border-left: 1px solid var(--wg200); }
+  .tp-stat:first-child { padding-left: 0; }
+  .tp-stat .tp-num { font-size: clamp(38px, 3.6vw, 50px); }
+  .tp-stat .tp-unit {
+    font-family: var(--sans); font-size: 15px; font-weight: 600;
+    color: var(--amber); margin-left: 3px;
+  }
+  .tp-stat p { margin: 10px 0 0; font-size: 13px; line-height: 1.55; color: var(--ink-soft); }
+  .tp-stat p strong { color: var(--navy); font-weight: 700; display: block; }
+
+  /* ── 2. The Vibe Engine — the lower half of the same right column ── */
+  .tp-engine { padding: 0 clamp(24px, 3.4vw, 56px) 56px; }
+  .tp-engine-grid {
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 240px);
+    gap: 20px; align-items: start;
+  }
+  .tp-engine h2 { font-size: clamp(26px, 2.3vw, 34px); margin: 0 0 16px; line-height: 1.14; }
+  .tp-engine h2 .italic { font-style: italic; color: var(--azure); }
+  .tp-engine-phone { width: 100%; height: auto; display: block; }
+  .tp-engine-figures {
+    display: flex; flex-wrap: wrap; gap: 26px 40px; margin: 22px 0 24px;
+    align-items: baseline;
+  }
+  .tp-fig { display: flex; align-items: baseline; gap: 8px; }
+  .tp-fig .tp-figure {
+    font-family: var(--serif); font-size: 26px; color: var(--navy); line-height: 1;
+  }
+  .tp-fig .tp-figure-label { font-size: 14px; color: var(--ink-soft); }
+
+  .tp-chips { display: flex; flex-wrap: wrap; gap: 9px; align-items: center; }
+  .tp-chips + .tp-chips { margin-top: 12px; }
+  .tp-chip {
+    display: inline-flex; align-items: center; font-family: var(--sans);
+    font-size: 13.5px; color: var(--navy); background: #fff;
+    border: 1px solid var(--wg300); border-radius: 999px; padding: 8px 16px;
+    white-space: nowrap;
+  }
+  .tp-chip-budget {
+    color: var(--azure); border-color: var(--azure); background: var(--azure-tint);
+    font-weight: 700;
+  }
+  .tp-chip-result {
+    color: var(--amber-deep); border-color: var(--amber);
+    background: var(--amber-tint); font-weight: 600;
+    font-size: 13px; padding: 8px 13px;
+  }
+  .tp-chip-arrow {
+    color: var(--navy); font-size: 22px; display: inline-flex; line-height: 1;
+    padding: 0 2px;
+  }
+
+  /* ── 3. Four ways in ────────────────────────────────────────────── */
+  .tp-modes { padding: 0 clamp(24px, 3.4vw, 56px) 44px; }
+  .tp-modes-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    gap: 24px; flex-wrap: wrap; border-top: 1px solid var(--wg200);
+    padding-top: 24px; margin-bottom: 26px;
+  }
+  .tp-modes-head .tp-eyebrow { margin-bottom: 0; }
+  .tp-modes-head .tp-note { font-size: 13px; color: var(--ink-muted); }
+  .tp-modes-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 26px; }
+  .tp-mode { min-width: 0; text-decoration: none; display: block; }
+  .tp-mode-img {
+    display: block; width: 100%; aspect-ratio: 16 / 11; object-fit: cover;
+    border-radius: 4px; background: var(--wg200);
+  }
+  .tp-mode h3 {
+    font-size: 21px; margin: 14px 0 8px; color: var(--navy);
+  }
+  .tp-mode:hover h3 { color: var(--azure); }
+  .tp-mode p { margin: 0; font-size: 13.5px; line-height: 1.6; color: var(--ink-soft); }
+
+  /* ── 4. What's in it for you ────────────────────────────────────── */
+  .tp-value { background: #fff; padding: 44px 0 64px; }
+  .tp-value-grid {
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 340px); gap: 40px;
+    align-items: start;
+  }
+  .tp-value h2 { font-size: clamp(26px, 3.2vw, 44px); line-height: 1.1; margin: 0 0 34px; }
+  .tp-value h2 .italic { display: block; }
+  .tp-benefits { display: grid; grid-template-columns: repeat(2, 1fr); gap: 34px 44px; }
+  .tp-benefit { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 0 12px; }
+  .tp-benefit .tp-bnum {
+    font-family: var(--serif); font-style: italic; font-size: 30px;
+    color: var(--azure); line-height: 1; grid-row: 1;
+  }
+  .tp-benefit h3 { font-size: 20px; margin: 0; line-height: 1.25; align-self: center; }
+  .tp-benefit p { grid-column: 2; margin: 10px 0 0; font-size: 13.5px; line-height: 1.65; color: var(--ink-soft); }
+
+  .tp-rail { display: grid; gap: 24px; }
+  .tp-panel { border-radius: 4px; padding: 26px 28px; }
+  .tp-panel-tint { background: var(--tint); }
+  .tp-panel-tint h3 { font-size: 24px; margin: 0 0 18px; line-height: 1.2; }
+  .tp-split {
+    display: grid; grid-template-columns: 1fr 1fr;
+    border-top: 1px solid var(--wg300); border-bottom: 1px solid var(--wg300);
+  }
+  .tp-split > div { padding: 16px 0; }
+  .tp-split > div + div { border-left: 1px solid var(--wg300); padding-left: 18px; }
+  .tp-split .tp-num { font-size: clamp(28px, 3.2vw, 44px); }
+  .tp-split .tp-unit { font-family: var(--sans); font-size: 15px; font-weight: 600; color: var(--amber); }
+  .tp-split p { margin: 6px 0 0; font-size: 12.5px; color: var(--ink-soft); }
+
+  .tp-soon {
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    padding: 16px 0; text-align: right;
+  }
+  .tp-soon ul { list-style: none; margin: 0; padding: 0; }
+  .tp-soon li { font-size: 13px; color: var(--ink-soft); line-height: 1.5; }
+  .tp-soon .tp-brace {
+    font-size: 40px; color: var(--wg400); line-height: 0.9; font-weight: 300;
+  }
+  .tp-soon .tp-soon-label {
+    font-family: var(--sans); font-size: 13px; color: var(--ink-soft); text-align: left;
+  }
+  .tp-panel-tint > p:last-child {
+    margin: 16px 0 0; font-size: 12.5px; line-height: 1.6; color: var(--ink-soft);
+  }
+  .tp-panel-tint > p:last-child strong { color: var(--navy); }
+
+  .tp-panel-dark { background: #5A6067; color: #fff; }
+  .tp-panel-dark .tp-eyebrow { color: var(--amber); }
+  .tp-panel-dark h3 {
+    font-family: var(--serif); font-style: italic; font-weight: 400;
+    color: #fff; font-size: 26px; line-height: 1.2; margin: 0 0 14px;
+  }
+  .tp-panel-dark p { margin: 0; font-size: 13px; line-height: 1.65; color: rgba(255,255,255,0.86); }
+
+  /* ── 5. How to get started ──────────────────────────────────────── */
+  .tp-start { background: var(--footer); color: #fff; padding: 56px 0 44px; }
+  .tp-start-head {
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 46%);
+    gap: 24px; align-items: end; margin-bottom: 42px;
+  }
+  .tp-start h2 { color: #fff; font-size: clamp(25px, 3vw, 42px); margin: 0; line-height: 1.12; }
+  .tp-start h2 .italic { color: #7FC7EE; }
+  .tp-start-head p {
+    margin: 0; font-size: 13.5px; line-height: 1.6; text-align: right;
+    color: rgba(255,255,255,0.72);
+  }
+  .tp-steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; }
+  .tp-step { position: relative; padding: 0 22px 0 0; }
+  .tp-step-mark { position: relative; height: 34px; margin-bottom: 20px; }
+  .tp-step-mark::before {
+    content: ""; position: absolute; left: 34px; right: -22px; top: 17px;
+    border-top: 1px dashed rgba(255,255,255,0.32);
+  }
+  .tp-step:last-child .tp-step-mark::before { display: none; }
+  .tp-step-num {
+    position: relative; z-index: 2; display: grid; place-items: center;
+    width: 34px; height: 34px; border-radius: 50%;
+    border: 1px solid #7FC7EE; color: #7FC7EE;
+    font-family: var(--sans); font-size: 13px; font-weight: 600;
+    background: var(--footer);
+  }
+  .tp-step.is-last .tp-step-num { background: var(--azure); border-color: var(--azure); color: #fff; }
+  .tp-step h3 { color: #fff; font-size: 20px; margin: 0 0 10px; line-height: 1.2; }
+  .tp-step p { margin: 0; font-size: 13px; line-height: 1.6; color: rgba(255,255,255,0.74); }
+
+  .tp-foot {
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 260px);
+    gap: 32px; align-items: start;
+    border-top: 1px solid rgba(255,255,255,0.14); margin-top: 44px; padding-top: 28px;
+  }
+  .tp-foot-note { border-left: 2px solid var(--amber); padding-left: 16px; }
+  .tp-foot-note h4 {
+    font-family: var(--sans); font-size: 13px; font-weight: 700; color: var(--amber);
+    margin: 0 0 8px; letter-spacing: .01em;
+  }
+  .tp-foot-note p { margin: 0; font-size: 12.5px; line-height: 1.6; color: rgba(255,255,255,0.72); }
+  .tp-foot-cta .tp-eyebrow { color: #7FC7EE; margin-bottom: 10px; }
+  .tp-foot-cta a.tp-mail {
+    font-family: var(--serif); font-size: clamp(22px, 2.2vw, 30px); color: #fff;
+    text-decoration: none; display: inline-block; line-height: 1.2;
+    border-bottom: 1px solid rgba(255,255,255,0.28);
+  }
+  .tp-foot-cta a.tp-mail:hover { color: #7FC7EE; border-bottom-color: #7FC7EE; }
+  .tp-foot-cta .tp-domain2 {
+    display: block; margin-top: 12px; font-size: 13px; color: rgba(255,255,255,0.62);
+    text-decoration: none;
+  }
+  .tp-foot-cta .tp-domain2:hover { color: #fff; }
+  .tp-foot-logo { justify-self: end; }
+  .tp-foot-logo img { width: 210px; height: auto; display: block; }
+
+  .tp-legal {
+    font-size: 10.5px; line-height: 1.55; color: rgba(255,255,255,0.44);
+    margin: 26px 0 0; max-width: none;
+  }
+
+  /* ── Responsive ─────────────────────────────────────────────────── */
+  @media (max-width: 1100px) {
+    .tp-hero-grid { grid-template-columns: minmax(0, 42%) minmax(0, 58%); }
+    .tp-modes-grid { grid-template-columns: repeat(2, 1fr); gap: 30px 26px; }
+    .tp-steps { grid-template-columns: repeat(3, 1fr); row-gap: 34px; }
+    .tp-step-mark::before { display: none; }
+    .tp-value-grid { grid-template-columns: 1fr; }
+    .tp-rail { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 860px) {
+    .tp-hero-grid { grid-template-columns: 1fr; }
+    .tp-hero-media { min-height: 560px; }
+    .tp-hero-copy { padding: 34px 24px 0; }
+    .tp-engine-grid { grid-template-columns: 1fr; }
+    .tp-engine-phone { max-width: 260px; margin: 0 auto; }
+    .tp-benefits { grid-template-columns: 1fr; gap: 28px; }
+    .tp-rail { grid-template-columns: 1fr; }
+    .tp-start-head { grid-template-columns: 1fr; align-items: start; }
+    .tp-start-head p { text-align: left; }
+    .tp-steps { grid-template-columns: repeat(2, 1fr); }
+    .tp-foot { grid-template-columns: 1fr; }
+    .tp-foot-logo { justify-self: start; }
+  }
+  @media (max-width: 560px) {
+    .tp-stats { grid-template-columns: 1fr; }
+    .tp-stat { padding: 20px 0; }
+    .tp-stat + .tp-stat { border-left: 0; border-top: 1px solid var(--wg200); }
+    .tp-modes-grid { grid-template-columns: 1fr; }
+    .tp-steps { grid-template-columns: 1fr; }
+    .tp-hero-panel { padding: 72px 24px 32px; }
+    .tp-hero-stamp { top: 28px; left: 24px; right: 24px; }
+  }
+</style>
+
+{# ── 1. Hero ─────────────────────────────────────────────────────── #}
+<section class="tp-hero">
+  <div class="wrap-wide">
+    <div class="tp-hero-grid">
+
+      <div class="tp-hero-media">
+        <img src="/media/partners/texas-partner-hero.jpg"
+             srcset="/media/partners/texas-partner-hero-720.jpg 720w, /media/partners/texas-partner-hero.jpg 1200w"
+             sizes="(max-width: 860px) 100vw, 40vw"
+             alt="A traveler looking out over a mountain lake" fetchpriority="high" decoding="async" />
+        <div class="tp-hero-stamp">
+          <img src="/assets/whereto-logo-white.svg" alt="WhereTo Trips" />
+          <span class="tp-pilot">Texas Partner Pilot</span>
+          <span class="tp-date">October 2026</span>
+        </div>
+        <div class="tp-hero-panel">
+          <h2>Start with you.<br />End up somewhere amazing.</h2>
+          <p>WhereTo Trips is a <strong>Texas based</strong> travel technology platform. We help people
+            figure out where to go, plan the trip, and book it in one place. We are
+            <strong>launching in Texas first</strong>, with a small roster of creators whose audiences
+            already come to them for travel advice.</p>
+        </div>
+      </div>
+
+      <div>
+      <div class="tp-hero-copy">
+        <div class="tp-hero-head">
+          <span class="tp-kicker">The WhereTo Trips Partner Program</span>
+          <span class="tp-domain">wheretotrips.com</span>
+        </div>
+
+        <h1>You bring the audience.<span class="italic">We share the revenue.</span></h1>
+
+        <p class="tp-hero-lede">Your audience already comes to you for where to go next. Share
+          WhereTo Trips with them the way you share everything else, and you earn
+          <strong>30% of what we make on every trip they book</strong>. For three years after they
+          sign up with your link.</p>
+
+        <div class="tp-stats">
+          <div class="tp-stat">
+            <span class="tp-num">30</span><span class="tp-unit">%</span>
+            <p><strong>Of our revenue is shared</strong>on every completed booking</p>
+          </div>
+          <div class="tp-stat">
+            <span class="tp-num">3</span><span class="tp-unit">yrs</span>
+            <p><strong>Recurring revenue, per traveler</strong>on every trip they complete.</p>
+          </div>
+          <div class="tp-stat">
+            <span class="tp-num">4</span><span class="tp-unit">posts</span>
+            <p>We only ask that you make a <strong style="display:inline">minimum of 4 posts per year</strong>.
+              The more you promote the more you earn.</p>
+          </div>
+        </div>
+      </div>
+
+      {# ── 2. The Vibe Engine ───────────────────────────────────── #}
+      <div class="tp-engine">
+        <div class="tp-engine-grid">
+      <div class="reveal">
+        <span class="tp-eyebrow">The Vibe Engine</span>
+        <h2>Where will your vibes <span class="italic">take you?</span></h2>
+        <p class="tp-p" style="max-width: 62ch;">WhereTo is the only travel app on the map that is truly
+          interested in the traveler and what they want to experience. A traveler gives us a budget,
+          dates and the vibes they are after, and the Vibe Engine returns destinations that fit, with a
+          flight and hotel package at or under their budget.</p>
+
+        <div class="tp-engine-figures">
+          {%- for s in engineStats.stats -%}
+            {%- if s.key == "vibes" %}
+          <span class="tp-fig"><span class="tp-figure">{{ s.display }}</span><span class="tp-figure-label">vibes mapped</span></span>
+            {%- elif s.key == "destinations" %}
+          <span class="tp-fig"><span class="tp-figure">{{ s.display }}</span><span class="tp-figure-label">destinations</span></span>
+            {%- endif -%}
+          {%- endfor %}
+          <span class="tp-fig"><span class="tp-figure">{{ appModes | length }}</span><span class="tp-figure-label">unique workflows</span></span>
+        </div>
+
+        <div class="tp-chips">
+          <span class="tp-chip tp-chip-budget">$3,400</span>
+          <span class="tp-chip">A week in March</span>
+          <span class="tp-chip">Food &amp; live music</span>
+          <span class="tp-chip">Beach &amp; boardwalk</span>
+          <span class="tp-chip">Coastal &amp; sea fishing</span>
+          <span class="tp-chip">Escape to an island</span>
+          <span class="tp-chip">Family Friendly</span>
+        </div>
+        <div class="tp-chips">
+          <span class="tp-chip-arrow" aria-hidden="true">{% icon "double-alt-arrow-right" %}</span>
+          <span class="tp-chip tp-chip-result">Cabo San Lucas, MX | 92</span>
+          <span class="tp-chip tp-chip-result">Newquay, UK | 87</span>
+          <span class="tp-chip tp-chip-result">Valparaiso, FL | 93</span>
+        </div>
+      </div>
+
+        <img class="tp-engine-phone reveal reveal-delay-1" src="/media/oniPhone_2.png"
+             alt="The WhereTo app showing a scored destination result" loading="lazy" decoding="async" />
+        </div>
+      </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+{# ── 3. Four ways your audience finds a trip ─────────────────────── #}
+<section class="tp-modes" id="four-ways">
+  <div class="wrap-wide">
+    <div class="tp-modes-head">
+      <span class="tp-eyebrow">Four ways your audience finds a trip</span>
+      <span class="tp-note">Flights + hotels bookable at launch. Cars, insurance and excursions planned.</span>
+    </div>
+    <div class="tp-modes-grid reveal">
+      {% for key in modeOrder %}{% for m in appModes %}{% if m.key == key %}
+      <a class="tp-mode" href="{{ m.href }}">
+        <img class="tp-mode-img" src="{{ m.images[0] | thumb(520) }}"
+             srcset="{{ m.images[0] | thumbSet([360, 520, 760]) }}"
+             sizes="(max-width: 560px) 92vw, (max-width: 1100px) 46vw, 23vw"
+             alt="{{ m.title }}" loading="lazy" decoding="async" />
+        <h3>{% if m.key == "together" %}Wander Together{% else %}{{ m.titleAccent }}{% endif %}</h3>
+        <p>{{ m.short }}.</p>
+      </a>
+      {% endif %}{% endfor %}{% endfor %}
+    </div>
+  </div>
+</section>
+
+{# ── 4. What's in it for you ─────────────────────────────────────── #}
+<section class="tp-value" id="what-you-earn">
+  <div class="wrap-wide">
+    <div class="tp-value-grid">
+
+      <div class="reveal">
+        <span class="tp-eyebrow">What's in it for you?</span>
+        <h2>New ongoing revenue from<span class="italic">the audience you already have.</span></h2>
+
+        <div class="tp-benefits">
+          <div class="tp-benefit">
+            <span class="tp-bnum">1</span>
+            <h3>30% of what we earn</h3>
+            <p>A supplier pays us a commission on the trip. 30% of that commission is yours, on every
+              completed booking. No rates to negotiate and no invoices to send.</p>
+          </div>
+          <div class="tp-benefit">
+            <span class="tp-bnum">2</span>
+            <h3>Three years, per traveler</h3>
+            <p>The clock starts the day they download the app and register, not the day they book.
+              All bookings they make for 3 years you share in the revenue.</p>
+          </div>
+          <div class="tp-benefit">
+            <span class="tp-bnum">3</span>
+            <h3>Your voice, your content</h3>
+            <p>People follow you for the way you travel and the way you tell it. Keep doing exactly
+              that, and talk about WhereTo in your own words. We never write your script or edit
+              your opinion.</p>
+          </div>
+          <div class="tp-benefit">
+            <span class="tp-bnum">4</span>
+            <h3>A live partner dashboard</h3>
+            <p>Sign in at WhereToTrips.com to see downloads, registrations, bookings and estimated
+              revenue share.</p>
+          </div>
+          <div class="tp-benefit">
+            <span class="tp-bnum">5</span>
+            <h3>Results for all posted content</h3>
+            <p>WhereTo will track the performance of each post, blog, newsletter and campaign with a
+              unique link and promo code, giving you a clear view of what's driving results and
+              what's not.</p>
+          </div>
+          <div class="tp-benefit">
+            <span class="tp-bnum">6</span>
+            <h3>Paid monthly by ACH</h3>
+            <p>Paid once travel is completed, with a $50 minimum that rolls forward. W-9 and ACH
+              authorization are collected at onboarding.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="tp-rail reveal reveal-delay-1">
+        <div class="tp-panel tp-panel-tint">
+          <span class="tp-eyebrow">Where the money sits</span>
+          <h3>The stay is where the revenue is.</h3>
+          <div class="tp-split">
+            <div>
+              <span class="tp-num">15 - 30</span><span class="tp-unit">%</span>
+              <p>revenue on hotels</p>
+            </div>
+            <div>
+              <span class="tp-num">0 - 1</span><span class="tp-unit">%</span>
+              <p>revenue on flights</p>
+            </div>
+          </div>
+          <div class="tp-soon">
+            <ul>
+              <li>Rental Cars</li>
+              <li>Excursions</li>
+              <li>Travel Insurance</li>
+            </ul>
+            <span class="tp-brace" aria-hidden="true">}</span>
+            <span class="tp-soon-label">coming<br />soon</span>
+          </div>
+          <p>A booking heavy on accommodation pays you considerably more than one that is mostly
+            airfare. <strong>New components are pure upside:</strong> your 30% covers what we earn,
+            not a fixed product list.</p>
+        </div>
+
+        <div class="tp-panel tp-panel-dark">
+          <span class="tp-eyebrow">What is in it for your followers?</span>
+          <h3>What if your next trip found you?</h3>
+          <p>Somewhere they would never have searched for, inside the budget they actually had. A week
+            they will still talk about years later, and they will remember who sent them there.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{# ── 5. How to get started ───────────────────────────────────────── #}
+<section class="tp-start" id="get-started">
+  <div class="wrap-wide">
+    <div class="tp-start-head">
+      <div>
+        <span class="tp-eyebrow tp-eyebrow-light">How to get started</span>
+        <h2>Up and running <span class="italic">in five steps.</span></h2>
+      </div>
+      <p>Our review checks two things: accuracy about the app, and correct use of our name and logo.
+        Everything else is yours, including your FTC disclosure.</p>
+    </div>
+
+    <div class="tp-steps">
+      <div class="tp-step">
+        <div class="tp-step-mark"><span class="tp-step-num">1</span></div>
+        <h3>Have a short call</h3>
+        <p>Reply and we will set one up. A short conversation about fit.</p>
+      </div>
+      <div class="tp-step">
+        <div class="tp-step-mark"><span class="tp-step-num">2</span></div>
+        <h3>Sign on</h3>
+        <p>Partner Agreement and Program Terms, plus W-9 and ACH, all in Zoho Sign.</p>
+      </div>
+      <div class="tp-step">
+        <div class="tp-step-mark"><span class="tp-step-num">3</span></div>
+        <h3>Get your dashboard</h3>
+        <p>Create your WhereTo Trips account and get access to the partner dashboard.</p>
+      </div>
+      <div class="tp-step">
+        <div class="tp-step-mark"><span class="tp-step-num">4</span></div>
+        <h3>Submit your first post</h3>
+        <p>Send it over for review. We turn reviews around in three business days.</p>
+      </div>
+      <div class="tp-step is-last">
+        <div class="tp-step-mark"><span class="tp-step-num">5</span></div>
+        <h3>Publish with your code</h3>
+        <p>Each post gets its own tracking link and promo code. Publish with both in place.</p>
+      </div>
+    </div>
+
+    <div class="tp-foot">
+      <div class="tp-foot-note">
+        <h4>No code, no credit</h4>
+        <p>Posted content published without its code cannot be credited afterward. There is no cookie
+          window and no retroactive attribution. Partners publish at least four approved posts a year,
+          prorated in year one.</p>
+      </div>
+      <div class="tp-foot-cta">
+        <span class="tp-eyebrow">Questions? Email me directly</span>
+        <a class="tp-mail" href="mailto:Chris@WhereToTrips.com?subject=Texas%20Partner%20Pilot">Chris@WhereToTrips.com</a>
+        <a class="tp-domain2" href="/">wheretotrips.com</a>
+      </div>
+      <div class="tp-foot-logo">
+        <img src="/assets/whereto-logo-white.svg" alt="WhereTo Trips" loading="lazy" />
+      </div>
+    </div>
+
+    <p class="tp-legal">VC Innovations Group LLC d/b/a WhereTo Trips. This page describes the WhereTo
+      Trips Partner Program in general terms. The Partner Agreement and Program Terms and Conditions
+      govern the relationship and control in the event of any inconsistency. Earnings depend on
+      traveler bookings and are not guaranteed; nothing here is a projection of what any partner will
+      earn. Features described as planned are not currently available.</p>
+  </div>
+</section>
