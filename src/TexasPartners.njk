@@ -371,7 +371,10 @@ permalink: "/TexasPartners/"
     </div>
     <div class="tp-ways reveal reveal-delay-1">
       {% for key in modeOrder %}{% for m in appModes %}{% if m.key == key %}
-      <a class="tile" href="{{ m.href }}">
+      {#- New tab: this is an outreach page someone was sent, and a workflow
+          page is a detour off it rather than the next step. Losing their
+          place on the way back is how they stop reading it. -#}
+      <a class="tile" href="{{ m.href }}" target="_blank" rel="noopener">
         <img class="tile-img" src="{{ m.images[0] | thumb(520) }}"
              srcset="{{ m.images[0] | thumbSet([320, 520, 760]) }}"
              sizes="(max-width: 960px) 46vw, 23vw"
