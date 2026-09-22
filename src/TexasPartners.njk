@@ -246,7 +246,7 @@ permalink: "/TexasPartners/"
           trip they book, for three years after they sign up with your link.</p>
       </div>
       <div class="btns">
-        <a class="btn btn-primary" href="{{ mailto }}">Email Chris</a>
+        <a class="btn btn-primary" href="#apply">Apply to the pilot</a>
         <a class="btn btn-hero-ghost" href="#what-you-earn">See what you earn</a>
       </div>
     </div>
@@ -344,11 +344,11 @@ permalink: "/TexasPartners/"
     </div>
 
     <div class="stat-row reveal reveal-delay-2" style="margin-top: clamp(36px, 5vw, 56px);">
-      {%- for s in engineStats.stats -%}
-        {%- if s.key == "vibes" or s.key == "destinations" %}
+      {%- for st in engineStats.stats -%}
+        {%- if st.key == "vibes" or st.key == "destinations" %}
       <div class="stat">
-        <span class="stat-num">{{ s.display }}</span>
-        <span class="stat-label">{{ s.label }}</span>
+        <span class="stat-num">{{ st.display }}</span>
+        <span class="stat-label">{{ st.label }}</span>
       </div>
         {%- endif -%}
       {%- endfor %}
@@ -518,10 +518,36 @@ permalink: "/TexasPartners/"
   </div>
 </section>
 
+{# ═══ Apply ═════════════════════════════════════════════════════════
+   The same form /partners/creators/ uses, by including the same partial
+   rather than copying its markup, so a change to contact_form.njk reaches
+   both pages at once. Its `intent` is deliberately the creators page's
+   value too, so submissions land wherever those already land; only the
+   email subject names the pilot, so Chris can tell them apart in an inbox.
+   The sticky reply bar hides from here down (data-tp-cta), because from
+   here on the thing it links to is already on screen.
+   `background` is off only because the steps section above it is tinted;
+   two tinted blocks in a row run together as one. #}
+{%- set s = {
+  "eyebrow": "Become a creator partner",
+  "title": { "pre": "Let's make something", "accent": "together", "post": "." },
+  "id": "apply",
+  "background": false,
+  "body": "Tell us about your audience and what you cover. We'll be in touch about partnering.",
+  "subject": "Texas Partner Pilot application — WhereTo",
+  "intent": "creator_partner",
+  "buttonLabel": "Apply to become a partner",
+  "company": true,
+  "placeholder": "Your channels, audience size, and what you cover…"
+} -%}
+<div data-tp-cta>
+  {% include "sections/contact_form.njk" %}
+</div>
+
 {# ═══ Closing CTA ═══════════════════════════════════════════════════ #}
-<section class="block" id="apply">
+<section class="block" id="or-email">
   <div class="wrap">
-    <div class="download-band reveal" data-tp-cta>
+    <div class="download-band reveal">
       <span class="eyebrow">Questions? Email me directly</span>
       <h2>Let's talk about <span class="italic">your audience.</span></h2>
       <p>Tell me what you cover and where your people are, and I will come back with the specifics
@@ -546,7 +572,7 @@ permalink: "/TexasPartners/"
 
 {# Sticky reply bar — phones only, and never over the CTA it duplicates. #}
 <div class="tp-bar" id="tp-bar">
-  <a class="btn btn-primary" href="{{ mailto }}">Email Chris about the pilot</a>
+  <a class="btn btn-primary" href="#apply">Apply to the pilot</a>
 </div>
 <script>
   (function () {
