@@ -26,9 +26,33 @@ eleventyExcludeFromCollections: true
 
     <div id="wt-alert" class="alert" role="status" aria-live="polite"></div>
 
+    {# The invited email already has a WhereTo account (they use the app).
+       They sign in to THAT account and it gains partner access; a second
+       account is never made. A sign-in link works whether they signed up
+       with a password or with Google. #}
+    <div id="aff-existing" style="display:none;">
+      <div class="alert show alert-info">
+        You already have a WhereTo account with <strong id="aff-existing-email"></strong>.
+        Sign in and we'll add partner access to that account, so your trips and settings stay where they are.
+      </div>
+      <button type="button" id="aff-send-link" class="btn btn-primary">Email me a sign-in link</button>
+      <p class="acct-sub" id="aff-pw-login-row" style="display:none; margin-top:14px;">
+        Or <a id="aff-pw-login" href="/account/login/">log in with your password</a>.
+      </p>
+    </div>
+
     <form id="aff-form" novalidate>
       {# Account fields — hidden if already logged in #}
       <div id="aff-account-fields">
+        <p class="acct-sub" id="aff-other-row">
+          Already use the WhereTo app with a different email?
+          <a href="#" id="aff-other-link">Use that account instead</a>.
+        </p>
+        <div class="field" id="aff-other" style="display:none;">
+          <label for="aff-other-email">Email you use in the WhereTo app</label>
+          <input id="aff-other-email" type="email" autocomplete="email" />
+          <button type="button" id="aff-other-send" class="btn btn-ghost" style="margin-top:10px;">Email me a sign-in link</button>
+        </div>
         <div class="field-row">
           <div class="field">
             <label for="aff-first">First name</label>
@@ -62,7 +86,8 @@ eleventyExcludeFromCollections: true
 
       {# Shown instead, when claiming with an existing logged-in account #}
       <div id="aff-logged-note" class="alert show alert-info" style="display:none;">
-        Claiming this invitation as <strong id="aff-logged-email"></strong>.
+        Adding partner access to your WhereTo account, <strong id="aff-logged-email"></strong>.
+        Not you? <a href="#" id="aff-logout">Log out</a>.
       </div>
 
       <h2 class="acct-section-title">Your affiliate link</h2>

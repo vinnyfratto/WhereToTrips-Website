@@ -82,6 +82,49 @@ function wirePasswordMatch() {
   pw2.addEventListener('input', paint);
 }
 
+// ── existing accounts ───────────────────────────────────────────────
+// A creator who already uses the app must end up with ONE account that is
+// also a partner. create-affiliate attaches the partner to whoever is signed
+// in, so all this page has to do is get them signed in to the account they
+// already have. A sign-in link does that for password and Google accounts
+// alike (the site has no Google button), and lands back here to finish.
+
+function inviteUrl(token) {
+  return '/AffiliateSignUp/?invite=' + encodeURIComponent(token);
+}
+
+async function sendSignInLink(email, token, btn) {
+  hideAlert();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { show('error', 'Please enter a valid email address.'); return; }
+  busy(btn, true, 'Sending…');
+  // Our own function sends it (from partners@), not Supabase Auth's mailer.
+  const r = await callFn('partner-signin-link', { token, email });
+  busy(btn, false);
+  if (!r.ok) {
+    const msg = {
+      no_account:   "We couldn't find a WhereTo account for " + email + '. Check the spelling, or create a new account below.',
+      rate_limited: 'A link was just sent. Please wait a minute before asking for another.',
+      invite_invalid: 'This invitation is no longer valid. Please contact us for a new one.',
+    }[r.error] || 'Something went wrong sending the link. Please try again.';
+    show('error', msg);
+    return;
+  }
+  show('success', 'Check ' + email + ' for a sign-in link. Open it on this device and you will come straight back here to finish.');
+}
+
+/** Swap the create-account form for "sign in to the account you have". */
+function showExisting(email, providers, token) {
+  $('aff-form').style.display = 'none';
+  $('aff-existing').style.display = 'block';
+  $('aff-existing-email').textContent = email;
+  if ((providers || []).includes('email')) {
+    $('aff-pw-login').href = '/account/login/?next=' + encodeURIComponent(inviteUrl(token));
+    $('aff-pw-login-row').style.display = 'block';
+  }
+  const btn = $('aff-send-link');
+  btn.onclick = () => sendSignInLink(email, token, btn);
+}
+
 // ── boot ────────────────────────────────────────────────────────────
 async function init() {
   const root = $('wt-affsignup');
@@ -129,7 +172,22 @@ async function init() {
     acctFields.style.display = 'none';
     loggedNote.style.display = 'block';
     $('aff-logged-email').textContent = sess.session.user.email || 'your account';
+    $('aff-logout').addEventListener('click', async (e) => {
+      e.preventDefault();
+      await supabase.auth.signOut();
+      window.location.reload();
+    });
+  } else if (v.account_exists && v.email) {
+    showExisting(v.email, v.account_providers, token);
+    return;
   } else {
+    $('aff-other-link').addEventListener('click', (e) => {
+      e.preventDefault();
+      $('aff-other').style.display = 'block';
+      $('aff-other-email').focus();
+    });
+    $('aff-other-send').addEventListener('click', () =>
+      sendSignInLink(($('aff-other-email').value || '').trim(), token, $('aff-other-send')));
     wirePasswordMatch();
     if (v.email) $('aff-email').value = v.email;
     if (v.intended_name) {
@@ -181,11 +239,20 @@ async function init() {
           data: { first_name: firstName, last_name: lastName, signup_source: 'web', terms_accepted: true },
         },
       });
+      // An email that already has an account never gets a second one. With
+      // email confirmation off Supabase says "already registered"; with it on
+      // it says nothing and returns a user with no identities instead.
+      const exists = (signErr && /already registered/i.test(signErr.message))
+        || (!signErr && signUpData.user && Array.isArray(signUpData.user.identities)
+            && signUpData.user.identities.length === 0);
+      if (exists) {
+        busy(btn, false);
+        showExisting(email, ['email'], token);
+        return;
+      }
       if (signErr) {
         busy(btn, false);
-        show('error', /already registered/i.test(signErr.message)
-          ? 'An account with this email already exists. Log in first, then open this invite link again to claim it.'
-          : signErr.message);
+        show('error', signErr.message);
         return;
       }
       if (!signUpData.session) {
