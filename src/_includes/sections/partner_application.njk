@@ -1,0 +1,71 @@
+{#- Creator partner application. Posts through wt-track-submit.js to
+    capture-submission (intent creator_partner), which writes it straight into
+    Zoho CRM Leads, matched against the prospects already there. The picklist
+    values below are the CRM's own and must match it exactly; the server drops
+    anything it does not recognise rather than guess. -#}
+<section class="block{% if s.background %} tint{% endif %}" id="{{ s.id or 'apply' }}">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      {% if s.eyebrow %}<span class="eyebrow">{{ s.eyebrow }}</span>{% endif %}
+      {% if s.title %}<h2>{{ s.title.pre }} <span class="italic">{{ s.title.accent }}</span>{{ s.title.post }}</h2>{% endif %}
+      {% if s.body %}<p class="lede">{{ s.body }}</p>{% endif %}
+    </div>
+    <form class="contact-form partner-form reveal reveal-delay-1" data-partner-form novalidate>
+      <input type="hidden" name="subject" value="{{ s.subject or 'Creator partner application — WhereTo' }}" />
+      <input type="hidden" name="intent" value="creator_partner" />
+      <input type="text" name="hp_field" style="position:absolute; left:-9999px;" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+      <div class="pf-row">
+        <input type="text" name="first_name" placeholder="First name" aria-label="First name" autocomplete="given-name" required />
+        <input type="text" name="last_name" placeholder="Last name" aria-label="Last name" autocomplete="family-name" required />
+      </div>
+      <input type="email" name="email" placeholder="you@email.com" aria-label="Email address" autocomplete="email" required />
+      <input type="text" name="company" placeholder="Creator or business name" aria-label="Creator or business name" autocomplete="organization" required />
+      <input type="tel" name="phone" placeholder="Phone (optional)" aria-label="Phone" autocomplete="tel" />
+
+      <p class="pf-label">Where your audience is</p>
+      <div class="pf-row">
+        <input type="text" name="handle" placeholder="Main handle, e.g. @yourname" aria-label="Main handle" />
+        <select name="platform" aria-label="Main platform">
+          <option value="">Main platform</option>
+          {%- for p in ["Instagram", "TikTok", "YouTube", "Facebook", "Blog / Website", "X", "Pinterest", "Threads"] %}
+          <option value="{{ p }}">{{ p }}</option>
+          {%- endfor %}
+        </select>
+      </div>
+      <input type="url" name="profile_url" placeholder="Profile link" aria-label="Profile link" />
+      <div class="pf-row">
+        <input type="text" name="followers" inputmode="numeric" placeholder="Followers, e.g. 12,400" aria-label="Followers on your main platform" />
+        <input type="url" name="website" placeholder="Website (optional)" aria-label="Website" />
+      </div>
+      <input type="text" name="other_platforms" placeholder="Other platforms you post on (optional)" aria-label="Other platforms" />
+
+      <p class="pf-label">Where you're based</p>
+      <div class="pf-row">
+        <input type="text" name="city" placeholder="City" aria-label="City" autocomplete="address-level2" />
+        <input type="text" name="state" placeholder="State" aria-label="State" autocomplete="address-level1" />
+      </div>
+      <select name="metro" aria-label="Your metro area">
+        <option value="">Metro area</option>
+        {%- for m in ["Houston", "Dallas", "Austin", "San Antonio", "Texas (statewide)", "Other"] %}
+        <option value="{{ m }}">{{ m }}</option>
+        {%- endfor %}
+      </select>
+      <fieldset class="form-radio-group">
+        <legend>Airports you fly from</legend>
+        {%- for a in ["IAH", "HOU", "DFW", "DAL", "AUS", "SAT"] %}
+        <label class="form-radio"><input type="checkbox" name="airports" value="{{ a }}" /> {{ a }}</label>
+        {%- endfor %}
+      </fieldset>
+
+      <textarea name="audience" rows="5" placeholder="Tell us about your audience and what you cover" aria-label="About your audience"></textarea>
+
+      <label class="form-check">
+        <input type="checkbox" name="terms" value="on" required />
+        <span>I agree to the WhereTo Partner Program terms. If you're accepted, the full Partner Agreement comes to you by email to sign.</span>
+      </label>
+
+      <button type="submit" class="btn btn-primary">{{ s.buttonLabel or 'Apply to become a partner' }}</button>
+    </form>
+  </div>
+</section>

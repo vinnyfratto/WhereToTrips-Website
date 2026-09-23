@@ -20,7 +20,7 @@ sections:
       alt: A travel creator at work
       transparent: false
     badge: null
-  - type: contact_form
+  - type: partner_application
     eyebrow: Become a creator partner
     title:
       pre: Let's make something
@@ -30,10 +30,7 @@ sections:
     background: true
     body: Tell us about your audience and what you cover. We'll be in touch about partnering.
     subject: Creator partner application — WhereTo
-    intent: creator_partner
     buttonLabel: Apply to become a partner
-    company: true
-    placeholder: Your channels, audience size, and what you cover…
   - type: feature_split
     eyebrow: Why partner with WhereTo
     title:

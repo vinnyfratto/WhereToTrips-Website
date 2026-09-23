@@ -520,10 +520,10 @@ permalink: "/TexasPartners/"
 
 {# ═══ Apply ═════════════════════════════════════════════════════════
    The same form /partners/creators/ uses, by including the same partial
-   rather than copying its markup, so a change to contact_form.njk reaches
-   both pages at once. Its `intent` is deliberately the creators page's
-   value too, so submissions land wherever those already land; only the
-   email subject names the pilot, so Chris can tell them apart in an inbox.
+   rather than copying its markup, so a change to partner_application.njk
+   reaches both pages at once. Both write into Zoho CRM Leads through
+   capture-submission; only the email subject names the pilot, so Chris can
+   tell them apart in an inbox.
    The sticky reply bar hides from here down (data-tp-cta), because from
    here on the thing it links to is already on screen.
    `background` is off only because the steps section above it is tinted;
@@ -535,13 +535,10 @@ permalink: "/TexasPartners/"
   "background": false,
   "body": "Tell us about your audience and what you cover. We'll be in touch about partnering.",
   "subject": "Texas Partner Pilot application — WhereTo",
-  "intent": "creator_partner",
-  "buttonLabel": "Apply to become a partner",
-  "company": true,
-  "placeholder": "Your channels, audience size, and what you cover…"
+  "buttonLabel": "Apply to become a partner"
 } -%}
 <div data-tp-cta>
-  {% include "sections/contact_form.njk" %}
+  {% include "sections/partner_application.njk" %}
 </div>
 
 {# ═══ Closing CTA ═══════════════════════════════════════════════════ #}

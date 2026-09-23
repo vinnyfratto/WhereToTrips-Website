@@ -22,14 +22,33 @@ function utmParams() {
   return out;
 }
 
-function showSuccess(form) {
+function showSuccess(form, text) {
   const note = document.createElement('p');
   note.className = 'form-success';
-  note.textContent = "Thanks — we've got it.";
+  note.textContent = text || "Thanks — we've got it.";
   form.replaceWith(note);
 }
 
-function showError(form, submitBtn, originalLabel) {
+// The partner application's fields, as capture-submission's `partner` object.
+// The server validates and normalises all of it; this only collects.
+const PARTNER_FIELDS = ['first_name', 'last_name', 'company', 'phone', 'handle', 'platform', 'profile_url',
+  'followers', 'website', 'other_platforms', 'city', 'state', 'metro', 'audience'];
+const PARTNER_REQUIRED = { first_name: 'first name', last_name: 'last name', email: 'email', company: 'creator or business name', terms: 'the program terms' };
+
+function partnerPayload(fd) {
+  const partner = {};
+  PARTNER_FIELDS.forEach((k) => { partner[k] = (fd.get(k) || '').toString().trim(); });
+  partner.airports = fd.getAll('airports');
+  partner.terms = fd.get('terms') === 'on';
+  return partner;
+}
+
+function missingPartnerFields(fd) {
+  return Object.keys(PARTNER_REQUIRED).filter((k) =>
+    k === 'terms' ? fd.get('terms') !== 'on' : !(fd.get(k) || '').toString().trim());
+}
+
+function showError(form, submitBtn, originalLabel, text) {
   if (submitBtn) {
     submitBtn.disabled = false;
     submitBtn.textContent = originalLabel;
@@ -40,7 +59,7 @@ function showError(form, submitBtn, originalLabel) {
     err.className = 'form-error';
     form.appendChild(err);
   }
-  err.textContent = 'Something went wrong — please try again in a moment.';
+  err.textContent = text || 'Something went wrong — please try again in a moment.';
 }
 
 async function handleSubmit(e) {
@@ -50,6 +69,15 @@ async function handleSubmit(e) {
   const fd = new FormData(form);
   const intent = (fd.get('intent') || '').toString();
   if (!intent) return;
+
+  const isPartner = form.hasAttribute('data-partner-form');
+  if (isPartner) {
+    const missing = missingPartnerFields(fd);
+    if (missing.length) {
+      showError(form, null, '', 'Please add ' + missing.map((k) => PARTNER_REQUIRED[k]).join(', ') + '.');
+      return;
+    }
+  }
 
   const payload = {
     intent,
@@ -62,6 +90,7 @@ async function handleSubmit(e) {
     source_path: window.location.pathname,
     referrer: document.referrer || null,
     ...utmParams(),
+    ...(isPartner ? { partner: partnerPayload(fd) } : {}),
   };
 
   const submitBtn = form.querySelector('button[type="submit"]');
@@ -83,12 +112,17 @@ async function handleSubmit(e) {
       body: JSON.stringify(payload),
     });
     const data = await res.json().catch(() => ({}));
+    if (data.error === 'missing_fields' && Array.isArray(data.fields)) {
+      showError(form, submitBtn, originalLabel,
+        'Please add ' + data.fields.map((k) => PARTNER_REQUIRED[k] || k).join(', ') + '.');
+      return;
+    }
     if (!res.ok || !data.ok) throw new Error('capture-submission failed');
 
     if (window.posthog) {
       window.posthog.capture('form_submitted', { intent, source_path: payload.source_path });
     }
-    showSuccess(form);
+    showSuccess(form, isPartner ? "Thanks, your application is in. We've emailed you a receipt." : null);
   } catch {
     showError(form, submitBtn, originalLabel);
   }

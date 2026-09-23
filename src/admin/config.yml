@@ -461,6 +461,24 @@ collections:
                   - { name: placeholder, widget: string, required: false }
                   - { name: buttonLabel, widget: string, required: false }
 
+              - name: partner_application
+                label: "Partner application form (writes to Zoho CRM)"
+                fields:
+                  - { name: id, widget: string, required: false }
+                  - { label: "Tinted background", name: background, widget: boolean, default: false, required: false }
+                  - { name: eyebrow, widget: string, required: false }
+                  - label: Title
+                    name: title
+                    widget: object
+                    required: false
+                    fields:
+                      - { name: pre, widget: string }
+                      - { name: accent, widget: string }
+                      - { name: post, widget: string, required: false }
+                  - { name: body, widget: text, required: false }
+                  - { name: subject, widget: string, required: false }
+                  - { name: buttonLabel, widget: string, required: false }
+
               - name: beta_signup_form
                 label: "Beta signup form"
                 fields:
