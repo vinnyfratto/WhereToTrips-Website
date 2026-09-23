@@ -550,7 +550,7 @@ collections:
       - { name: destinations_hub, label: "Destinations (hub)", file: src/destinations.md, fields: *page_fields }
       - { name: insights_hub, label: "Insights (hub)", file: src/insights.md, fields: *page_fields }
       - { name: faq, label: "FAQ", file: src/faq.md, fields: *page_fields }
-      - { name: creators, label: "For Creators", file: src/partners/creators.md, fields: *page_fields }
+      - { name: creators, label: "For Creators", file: src/partners/index.md, fields: *page_fields }
       - { name: creator_directory, label: "Creator Directory", file: src/partners/creators/directory.md, fields: *page_fields }
       - { name: industry, label: "For Industry Partners", file: src/partners/industry.md, fields: *page_fields }
       - { name: about, label: "About", file: src/about.md, fields: *page_fields }

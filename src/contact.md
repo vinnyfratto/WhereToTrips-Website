@@ -30,7 +30,7 @@ sections:
     columns: 3
     tiles:
       - { label: "Travelers", icon: "🧳", blurb: "Questions or support? Send us a note below.", href: "#message" }
-      - { label: "Creators", icon: "⭐", blurb: "Partnership opportunities for creators & influencers.", href: "/partners/creators/" }
+      - { label: "Creators", icon: "⭐", blurb: "Partnership opportunities for creators & influencers.", href: "/partners/" }
       - { label: "Travel Industry", icon: "🏢", blurb: "Strategic partnerships for travel brands.", href: "/partners/industry/" }
 
   - type: contact_form

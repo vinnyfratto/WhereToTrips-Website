@@ -66,12 +66,16 @@
           "href": "/wander/together/"
         }
       ]
+    },
+    {
+      "label": "Texas Launch Pilot",
+      "href": "/TexasPartners/"
     }
   ],
   "partnerNav": [
     {
       "label": "For Creators & Influencers",
-      "href": "/partners/creators/"
+      "href": "/partners/"
     }
   ],
   "social": [

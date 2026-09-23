@@ -12,10 +12,10 @@ sections:
     lede: "A running directory of our creator partners — who they are, what they cover, and where to find them. We're onboarding our first partners now."
     primaryBtn:
       label: "Apply to be featured"
-      href: "/partners/creators/#apply"
+      href: "/partners/#apply"
     ghostBtn:
       label: "Why partner"
-      href: "/partners/creators/"
+      href: "/partners/"
     image:
       src: "/media/together.jpg"
       alt: "Travel creators and their audiences"
@@ -28,5 +28,5 @@ sections:
       post: "."
     body: |
       <p style="text-align:center;">We're building the WhereTo creator program from the ground up. Early partners get the best placement in this directory, first pick of co-branded destination collections, and a direct line to our team.</p>
-      <p style="text-align:center;"><a class="btn btn-primary" href="/partners/creators/#apply">Apply to become a creator partner</a></p>
+      <p style="text-align:center;"><a class="btn btn-primary" href="/partners/#apply">Apply to become a creator partner</a></p>
 ---
