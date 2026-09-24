@@ -1,0 +1,15 @@
+---
+pagination:
+  data: collections.partnerDoc
+  size: 1
+  alias: doc
+permalink: "/about/{{ doc.fileSlug }}/embed/"
+layout: layouts/legal-embed.njk
+tags: []
+eleventyExcludeFromCollections: true
+eleventyComputed:
+  title: "{{ doc.data.title }}"
+  updated: "{{ doc.data.updated }}"
+  publishedAt: "wheretotrips.com{{ doc.url }}"
+---
+{{ doc.templateContent | safe }}

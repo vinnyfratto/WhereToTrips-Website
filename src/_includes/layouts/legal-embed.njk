@@ -45,6 +45,7 @@
     a { color: var(--accent); text-decoration: none; }
     ul, ol { margin: 0 0 14px; padding-left: 20px; }
     li { margin-bottom: 8px; }
+    img { max-width: 100%; }
     hr { border: 0; border-top: 1px solid var(--border); margin: 28px 0; }
 
     /* The two data tables are wide by nature. They scroll inside their own
@@ -71,7 +72,7 @@
 </head>
 <body>
   {{ content | safe }}
-  <p class="doc-foot">Last updated {{ updated }}. Also published at wheretotrips.com/legal/.</p>
+  <p class="doc-foot">Last updated {{ updated }}. Also published at {{ publishedAt or 'wheretotrips.com/legal/' }}.</p>
 
   <script>
     // Wrap each table so the horizontal scroll lives on a container rather
