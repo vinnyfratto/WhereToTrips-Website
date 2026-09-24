@@ -156,7 +156,11 @@ export function travelersRead(p) {
       '<button type="button" class="tv-link" data-edit="travellers">Edit</button></li>';
   }
 
-  // Invited: name and photo only, by design.
+  // Invited: name and photo only, by design. Under their own heading, as in
+  // the app: yours to edit above, theirs below.
+  if (pp.friends.length) {
+    html += '</ul><h3 class="ph-group-label tv-group-label">Invited Travelers</h3><ul class="pv-list pv-list--people tv-list">';
+  }
   for (const f of pp.friends) {
     const n = fullName(f.firstName, f.lastName);
     html += '<li>' + avatar(f.photo, f.firstName, f.lastName) +
