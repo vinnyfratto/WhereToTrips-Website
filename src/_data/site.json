@@ -54,13 +54,7 @@
         {
           "label": "Explore",
           "href": "/whereto/explore/"
-        }
-      ]
-    },
-    {
-      "label": "Wander",
-      "href": "/wander/",
-      "children": [
+        },
         {
           "label": "Wander Together",
           "href": "/wander/together/"
