@@ -16,7 +16,7 @@
         </div>
       </div>
       {%- else %}
-      <a href="{{ link.href }}">{{ link.label }}</a>
+      <a href="{{ link.href }}"{% if link.newTab %} target="_blank" rel="noopener"{% endif %}>{{ link.label }}</a>
       {%- endif %}
       {%- endfor %}
       <div class="nav-dropdown nav-dropdown-end">
@@ -48,7 +48,7 @@
     <a class="mobile-sub" href="{{ child.href }}">{{ child.label }}</a>
     {%- endfor %}
     {%- else %}
-    <a href="{{ link.href }}">{{ link.label }}</a>
+    <a href="{{ link.href }}"{% if link.newTab %} target="_blank" rel="noopener"{% endif %}>{{ link.label }}</a>
     {%- endif %}
     {%- endfor %}
     <span class="mobile-menu-label">Partner With Us</span>

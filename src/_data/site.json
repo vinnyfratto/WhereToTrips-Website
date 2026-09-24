@@ -64,6 +64,11 @@
     {
       "label": "Texas Launch Pilot",
       "href": "/TexasPartners/"
+    },
+    {
+      "label": "Help Desk",
+      "href": "https://support.wheretotrips.com",
+      "newTab": true
     }
   ],
   "partnerNav": [

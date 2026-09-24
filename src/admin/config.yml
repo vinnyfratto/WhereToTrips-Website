@@ -719,6 +719,7 @@ collections:
             fields:
               - { name: label, widget: string }
               - { name: href, widget: string }
+              - { label: "Open in new tab", name: newTab, widget: boolean, required: false }
               - label: "Dropdown items (optional)"
                 name: children
                 widget: list
