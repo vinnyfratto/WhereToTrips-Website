@@ -1154,3 +1154,4 @@ input.is-masked { -webkit-text-security: disc; text-security: disc; }
 .ph-row--danger .ph-row-title { color: var(--rust); }
 
 .tv-group-label { margin: 26px 0 0; }
+.tv-group-label { color: var(--amber); }
