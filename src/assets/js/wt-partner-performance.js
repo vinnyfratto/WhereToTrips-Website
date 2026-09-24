@@ -93,7 +93,7 @@ function renderCharts(series, funnel, currency) {
   const amber = cssVar('--amber', '#E69800');
   const grid = 'rgba(28,54,73,0.08)';
   Chart.defaults.font.family = cssVar('--sans', 'system-ui, sans-serif');
-  Chart.defaults.color = '#5C616A';
+  Chart.defaults.color = '#464B53';
 
   // 1) Referred signups + first logins over time (line).
   new Chart($('chart-signups'), {
