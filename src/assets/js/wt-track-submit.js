@@ -31,14 +31,15 @@ function showSuccess(form, text) {
 
 // The partner application's fields, as capture-submission's `partner` object.
 // The server validates and normalises all of it; this only collects.
-const PARTNER_FIELDS = ['first_name', 'last_name', 'company', 'phone', 'handle', 'platform', 'profile_url',
-  'followers', 'website', 'other_platforms', 'city', 'state', 'metro', 'audience'];
+const PARTNER_FIELDS = ['first_name', 'last_name', 'company', 'phone', 'profile_url',
+  'followers', 'website', 'city', 'state', 'metro', 'audience'];
 const PARTNER_REQUIRED = { first_name: 'first name', last_name: 'last name', email: 'email', company: 'creator or business name', terms: 'the program terms' };
 
 function partnerPayload(fd) {
   const partner = {};
   PARTNER_FIELDS.forEach((k) => { partner[k] = (fd.get(k) || '').toString().trim(); });
   partner.airports = fd.getAll('airports');
+  partner.platforms = fd.getAll('platforms');
   partner.terms = fd.get('terms') === 'on';
   return partner;
 }

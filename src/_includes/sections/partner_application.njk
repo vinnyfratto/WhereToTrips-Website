@@ -23,27 +23,27 @@
       <input type="text" name="company" placeholder="Creator or business name" aria-label="Creator or business name" autocomplete="organization" required />
       <input type="tel" name="phone" placeholder="Phone (optional)" aria-label="Phone" autocomplete="tel" />
 
-      <p class="pf-label">Where your audience is</p>
-      <div class="pf-row">
-        <input type="text" name="handle" placeholder="Main handle, e.g. @yourname" aria-label="Main handle" />
-        <select name="platform" aria-label="Main platform">
-          <option value="">Main platform</option>
-          {%- for p in ["Instagram", "TikTok", "YouTube", "Facebook", "Blog / Website", "X", "Pinterest", "Threads"] %}
-          <option value="{{ p }}">{{ p }}</option>
-          {%- endfor %}
-        </select>
-      </div>
-      <input type="url" name="profile_url" placeholder="Profile link" aria-label="Profile link" />
+      <fieldset class="form-radio-group">
+        <legend>Your Platform(s)</legend>
+        {%- for p in ["Instagram", "TikTok", "YouTube", "Facebook", "Blog / Website", "X", "Pinterest", "Threads"] %}
+        <label class="form-radio"><input type="checkbox" name="platforms" value="{{ p }}" /> {{ p }}</label>
+        {%- endfor %}
+      </fieldset>
+      <input type="url" name="profile_url" placeholder="Profile link, e.g. instagram.com/yourname" aria-label="Profile link" />
       <div class="pf-row">
         <input type="text" name="followers" inputmode="numeric" placeholder="Followers, e.g. 12,400" aria-label="Followers on your main platform" />
-        <input type="url" name="website" placeholder="Website (optional)" aria-label="Website" />
+        <input type="url" name="website" placeholder="Your Website (Optional)" aria-label="Your website" />
       </div>
-      <input type="text" name="other_platforms" placeholder="Other platforms you post on (optional)" aria-label="Other platforms" />
 
       <p class="pf-label">Where you're based</p>
       <div class="pf-row">
         <input type="text" name="city" placeholder="City" aria-label="City" autocomplete="address-level2" />
-        <input type="text" name="state" placeholder="State" aria-label="State" autocomplete="address-level1" />
+        <select name="state" aria-label="State" autocomplete="address-level1">
+          <option value="">State</option>
+          {%- for st in ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"] %}
+          <option value="{{ st }}">{{ st }}</option>
+          {%- endfor %}
+        </select>
       </div>
       <select name="metro" aria-label="Your metro area">
         <option value="">Metro area</option>
