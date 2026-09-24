@@ -228,7 +228,10 @@ async function initProfile() {
 
   const { data: sess } = await supabase.auth.getSession();
   if (!sess.session) {
-    window.location.href = '/account/login/';
+    // Back to the same place after signing in, so an invite link opened
+    // signed out (?invite=TOKEN) is not lost on the way.
+    window.location.href = '/account/login/?next=' +
+      encodeURIComponent(window.location.pathname + window.location.search);
     return;
   }
   const user = sess.session.user;

@@ -1079,3 +1079,58 @@ button.vibe-chip:hover { border-color: var(--rust); }
   .bk-body-wrap, .bk-hero-info, .bk-list-head, .bk-count { max-width: 860px; }
   .bk-hero-info, .bk-body-wrap { margin-left: auto; margin-right: auto; }
 }
+
+/* ── Saved Travelers (wt-travelers.js) — mirrors the app's PeopleView ── */
+.ph-tile { position: relative; }
+.ph-tile.is-pending { border-color: var(--amber); }
+.ph-tile-badge {
+  position: absolute; top: 12px; right: 12px; min-width: 22px; height: 22px; padding: 0 6px;
+  border-radius: 999px; background: var(--amber); color: #fff;
+  font-family: var(--sans); font-weight: 700; font-size: 0.75rem; line-height: 22px; text-align: center;
+}
+.tv-list li { align-items: center; }
+.tv-body { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+.tv-meta { font-size: 0.86rem; color: var(--wg600); line-height: 1.4; }
+.tv-self .pv-avatar { box-shadow: 0 0 0 2px var(--azure); }
+.tv-you {
+  background: var(--azure); color: #fff; border-radius: 999px; padding: 3px 12px;
+  font-family: var(--sans); font-weight: 700; font-size: 0.7rem; letter-spacing: 0.8px;
+}
+.tv-link {
+  background: none; border: 0; padding: 4px 0; cursor: pointer; text-align: left;
+  font-family: var(--sans); font-weight: 600; font-size: 0.86rem; color: var(--azure);
+}
+.tv-link:hover { text-decoration: underline; }
+.tv-link--danger { color: var(--rust); }
+.tv-link--muted { color: var(--wg500); }
+.tv-note { font-size: 0.88rem; color: var(--wg600); line-height: 1.5; margin: 8px 0 0; }
+.tv-notice {
+  margin: 18px 0 0; padding: 12px 14px; border-radius: var(--radius-sm);
+  background: #fff7e8; border: 1px solid #f1d49a; color: #6b4a10; font-size: 0.9rem; line-height: 1.5;
+}
+.tv-incoming {
+  margin: 0 0 12px; padding: 14px; border-radius: var(--radius-md);
+  background: var(--card); border: 1.5px solid var(--amber);
+}
+.tv-row { display: flex; align-items: center; gap: 12px; }
+.tv-sent {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  margin: 0 0 10px; padding: 12px 14px; border-radius: var(--radius-sm); background: var(--wg100);
+}
+.tv-invite {
+  margin-top: 26px; padding: 18px; border-radius: var(--radius-md);
+  background: var(--card); border: 1px solid var(--wg200);
+}
+.tv-invite .pv-sub-head { margin-top: 0; }
+.tv-texts { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 4px; }
+.tv-texts .tv-note { flex-basis: 100%; }
+.tv-chosen { list-style: none; padding: 0; margin: 10px 0 0; }
+.tv-chosen li { padding: 6px 0; font-size: 0.92rem; color: var(--navy); border-bottom: 1px solid var(--wg200); }
+/* The app's sticky tray: Create New / Invite, always in reach on a phone. */
+.tv-tray {
+  position: sticky; bottom: 0; z-index: 2;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  margin-top: 26px; padding: 14px 0 calc(14px + env(safe-area-inset-bottom));
+  background: linear-gradient(to top, var(--cream) 70%, transparent);
+}
+.tv-tray .btn { width: 100%; justify-content: center; }

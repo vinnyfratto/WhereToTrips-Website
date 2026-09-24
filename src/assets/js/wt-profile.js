@@ -32,6 +32,7 @@ import {
   BUDGET_FLEX, HOTEL_LOYALTY, BASE_VIBES, BASE_VIBE_CAP,
 } from './wt-profile-data.js';
 import { AIRLINE_NAMES, airlineLogo, airlineLogoFallback } from './wt-airlines.js';
+import { emptyPeople, loadPeople, travelersRead, handleTravelersClick, acceptFromUrl } from './wt-travelers.js';
 
 // ── Small helpers ───────────────────────────────────────────────────
 
@@ -583,35 +584,19 @@ const SECTIONS = {
     collect: (v, scope) => Object.assign({}, ...PROFILE_PARTS.map((k) => SECTIONS[k].collect(v, scope))),
   },
 
+  // Friends merged into Saved Travelers, the same as the app. The read view
+  // (wt-travelers.js) is the whole list: you, the travelers you created and
+  // the ones you invited, plus invites in flight. Edit covers the created ones,
+  // the only ones whose details live in this account.
   travellers: {
     title: 'Saved Travelers',
-    blurb: 'The people you book for. You are already one of them — your own details come from this profile, ' +
-      'so there is nothing to add for yourself.',
-    read: (p) => {
-      const list = Array.isArray(p.saved_passengers) ? p.saved_passengers : [];
-      // Passport numbers are deliberately NOT here. This list exists to say who
-      // you can book for; a document number is only needed inside the form that
-      // edits it, and a screen anyone can glance at is the wrong place for one.
-      const rows = list.length
-        ? '<ul class="pv-list pv-list--people">' + list.map((t) => {
-            const name = [t.given_name, t.middle_name, t.family_name].filter(Boolean).join(' ');
-            return '<li>' +
-              (t.profile_photo
-                ? '<img class="pv-avatar" src="' + esc(t.profile_photo) + '" alt="" />'
-                : '<span class="pv-avatar pv-avatar--initials">' +
-                  esc(initials(t.given_name, t.family_name)) + '</span>') +
-              '<span class="pv-list-name">' + esc(name) + '</span>' +
-              (t.born_on ? '<span class="pv-list-meta">' + esc(fmtDate(t.born_on)) + '</span>' : '') +
-              '</li>';
-          }).join('') + '</ul>'
-        : emptyNote('No travelers saved yet.');
-      // Adding someone is the point of this screen, so the way to do it is here
-      // rather than one Edit away.
-      return rows + '<button type="button" class="pv-link-btn" data-add-trav-new>+ Add Traveler</button>';
-    },
+    blurb: 'Everyone you book for. Travelers you create keep their details here. ' +
+      'Travelers you invite keep theirs in their own account.',
+    read: (p) => travelersRead(p),
     edit: (p) => {
       const list = Array.isArray(p.saved_passengers) ? p.saved_passengers : [];
-      return '<div class="trav-list" data-trav-list>' + list.map((t) => travellerCard(t, false)).join('') + '</div>' +
+      return '<p class="tv-note">Edit the travelers you created. Invited travelers keep their details in their own account.</p>' +
+        '<div class="trav-list" data-trav-list>' + list.map((t) => travellerCard(t, false)).join('') + '</div>' +
         '<button type="button" class="pv-link-btn" data-add-trav>+ Add Traveler</button>';
     },
     collect: (v, scope) => ({ saved_passengers: readTravellers(scope.querySelector('[data-trav-list]')) }),
@@ -781,6 +766,7 @@ export async function initProfileForm(supabase, user, opts = {}) {
   const p = Object.assign({}, data || {});
   p.__email = user.email;
   p.__saved = (savedRes && savedRes.data) || [];
+  p.__people = emptyPeople();
 
   // null = the hub. On a phone the hub and a section are never both on screen;
   // on a wide screen the menu stays beside whatever is open.
@@ -859,9 +845,12 @@ export async function initProfileForm(supabase, user, opts = {}) {
     const accountRows = ACCOUNT_ROWS.filter((r) => gates[r.gate]);
     // The two tiles open sections like any row, so on a wide screen — where
     // the menu stays beside what is open — they carry the same active mark.
-    const tile = (key, icon, label) =>
-      '<button type="button" class="ph-tile' + (key === active ? ' is-active' : '') + '" ' +
+    // `pending` strokes the tile amber with a count, as the app's does for
+    // invites waiting on you.
+    const tile = (key, icon, label, pending) =>
+      '<button type="button" class="ph-tile' + (key === active ? ' is-active' : '') + (pending ? ' is-pending' : '') + '" ' +
       'data-open="' + key + '"' + (key === active ? ' aria-current="true"' : '') + '>' +
+        (pending ? '<span class="ph-tile-badge">' + pending + '</span>' : '') +
         '<span class="ph-tile-icon">' + ico(icon) + '</span>' +
         '<span class="ph-tile-label">' + label + '</span></button>';
     // A partner or admin comes here to get to their dashboard far more often
@@ -881,7 +870,8 @@ export async function initProfileForm(supabase, user, opts = {}) {
         : '') +
       '<div class="ph-tiles">' +
         tile('profile', 'user-circle', 'My<br />Profile') +
-        tile('travellers', 'users-group-rounded', 'Travelers<br />&amp; Friends') +
+        tile('travellers', 'users-group-rounded', 'Saved<br />Travelers',
+          (p.__people && p.__people.incoming.length) || 0) +
       '</div>' +
       wideTile('/account/bookings/', 'route', 'My Trips', false) +
       MENU.map((g) => menuGroup(g.label, g.rows)).join('') +
@@ -1006,8 +996,23 @@ export async function initProfileForm(supabase, user, opts = {}) {
     list.lastElementChild.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   }
 
+  // ── Saved Travelers: connections and invites load after the page paints ──
+  (async () => {
+    // An invite opened on a computer lands here as ?invite=TOKEN.
+    await acceptFromUrl(supabase, (type, msg) => showAlert(alertId, type, msg));
+    try { p.__people = await loadPeople(supabase, user); }
+    catch (err) { console.error('[profile] saved travelers load failed:', err); return; }
+    repaintSection('travellers');
+    if (hub) repaintMenu();
+  })();
+
   // ── Clicks: navigation, per-section edit, and the repeatable rows ──
   mount.addEventListener('click', (e) => {
+    if (handleTravelersClick(e, {
+      supabase, user, p,
+      repaint: () => { repaintSection('travellers'); if (hub) repaintMenu(); },
+      alert: (type, msg) => { if (msg) showAlert(alertId, type, msg); },
+    })) return;
     const open = e.target.closest('[data-open]');
     if (open) { go(open.dataset.open); return; }
     if (e.target.closest('[data-back]')) { go(null); return; }

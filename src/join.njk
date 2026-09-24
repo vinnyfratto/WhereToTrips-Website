@@ -60,6 +60,7 @@ noindex: true
         <a class="btn btn-primary" id="join-accept" href="#">Accept in WhereTo</a>
       </div>
       <p class="join-note">Don't have the app yet? Install it and create your free account, then tap your invite link again.</p>
+      <p class="join-note">On a computer? <a id="join-web" href="#">Accept on the website</a> instead.</p>
       <p class="join-stores">
         <a href="https://play.google.com/store/apps/details?id=com.vcinnovationsgroup.whereto">Get it on Google Play</a>
         <span style="color:var(--wg400);padding:0 8px;">|</span>
@@ -87,6 +88,7 @@ noindex: true
       document.getElementById('join-traveler').style.display = 'block';
       var inviteLink = 'whereto:///invite/' + token;
       document.getElementById('join-accept').href = inviteLink;
+      document.getElementById('join-web').href = '/account/profile/?section=travellers&invite=' + token;
       setTimeout(function () { window.location.href = inviteLink; }, 600);
       return;
     }
