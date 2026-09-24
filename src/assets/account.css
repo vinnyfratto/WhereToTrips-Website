@@ -1134,3 +1134,21 @@ button.vibe-chip:hover { border-color: var(--rust); }
   background: linear-gradient(to top, var(--cream) 70%, transparent);
 }
 .tv-tray .btn { width: 100%; justify-content: center; }
+
+/* ── ID numbers hidden until asked (wt-profile.js secretHtml / secretInput) ── */
+.pv-secret { display: inline-flex; align-items: center; gap: 8px; }
+.pv-secret-val { font-family: var(--mono, ui-monospace, monospace); letter-spacing: 1px; }
+.pv-secret-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; padding: 0; border: 0; border-radius: 50%;
+  background: transparent; color: var(--wg500); cursor: pointer;
+}
+.pv-secret-btn:hover { color: var(--azure); background: var(--wg100); }
+.secret-field { position: relative; display: block; }
+.secret-field input { padding-right: 44px; }
+.secret-field .pv-secret-btn { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); }
+input.is-masked { -webkit-text-security: disc; text-security: disc; }
+
+/* Account & Security rows */
+.ph-row.is-dim { opacity: 0.5; cursor: default; }
+.ph-row--danger .ph-row-title { color: var(--rust); }

@@ -17,6 +17,7 @@ import {
   destLookup, carousel, startCarousels, kvRow, infoRow, section, plural, getFlightAirline,
 } from './wt-booking-kit.js';
 import { airlineName, airlineCheckin } from './wt-airlines.js';
+import { addressLines, addressHtml, isUsCountry } from './wt-address.js';
 
 // Solar icons are rendered into a hidden sprite by the page template
 // (bookings.njk) using the same Eleventy shortcode the rest of the site uses,
@@ -49,14 +50,14 @@ function heroIdentity(overline, name, place, meta) {
     '</div>';
 }
 
-/** Two-letter state out of LiteAPI's own `zip` field, which for a US
- *  property is really "STATE ZIPCODE" combined ("NY 10019") — NOT off the
- *  street address, which is street-only and never carries it. No separate
- *  state dataset needed since the property record already has this. */
-function usStateFromZip(zip) {
-  if (!zip) return null;
-  const m = String(zip).trim().match(/^([A-Z]{2})\s+\d{5}(-\d{4})?$/);
-  return m ? m[1] : null;
+/** LiteAPI's own `zip` field, which for a US property is really "STATE
+ *  ZIPCODE" combined ("NY 10019"): the letters are the state, the digits the
+ *  ZIP. Anything else is a plain postcode. The street address is street-only
+ *  and never carries either, so this is the one place the state comes from. */
+function splitZip(zip) {
+  const z = String(zip || '').trim();
+  const m = z.match(/^([A-Za-z]{2})\s+(\d{5}(?:-\d{4})?)$/);
+  return m ? { region: m[1].toUpperCase(), postalCode: m[2] } : { region: null, postalCode: z || null };
 }
 
 /** What to show next to a destination name in a hero: the US state when the
@@ -69,7 +70,7 @@ function heroPlaceLabel(orderCountry, content) {
   const countryName = (content && content.country) ? countryDisplayName(content.country) : orderCountry;
   if (!countryName) return null;
   if (/^(united states|usa|us)$/i.test(countryName.trim())) {
-    const state = usStateFromZip(content && content.zip);
+    const state = splitZip(content && content.zip).region;
     if (state) return state;
   }
   return countryName;
@@ -157,26 +158,52 @@ function countryDisplayName(code) {
   }
 }
 
-/** The property's OWN address record — street, then city + state/zip (US)
- *  or postal code (international) + country — as a human would address an
- *  envelope. Deliberately never the order's stored city/country: those are
- *  stamped from the SEARCH that found the hotel (a metro group like "Pompeii
- *  & Herculaneum" standing in for the actual city — see the destination
- *  pairing notes in wt-booking-kit.js), not a mailing address. Null until
- *  the property's content record has loaded — the summary re-paints once it
- *  lands, same as the photos and facilities. */
-function hotelAddressParts(content) {
-  if (!content || !content.address) return null;
-  const cityZip = [content.city, content.zip].filter(Boolean).join(', ');
-  const cityLine = [cityZip, countryDisplayName(content.country)].filter(Boolean).join(', ') || null;
-  return { street: content.address, cityLine };
+/** A country as the last line shows it: a bare code ("it", from LiteAPI) as
+ *  its name, a name already written out ("Italy", on the order) as-is. */
+function countryLabel(c) {
+  return /^[A-Za-z]{2}$/.test(c) ? countryDisplayName(c) : c;
 }
 
-/** Flat single-line form of the same address, for a tap-to-open link or a
- *  map query — never lat/lng. */
-function fullHotelAddress(content) {
-  const parts = hotelAddressParts(content);
-  return parts ? [parts.street, parts.cityLine].filter(Boolean).join(', ') : null;
+/** The hotel's address as parts, for wt-address.js to lay out. Prefers the
+ *  property's OWN record: the order's city is stamped from the SEARCH that
+ *  found the hotel (a metro group like "Pompeii & Herculaneum" standing in for
+ *  the actual city, see the pairing notes in wt-booking-kit.js), so it is only
+ *  the stand-in until the content record loads, and the page re-paints once it
+ *  lands, same as the photos and facilities. Null with no street on either,
+ *  since a city on its own is not an address to send anyone to. */
+function hotelAddress(order, content) {
+  if (content && content.address) {
+    const zip = splitZip(content.zip);
+    const country = content.country || order.country || null;
+    return {
+      line1: content.address,
+      city: content.city || null,
+      region: zip.region || (isUsCountry(country) ? order.region : null) || null,
+      postalCode: zip.postalCode,
+      country,
+    };
+  }
+  // Rows written before hotel_address existed kept the street in `country`
+  // with `city` empty; that value is then the street, not a country.
+  const legacyStreet = !order.hotel_address && !order.city && order.country ? order.country : null;
+  const street = order.hotel_address || legacyStreet;
+  if (!street) return null;
+  return {
+    line1: street,
+    city: order.city || null,
+    region: order.region || null,
+    country: legacyStreet ? null : order.country || null,
+  };
+}
+
+/** The address on its lines (street, "City, ST, Zip", country outside the US). */
+function hotelAddressLines(order, content) {
+  return addressLines(hotelAddress(order, content), countryLabel);
+}
+
+/** The same address on one line, for a map query or embed, never lat/lng. */
+function hotelMapAddress(order, content) {
+  return hotelAddressLines(order, content).join(', ') || null;
 }
 
 /** A named-place query, never a bare coordinate pair — Google Maps' embed
@@ -210,13 +237,15 @@ function hotelSections(order, live, content, opts) {
 
   // Contact — right below the identity block, one big tappable line each,
   // with a map alongside naming the property (never its bare coordinates).
-  const fullAddress = fullHotelAddress(content);
+  // The address shows on its lines; the map search takes them on one.
+  const fullAddress = hotelMapAddress(order, content);
   const contact = [];
   if (fullAddress) {
     const mapsQuery = [order.hotel_name, fullAddress].filter(Boolean).join(', ');
     contact.push('<a class="bk-contact" href="https://www.google.com/maps/search/?api=1&query=' +
       encodeURIComponent(mapsQuery) + '" target="_blank" rel="noopener">' +
-      '<span class="bk-contact-icon">' + ico('map-point') + '</span>' + esc(fullAddress) + '</a>');
+      '<span class="bk-contact-icon">' + ico('map-point') + '</span>' +
+      '<span>' + addressHtml(hotelAddress(order, content), countryLabel) + '</span></a>');
   }
   if (propertyPhone) {
     contact.push('<a class="bk-contact" href="tel:' + esc(String(propertyPhone).replace(/\s+/g, '')) + '">' +
@@ -719,8 +748,8 @@ function tripSummary(hotel, flight, live, content) {
   const airportLine = [flight.origin, flight.destination].filter(Boolean).join(' → ');
 
   const ci = (live.hotel && live.hotel.checkinInstructions) || {};
-  const addressParts = hotelAddressParts(content) || {};
-  const hotelAddress = fullHotelAddress(content);
+  const addressLinesList = hotelAddressLines(hotel, content);
+  const mapAddress = hotelMapAddress(hotel, content);
   const hotelPhone = (ci.propertyContact && ci.propertyContact.phone) || (content && content.phone) || null;
 
   const hpb = hotelPriceBreakdown(hotel);
@@ -754,11 +783,11 @@ function tripSummary(hotel, flight, live, content) {
     '<div class="bk-summary-body-row">' +
     '<div class="bk-summary-legs">' +
       legRow('<span class="bk-info-icon">' + ico('buildings') + '</span>', hotel.hotel_name || 'Hotel',
-        [addressParts.street, addressParts.cityLine, hotelPhone]) +
+        addressLinesList.concat([hotelPhone])) +
       legRow(flightLegIcon(airline.code), carrierName + (flightNum ? '  ·  Flight ' + flightNum : ''), [airportLine]) +
     '</div>' +
-    (hotelAddress
-      ? '<div class="bk-summary-map"><iframe src="' + esc(hotelMapEmbedSrc(hotel.hotel_name, hotelAddress)) +
+    (mapAddress
+      ? '<div class="bk-summary-map"><iframe src="' + esc(hotelMapEmbedSrc(hotel.hotel_name, mapAddress)) +
         '" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen ' +
         'title="' + esc(hotel.hotel_name || 'Hotel location') + '"></iframe></div>'
       : '') +

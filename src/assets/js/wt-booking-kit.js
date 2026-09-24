@@ -23,7 +23,7 @@ const ORDER_COLS =
   'id, duffel_order_id, booking_reference, origin, destination, departing_at, arriving_at, ' +
   'total_amount, total_currency, status, passenger_count, duffel_payload, created_at';
 const HOTEL_COLS =
-  'id, liteapi_booking_id, booking_reference, hotel_id, hotel_name, hotel_photo, city, country, ' +
+  'id, liteapi_booking_id, booking_reference, hotel_id, hotel_name, hotel_photo, hotel_address, city, region, country, ' +
   'check_in, check_out, nights, guests, rooms, room_name, board_type, refundable, mapped_room_id, ' +
   'cancellation_deadline, status, payment_status, total_amount, total_currency, checkin_instructions, ' +
   'liteapi_payload, trip_id, created_at';

@@ -19,7 +19,7 @@
 //  Column parity with the app (src/store/authStore.ts updateProfile):
 //    first_name last_name middle_name profile_photo phone marketing_opt_in
 //    date_of_birth gender address travel_document emergency_contact
-//    known_traveller_number redress_number loyalty_programs base_vibes
+//    known_traveller_number redress_number loyalty_programs
 //    flight_prefs saved_passengers
 //  Text values are trimmed to null rather than '' so "cleared" and "never
 //  filled in" are the same state in the database — the same rule the app's
@@ -29,8 +29,9 @@
 import { maybeOptOutInternal } from './wt-internal-accounts.js';
 import {
   AIRLINES, COUNTRIES, COUNTRY_NAME, GENDERS, TITLES, DOC_TYPES,
-  BUDGET_FLEX, HOTEL_LOYALTY, BASE_VIBES, BASE_VIBE_CAP,
+  BUDGET_FLEX, HOTEL_LOYALTY, HOTEL_CHAINS, subdivisionsFor, subdivisionLabel,
 } from './wt-profile-data.js';
+import { addressHtml, stateCode } from './wt-address.js';
 import { AIRLINE_NAMES, airlineLogo, airlineLogoFallback } from './wt-airlines.js';
 import { emptyPeople, loadPeople, travelersRead, handleTravelersClick, acceptFromUrl } from './wt-travelers.js';
 
@@ -88,7 +89,7 @@ function readGrid(pairs) {
   return '<div class="pv-grid">' + pairs.map((p) =>
     '<div class="pv-item' + (p.wide ? ' pv-item--wide' : '') + '">' +
     '<p class="pv-label">' + esc(p.label) + '</p>' +
-    (p.html != null
+    (p.html
       ? '<div class="pv-value">' + p.html + '</div>'
       : '<p class="pv-value' + (p.value ? '' : ' is-empty') + '">' +
         esc(p.value || 'Not provided') + '</p>') +
@@ -97,24 +98,63 @@ function readGrid(pairs) {
 
 function emptyNote(text) { return '<p class="pv-empty">' + esc(text) + '</p>'; }
 
+// ── Hidden until asked ──────────────────────────────────────────────
+// Passport, ID, Known Traveller and Redress numbers show as **** with an eye
+// to reveal them, read or edit. A profile gets opened on shared screens and
+// in screenshots; an ID number has no business being legible by default.
+const EYE = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3.2"/></svg>';
+const EYE_OFF = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3l18 18"/><path d="M10.6 5.2A10.9 10.9 0 0 1 12 5c7 0 10.5 7 10.5 7a13.2 13.2 0 0 1-3.1 3.9M6.6 6.6C3.7 8.4 1.5 12 1.5 12s3.5 7 10.5 7a10.4 10.4 0 0 0 4.2-.9"/><path d="M9.5 9.9a3.2 3.2 0 0 0 4.6 4.5"/></svg>';
+const MASK = '****';
+
+/** A read-view value that starts hidden. `prefix` stays visible ("Passport · "). */
+function secretHtml(value, prefix) {
+  if (!value) return null;
+  return '<span class="pv-secret">' + (prefix ? esc(prefix) : '') +
+    '<span class="pv-secret-val" data-secret="' + esc(value) + '">' + MASK + '</span>' +
+    '<button type="button" class="pv-secret-btn" data-reveal aria-label="Show number">' + EYE + '</button></span>';
+}
+
+/** An edit field that starts masked, with the same eye. Masked by CSS rather
+ *  than type="password", so no browser offers to save an ID as a login. */
+function secretInput(inputHtml) {
+  return '<span class="secret-field">' + inputHtml +
+    '<button type="button" class="pv-secret-btn" data-reveal aria-label="Show number">' + EYE + '</button></span>';
+}
+
+/** Flips one hidden value, read view or edit field. */
+function toggleSecret(btn) {
+  const wrap = btn.closest('.pv-secret, .secret-field');
+  if (!wrap) return false;
+  const input = wrap.querySelector('input');
+  const val = wrap.querySelector('[data-secret]');
+  const showing = input ? !input.classList.contains('is-masked') : val.textContent !== MASK;
+  if (input) input.classList.toggle('is-masked', showing);
+  else val.textContent = showing ? MASK : val.dataset.secret;
+  btn.innerHTML = showing ? EYE : EYE_OFF;
+  btn.setAttribute('aria-label', showing ? 'Show number' : 'Hide number');
+  return true;
+}
+
 // ── Field builders ──────────────────────────────────────────────────
 
 function textField(name, label, o) {
   const opt = o || {};
-  return '<div class="field"><label for="f-' + name + '">' + esc(label) +
-    (opt.hint ? ' <span class="hint">' + esc(opt.hint) + '</span>' : '') + '</label>' +
-    '<input id="f-' + name + '" data-f="' + name + '" type="' + (opt.type || 'text') + '"' +
-    (opt.autocomplete ? ' autocomplete="' + opt.autocomplete + '"' : '') +
+  const input = '<input id="f-' + name + '" data-f="' + name + '" type="' + (opt.type || 'text') + '"' +
+    (opt.secret ? ' class="is-masked" autocomplete="off" spellcheck="false"'
+      : (opt.autocomplete ? ' autocomplete="' + opt.autocomplete + '"' : '')) +
     (opt.placeholder ? ' placeholder="' + esc(opt.placeholder) + '"' : '') +
     (opt.disabled ? ' disabled' : '') +
     (opt.maxlength ? ' maxlength="' + opt.maxlength + '"' : '') +
-    ' value="' + esc(opt.value || '') + '" /></div>';
+    ' value="' + esc(opt.value || '') + '" />';
+  return '<div class="field"' + (opt.id ? ' id="' + opt.id + '"' : '') + '><label for="f-' + name + '">' + esc(label) +
+    (opt.hint ? ' <span class="hint">' + esc(opt.hint) + '</span>' : '') + '</label>' +
+    (opt.secret ? secretInput(input) : input) + '</div>';
 }
 
 function selectField(name, label, options, o) {
   const opt = o || {};
   const blank = opt.blank === undefined ? 'No preference' : opt.blank;
-  return '<div class="field"><label for="f-' + name + '">' + esc(label) +
+  return '<div class="field"' + (opt.id ? ' id="' + opt.id + '"' : '') + '><label for="f-' + name + '">' + esc(label) +
     (opt.hint ? ' <span class="hint">' + esc(opt.hint) + '</span>' : '') + '</label>' +
     '<select id="f-' + name + '" data-f="' + name + '">' +
     (blank === false ? '' : '<option value="">' + esc(blank) + '</option>') +
@@ -124,6 +164,23 @@ function selectField(name, label, options, o) {
 }
 
 const countryOptions = COUNTRIES.map((c) => ({ value: c.code, label: c.name }));
+
+/** State / province: a list for the US and Canada (stored as the code), free
+ *  text elsewhere, labelled the way that country says it. Same as the app. */
+function regionField(country, value) {
+  const list = subdivisionsFor(country);
+  const label = subdivisionLabel(country);
+  return list
+    ? selectField('ad_region', label, list.map((x) => ({ value: x.code, label: x.name + ' (' + x.code + ')' })),
+        { value: stateCode(value, country), blank: 'Select a ' + label.toLowerCase(), id: 'ad-region-wrap' })
+    : textField('ad_region', label, { value, id: 'ad-region-wrap', autocomplete: 'address-level1' });
+}
+
+/** The flight_prefs the page loaded with, parked on the form so a save can
+ *  merge into it rather than replace it. */
+function p0FlightPrefs(scope) {
+  try { return JSON.parse(scope.dataset.fp || '{}'); } catch (_e) { return {}; }
+}
 function row(inner) { return '<div class="field-row">' + inner + '</div>'; }
 
 // ── Reading a scope back out of the DOM ─────────────────────────────
@@ -310,7 +367,9 @@ function resolveAirlineCode(typed) {
  *  drifting the first time either was edited. */
 function travellerCard(t, open) {
   const name = [t.given_name, t.family_name].filter(Boolean).join(' ') || 'New traveler';
-  const sub = [t.document_number ? 'Doc ' + t.document_number : '', fmtDate(t.born_on)].filter(Boolean).join(' · ');
+  // Never the document number here: the summary is always on screen.
+  const sub = [t.document_number ? labelOf(DOC_TYPES, t.document_type || 'passport') + ' on file' : '', fmtDate(t.born_on)]
+    .filter(Boolean).join(' · ');
   const opts = (list, sel) => list.map((o) =>
     '<option value="' + o.value + '"' + (sel === o.value ? ' selected' : '') + '>' + esc(o.label) + '</option>').join('');
   const countryOpts = (sel) => '<option value="">—</option>' + COUNTRIES.map((c) =>
@@ -330,13 +389,13 @@ function travellerCard(t, open) {
           '<div class="field"><label>Phone</label><input data-f="phone_number" type="tel" value="' + esc(t.phone_number || '') + '" /></div>') +
       row('<div class="field"><label>Nationality</label><select data-f="nationality">' + countryOpts(t.nationality) + '</select></div>' +
           '<div class="field"><label>Document</label><select data-f="document_type">' + opts(DOC_TYPES, t.document_type) + '</select></div>') +
-      row('<div class="field"><label>Document number</label><input data-f="document_number" type="text" value="' + esc(t.document_number || '') + '" /></div>' +
+      row('<div class="field"><label>Document number</label>' + secretInput('<input data-f="document_number" type="text" class="is-masked" autocomplete="off" spellcheck="false" value="' + esc(t.document_number || '') + '" />') + '</div>' +
           '<div class="field"><label>Expiration Date</label><input data-f="document_expiry" type="date" value="' + esc(t.document_expiry || '') + '" /></div>') +
       row('<div class="field"><label>Issuing country</label><select data-f="document_issuing_country">' + countryOpts(t.document_issuing_country) + '</select></div>' +
           '<div class="field"><label>Known Traveller number <span class="hint">(9 characters)</span></label>' +
-          '<input data-f="known_traveller_number" type="text" maxlength="9" value="' + esc(t.known_traveller_number || '') + '" /></div>') +
+          secretInput('<input data-f="known_traveller_number" type="text" maxlength="9" class="is-masked" autocomplete="off" value="' + esc(t.known_traveller_number || '') + '" />') + '</div>') +
       row('<div class="field"><label>Redress number <span class="hint">(optional)</span></label>' +
-          '<input data-f="redress_number" type="text" value="' + esc(t.redress_number || '') + '" /></div>' +
+          secretInput('<input data-f="redress_number" type="text" class="is-masked" autocomplete="off" value="' + esc(t.redress_number || '') + '" />') + '</div>' +
           '<div class="field"><label>Photo URL <span class="hint">(optional)</span></label>' +
           '<input data-f="profile_photo" type="url" value="' + esc(t.profile_photo || '') + '" /></div>') +
       '<h3 class="trav-sub-head">Loyalty programs</h3>' +
@@ -373,10 +432,12 @@ function initials(first, last) {
 
 const SECTIONS = {
 
+  // The app's My Profile, section for section and in its order: Basic
+  // Information, Contact Information, Emergency Contact, Travel Document,
+  // Airport Security. Labels and hints are the app's.
   basic: {
-    title: 'Basic information',
-    blurb: 'Make sure this matches your travel ID — your passport or licence.',
-    read: (p, user) => readGrid([
+    title: 'Basic Information',
+    read: (p) => readGrid([
       { label: 'Name', value: [p.first_name, p.middle_name, p.last_name].filter(Boolean).join(' ') },
       { label: 'Date of birth', value: fmtDate(p.date_of_birth) },
       { label: 'Gender', value: labelOf(GENDERS, p.gender) },
@@ -388,15 +449,18 @@ const SECTIONS = {
       },
     ]),
     edit: (p) =>
-      row(textField('first_name', 'First name', { value: p.first_name, autocomplete: 'given-name' }) +
-          textField('last_name', 'Last name', { value: p.last_name, autocomplete: 'family-name' })) +
-      row(textField('middle_name', 'Middle name', { value: p.middle_name, hint: '(if on your ID)' }) +
+      row(textField('first_name', 'First name', { value: p.first_name, autocomplete: 'given-name', placeholder: 'Given name' }) +
+          textField('middle_name', 'Middle name', { value: p.middle_name, placeholder: 'Optional',
+            hint: '(airlines want the name exactly as it appears on your passport)' })) +
+      row(textField('last_name', 'Last name', { value: p.last_name, autocomplete: 'family-name', placeholder: 'Family name' }) +
           textField('date_of_birth', 'Date of birth', { value: p.date_of_birth, type: 'date' })) +
-      row(selectField('gender', 'Gender', GENDERS, { value: p.gender, blank: '—' }) +
+      row(selectField('gender', 'Gender', GENDERS, { value: p.gender, blank: 'Select' }) +
           textField('profile_photo', 'Profile photo URL', { value: p.profile_photo, type: 'url', placeholder: 'https://…' })),
+    validate: (v) => (!String(v.first_name || '').trim() ? 'First name is required.'
+      : !String(v.last_name || '').trim() ? 'Last name is required.' : null),
     collect: (v) => ({
-      first_name: v.first_name,
-      last_name: v.last_name,
+      first_name: String(v.first_name || '').trim(),
+      last_name: String(v.last_name || '').trim(),
       middle_name: orNull(v.middle_name),
       date_of_birth: orNull(v.date_of_birth),
       gender: v.gender || null,
@@ -405,89 +469,119 @@ const SECTIONS = {
   },
 
   contact: {
-    title: 'Contact',
-    blurb: 'How we reach you about a trip, and who we call if something goes wrong.',
+    title: 'Contact Information',
     read: (p, user) => readGrid([
-      { label: 'Mobile number', value: p.phone },
+      { label: 'Phone', value: p.phone },
       { label: 'Email', value: user.email },
-      {
-        label: 'Emergency contact',
-        value: p.emergency_contact && p.emergency_contact.name
-          ? [p.emergency_contact.name +
-             (p.emergency_contact.relationship ? ' (' + p.emergency_contact.relationship + ')' : ''),
-             p.emergency_contact.phone].filter(Boolean).join(' · ')
-          : '',
-      },
-      {
-        label: 'Address',
-        value: p.address && (p.address.line1 || p.address.city)
-          ? [p.address.line1, p.address.line2, p.address.city, p.address.region,
-             p.address.postalCode, COUNTRY_NAME[p.address.country] || p.address.country]
-            .filter(Boolean).join(', ')
-          : '',
-      },
+      // Line 1 / Line 2 / City, ST, Zip / Country (outside the US): the one
+      // way an address is written anywhere (wt-address.js).
+      { label: 'Address', wide: true, html: addressHtml(p.address, (c) => COUNTRY_NAME[c]) || null },
     ]),
     edit: (p) => {
-      const ad = p.address || {}, ec = p.emergency_contact || {};
-      return row(textField('phone', 'Mobile number', { value: p.phone, type: 'tel', autocomplete: 'tel' }) +
-                 textField('email_ro', 'Email', { value: p.__email, type: 'email', hint: '(managed by your login)', disabled: true })) +
-        '<h3 class="pv-sub-head">Emergency contact</h3>' +
-        row(textField('ec_name', 'Name', { value: ec.name }) +
-            textField('ec_relationship', 'Relationship', { value: ec.relationship, hint: '(optional)' })) +
-        row(textField('ec_phone', 'Phone', { value: ec.phone, type: 'tel' }) +
-            textField('ec_email', 'Email', { value: ec.email, type: 'email', hint: '(optional)' })) +
-        '<h3 class="pv-sub-head">Home address</h3>' +
-        textField('ad_line1', 'Address', { value: ad.line1 }) +
-        textField('ad_line2', 'Address line 2', { value: ad.line2, hint: '(optional)' }) +
-        row(textField('ad_city', 'City', { value: ad.city }) +
-            textField('ad_region', 'State / province', { value: ad.region })) +
-        row(textField('ad_postalCode', 'Postal code', { value: ad.postalCode }) +
-            selectField('ad_country', 'Country', countryOptions, { value: ad.country, blank: '—' }));
+      const ad = p.address || {};
+      return row(textField('phone', 'Phone', { value: p.phone, type: 'tel', autocomplete: 'tel', placeholder: '(415) 555-2671' }) +
+                 textField('email_ro', 'Email', { value: p.__email, type: 'email', disabled: true,
+                   hint: '(the email you sign in with; change it in Account & Security)' })) +
+        '<h3 class="pv-sub-head">Address</h3>' +
+        textField('ad_line1', 'Address', { value: ad.line1, placeholder: 'Street address', autocomplete: 'address-line1' }) +
+        textField('ad_line2', 'Address line 2', { value: ad.line2, placeholder: 'Apartment, suite, unit', autocomplete: 'address-line2' }) +
+        row(textField('ad_city', 'City', { value: ad.city, autocomplete: 'address-level2' }) +
+            selectField('ad_country', 'Country', countryOptions, { value: ad.country || 'US', blank: false })) +
+        row(regionField(ad.country, ad.region) +
+            textField('ad_postalCode', 'Postal code', { value: ad.postalCode, autocomplete: 'postal-code' }));
     },
     collect: (v) => ({
       phone: orNull(v.phone),
-      emergency_contact: objOrNull({
-        name: v.ec_name, relationship: v.ec_relationship, phone: v.ec_phone, email: v.ec_email,
-      }),
-      address: objOrNull({
+      // A country on its own is not an address; the picker always has one.
+      address: (v.ad_line1 || v.ad_city || v.ad_postalCode) ? objOrNull({
         line1: v.ad_line1, line2: v.ad_line2, city: v.ad_city,
-        region: v.ad_region, postalCode: v.ad_postalCode, country: v.ad_country,
-      }),
+        region: stateCode(v.ad_region, v.ad_country) || '',
+        postalCode: String(v.ad_postalCode || '').trim().toUpperCase(),
+        country: v.ad_country,
+      }) : null,
+    }),
+  },
+
+  emergency: {
+    title: 'Emergency Contact',
+    blurb: 'Who we would reach if something went wrong on a trip',
+    read: (p) => {
+      const ec = p.emergency_contact || {};
+      return readGrid([
+        { label: 'Name', value: ec.name },
+        { label: 'Relationship', value: ec.relationship },
+        { label: 'Phone', value: ec.phone },
+        { label: 'Email', value: ec.email },
+      ]);
+    },
+    edit: (p) => {
+      const ec = p.emergency_contact || {};
+      return row(textField('ec_name', 'Name', { value: ec.name }) +
+                 textField('ec_relationship', 'Relationship', { value: ec.relationship, placeholder: 'Partner, parent, friend' })) +
+        row(textField('ec_phone', 'Phone', { value: ec.phone, type: 'tel' }) +
+            textField('ec_email', 'Email', { value: ec.email, type: 'email', placeholder: 'Optional' }));
+    },
+    collect: (v) => ({
+      // Nothing to call without a name or a number, same rule as the app.
+      emergency_contact: (String(v.ec_name || '').trim() || String(v.ec_phone || '').trim())
+        ? objOrNull({ name: v.ec_name, relationship: v.ec_relationship, phone: v.ec_phone, email: v.ec_email })
+        : null,
     }),
   },
 
   document: {
-    title: 'Travel documents',
-    blurb: 'Your own passport or ID, so booking for yourself fills in as fast as booking for anyone you have saved.',
+    title: 'Travel Document',
+    blurb: 'Auto-fills when you book a flight for yourself. Fill it in fully or leave it empty.',
     read: (p) => {
       const td = p.travel_document || {};
       return readGrid([
-        { label: 'Document', value: td.number ? labelOf(DOC_TYPES, td.type) + ' · ' + td.number : '' },
-        { label: 'Expiration Date', value: fmtDate(td.expiry) },
+        { label: 'Document type', value: td.number ? labelOf(DOC_TYPES, td.type) : '' },
+        { label: 'Document number', html: secretHtml(td.number) },
         { label: 'Issuing country', value: COUNTRY_NAME[td.issuingCountry] || td.issuingCountry },
-        { label: 'Known Traveller number', value: p.known_traveller_number },
-        { label: 'Redress number', value: p.redress_number },
+        { label: 'Expiration date', value: fmtDate(td.expiry) },
       ]);
     },
     edit: (p) => {
       const td = p.travel_document || {};
-      return row(selectField('td_type', 'Document', DOC_TYPES, { value: td.type, blank: '—' }) +
-                 textField('td_number', 'Document number', { value: td.number })) +
-        row(selectField('td_issuingCountry', 'Issuing country', countryOptions, { value: td.issuingCountry, blank: '—' }) +
-            textField('td_expiry', 'Expiration Date', { value: td.expiry, type: 'date' })) +
-        row(textField('known_traveller_number', 'Known Traveller number', {
-              value: p.known_traveller_number, hint: '(TSA PreCheck / Global Entry, 9 characters)', maxlength: 9 }) +
-            textField('redress_number', 'Redress number', { value: p.redress_number, hint: '(optional)' }));
+      return row(selectField('td_type', 'Document type', DOC_TYPES, { value: td.type || 'passport', blank: false }) +
+                 textField('td_number', 'Document number', { value: td.number, placeholder: 'e.g. A12345678', secret: true })) +
+        row(selectField('td_issuingCountry', 'Issuing country', countryOptions, { value: td.issuingCountry, blank: 'Select a country' }) +
+            textField('td_expiry', 'Expiration date', { value: td.expiry, type: 'date' }));
     },
-    validate: (v) => (v.known_traveller_number && !/^[A-Za-z0-9]{9}$/.test(v.known_traveller_number)
-      ? 'A Known Traveller number is exactly 9 letters and digits.' : null),
+    // All or nothing, with the app's own messages: half a document passes for
+    // filled in and then fails at the airline.
+    validate: (v) => {
+      const any = v.td_number || v.td_issuingCountry || v.td_expiry;
+      if (!any) return null;
+      if (!v.td_number) return 'Add the document number, or clear the whole document.';
+      if (!v.td_issuingCountry) return 'Issuing country is required.';
+      if (!v.td_expiry) return 'Expiration date is required.';
+      return null;
+    },
     collect: (v) => ({
-      // A document is only meaningful whole — a number with no expiry would
-      // fail at the airline anyway, so a partial one is stored as nothing.
-      travel_document: (v.td_number && v.td_type)
-        ? { type: v.td_type, number: v.td_number, issuingCountry: v.td_issuingCountry || '', expiry: v.td_expiry || '' }
+      travel_document: v.td_number
+        ? { type: v.td_type || 'passport', number: String(v.td_number).trim().toUpperCase(),
+            issuingCountry: v.td_issuingCountry || '', expiry: v.td_expiry || '' }
         : null,
-      known_traveller_number: orNull(v.known_traveller_number),
+    }),
+  },
+
+  airport: {
+    title: 'Airport Security',
+    blurb: 'Optional. Speeds up airport security.',
+    read: (p) => readGrid([
+      { label: 'Known Traveller Number', html: secretHtml(p.known_traveller_number) },
+      { label: 'Redress number', html: secretHtml(p.redress_number) },
+    ]),
+    edit: (p) =>
+      row(textField('known_traveller_number', 'Known Traveller Number', {
+            value: p.known_traveller_number, placeholder: 'TSA PreCheck / Global Entry', hint: '(9 letters or digits)',
+            maxlength: 9, secret: true }) +
+          textField('redress_number', 'Redress number', { value: p.redress_number, placeholder: 'DHS TRIP number', secret: true })),
+    validate: (v) => (v.known_traveller_number && !/^[A-Za-z0-9]{9}$/.test(v.known_traveller_number)
+      ? 'A Known Traveller Number is exactly 9 letters or digits.' : null),
+    collect: (v) => ({
+      known_traveller_number: v.known_traveller_number ? String(v.known_traveller_number).trim().toUpperCase() : null,
       redress_number: orNull(v.redress_number),
     }),
   },
@@ -496,80 +590,68 @@ const SECTIONS = {
   // airlines, budget flexibility, and Travel Rewards — which moved here out of
   // the profile form, because frequent flyer numbers belong with the airlines
   // they bias rather than under passports and addresses.
+  // The app's Preferences screen, in its order: Home Airport, Preferred
+  // Airlines, Preferred Hotel Brands, Travel Rewards, How Far You'll Stretch.
   flight: {
     title: 'Preferences',
-    blurb: 'These sync with the WhereTo app to shape what it suggests.',
+    blurb: 'When set, these prioritize your results. Override anytime in the search form.',
     read: (p) => {
       const fp = p.flight_prefs || {};
       const airlines = Array.isArray(fp.preferredAirlines) ? fp.preferredAirlines : [];
+      const chains = Array.isArray(fp.preferredHotelChains) ? fp.preferredHotelChains : [];
       return readGrid([
-        { label: 'Nearest airport', value: fp.nearestAirport },
-        { label: 'Budget flexibility', value: labelOf(BUDGET_FLEX, fp.budgetFlexibility) },
-        {
-          label: 'Preferred airlines', wide: true,
-          value: airlines.map((c) => AIRLINE_NAMES[c] || c).join(', '),
-        },
+        { label: 'Home Airport', value: fp.nearestAirport },
+        { label: 'How far you\'ll stretch', value: labelOf(BUDGET_FLEX, fp.budgetFlexibility) },
+        { label: 'Preferred Airlines', wide: true, value: airlines.map((c) => AIRLINE_NAMES[c] || c).join(', ') },
+        { label: 'Preferred Hotel Brands', wide: true,
+          value: chains.map((slug) => (HOTEL_CHAINS.find((c) => c.slug === slug) || {}).name || slug).join(', ') },
       ]) + rewardsRead(p);
     },
     edit: (p) => {
       const fp = p.flight_prefs || {};
-      return textField('fp_nearestAirport', 'Nearest airport', {
-          value: fp.nearestAirport, hint: '(name or IATA code)', placeholder: 'e.g. JFK' }) +
-        row(textField('fp_preferredAirlines', 'Preferred airlines', {
-              value: Array.isArray(fp.preferredAirlines) ? fp.preferredAirlines.join(', ') : '',
-              hint: '(IATA codes, comma-separated)', placeholder: 'e.g. AA, DL, B6' }) +
-            selectField('fp_budgetFlexibility', 'Budget flexibility', BUDGET_FLEX, { value: fp.budgetFlexibility })) +
-        loyaltyEditor(readLoyaltyPrograms({ loyalty_programs: p.loyalty_programs }));
+      const chosen = new Set(Array.isArray(fp.preferredHotelChains) ? fp.preferredHotelChains : []);
+      return '<h3 class="pv-sub-head">Home Airport</h3>' +
+        textField('fp_nearestAirport', 'Home airport', {
+          value: fp.nearestAirport, hint: '(auto-filled as the Starting Point on every search)', placeholder: 'e.g. JFK' }) +
+        '<h3 class="pv-sub-head">Preferred Airlines</h3>' +
+        textField('fp_preferredAirlines', 'Airlines', {
+          value: Array.isArray(fp.preferredAirlines) ? fp.preferredAirlines.join(', ') : '',
+          hint: '(2-letter codes, comma-separated; prioritized in search results)', placeholder: 'e.g. AA, DL, B6' }) +
+        '<h3 class="pv-sub-head">Preferred Hotel Brands</h3>' +
+        '<p class="tv-note">Badged in hotel results so you can spot them.</p>' +
+        '<div class="vibe-chips" data-chains>' + HOTEL_CHAINS.map((c) =>
+          '<button type="button" class="vibe-chip" data-chain="' + esc(c.slug) + '" aria-pressed="' +
+          (chosen.has(c.slug) ? 'true' : 'false') + '">' + esc(c.name) + '</button>').join('') + '</div>' +
+        loyaltyEditor(readLoyaltyPrograms({ loyalty_programs: p.loyalty_programs })) +
+        '<h3 class="pv-sub-head">How Far You\'ll Stretch</h3>' +
+        selectField('fp_budgetFlexibility', 'Budget flexibility', BUDGET_FLEX, {
+          value: fp.budgetFlexibility, blank: false,
+          hint: '(expands search beyond your set budget by this percentage)' });
     },
     collect: (v, scope) => {
       const airlines = v.fp_preferredAirlines
-        ? v.fp_preferredAirlines.split(',').map((s) => s.trim().toUpperCase()).filter(Boolean)
+        ? v.fp_preferredAirlines.split(',').map((x) => resolveAirlineCode(x.trim())).filter(Boolean)
         : [];
-      // No seatClass, stopCount or dateFlex. All three were settings that
-      // changed nothing, and all three left FlightPreferences in the app:
-      // stop count could only agree with the flight picker, which already
-      // prefers fewer stops; seat class never changed which flights came back,
-      // only which fare led; nothing ever searched nearby dates off a profile.
-      return {
-        flight_prefs: objOrNull({
-          nearestAirport: v.fp_nearestAirport,
-          preferredAirlines: airlines.length ? airlines : '',
-          budgetFlexibility: v.fp_budgetFlexibility,
-        }) || {},
-        loyalty_programs: readLoyaltyEditor(scope),
-      };
+      const chains = [...scope.querySelectorAll('[data-chain][aria-pressed="true"]')].map((c) => c.dataset.chain);
+      // Merged over what is there, never rebuilt: flight_prefs carries keys
+      // this form does not edit, and rebuilding it used to wipe them.
+      const fp = Object.assign({}, p0FlightPrefs(scope), {
+        nearestAirport: orNull(v.fp_nearestAirport) || undefined,
+        preferredAirlines: airlines,
+        preferredHotelChains: chains,
+        budgetFlexibility: v.fp_budgetFlexibility || 'none',
+      });
+      Object.keys(fp).forEach((k) => fp[k] === undefined && delete fp[k]);
+      return { flight_prefs: fp, loyalty_programs: readLoyaltyEditor(scope) };
     },
   },
 
-  vibes: {
-    title: 'My vibes',
-    blurb: 'The travel personality the app starts your matches from. Pick up to ' + BASE_VIBE_CAP + '.',
-    read: (p) => {
-      const keys = Array.isArray(p.base_vibes) ? p.base_vibes : [];
-      if (!keys.length) return emptyNote('No vibes picked yet.');
-      return '<div class="vibe-chips is-static">' + keys.map((k) => {
-        const v = BASE_VIBES.find((b) => b.key === k);
-        return '<span class="vibe-chip is-on">' + esc(v ? v.label : k) + '</span>';
-      }).join('') + '</div>';
-    },
-    edit: (p) => {
-      const set = new Set(Array.isArray(p.base_vibes) ? p.base_vibes : []);
-      return '<div class="vibe-chips" data-vibes>' + BASE_VIBES.map((v) =>
-        '<button type="button" class="vibe-chip" data-vibe="' + v.key + '" aria-pressed="' +
-        (set.has(v.key) ? 'true' : 'false') + '">' + esc(v.label) + '</button>').join('') + '</div>';
-    },
-    collect: (v, scope) => ({
-      base_vibes: [...scope.querySelectorAll('[data-vibe][aria-pressed="true"]')].map((c) => c.dataset.vibe),
-    }),
-  },
-
-  // The app keeps basic details, contact and document on ONE screen behind its
-  // "My Profile" tile, so the website does too. The parts stay separate
+  // The app keeps all five parts on ONE screen behind its "My Profile" tile,
+  // so the website does too. The parts stay separate
   // definitions above — this composes them, and one Save writes the union of
   // their columns.
   profile: {
-    title: 'Profile',
-    blurb: 'Your own details, the way an airline needs them.',
+    title: 'My Profile',
     read: (p, user) => PROFILE_PARTS.map((k) =>
       '<h3 class="pv-sub-head">' + esc(SECTIONS[k].title) + '</h3>' + SECTIONS[k].read(p, user)).join(''),
     edit: (p) => PROFILE_PARTS.map((k, i) =>
@@ -634,15 +716,45 @@ const SECTIONS = {
   },
 
   comms: {
-    title: 'Communications',
-    blurb: 'Control which emails you get from us. Booking confirmations and trip updates are always sent.',
+    title: 'Notifications',
     read: (p) => readGrid([
-      { label: 'Travel ideas and product updates', value: p.marketing_opt_in ? 'On' : 'Off' },
-    ]),
+      { label: 'Marketing emails', value: p.marketing_opt_in ? 'On' : 'Off' },
+      { label: 'Push notifications', value: 'Set on each phone in the WhereTo app' },
+    ]) + '<p class="tv-note">Booking confirmations and trip essentials still get sent by email either way.</p>',
     edit: (p) => '<label class="check"><input data-f="marketing_opt_in" type="checkbox"' +
       (p.marketing_opt_in ? ' checked' : '') + ' />' +
-      '<span>Send me travel ideas and product updates by email.</span></label>',
+      '<span><strong>Marketing emails</strong><br />Deals, price drops, and trip inspiration</span></label>',
     collect: (v) => ({ marketing_opt_in: !!v.marketing_opt_in }),
+  },
+
+  // Account & Security and Help & Support: the app's two ACCOUNT rows. No
+  // columns of their own, so read-only with actions.
+  security: {
+    title: 'Account & Security',
+    read: () =>
+      '<h3 class="pv-sub-head">Login &amp; Security</h3>' +
+      '<div class="acct-actions">' +
+        '<button type="button" class="ph-row" data-sec-reset><span class="ph-row-body"><span class="ph-row-title">Change Password</span>' +
+          '<span class="ph-row-sub">Reset your password by email</span></span></button>' +
+        '<div class="ph-row is-dim"><span class="ph-row-body"><span class="ph-row-title">Two-Factor Authentication</span>' +
+          '<span class="ph-row-sub">Coming soon</span></span></div>' +
+        '<div class="ph-row is-dim"><span class="ph-row-body"><span class="ph-row-title">Active Sessions</span>' +
+          '<span class="ph-row-sub">Coming soon</span></span></div>' +
+      '</div>' +
+      '<h3 class="pv-sub-head">Danger Zone</h3>' +
+      '<button type="button" class="ph-row ph-row--danger" data-sec-delete><span class="ph-row-body">' +
+        '<span class="ph-row-title">Delete Account</span><span class="ph-row-sub">Permanently remove your account</span></span></button>',
+  },
+
+  help: {
+    title: 'Help & Support',
+    read: () =>
+      '<a class="ph-row" href="/account/bookings/"><span class="ph-row-body"><span class="ph-row-title">Help with a booking</span>' +
+        '<span class="ph-row-sub">Open the booking, then choose Get help</span></span></a>' +
+      '<a class="ph-row" href="/contact/"><span class="ph-row-body"><span class="ph-row-title">Contact Support</span>' +
+        '<span class="ph-row-sub">Send us a message</span></span></a>' +
+      '<a class="ph-row" href="/faq/"><span class="ph-row-body"><span class="ph-row-title">FAQ</span>' +
+        '<span class="ph-row-sub">Answers to common questions</span></span></a>',
   },
 };
 
@@ -650,7 +762,7 @@ const SECTIONS = {
 // Loyalty used to be the fourth part. It lives on Preferences now, with the
 // airlines and hotel brands it biases, rather than under passports and
 // addresses — same move the app made.
-const PROFILE_PARTS = ['basic', 'contact', 'document'];
+const PROFILE_PARTS = ['basic', 'contact', 'emergency', 'document', 'airport'];
 
 // ── The menu ────────────────────────────────────────────────────────
 // The same list the app's profile screen shows, in the same order, because
@@ -673,40 +785,38 @@ const MENU = [
     ],
   },
   {
-    // "Settings", not "Preferences" — it holds a row called Preferences, and a
-    // group repeating a row's own name reads as an echo.
     label: 'Settings',
     rows: [
-      { key: 'flight', icon: 'tuning', title: 'Preferences',
-        sub: (p) => {
-          const fp = p.flight_prefs || {};
-          const airlines = Array.isArray(fp.preferredAirlines) ? fp.preferredAirlines : [];
-          // Counts the saved memberships too: rewards live on this screen now,
-          // so someone with only those would otherwise read "Not set yet".
-          const rewards = readLoyaltyPrograms({ loyalty_programs: p.loyalty_programs })
-            .filter((lp) => lp.code && lp.accountNumber).length;
-          const bits = [
-            fp.nearestAirport,
-            airlines.length ? plural(airlines.length, 'airline') : '',
-            labelOf(BUDGET_FLEX, fp.budgetFlexibility),
-            rewards ? plural(rewards, 'rewards program') : '',
-          ].filter(Boolean);
-          return bits.length ? bits.join(' · ') : 'Not set yet';
-        } },
-      { key: 'vibes', icon: 'compass', title: 'My Vibes',
-        sub: (p) => {
-          const keys = p.base_vibes || [];
-          if (!keys.length) return 'None picked yet';
-          return keys.map((k) => {
-            const v = BASE_VIBES.find((b) => b.key === k);
-            return v ? v.label : k;
-          }).join(', ');
-        } },
-      { key: 'comms', icon: 'bell', title: 'Notifications',
-        sub: (p) => (p.marketing_opt_in ? 'Travel ideas: on' : 'Travel ideas: off') },
+      { key: 'flight', icon: 'tuning', title: 'Preferences', sub: (p) => prefsSubtitle(p) },
+      { key: 'comms', icon: 'bell', title: 'Notifications', sub: () => '' },
+    ],
+  },
+  {
+    label: 'Account',
+    rows: [
+      { key: 'security', icon: 'lock-keyhole', title: 'Account & Security', sub: () => '' },
+      { key: 'help', icon: 'info-circle', title: 'Help & Support', sub: () => '' },
     ],
   },
 ];
+
+/** The app's prefsSubtitle (ProfileKit.tsx), word for word. */
+function prefsSubtitle(p) {
+  const fp = p.flight_prefs || {};
+  const rewards = readLoyaltyPrograms({ loyalty_programs: p.loyalty_programs })
+    .filter((lp) => lp.code && lp.accountNumber).length;
+  const airlines = Array.isArray(fp.preferredAirlines) ? fp.preferredAirlines.length : 0;
+  const chains = Array.isArray(fp.preferredHotelChains) ? fp.preferredHotelChains.length : 0;
+  const code = fp.nearestAirport ? ((String(fp.nearestAirport).match(/\(([A-Z]{3})\)/) || [])[1] || fp.nearestAirport) : '';
+  if (!airlines && !chains && !code && !fp.budgetFlexibility) return rewards ? plural(rewards, 'rewards program') : 'Not configured';
+  const bits = [
+    airlines ? plural(airlines, 'airline') : '',
+    chains ? plural(chains, 'hotel brand') : '',
+    code,
+    rewards ? plural(rewards, 'rewards program') : '',
+  ].filter(Boolean);
+  return bits.length ? bits.join(' · ') : 'Configured';
+}
 
 // Shown only to the accounts they belong to.
 const ACCOUNT_ROWS = [
@@ -728,7 +838,14 @@ const POLICY_ROWS = [
 /** Every section a row or tile can open, so a ?section= value can be checked.
  *  The four parts of `profile` are not navigable on their own — the app keeps
  *  them on one screen and so does this. */
-const SECTION_KEYS = ['profile', 'travellers', 'saved', 'flight', 'vibes', 'comms'];
+const SECTION_KEYS = ['profile', 'travellers', 'saved', 'flight', 'comms', 'security', 'help'];
+
+/** "Mary's", "James'", or "My" with no first name: the app's possessive(). */
+function possessive(first) {
+  const n = String(first || '').trim();
+  if (!n) return 'My';
+  return /s$/i.test(n) ? n + "'" : n + "'s";
+}
 
 function plural(n, word) { return n + ' ' + word + (Number(n) === 1 ? '' : 's'); }
 
@@ -737,7 +854,7 @@ function plural(n, word) { return n + ' ' + word + (Number(n) === 1 ? '' : 's');
 const PROFILE_COLS =
   'first_name,last_name,middle_name,profile_photo,phone,marketing_opt_in,date_of_birth,gender,' +
   'address,travel_document,emergency_contact,known_traveller_number,redress_number,' +
-  'loyalty_programs,base_vibes,flight_prefs,saved_passengers';
+  'loyalty_programs,flight_prefs,saved_passengers';
 
 export async function initProfileForm(supabase, user, opts = {}) {
   const alertId = opts.alertId || 'wt-alert';
@@ -869,11 +986,11 @@ export async function initProfileForm(supabase, user, opts = {}) {
           '</div>'
         : '') +
       '<div class="ph-tiles">' +
-        tile('profile', 'user-circle', 'My<br />Profile') +
+        tile('profile', 'user-circle', esc(possessive(p.first_name)) + '<br />Profile') +
         tile('travellers', 'users-group-rounded', 'Saved<br />Travelers',
           (p.__people && p.__people.incoming.length) || 0) +
       '</div>' +
-      wideTile('/account/bookings/', 'route', 'My Trips', false) +
+      wideTile('/account/bookings/', 'route', possessive(p.first_name) + ' Trips', false) +
       MENU.map((g) => menuGroup(g.label, g.rows)).join('') +
       menuGroup('Policy', POLICY_ROWS) +
       '<button type="button" class="ph-logout" data-logout>' + ico('logout-2') + ' Log Out</button>';
@@ -890,7 +1007,9 @@ export async function initProfileForm(supabase, user, opts = {}) {
         (isEditing || !s.edit ? '' : '<button type="button" class="pv-edit" data-edit="' + key + '">Edit</button>') +
       '</div>' +
       (isEditing
-        ? '<form class="pv-form" data-form="' + key + '" novalidate>' + s.edit(p) +
+        ? '<form class="pv-form" data-form="' + key + '"' +
+          (key === 'flight' ? ' data-fp="' + esc(JSON.stringify(p.flight_prefs || {})) + '"' : '') +
+          ' novalidate>' + s.edit(p) +
           '<div class="pv-actions">' +
             '<button type="submit" class="btn btn-primary">Save</button>' +
             '<button type="button" class="btn btn-ghost" data-cancel="' + key + '">Cancel</button>' +
@@ -909,7 +1028,8 @@ export async function initProfileForm(supabase, user, opts = {}) {
   }
 
   function paint() {
-    if (!hub) { mount.innerHTML = SECTION_KEYS.map(sectionHtml).join(''); return; }
+    // The partner portal has its own account pages, so only the editable parts.
+    if (!hub) { mount.innerHTML = SECTION_KEYS.filter((k) => k !== 'security' && k !== 'help').map(sectionHtml).join(''); return; }
     mount.className = 'ph' + (active ? ' is-section' : ' is-hub');
     mount.innerHTML =
       heroHtml() +
@@ -1013,6 +1133,15 @@ export async function initProfileForm(supabase, user, opts = {}) {
       repaint: () => { repaintSection('travellers'); if (hub) repaintMenu(); },
       alert: (type, msg) => { if (msg) showAlert(alertId, type, msg); },
     })) return;
+    const reveal = e.target.closest('[data-reveal]');
+    if (reveal && toggleSecret(reveal)) return;
+    const chainChip = e.target.closest('[data-chain]');
+    if (chainChip) {
+      chainChip.setAttribute('aria-pressed', chainChip.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+      return;
+    }
+    if (e.target.closest('[data-sec-reset]')) { sendReset(); return; }
+    if (e.target.closest('[data-sec-delete]')) { deleteAccount(); return; }
     const open = e.target.closest('[data-open]');
     if (open) { go(open.dataset.open); return; }
     if (e.target.closest('[data-back]')) { go(null); return; }
@@ -1071,17 +1200,6 @@ export async function initProfileForm(supabase, user, opts = {}) {
       return;
     }
 
-    const chip = e.target.closest('[data-vibe]');
-    if (chip) {
-      const on = chip.getAttribute('aria-pressed') === 'true';
-      const chosen = mount.querySelectorAll('[data-vibe][aria-pressed="true"]').length;
-      if (!on && chosen >= BASE_VIBE_CAP) {
-        showAlert(alertId, 'info', 'Pick up to ' + BASE_VIBE_CAP + ' vibes — unpick one first.');
-        return;
-      }
-      chip.setAttribute('aria-pressed', on ? 'false' : 'true');
-      hideAlert(alertId);
-    }
   });
 
   // A traveller's summary follows the name as it is typed, so a card collapsed
@@ -1095,6 +1213,55 @@ export async function initProfileForm(supabase, user, opts = {}) {
     const nameEl = card.querySelector('.trav-name');
     if (nameEl) nameEl.textContent = [v.given_name, v.family_name].filter(Boolean).join(' ') || 'New traveler';
   });
+
+  // A new country means a new kind of region: a list for the US and Canada,
+  // free text elsewhere. The old value is cleared, as the app does: "NY"
+  // means nothing once the country is Canada.
+  mount.addEventListener('change', (e) => {
+    if (!e.target.dataset || e.target.dataset.f !== 'ad_country') return;
+    const wrap = mount.querySelector('#ad-region-wrap');
+    if (wrap) wrap.outerHTML = regionField(e.target.value, '');
+  });
+
+  // ── Account & Security actions ──
+  async function sendReset() {
+    if (!window.confirm("We'll email a password reset link to " + user.email + '.')) return;
+    const { error: rErr } = await supabase.auth.resetPasswordForEmail(user.email, {
+      redirectTo: window.location.origin + '/account/reset/',
+    });
+    if (rErr) showAlert(alertId, 'error', 'Could not send the link: ' + rErr.message);
+    else showAlert(alertId, 'success', 'Check your email for a link to reset your password.');
+  }
+
+  /** Same two steps as the app: what goes and what stays (from the server's
+   *  own count), then a plain "are you sure". */
+  async function deleteAccount() {
+    const cfg = window.WT_SUPABASE || {};
+    const { data: sess } = await supabase.auth.getSession();
+    const call = (body) => fetch(cfg.url + '/functions/v1/delete-account', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', apikey: cfg.anonKey,
+        Authorization: 'Bearer ' + (sess && sess.session ? sess.session.access_token : '') },
+      body: JSON.stringify(body),
+    }).then((r) => r.json().catch(() => ({})));
+
+    const preview = await call({ action: 'preview' });
+    if (!preview.ok) { showAlert(alertId, 'error', preview.message || 'Could not reach the server. Try again in a moment.'); return; }
+    const lines = ['This permanently deletes your sign-in, profile, passport and contact details, saved travelers and your connections to them, saved destinations and your place in group trips.'];
+    if (preview.upcomingBookings > 0) {
+      lines.push('Your ' + preview.upcomingBookings + ' upcoming ' + (preview.upcomingBookings === 1 ? 'booking is' : 'bookings are') +
+        " NOT cancelled, but you won't see " + (preview.upcomingBookings === 1 ? 'it' : 'them') + ' here anymore. Keep your confirmation emails.');
+    }
+    if (preview.organizing > 0) lines.push('Group trips you organize pass to another member, or are deleted if no one else has joined.');
+    lines.push('We keep booking records for tax and accounting, as the Privacy Statement explains.');
+    if (!window.confirm('Delete your account?\n\n' + lines.join('\n\n'))) return;
+    if (!window.confirm("Are you sure? This can't be undone.")) return;
+
+    const res = await call({ action: 'delete', confirm: 'DELETE' });
+    if (!res.ok) { showAlert(alertId, 'error', res.message || 'We could not delete your account. Try again in a moment.'); return; }
+    await supabase.auth.signOut();
+    window.location.href = '/';
+  }
 
   // ── Save one section ──
   mount.addEventListener('submit', async (e) => {
