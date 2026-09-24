@@ -7,8 +7,9 @@ eleventyExcludeFromCollections: true
 noindex: true
 ---
 {#
-  Wander Together invite links land here: /join/?g=CODE (a group trip) or
-  /join/?t=CODE (a Together match trip). The app shares this address in its
+  Invite links land here: /join/?g=CODE (a Wander Together group trip),
+  /join/?t=CODE (a Together match trip) or /join/?f=TOKEN (a Saved Traveler
+  invite; opening it in the app accepts it). The app shares this address in its
   invite texts and the invite email's button, so it has to read well in a
   message preview and hand straight off to the app.
 
@@ -16,7 +17,7 @@ noindex: true
   that repo went private: every invite link had been a GitHub "Site not found".
 
   The code is read in the browser and never sent anywhere. The app route is
-  whereto:///group/CODE or whereto:///together/CODE, same as before.
+  whereto:///group/CODE, whereto:///together/CODE or whereto:///invite/TOKEN.
 #}
 <link rel="stylesheet" href="/assets/account.css?v={{ buildTime }}" />
 <style>
@@ -51,6 +52,21 @@ noindex: true
       </p>
     </div>
 
+    <div id="join-traveler" style="display:none;">
+      <p class="eyebrow">Saved Travelers</p>
+      <h1>You're invited to connect</h1>
+      <p class="acct-sub">Open WhereTo to accept. Once you're connected, you can add each other to bookings. Your travel details fill in from your own account and are never shown to the other person.</p>
+      <div class="join-actions">
+        <a class="btn btn-primary" id="join-accept" href="#">Accept in WhereTo</a>
+      </div>
+      <p class="join-note">Don't have the app yet? Install it and create your free account, then tap your invite link again.</p>
+      <p class="join-stores">
+        <a href="https://play.google.com/store/apps/details?id=com.vcinnovationsgroup.whereto">Get it on Google Play</a>
+        <span style="color:var(--wg400);padding:0 8px;">|</span>
+        <span>App Store coming soon</span>
+      </p>
+    </div>
+
     <div id="join-missing" style="display:none;">
       <p class="eyebrow">Wander Together</p>
       <h1>That invite link is incomplete</h1>
@@ -62,6 +78,19 @@ noindex: true
 <script>
   (function () {
     var params = new URLSearchParams(window.location.search);
+
+    // A Saved Traveler invite: the token is long and case-sensitive, so it is
+    // passed through as-is rather than shown like a trip code.
+    var token = (params.get('f') || '').replace(/[^A-Za-z0-9]/g, '');
+    if (token) {
+      document.getElementById('join-invite').style.display = 'none';
+      document.getElementById('join-traveler').style.display = 'block';
+      var inviteLink = 'whereto:///invite/' + token;
+      document.getElementById('join-accept').href = inviteLink;
+      setTimeout(function () { window.location.href = inviteLink; }, 600);
+      return;
+    }
+
     var route  = params.get('g') ? 'group' : params.get('t') ? 'together' : '';
     var code   = (params.get('g') || params.get('t') || '').replace(/[^A-Za-z0-9]/g, '').toUpperCase();
     if (!route || !code) {
