@@ -145,7 +145,7 @@
     // Widening past the breakpoint hides the toggle; without this the body
     // would stay locked with no visible way to unlock it.
     window.addEventListener('resize', function () {
-      if (window.innerWidth > 720 && headerEl.classList.contains('menu-open')) setMenu(false);
+      if (getComputedStyle(navToggle).display === 'none' && headerEl.classList.contains('menu-open')) setMenu(false);
     });
   }
 

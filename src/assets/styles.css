@@ -105,7 +105,7 @@ header {
    Picks up a soft shadow once the page is scrolled. */
 header.scrolled { box-shadow: 0 4px 20px rgba(20,30,40,0.08); }
 .nav { display: flex; align-items: center; justify-content: space-between; height: 84px; }
-.nav-links { margin-left: clamp(24px, 4vw, 56px); margin-right: auto; }
+.nav-links { margin-left: clamp(24px, 3vw, 40px); margin-right: auto; }
 .brand { display: flex; align-items: center; gap: 11px; }
 .brand .mark {
   width: 36px; height: 36px; border-radius: 10px;
@@ -117,7 +117,13 @@ header.scrolled { box-shadow: 0 4px 20px rgba(20,30,40,0.08); }
 .brand .name { font-family: var(--serif); font-size: 20px; color: var(--navy); white-space: nowrap; letter-spacing: -0.2px; }
 .brand-logo { height: 34px; width: auto; display: block; }
 footer .brand-logo { height: 32px; }
-.nav-links { display: flex; align-items: center; gap: 30px; }
+.nav-links { display: flex; align-items: center; gap: 24px; }
+/* Nothing in the bar may wrap or shrink. A label breaking onto two lines or
+   the two CTAs stacking is what "squished" looked like; when the full bar
+   stops fitting, the hamburger takes over instead (see the 1100px block). */
+.brand, .nav-cta { flex-shrink: 0; }
+.nav-cta { display: flex; align-items: center; gap: 10px; }
+.nav-links a, .nav-dropdown > button, .nav-cta .btn { white-space: nowrap; }
 .nav-links a, .nav-dropdown > button {
   font-family: var(--sans); font-size: 15px; font-weight: 500;
   letter-spacing: 0.2px; color: var(--navy);
@@ -158,7 +164,12 @@ footer .brand-logo { height: 32px; }
 .nav-dropdown:hover .nav-dropdown-menu a,
 .nav-dropdown:focus-within .nav-dropdown-menu a { margin-top: 0; }
 .nav-dropdown-menu a:hover { background: var(--azure-tint); color: var(--azure); }
-.nav-cta .btn { padding: 11px 22px; font-size: 11px; }
+.nav-cta .btn { padding: 11px 18px; font-size: 11px; }
+/* Laptop widths: step the bar down before handing over to the hamburger. */
+@media (max-width: 1240px) {
+  .nav-links { gap: 18px; }
+  .nav-links a, .nav-dropdown > button { font-size: 14px; }
+}
 
 /* Hamburger (mobile only) */
 .nav-toggle {
@@ -739,6 +750,31 @@ footer { background: var(--footer); padding: 72px 0 40px; }
 .reveal-delay-2 { transition-delay: .2s; }
 
 /* ── Responsive ─────────────────────────────── */
+/* Hamburger takeover. 1120px is where the full bar (logged in, "My Account"
+   showing) stops fitting at the 1240px step-down sizes; measured, not guessed.
+   Add a nav item and this number has to move up. */
+@media (max-width: 1120px) {
+  .nav-links { display: none; }
+  .nav-cta { display: none; }
+  .nav-toggle { display: flex; }
+  /* Page is frozen while the menu is open (see base.njk). Scoped to the
+     breakpoint on purpose: above it the menu cannot be open, so the lock can
+     never strand a wide viewport with no visible way to release it. */
+  body.menu-locked { overflow: hidden; }
+  header.menu-open .mobile-menu {
+    display: flex; flex-direction: column;
+    padding: 4px 24px 26px; background: var(--cream);
+    border-top: 1px solid var(--wg200);
+    /* The panel scrolls itself. Without this a menu taller than the viewport
+       hangs off the bottom of a sticky header with no way to reach its last
+       items — scrolling just moved the page behind it. dvh so mobile browser
+       chrome appearing does not cut the bottom off. */
+    max-height: calc(100vh - 84px);
+    max-height: calc(100dvh - 84px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
 @media (max-width: 960px) {
   .hero-grid { display: flex; flex-direction: column; gap: 0; }
   .hero-copy { display: contents; }
@@ -760,9 +796,6 @@ footer { background: var(--footer); padding: 72px 0 40px; }
   .highlight:nth-child(3)::before, .highlight:nth-child(4)::before { display: none; }
 }
 @media (max-width: 720px) {
-  .nav-links { display: none; }
-  .nav-cta { display: none; }
-  .nav-toggle { display: flex; }
   /* Stacked layout: eyebrow overlaid on the photo's top edge, headline left-
      aligned in normal flow directly below it, lede + buttons continuing
      below that in the solid section — a full-bleed cover crop on a tall
@@ -799,23 +832,6 @@ footer { background: var(--footer); padding: 72px 0 40px; }
 
   .slide-subtitle { order: 3; padding: 20px 24px 0; }
   .btns { order: 4; padding: 22px 24px 8px; }
-  /* Page is frozen while the menu is open (see base.njk). Scoped to the
-     breakpoint on purpose: above it the menu cannot be open, so the lock can
-     never strand a wide viewport with no visible way to release it. */
-  body.menu-locked { overflow: hidden; }
-  header.menu-open .mobile-menu {
-    display: flex; flex-direction: column;
-    padding: 4px 24px 26px; background: var(--cream);
-    border-top: 1px solid var(--wg200);
-    /* The panel scrolls itself. Without this a menu taller than the viewport
-       hangs off the bottom of a sticky header with no way to reach its last
-       items — scrolling just moved the page behind it. dvh so mobile browser
-       chrome appearing does not cut the bottom off. */
-    max-height: calc(100vh - 84px);
-    max-height: calc(100dvh - 84px);
-    overflow-y: auto;
-    overscroll-behavior: contain;
-  }
   .foot-links { gap: 28px; }
   .foot-top { grid-template-columns: 1fr; gap: 32px; }
   .highlights { grid-template-columns: 1fr; margin-top: -40px; }
