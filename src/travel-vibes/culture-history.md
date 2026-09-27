@@ -1,5 +1,6 @@
 ---
 title: "Culture & History"
+seoTitle: "Best Culture and History Travel Destinations"
 order: 9
 icon: "🏛️"
 summary: "Ruins, museums, and old cities where every street has a story."

@@ -1,5 +1,6 @@
 ---
 title: "Beach Escape"
+seoTitle: "Best Beach Vacation Destinations and Budgets"
 order: 2
 icon: "🏝️"
 summary: "Warm water, slow mornings, and nowhere you have to be."

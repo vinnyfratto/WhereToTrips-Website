@@ -2,46 +2,23 @@
 permalink: /robots.txt
 eleventyExcludeFromCollections: true
 ---
-# WhereTo — AI crawler policy
-# Review GPTBot (training) as a deliberate decision — left allowed below.
-# Block it explicitly if you do not want content used in model training.
-
-User-agent: GPTBot
-Allow: /
-
-User-agent: OAI-SearchBot
-Allow: /
-
-User-agent: ChatGPT-User
-Allow: /
-
-User-agent: Google-Extended
-Allow: /
-
-User-agent: PerplexityBot
-Allow: /
-
-User-agent: ClaudeBot
-Allow: /
-
-# Keep admin/account/api areas out of all crawlers
+# WhereTo Trips crawler policy
+#
+# AI assistants and search engines are welcome: that is how travelers find us.
+# The named AI crawlers are listed so the choice is explicit, and they share
+# ONE group with "*". A crawler obeys only the most specific group naming it,
+# so a separate "User-agent: GPTBot / Allow: /" group would silently exempt it
+# from every Disallow below.
+#
+# The Disallow list lives in src/_data/crawl.json and is shared with
+# sitemap.xml, so the two can never disagree.
+{% for bot in crawl.aiBots %}
+User-agent: {{ bot }}
+{%- endfor %}
 User-agent: *
-Disallow: /admin/
-Disallow: /account/
-Disallow: /api/
-Disallow: /AffiliateSignUp/
-Disallow: /dashboard/
-Disallow: /partner-dashboard/
-Disallow: /admin-affiliates/
-Disallow: /admin-submissions/
-Disallow: /admin-dashboard/
-Disallow: /analytics/
-Disallow: /DestImages/
-Disallow: /StockImages/
-Disallow: /vibesimages/
-Disallow: /vibes-engine/
-Disallow: /DashboardHero/
-Disallow: /VibeSelection/
-Disallow: /techdocs/
+Allow: /
+{%- for p in crawl.disallow %}
+Disallow: {{ p }}
+{%- endfor %}
 
 Sitemap: {{ site.url }}/sitemap.xml

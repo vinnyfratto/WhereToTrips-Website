@@ -34,6 +34,15 @@ module.exports = function (eleventyConfig) {
   // collections/sitemap.
   eleventyConfig.ignores.add("src/VibeSelection/**");
 
+  // ── Search + AI crawlers ───────────────────────────────────────────────────
+  // JSON-LD, social preview image, sitemap membership and <lastmod>. The rules
+  // live in lib/seo.js.
+  const seo = require("./lib/seo");
+  eleventyConfig.addFilter("jsonLd", seo.jsonLd);
+  eleventyConfig.addFilter("ogImage", seo.ogImage);
+  eleventyConfig.addFilter("gitLastmod", seo.gitLastmod);
+  eleventyConfig.addFilter("sitemapItems", seo.sitemapItems);
+
   // Markdown filter — renders doc strings to HTML for the (internal) TechDocs page.
   const md = require("markdown-it")({ html: true, linkify: true, breaks: false });
   eleventyConfig.addFilter("markdown", (str) => (str ? md.render(String(str)) : ""));

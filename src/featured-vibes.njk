@@ -8,9 +8,13 @@ pagination:
   addAllPagesToCollections: true
 permalink: "/featured-vibes/{{ v.slug }}/"
 eleventyComputed:
-  title: "{{ v.vibeLabel }} in {{ v.city }}{% if v.placeLabel %}, {{ v.placeLabel }}{% endif %} — WhereTo"
-  description: "{{ v.city }}{% if v.placeLabel %}, {{ v.placeLabel }}{% endif %} scores {{ v.displayScore }} for {{ v.vibeLabel }} in the WhereTo Vibe Engine. The full guide, every vibe this destination matches, and when to go."
+  # `| safe` on every value: computed strings are autoescaped once here and
+  # again where meta.njk prints them, which put "&amp;amp;" in search titles.
+  title: "{{ v.vibeLabel | safe }} in {{ v.city | safe }}{% if v.placeLabel %}, {{ v.placeLabel | safe }}{% endif %}"
+  description: "{{ v.city | safe }}{% if v.placeLabel %}, {{ v.placeLabel | safe }}{% endif %} scores {{ v.displayScore }} for {{ v.vibeLabel | safe }} in the WhereTo Vibe Engine. The full guide, every vibe this destination matches, and when to go."
 layout: layouts/base.njk
+# The pages are built from this data file, so it is what dates them in sitemap.xml.
+lastmodSource: src/_data/featuredVibes.json
 ---
 {#- Real three-letter abbreviations. A `truncate` on the full name gives
     "Janu"/"Marc", which is not how anyone writes a month. -#}

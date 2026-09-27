@@ -1,5 +1,6 @@
 ---
 title: "Trending Under $2,000"
+seoTitle: "Trending Trips Under $2,000"
 order: 1
 icon: "📈"
 summary: "Where travelers are booking right now — all in for under two grand."

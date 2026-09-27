@@ -1,5 +1,6 @@
 ---
 title: "Hidden Gems"
+seoTitle: "Hidden Gem Destinations Worth the Trip"
 order: 5
 icon: "💎"
 summary: "The places your feed hasn't ruined yet — fewer crowds, better value."

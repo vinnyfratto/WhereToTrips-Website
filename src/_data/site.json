@@ -1,7 +1,8 @@
 {
   "brandName": "WhereTo",
   "monogram": "W",
-  "metaTitle": "WhereTo — Discover Your Next Destination",
+  "metaTitle": "WhereTo Trips: Find Where to Go by Budget and Vibe",
+  "ogImage": "/media/WhereTo_Hero_Beach.jpg",
   "metaDescription": "WhereTo is a travel discovery app for iOS and Android. Tell it your budget and your vibe, and it finds the destination. The website is for discovery only — planning and booking happen in the app.",
   "url": "https://wheretotrips.com",
   "contactEmail": "ccupero@vcinnovationsgroup.com",

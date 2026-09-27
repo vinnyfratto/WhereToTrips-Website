@@ -1,5 +1,6 @@
 ---
 title: "Family Fun"
+seoTitle: "Best Family Vacation Destinations and Budgets"
 order: 6
 icon: "🎡"
 summary: "Trips that work for the eight-year-old and the grandparents alike."

@@ -1,5 +1,6 @@
 ---
 title: "Foodie"
+seoTitle: "Best Food Travel Destinations for Foodies"
 order: 3
 icon: "🍽️"
 summary: "Plan the trip around the table — markets, classics, and one unforgettable meal."

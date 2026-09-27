@@ -1,5 +1,6 @@
 ---
 title: "Adventure"
+seoTitle: "Best Adventure Travel Destinations and Budgets"
 order: 1
 icon: "🧗"
 summary: "Adrenaline, big landscapes, and the trips you brag about for years."

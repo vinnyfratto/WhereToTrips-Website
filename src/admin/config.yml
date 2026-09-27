@@ -404,6 +404,7 @@ collections:
                 label: FAQ accordion
                 fields:
                   - { name: id, widget: string, required: false }
+                  - { label: "Title is the page heading (H1). Only when the FAQ is the whole page.", name: asH1, widget: boolean, default: false, required: false }
                   - { name: eyebrow, widget: string, required: false }
                   - label: Title
                     name: title
@@ -573,6 +574,8 @@ collections:
     sortable_fields: [order, title]
     fields:
       - { name: title, widget: string }
+      - { label: "Search title (optional; defaults to Title)", name: seoTitle, widget: string, required: false, hint: "What Google and AI answers show. Say what someone would search for. \" | WhereTo Trips\" is added automatically." }
+      - { label: "Search description (optional; built from the page if blank)", name: description, widget: text, required: false }
       - { label: "Sort order", name: order, widget: number, default: 99 }
       - { label: "Icon (emoji)", name: icon, widget: string }
       - { label: "Hub card summary", name: summary, widget: text }
@@ -604,6 +607,8 @@ collections:
     sortable_fields: [order, title]
     fields:
       - { name: title, widget: string }
+      - { label: "Search title (optional; defaults to Title)", name: seoTitle, widget: string, required: false, hint: "What Google and AI answers show. Say what someone would search for. \" | WhereTo Trips\" is added automatically." }
+      - { label: "Search description (optional; built from the page if blank)", name: description, widget: text, required: false }
       - { label: "Sort order", name: order, widget: number, default: 99 }
       - { label: "Icon (emoji)", name: icon, widget: string }
       - { label: "Hub card summary", name: summary, widget: text }
@@ -642,6 +647,8 @@ collections:
     sortable_fields: [order, title]
     fields:
       - { name: title, widget: string }
+      - { label: "Search title (optional; defaults to Title)", name: seoTitle, widget: string, required: false, hint: "What Google and AI answers show. Say what someone would search for. \" | WhereTo Trips\" is added automatically." }
+      - { label: "Search description (optional; built from the page if blank)", name: description, widget: text, required: false }
       - label: Category
         name: category
         widget: select

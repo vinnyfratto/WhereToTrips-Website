@@ -2,11 +2,19 @@
 permalink: /sitemap.xml
 eleventyExcludeFromCollections: true
 ---
+{#- Membership rules are in lib/seo.js `sitemapItems`: no noindex pages, nothing
+    robots.txt disallows. <lastmod> is the last commit to the page's source, so
+    it only moves when the page really changed; Bing and IndexNow lean on it.
+    A page built from a data file (featured vibes) sets `lastmodSource`. -#}
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-{%- for item in collections.all %}
+{%- for item in collections.all | sitemapItems(crawl) %}
+{%- set lm = (item.data.lastmodSource or item.inputPath) | gitLastmod %}
   <url>
     <loc>{{ site.url }}{{ item.url }}</loc>
+    {%- if lm %}
+    <lastmod>{{ lm }}</lastmod>
+    {%- endif %}
   </url>
 {%- endfor %}
 </urlset>

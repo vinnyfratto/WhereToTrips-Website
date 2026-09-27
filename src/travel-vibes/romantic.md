@@ -1,5 +1,6 @@
 ---
 title: "Romantic"
+seoTitle: "Best Romantic Getaways for Couples"
 order: 4
 icon: "🥂"
 summary: "Slow, intimate, and a little indulgent — just the two of you."

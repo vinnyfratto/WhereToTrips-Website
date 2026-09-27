@@ -4,6 +4,7 @@ title: "FAQ — WhereTo travel app"
 description: "Answers to common questions about WhereTo: how the modes differ, where booking happens, whether prices are real, when the app launches, and how Wander Together privacy works."
 sections:
   - type: faq_accordion
+    asH1: true
     eyebrow: "FAQ"
     title:
       pre: "Questions, "

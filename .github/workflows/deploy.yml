@@ -25,6 +25,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Full history: sitemap.xml dates each page by its last commit.
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -41,6 +44,17 @@ jobs:
           # Raises the GitHub API rate limit for the TechDocs doc fetch.
           GITHUB_TOKEN: ${{ github.token }}
 
+      # Before deploy, while the OLD sitemap is still live to compare against.
+      - name: List pages for IndexNow
+        run: node scripts/indexnow.js diff _site/sitemap.xml indexnow-urls.json
+
+      - name: Keep the IndexNow list for after deploy
+        uses: actions/upload-artifact@v4
+        with:
+          name: indexnow-urls
+          path: indexnow-urls.json
+          retention-days: 1
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
@@ -56,3 +70,19 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  # Tell Bing (ChatGPT search's index) and the other IndexNow engines which
+  # pages just changed. Runs after deploy so the key file and pages are live.
+  indexnow:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - uses: actions/download-artifact@v4
+        with:
+          name: indexnow-urls
+      - name: Submit changed URLs
+        run: node scripts/indexnow.js submit indexnow-urls.json

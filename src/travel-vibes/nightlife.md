@@ -1,5 +1,6 @@
 ---
 title: "Nightlife"
+seoTitle: "Best Nightlife Travel Destinations"
 order: 10
 icon: "🌃"
 summary: "Late dinners, rooftop bars, and cities that only get going after dark."

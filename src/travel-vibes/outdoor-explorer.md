@@ -1,5 +1,6 @@
 ---
 title: "Outdoor Explorer"
+seoTitle: "Best Outdoor and Nature Travel Destinations"
 order: 8
 icon: "🥾"
 summary: "Trails, parks, and wide-open country — nature as the whole itinerary."

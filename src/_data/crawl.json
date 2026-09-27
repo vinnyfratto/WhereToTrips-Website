@@ -1,0 +1,52 @@
+{
+  "_comment": "One list for robots.txt AND sitemap.xml, so the two cannot disagree. `disallow` is written into robots.txt for every crawler and kept out of the sitemap. `sitemapExclude` is crawlable but not advertised (redirect stubs, the Play Store deletion page). `aiBots` are named in robots.txt so the policy toward them is explicit; they get exactly the same rules as everyone else. `indexNowKey` is public by design: IndexNow verifies it by fetching /<key>.txt.",
+  "disallow": [
+    "/admin/",
+    "/account/",
+    "/api/",
+    "/auth/",
+    "/AffiliateSignUp/",
+    "/dashboard/",
+    "/partner-dashboard/",
+    "/admin-affiliates/",
+    "/admin-submissions/",
+    "/admin-dashboard/",
+    "/admin-crm/",
+    "/admin-crm-prospect/",
+    "/analytics/",
+    "/DestImages/",
+    "/StockImages/",
+    "/vibesimages/",
+    "/vibes-engine/",
+    "/DashboardHero/",
+    "/VibeSelection/",
+    "/VibeTaxonomy/",
+    "/techdocs/"
+  ],
+  "sitemapExclude": [
+    "/delete/",
+    "/privacy/",
+    "/terms/",
+    "/join/",
+    "/promo/"
+  ],
+  "aiBots": [
+    "GPTBot",
+    "OAI-SearchBot",
+    "ChatGPT-User",
+    "ClaudeBot",
+    "Claude-SearchBot",
+    "Claude-User",
+    "PerplexityBot",
+    "Perplexity-User",
+    "Google-Extended",
+    "Applebot",
+    "Applebot-Extended",
+    "Amazonbot",
+    "DuckAssistBot",
+    "MistralAI-User",
+    "Meta-ExternalAgent",
+    "CCBot"
+  ],
+  "indexNowKey": "f60ad288c24c3358711a881e3cb409ff"
+}

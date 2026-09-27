@@ -1,5 +1,6 @@
 ---
 title: "Luxury"
+seoTitle: "Best Luxury Travel Destinations and Budgets"
 order: 7
 icon: "✨"
 summary: "Effortless, polished, and worth every dollar — the trip that takes care of you."

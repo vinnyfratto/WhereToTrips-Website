@@ -2,13 +2,48 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 <meta name="theme-color" content="#1F3A4D" />
-{% if noindex %}<meta name="robots" content="noindex, nofollow" />{% endif %}
-<title>{{ title or site.metaTitle }}</title>
-<meta name="description" content="{{ description or site.metaDescription }}" />
+{#- ── Title ──
+    `seoTitle` is the search-result title when the on-page H1 is too short to
+    carry a query ("Adventure"). Any title that doesn't already name the brand
+    gets " | WhereTo Trips", the full name, because "WhereTo" alone collides
+    with the everyday search "where to go". -#}
+{%- set metaTitle = seoTitle or title or site.metaTitle -%}
+{%- if "WhereTo" not in metaTitle %}{% set metaTitle = metaTitle + " | WhereTo Trips" %}{% endif -%}
+{#- `autoDescription` is computed per collection (travel-vibes/*.11tydata.js etc.)
+    so a leaf page never falls back to the site-wide sentence. -#}
+{%- set metaDesc = description or autoDescription or site.metaDescription -%}
+{#- Social preview: page override → featured-vibe photo → hero → site default. -#}
+{%- set rawImage = ogImage or (v.images[0].url if v and v.images and v.images.length) or heroImage or site.ogImage -%}
+{%- set metaImage = rawImage | ogImage(site) -%}
+{%- set isArticle = (tags and "insight" in tags) or v -%}
+{%- set lastmod = (lastmodSource or page.inputPath) | gitLastmod -%}
+{% if noindex %}<meta name="robots" content="noindex, nofollow" />{% else %}<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />{% endif %}
+<title>{{ metaTitle }}</title>
+<meta name="description" content="{{ metaDesc }}" />
 <link rel="canonical" href="{{ site.url }}{{ page.url }}" />
-<meta property="og:site_name" content="{{ site.brandName }}" />
-<meta property="og:title" content="{{ title or site.metaTitle }}" />
-<meta property="og:description" content="{{ description or site.metaDescription }}" />
-<meta property="og:type" content="website" />
+<meta property="og:site_name" content="WhereTo Trips" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:title" content="{{ metaTitle }}" />
+<meta property="og:description" content="{{ metaDesc }}" />
+<meta property="og:type" content="{{ 'article' if isArticle else 'website' }}" />
 <meta property="og:url" content="{{ site.url }}{{ page.url }}" />
+{%- if metaImage %}
+<meta property="og:image" content="{{ metaImage }}" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="{{ ogImageAlt or heroAlt or metaTitle }}" />
+<meta name="twitter:image" content="{{ metaImage }}" />
+{%- endif %}
 <meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="{{ metaTitle }}" />
+<meta name="twitter:description" content="{{ metaDesc }}" />
+{%- if not noindex %}
+{#- Structured data: who we are (Organization + WebSite on every page), what
+    this page is, and its breadcrumb, article, list or FAQ. Built in lib/seo.js. -#}
+{%- set ld = {
+  url: page.url, title: metaTitle, description: metaDesc, image: metaImage, lastmod: lastmod,
+  tags: tags, sections: sections, v: v, author: author, published: published, updated: updated,
+  destinations: destinations, picks: picks, listHeading: listHeading
+} %}
+<script type="application/ld+json">{{ ld | jsonLd(site, collections.all) | safe }}</script>
+{%- endif %}
