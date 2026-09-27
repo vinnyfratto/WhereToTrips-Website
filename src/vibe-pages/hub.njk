@@ -1,0 +1,78 @@
+---
+pagination:
+  data: vibePages.hubs
+  size: 1
+  alias: hub
+  addAllPagesToCollections: true
+permalink: "/vibes/{{ hub.slug }}/"
+---
+{#- A vibe hub: the best places in the world for one of the 147 vibes a
+    traveler picks in the app. Data from scripts/gen-vibe-pages.js. -#}
+
+<section class="vibe-hero">
+  {% if hub.image %}
+  <div class="vibe-hero-media">
+    <img class="dest-photo-frame vibe-hero-frame is-on" src="{{ hub.image | thumb(1100) }}"
+         srcset="{{ hub.image | thumbSet([640, 1100, 1600]) }}" sizes="100vw"
+         alt="{{ hub.shelf.name or hub.label }}" loading="eager" decoding="async" />
+    <span class="vibe-hero-scrim" aria-hidden="true"></span>
+  </div>
+  {% endif %}
+  <div class="wrap vibe-hero-copy">
+    <span class="eyebrow">{{ hub.category }}{% if hub.shelf.name %} · {{ hub.shelf.name }}{% endif %}</span>
+    <h1>{{ title }}</h1>
+    <p class="vibe-hero-region">{{ hub.placeCount }} places ranked across {{ hub.regions.length }} regions</p>
+    <div class="cta">
+      <a class="btn btn-primary" href="#download">Get the App to See My Matches</a>
+      <a class="btn btn-ghost" href="#ranking">See the ranking</a>
+    </div>
+  </div>
+</section>
+
+{% include "partials/vp-answer.njk" %}
+
+<section class="block tint" id="ranking">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <span class="eyebrow">The ranking</span>
+      <h2>The top {{ hub.places.length }}, <span class="italic">worldwide</span></h2>
+      <p class="lede">Out of {{ hub.placeCount }} places the Vibe Engine scores for this. Tap a region below for its full guide.</p>
+    </div>
+    <ol class="vibe-scores vp-ranked reveal reveal-delay-1">
+      {% for p in hub.places %}
+      <li class="vibe-score{% if loop.first %} is-hero{% endif %}">
+        <span class="vibe-score-label">
+          {% if p.guideUrl %}<a href="{{ p.guideUrl }}">{{ p.name }}</a>{% else %}{{ p.name }}{% endif %}
+          <em><strong>{{ p.subregion }}</strong>{% if p.months %} · {{ p.months }}{% endif %}{% if p.note %} · {{ p.note }}{% endif %}</em>
+        </span>
+        <span class="vibe-score-bar" aria-hidden="true"><span style="width: {{ p.score }}%;"></span></span>
+        <span class="vibe-score-num">{{ p.score }}</span>
+      </li>
+      {% endfor %}
+    </ol>
+    <p class="app-disclaimer reveal">Scores are how the Vibe Engine ranks each place against everywhere else it knows. Your own matches are scored against your budget, dates and departure city in the app.</p>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <span class="eyebrow">By region</span>
+      <h2>Where to go, <span class="italic">region by region</span></h2>
+    </div>
+    <ul class="vp-regions reveal reveal-delay-1">
+      {% for r in hub.regions %}
+      <li>
+        <span class="vp-region-name">{% if r.url %}<a href="{{ r.url }}">{{ r.title }}</a>{% else %}{{ r.title }}{% endif %}</span>
+        <span class="vp-region-meta">{{ r.count }} place{% if r.count != 1 %}s{% endif %}{% if r.leader %} · led by {{ r.leader }}{% endif %}</span>
+        <span class="vp-region-top">{{ r.top }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+{% include "partials/vp-faq.njk" %}
+
+{% set s = { id: "download", eyebrow: "Ready to wander?", title: { pre: "Your next trip starts ", accent: "here", post: "." }, body: "See which of these fit your budget and dates, with real flights and hotels from your airport, in the WhereTo app." } %}
+{% include "sections/cta_band.njk" %}

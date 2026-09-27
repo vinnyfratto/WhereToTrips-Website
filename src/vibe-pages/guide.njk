@@ -1,0 +1,90 @@
+---
+pagination:
+  data: vibePages.guides
+  size: 1
+  alias: guide
+  addAllPagesToCollections: true
+permalink: "/vibes/{{ guide.slug }}/"
+---
+{#- A sub-region guide: the researched Vibe Engine blog for one vibe in one
+    region, with every place it ranks there. Data from scripts/gen-vibe-pages.js. -#}
+
+<section class="vibe-hero">
+  {% if guide.image %}
+  <div class="vibe-hero-media">
+    <img class="dest-photo-frame vibe-hero-frame is-on" src="{{ guide.image | thumb(1100) }}"
+         srcset="{{ guide.image | thumbSet([640, 1100, 1600]) }}" sizes="100vw"
+         alt="{{ guide.vibeLabel }} in {{ guide.where }}" loading="eager" decoding="async" />
+    <span class="vibe-hero-scrim" aria-hidden="true"></span>
+  </div>
+  {% endif %}
+  <div class="wrap vibe-hero-copy">
+    <span class="eyebrow">{% if guide.hub %}{{ guide.hub.label }} · {% endif %}{{ guide.subregion }}</span>
+    <h1>{{ guide.title }}</h1>
+    <p class="vibe-hero-region">{{ guide.places.length }} places ranked{% if guide.bestWindow %} · best {{ guide.bestWindow }}{% endif %}</p>
+    <div class="cta">
+      <a class="btn btn-primary" href="#download">Get the App to See My Matches</a>
+      <a class="btn btn-ghost" href="#guide">Read the guide</a>
+    </div>
+  </div>
+</section>
+
+{% include "partials/vp-answer.njk" %}
+
+<section class="block tint" id="ranking">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <span class="eyebrow">The ranking</span>
+      <h2>Every place, <span class="italic">scored</span></h2>
+    </div>
+    <ol class="vibe-scores vp-ranked reveal reveal-delay-1">
+      {% for p in guide.places %}
+      <li class="vibe-score{% if loop.first %} is-hero{% endif %}">
+        <span class="vibe-score-label">
+          {{ p.name }}
+          <em>{% if p.gateway %}<strong>Fly into {% if p.gateway.url %}<a href="{{ p.gateway.url }}">{{ p.gateway.city }}</a>{% else %}{{ p.gateway.city }}{% endif %} ({{ p.gateway.iata }})</strong>{% endif %}{% if p.months %} · {{ p.months }}{% endif %}{% if p.note %} · {{ p.note }}{% endif %}</em>
+        </span>
+        <span class="vibe-score-bar" aria-hidden="true"><span style="width: {{ p.score }}%;"></span></span>
+        <span class="vibe-score-num">{{ p.score }}</span>
+      </li>
+      {% endfor %}
+    </ol>
+  </div>
+</section>
+
+<section class="block" id="guide">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <span class="eyebrow">The guide</span>
+      <h2>{{ guide.where.charAt(0).toUpperCase() + guide.where.slice(1) }} at its <span class="italic">best</span></h2>
+      <p class="vp-updated">Researched {{ researchedText }} · {{ guide.sources.length }} sources</p>
+    </div>
+    <article class="vibe-prose reveal reveal-delay-1">
+      {{ guide.body | markdown | safe }}
+    </article>
+
+    {% if guide.sources.length %}
+    <div class="vibe-sources reveal">
+      <h4>Sources</h4>
+      <ul>
+        {% for src in guide.sources %}
+        <li>
+          {% if src.url %}<a href="{{ src.url }}" rel="nofollow noopener" target="_blank">{{ src.title or src.url }}</a>
+          {% else %}{{ src.title }}{% endif %}
+          {% if src.note %}<span> · {{ src.note }}</span>{% endif %}
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    {% if guide.hub and guide.hub.url %}
+    <p class="vp-more reveal"><a href="{{ guide.hub.url }}">Best places to {{ guide.hub.label | lower }} in every region</a></p>
+    {% endif %}
+  </div>
+</section>
+
+{% include "partials/vp-faq.njk" %}
+
+{% set s = { id: "download", eyebrow: "Ready to wander?", title: { pre: "Your next trip starts ", accent: "here", post: "." }, body: "See which of these fit your budget and dates, with real flights and hotels from your airport, in the WhereTo app." } %}
+{% include "sections/cta_band.njk" %}

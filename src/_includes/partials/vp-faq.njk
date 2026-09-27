@@ -1,0 +1,10 @@
+{#- Quick answers on a generated Vibe Engine page. Every answer is assembled
+    from ranking rows by scripts/gen-vibe-pages.js; the same list feeds the
+    FAQPage structured data, so the markup and the page can't disagree. The
+    shared faq_accordion prints answers raw (CMS answers carry HTML), so these
+    plain-text ones are escaped on the way in. -#}
+{%- set rec = hub or guide or dest -%}
+{%- set items = [] -%}
+{%- for f in rec.faq %}{% set items = (items.push({ q: f.q, a: f.a | escape }), items) %}{% endfor -%}
+{% set s = { eyebrow: "Quick answers", title: { pre: "", accent: "Questions", post: " people ask" }, items: items, background: true } %}
+{% include "sections/faq_accordion.njk" %}

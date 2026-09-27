@@ -1,0 +1,123 @@
+---
+pagination:
+  data: vibePages.destinations
+  size: 1
+  alias: dest
+  addAllPagesToCollections: true
+permalink: "/destinations/{{ dest.slug }}/"
+---
+{#- A destination: its intro and every vibe the engine scores it for.
+    Data from scripts/gen-vibe-pages.js. -#}
+
+<section class="vibe-hero">
+  <div class="vibe-hero-media" data-cycle style="--cycle-delay: 0s;">
+    {% for img in dest.images %}
+    <img class="dest-photo-frame vibe-hero-frame{% if loop.first %} is-on{% endif %}"
+         {% if loop.first %}src="{{ img.url | thumb(1100) }}" srcset="{{ img.url | thumbSet([640, 1100, 1600]) }}"{% else %}data-src="{{ img.url | thumb(1100) }}" data-srcset="{{ img.url | thumbSet([640, 1100, 1600]) }}"{% endif %}
+         sizes="100vw"
+         alt="{% if loop.first %}{{ img.alt or dest.name }}{% endif %}"
+         {% if not loop.first %}aria-hidden="true"{% endif %}
+         loading="{% if loop.first %}eager{% else %}lazy{% endif %}" decoding="async" />
+    {% endfor %}
+    <span class="vibe-hero-scrim" aria-hidden="true"></span>
+  </div>
+  <div class="wrap vibe-hero-copy">
+    <span class="eyebrow">{{ dest.subregion }} · {{ dest.iata }}</span>
+    <h1>{{ dest.city }}{% if dest.country != dest.city %}<span class="vibe-hero-country">, {{ dest.country }}</span>{% endif %}</h1>
+    <p class="vibe-hero-region">{{ dest.vibes.length }} travel vibes scored{% if dest.bestMonthsShort %} · best {{ dest.bestMonthsShort }}{% endif %}</p>
+    <div class="cta">
+      <a class="btn btn-primary" href="#download">Get the App to See My Matches</a>
+      <a class="btn btn-ghost" href="#vibes">What it's best for</a>
+    </div>
+  </div>
+</section>
+
+{% include "partials/vp-answer.njk" %}
+
+{% if dest.introBody %}
+<section class="block tint">
+  <div class="wrap">
+    <div class="vibe-facts reveal">
+      <div class="vibe-fact">
+        <span class="vibe-fact-label">Gateway airport</span>
+        <span class="vibe-fact-value">{{ dest.iata }}</span>
+      </div>
+      <div class="vibe-fact">
+        <span class="vibe-fact-label">Region</span>
+        <span class="vibe-fact-value">{{ dest.subregion }}</span>
+      </div>
+      <div class="vibe-fact">
+        <span class="vibe-fact-label">Vibes matched</span>
+        <span class="vibe-fact-value">{{ dest.vibes.length }}</span>
+      </div>
+      {% if dest.bestMonths %}
+      <div class="vibe-fact">
+        <span class="vibe-fact-label">Best months</span>
+        <span class="vibe-fact-value">{{ dest.bestMonths }}</span>
+      </div>
+      {% endif %}
+    </div>
+    <div class="vibe-intro reveal reveal-delay-1">
+      {% if dest.introTitle %}<h2 class="vp-intro-title">{{ dest.introTitle }}</h2>{% endif %}
+      <p>{{ dest.introBody }}</p>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<section class="block" id="vibes">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <span class="eyebrow">The full picture</span>
+      <h2>What {{ dest.city }} is <span class="italic">best for</span></h2>
+      <p class="lede">The engine scores the places you can reach from here, so some of these name a town, a site or a tradition rather than {{ dest.city }} itself.</p>
+    </div>
+    <ul class="vibe-scores reveal reveal-delay-1">
+      {% for v in dest.vibes %}
+      <li class="vibe-score{% if loop.first %} is-hero{% endif %}">
+        <span class="vibe-score-label">
+          {% if v.guideUrl %}<a href="{{ v.guideUrl }}">{{ v.label }}</a>{% elif v.hub and v.hub.url %}<a href="{{ v.hub.url }}">{{ v.label }}</a>{% else %}{{ v.label }}{% endif %}
+          {% if v.place %}<em><strong>{{ v.place }}</strong>{% if v.note %} · {{ v.note }}{% endif %}</em>
+          {% elif v.note %}<em>{{ v.note }}</em>{% endif %}
+        </span>
+        <span class="vibe-score-bar" aria-hidden="true"><span style="width: {{ v.score }}%;"></span></span>
+        <span class="vibe-score-num">{{ v.score }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+    <p class="app-disclaimer reveal">Scores are how the Vibe Engine ranks {{ dest.city }} against everywhere else it knows. Your own matches are scored against your budget, dates and departure city in the app.</p>
+  </div>
+</section>
+
+{% if dest.images.length > 1 %}
+<section class="block tint">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <span class="eyebrow">On the ground</span>
+      <h2>{{ dest.city }}, <span class="italic">up close</span></h2>
+    </div>
+    <div class="vibe-gallery reveal reveal-delay-1">
+      {% for img in dest.images %}
+      <figure>
+        <img src="{{ img.url | thumb(760) }}" srcset="{{ img.url | thumbSet([420, 760]) }}"
+             sizes="(max-width: 560px) 92vw, (max-width: 960px) 46vw, 31vw"
+             alt="{{ img.alt or dest.name }}" loading="lazy" decoding="async" />
+        {% if img.credit %}
+        <figcaption>
+          {% if img.creditUrl %}<a href="{{ img.creditUrl }}" rel="nofollow noopener" target="_blank">{{ img.credit }}</a>{% else %}{{ img.credit }}{% endif %}
+          {% if img.source %} / {{ img.source }}{% endif %}
+        </figcaption>
+        {% endif %}
+      </figure>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% include "partials/vp-faq.njk" %}
+
+{% set s = { id: "download", eyebrow: "Ready to wander?", title: { pre: "Your next trip starts ", accent: "here", post: "." }, body: "See real flight and hotel prices to " + dest.city + " from your airport, matched to your budget and dates, in the WhereTo app." } %}
+{% include "sections/cta_band.njk" %}
+
+<script src="/assets/js/wt-vibe-cards.js?v={{ buildTime }}" defer></script>

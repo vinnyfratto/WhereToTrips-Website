@@ -1,0 +1,12 @@
+{#- The answer-first block on every generated Vibe Engine page. It sits right
+    under the hero because this is the paragraph an answer engine quotes:
+    it says, in one go, what the page proves. `rec` is the page's record. -#}
+{%- set rec = hub or guide or dest -%}
+<section class="block vp-answer-block">
+  <div class="wrap">
+    <div class="vp-answer reveal">
+      <p class="vp-answer-text">{{ rec.answer }}</p>
+      {% if updatedText %}<p class="vp-updated">Updated {{ updatedText }} · WhereTo Vibe Engine</p>{% endif %}
+    </div>
+  </div>
+</section>

@@ -37,13 +37,16 @@
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="{{ metaTitle }}" />
 <meta name="twitter:description" content="{{ metaDesc }}" />
-{%- if not noindex %}
+{#- Preview pages (src/vibe-pages while vibePages.preview) are noindex but still
+    print their structured data, so it can be checked before they go live. -#}
+{%- if not noindex or ldPreview %}
 {#- Structured data: who we are (Organization + WebSite on every page), what
     this page is, and its breadcrumb, article, list or FAQ. Built in lib/seo.js. -#}
 {%- set ld = {
-  url: page.url, title: metaTitle, description: metaDesc, image: metaImage, lastmod: lastmod,
+  url: page.url, title: metaTitle, pageTitle: title, description: metaDesc, image: metaImage, lastmod: lastmod,
   tags: tags, sections: sections, v: v, author: author, published: published, updated: updated,
-  destinations: destinations, picks: picks, listHeading: listHeading
+  destinations: destinations, picks: picks, listHeading: listHeading,
+  pageType: pageType, faq: pageFaq, itemList: pageList, listName: pageListName, article: pageArticle, place: pagePlace
 } %}
 <script type="application/ld+json">{{ ld | jsonLd(site, collections.all) | safe }}</script>
 {%- endif %}

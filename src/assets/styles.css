@@ -1461,3 +1461,54 @@ footer { background: var(--footer); padding: 72px 0 40px; }
 .gw-arrow { color: var(--wg400); }
 .gw-count strong { font-family: var(--serif); font-size: 19px; color: var(--navy); }
 .gw-sep { color: var(--wg400); }
+
+/* ── Generated Vibe Engine pages (src/vibe-pages) ───────────────────
+   Hub, guide and destination pages reuse the featured-vibe styles above;
+   these are the few pieces they add. */
+
+/* The answer-first paragraph: the one an answer engine quotes. Plain
+   editorial type on the page, no box around it (house default). */
+.vp-answer-block { padding-bottom: 8px; }
+.vp-answer { max-width: 760px; margin: 0 auto; }
+.vp-answer-text {
+  font-family: var(--serif);
+  font-size: clamp(20px, 2.4vw, 25px);
+  line-height: 1.5;
+  color: var(--navy);
+}
+.vp-updated { font-size: 13px; color: var(--ink-muted); margin-top: 14px; }
+.sec-head .vp-updated { margin-top: 8px; }
+
+/* Ranked lists number themselves. */
+.vp-ranked { counter-reset: vp-rank; }
+.vp-ranked .vibe-score { counter-increment: vp-rank; grid-template-columns: 28px minmax(0, 1fr) 160px 42px; }
+.vp-ranked .vibe-score::before {
+  content: counter(vp-rank);
+  font-family: var(--serif);
+  font-size: 17px;
+  color: var(--ink-muted);
+}
+.vibe-score-label a, .vp-region-name a, .vp-more a { color: var(--azure); text-decoration: none; }
+.vibe-score-label a:hover, .vp-region-name a:hover, .vp-more a:hover { text-decoration: underline; }
+
+/* Region list on a hub page. */
+.vp-regions { list-style: none; margin: 0 auto; padding: 0; max-width: 880px; }
+.vp-regions li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 42px;
+  gap: 4px 18px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--wg200);
+}
+.vp-region-name { font-size: 16px; color: var(--navy); }
+.vp-region-meta { grid-column: 1; font-size: 13px; color: var(--ink-muted); }
+.vp-region-top { grid-column: 2; grid-row: 1 / span 2; align-self: center; text-align: right; font-family: var(--serif); font-size: 19px; color: var(--navy); }
+
+.vp-intro-title { font-size: 24px; margin-bottom: 10px; }
+.vp-more { max-width: 760px; margin: 28px auto 0; font-size: 15px; }
+
+/* On a phone the rank, the name and the score matter; the bar doesn't. */
+@media (max-width: 560px) {
+  .vp-ranked .vibe-score { grid-template-columns: 22px minmax(0, 1fr) 42px; gap: 12px; }
+  .vp-ranked .vibe-score-bar { display: none; }
+}
