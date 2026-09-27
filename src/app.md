@@ -1,7 +1,7 @@
 ---
 layout: layouts/page.njk
 title: "Get the WhereTo App — iOS & Android"
-description: "Download WhereTo for iOS and Android. Free to download — get personalized destination matches, plan group trips with Wander Together, and book flights, hotels, and activities, all in the app."
+description: "Download WhereTo for iOS and Android, for trips departing from US airports. Free to download — get personalized destination matches, plan group trips with Wander Together, and book flights, hotels, and activities, all in the app."
 sections:
   - type: hero
     eyebrow: "Get the App"

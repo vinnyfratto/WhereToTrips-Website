@@ -1,6 +1,6 @@
 ---
 title: "WhereTo Trips: Find Where to Go by Budget and Vibe"
-description: WhereTo is a travel discovery app for iOS and Android. Tell it your budget and your vibe, and it finds the destination. Planning and booking happen in the app.
+description: "WhereTo is a travel discovery app for iOS and Android, for trips departing from US airports. Tell it your budget and your vibe, and it finds the destination. Planning and booking happen in the app."
 layout: layouts/page.njk
 sections:
   - type: hero

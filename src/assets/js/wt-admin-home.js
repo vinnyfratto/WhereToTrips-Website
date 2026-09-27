@@ -41,6 +41,9 @@ async function init() {
     return;
   }
 
+  // An admin's browser is ours: keep its visits out of site analytics (base.njk).
+  try { localStorage.setItem('wt_internal', '1'); } catch (e) { /* storage blocked */ }
+
   $('#adm-gate').style.display = 'none';
   $('#adm-root').style.display = 'block';
   $('#adm-logout').addEventListener('click', async () => { await supabase.auth.signOut(); window.location.href = '/account/login/'; });

@@ -21,6 +21,8 @@ sections:
         a: "Yes. WhereTo requires a free account so we can save your trips, preferences, and destinations, and so group planning actually works for everyone involved. Registration is designed to be quick."
       - q: "How does privacy work in Wander Together?"
         a: "Each person picks their own vibes, and the group sees how many each person saved rather than the list. The trip has one budget, set by the organizer, that everyone can see, so nobody enters a personal budget. Votes show each person's name. Passport and other booking details are only visible to you and whoever pays for you."
+      - q: "Where can I use WhereTo?"
+        a: "WhereTo plans trips that depart from US airports, including US territories such as Puerto Rico. Destinations are worldwide. If your trip starts outside the United States, WhereTo can't plan it yet."
       - q: "Is WhereTo available now?"
         a: "Not yet. WhereTo is in pre-launch and arrives on iOS and Android in October 2026. Leave your email on the Notify Me at Launch page and we will tell you the moment it opens."
 

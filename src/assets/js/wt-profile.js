@@ -1083,6 +1083,8 @@ export async function initProfileForm(supabase, user, opts = {}) {
     ]).then(([aff, adm]) => {
       gates.affiliate = !!(aff && aff.data);
       gates.admin = !!(adm && adm.data);
+      // An admin's browser is ours: keep its visits out of site analytics (base.njk).
+      if (gates.admin) { try { localStorage.setItem('wt_internal', '1'); } catch (e) { /* storage blocked */ } }
       if (gates.affiliate || gates.admin) repaintMenu();
     });
   }
