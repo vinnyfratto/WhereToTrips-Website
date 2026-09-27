@@ -16,7 +16,7 @@
 ---
 
 > **▶ Resume here (next session).** Site is live and the CMS works end-to-end. Open items, rough priority:
-> 1. **Phase 3 polish** — real per-page photography (vibe/destination/insight leaves currently reuse 4 stock images); the proprietary "by the numbers" stat page; more destination lists; submit to **Google Search Console + Bing Webmaster Tools** (owner; the technical SEO pass is done, see 2026-09-27 changelog). Next SEO step: publish the Vibe Engine guides/destinations as pages.
+> 1. **Phase 3 polish** — real per-page photography (vibe/destination/insight leaves currently reuse 4 stock images); the proprietary "by the numbers" stat page; more destination lists; **Google Search Console + Bing Webmaster Tools verified 2026-09-27** (GSC Domain property via DNS TXT; Bing imported from GSC; sitemap submitted). Next SEO step: publish the Vibe Engine guides/destinations as pages.
 > 2. **Legal review** — have counsel check `/legal/privacy` + `/legal/terms` (drafts).
 > 3. **Q3** — decide whether founder names appear on `/about` (currently omitted).
 > 4. **Optional** — deploy `sveltia-cms-auth` Cloudflare Worker + GitHub OAuth for multi-user CMS login (Chris); currently single-user PAT. Then uncomment `base_url` in `src/admin/config.yml`.
