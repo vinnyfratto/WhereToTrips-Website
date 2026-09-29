@@ -30,8 +30,10 @@ noindex: true
   .join-actions { display: flex; flex-direction: column; gap: 12px; }
   .join-actions .btn { width: 100%; text-align: center; }
   .join-note { color: var(--wg600); font-size: .95rem; margin: 22px 0 0; }
-  .join-stores { margin-top: 8px; font-size: .95rem; }
-  .join-stores a { color: var(--rust); font-weight: 600; }
+  .join-stores { margin-top: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .join-stores .btn { width: 100%; text-align: center; }
+  .join-stores .join-alt { font-size: .95rem; }
+  .join-stores .join-alt a { color: var(--rust); font-weight: 600; }
 </style>
 
 <main class="acct">
@@ -45,11 +47,7 @@ noindex: true
         <a class="btn btn-primary" id="join-open" href="#">Open in WhereTo</a>
       </div>
       <p class="join-note">Don't have the app yet? Install it, then tap your invite link again.</p>
-      <p class="join-stores">
-        <a href="https://play.google.com/store/apps/details?id=com.vcinnovationsgroup.whereto">Get it on Google Play</a>
-        <span style="color:var(--wg400);padding:0 8px;">|</span>
-        <span>App Store coming soon</span>
-      </p>
+      <div class="join-stores" data-stores></div>
     </div>
 
     <div id="join-traveler" style="display:none;">
@@ -61,11 +59,7 @@ noindex: true
       </div>
       <p class="join-note">Don't have the app yet? Install it and create your free account, then tap your invite link again.</p>
       <p class="join-note">On a computer? <a id="join-web" href="#">Accept on the website</a> instead.</p>
-      <p class="join-stores">
-        <a href="https://play.google.com/store/apps/details?id=com.vcinnovationsgroup.whereto">Get it on Google Play</a>
-        <span style="color:var(--wg400);padding:0 8px;">|</span>
-        <span>App Store coming soon</span>
-      </p>
+      <div class="join-stores" data-stores></div>
     </div>
 
     <div id="join-missing" style="display:none;">
@@ -78,6 +72,31 @@ noindex: true
 
 <script>
   (function () {
+    // With the app installed, these links open it directly (Universal Links /
+    // App Links, see /.well-known/), so anyone on this page most likely does
+    // not have it yet: lead with the one store that fits their phone.
+    var ua = navigator.userAgent || '';
+    var isIOS = /iPhone|iPad|iPod/i.test(ua) || (/Macintosh/i.test(ua) && 'ontouchend' in document);
+    var isAndroid = /Android/i.test(ua);
+    var PLAY = 'https://play.google.com/store/apps/details?id=com.vcinnovationsgroup.whereto';
+    var APPSTORE = 'https://apps.apple.com/app/id6798015454';
+    var storeHtml = isIOS
+      ? '<a class="btn btn-ghost" href="' + APPSTORE + '">Download on the App Store</a>'
+      : isAndroid
+        ? '<a class="btn btn-ghost" href="' + PLAY + '">Get it on Google Play</a>'
+        : '<p class="join-alt"><a href="' + APPSTORE + '">App Store</a>'
+          + '<span style="color:var(--wg400);padding:0 8px;">|</span>'
+          + '<a href="' + PLAY + '">Google Play</a></p>';
+    document.querySelectorAll('[data-stores]').forEach(function (el) { el.innerHTML = storeHtml; });
+
+    // Trying the app's own scheme is how a browser without Universal/App Link
+    // support still hands off. Not on iOS: with the app missing, Safari shows
+    // an "address is invalid" error over the page, and anyone with the app
+    // installed never reaches this page there anyway.
+    var tryOpen = function (link) {
+      if (!isIOS) setTimeout(function () { window.location.href = link; }, 600);
+    };
+
     var params = new URLSearchParams(window.location.search);
 
     // A Saved Traveler invite: the token is long and case-sensitive, so it is
@@ -89,7 +108,7 @@ noindex: true
       var inviteLink = 'whereto:///invite/' + token;
       document.getElementById('join-accept').href = inviteLink;
       document.getElementById('join-web').href = '/account/profile/?section=travellers&invite=' + token;
-      setTimeout(function () { window.location.href = inviteLink; }, 600);
+      tryOpen(inviteLink);
       return;
     }
 
@@ -104,6 +123,6 @@ noindex: true
     var deepLink = 'whereto:///' + route + '/' + code;
     document.getElementById('join-open').href = deepLink;
     // Try the app straight away; the page stays as the fallback if it isn't installed.
-    setTimeout(function () { window.location.href = deepLink; }, 600);
+    tryOpen(deepLink);
   })();
 </script>

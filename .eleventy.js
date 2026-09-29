@@ -5,6 +5,9 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy("src/favicon.svg");
   eleventyConfig.addPassthroughCopy("src/CNAME");
   eleventyConfig.addPassthroughCopy("src/.nojekyll");
+  // App Links (Android) + Universal Links (iOS): prove the app owns
+  // wheretotrips.com/join/ so invite links open the app directly.
+  eleventyConfig.addPassthroughCopy("src/.well-known");
   eleventyConfig.addPassthroughCopy("src/vibes-engine");
   eleventyConfig.addPassthroughCopy("src/DestImages");
   eleventyConfig.addPassthroughCopy("src/vibesimages");

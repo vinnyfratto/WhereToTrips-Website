@@ -1,0 +1,13 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.vcinnovationsgroup.whereto",
+      "sha256_cert_fingerprints": [
+        "75:B3:D7:9C:7E:30:5E:5A:9D:75:85:F6:BF:98:E5:80:3E:32:C9:FE:59:C3:52:A2:62:4C:B1:63:3C:4F:BF:F0",
+        "BA:C2:F1:78:25:45:47:33:A9:9E:7A:DF:A6:CB:59:44:F2:3E:3A:25:90:96:60:D7:98:14:96:ED:35:B7:96:AB"
+      ]
+    }
+  }
+]

@@ -1,0 +1,13 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["HRGQKBQLX6.com.vcinnovationsgroup.whereto"],
+        "components": [
+          { "/": "/join/*", "comment": "Crew, Together and Saved Traveler invite links" },
+          { "/": "/join",   "comment": "Same, without the trailing slash" }
+        ]
+      }
+    ]
+  }
+}
