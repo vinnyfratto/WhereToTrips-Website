@@ -87,5 +87,9 @@ export async function run() {
     // partner keeps the credit either way.
   }
 
-  window.location.replace(DEST);
+  // A phone goes to /get-app/: store buttons that carry the partner through
+  // the install (Play install referrer) or show the code to type in the app
+  // (iPhone). A computer signs up on the web, where the cookie credits it.
+  const onPhone = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent || '');
+  window.location.replace(onPhone ? '/get-app/' : DEST);
 }

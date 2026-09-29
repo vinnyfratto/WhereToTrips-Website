@@ -1,0 +1,108 @@
+---
+layout: layouts/base.njk
+title: "Get the WhereTo app"
+description: "Download WhereTo and plan trips around your vibes."
+permalink: /get-app/
+eleventyExcludeFromCollections: true
+noindex: true
+---
+{#
+  Where a partner's link (/promo/CODE) sends a PHONE, after wt-affiliate.js has
+  logged the click and set the wt_ref / wt_ref_click cookies. A computer still
+  goes to /account/signup/, where the cookie credits the account.
+
+  The store buttons carry the partner so the credit survives the install:
+  • Google Play: the code rides in the install referrer. The app reads it on
+    its first open (app src/utils/partnerRef.ts) and links the account at
+    sign-up, whichever way they sign up. utm_source/utm_campaign also make
+    Play Console's acquisition report count installs per partner.
+  • App Store: Apple passes nothing to the app, so the code is shown here to
+    type into the app's sign-up screen. ct= names the partner in App Store
+    Connect's campaign report once APPSTORE_PROVIDER_TOKEN is filled in
+    (App Store Connect > App Analytics > Acquisition > Campaigns > Generate
+    a campaign link: the pt= value).
+#}
+<link rel="stylesheet" href="/assets/account.css?v={{ buildTime }}" />
+<style>
+  .ga-actions { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
+  .ga-actions .btn { width: 100%; text-align: center; }
+  .ga-code-wrap { margin: 22px 0 6px; }
+  .ga-code-label { color: var(--wg600); font-size: .95rem; margin: 0 0 8px; }
+  .ga-code {
+    display: inline-flex; align-items: center; gap: 12px; padding: 10px 16px;
+    border-radius: 10px; background: var(--wg100, #F2F4F6);
+    font-family: var(--mono, ui-monospace, monospace); font-size: 1.2rem;
+    letter-spacing: 2px; color: var(--navy);
+  }
+  .ga-copy { font-family: inherit; font-size: .85rem; letter-spacing: 0; border: 0; background: none; color: var(--azure); font-weight: 600; cursor: pointer; }
+  .ga-note { color: var(--wg600); font-size: .95rem; margin: 22px 0 0; }
+  .ga-note a { color: var(--azure); font-weight: 600; }
+</style>
+
+<main class="acct">
+  <div class="acct-card" style="text-align:center;">
+    <p class="eyebrow">WhereTo</p>
+    <h1>Get the WhereTo app</h1>
+    <p class="acct-sub">Plan trips around your vibes, then book flights and hotels in one place.</p>
+
+    <div class="ga-actions" id="ga-stores"></div>
+
+    <div class="ga-code-wrap" id="ga-code-wrap" style="display:none;">
+      <p class="ga-code-label" id="ga-code-label">When you create your account in the app, enter this partner code:</p>
+      <div class="ga-code"><span id="ga-code"></span><button class="ga-copy" id="ga-copy" type="button">Copy</button></div>
+    </div>
+
+    <p class="ga-note">Rather start on the web? <a href="/account/signup/">Create your account here</a>, then sign in to the app with it.</p>
+  </div>
+</main>
+
+<script>
+  (function () {
+    // Fill in from App Store Connect to count installs per partner there.
+    var APPSTORE_PROVIDER_TOKEN = '';
+    var APP_ID  = '6798015454';
+    var PACKAGE = 'com.vcinnovationsgroup.whereto';
+
+    function cookie(name) {
+      var m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+      return m ? decodeURIComponent(m[1]) : '';
+    }
+    var params = new URLSearchParams(location.search);
+    var clean  = function (v) { return (v || '').replace(/[^A-Za-z0-9-]/g, '').slice(0, 40); };
+    var code   = clean(params.get('ref') || cookie('wt_ref'));
+    var click  = (cookie('wt_ref_click') || '').replace(/[^A-Za-z0-9-]/g, '');
+
+    var ua = navigator.userAgent || '';
+    var isIOS = /iPhone|iPad|iPod/i.test(ua) || (/Macintosh/i.test(ua) && 'ontouchend' in document);
+    var isAndroid = /Android/i.test(ua);
+
+    var referrer = code
+      ? 'utm_source=partner&utm_medium=promo&utm_campaign=' + code + '&wt_ref=' + code + (click ? '&wt_click=' + click : '')
+      : '';
+    var play = 'https://play.google.com/store/apps/details?id=' + PACKAGE
+      + (referrer ? '&referrer=' + encodeURIComponent(referrer) : '');
+    var appStore = 'https://apps.apple.com/app/id' + APP_ID
+      + (code ? '?ct=' + encodeURIComponent(code) + (APPSTORE_PROVIDER_TOKEN ? '&pt=' + APPSTORE_PROVIDER_TOKEN : '') + '&mt=8' : '');
+
+    var playBtn  = '<a class="btn btn-primary" href="' + play + '">Get it on Google Play</a>';
+    var appleBtn = '<a class="btn btn-primary" href="' + appStore + '">Download on the App Store</a>';
+    document.getElementById('ga-stores').innerHTML =
+      isIOS ? appleBtn : isAndroid ? playBtn : appleBtn + playBtn;
+
+    if (code) {
+      document.getElementById('ga-code').textContent = code;
+      document.getElementById('ga-code-wrap').style.display = 'block';
+      if (isAndroid) {
+        // Carried through the install; the code is only a backup here.
+        document.getElementById('ga-code-label').textContent =
+          'Your partner code comes with the app. If the sign-up screen asks, it is:';
+      }
+      document.getElementById('ga-copy').addEventListener('click', function () {
+        var btn = this;
+        (navigator.clipboard ? navigator.clipboard.writeText(code) : Promise.reject())
+          .then(function () { btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = 'Copy'; }, 1500); })
+          .catch(function () {});
+      });
+    }
+  })();
+</script>
