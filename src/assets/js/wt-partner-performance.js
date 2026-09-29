@@ -84,7 +84,7 @@ function renderBookings(bookings) {
           <div class="pb-when${b.commission_status === 'approved' ? ' ready' : ''}"></div>
         </div>`;
       btn.querySelector('.pb-title').textContent = (b.booking_kind === 'flight' ? '✈ ' : '') + (b.title || (b.booking_kind === 'flight' ? 'Flight' : 'Hotel'));
-      btn.querySelector('.pb-meta').textContent = [b.traveller, b.where_, dates].filter(Boolean).join(' · ');
+      btn.querySelector('.pb-meta').textContent = [b.reference ? 'Conf. ' + b.reference : '', b.where_, dates].filter(Boolean).join(' · ');
       btn.querySelector('.pb-amt').textContent = cancelled ? '—' : fmtMoney(b.commission_amount, b.commission_currency);
       btn.querySelector('.pb-when').textContent = when;
       btn.addEventListener('click', () => openTimelineModal(b));

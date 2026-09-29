@@ -14,7 +14,10 @@
 //  Row shape (both callers normalise to it):
 //    { booking_kind, title, where_, starts_on, ends_on, booking_status,
 //      created_at, commission_amount, commission_currency,
-//      commission_status, commission_hold_until, traveller? }
+//      commission_status, commission_hold_until, reference? }
+//
+//  Bookings are identified by confirmation number only: no traveller names or
+//  other personal details, on either page.
 // ───────────────────────────────────────────────────────────────────
 
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -105,7 +108,8 @@ export function timelineHtml(row) {
     <div class="ctl-head">
       <div>
         <div class="ctl-title">${esc(row.title || (row.booking_kind === 'flight' ? 'Flight' : 'Hotel'))}</div>
-        <div class="ctl-sub">${esc([row.booking_kind === 'flight' ? 'Flight' : 'Hotel', row.where_, row.traveller].filter(Boolean).join(' · '))}</div>
+        <div class="ctl-sub">${esc([row.booking_kind === 'flight' ? 'Flight' : 'Hotel', row.where_].filter(Boolean).join(' · '))}</div>
+        ${row.reference ? `<div class="ctl-sub">Confirmation ${esc(row.reference)}</div>` : ''}
       </div>
       <div class="ctl-amount">
         <div>${esc(money(row.commission_amount, row.commission_currency))}</div>
