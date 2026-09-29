@@ -8,6 +8,7 @@
 // ───────────────────────────────────────────────────────────────────
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
+import { timelineHtml, fmtDate as dayDate } from './wt-commission-timeline.js';
 const cfg = window.WT_SUPABASE || {};
 const supabase = createClient(cfg.url, cfg.anonKey, {
   auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
@@ -545,9 +546,11 @@ async function loadCommissions() {
   panel('commissions').innerHTML = `
     <div class="adm-card">
       <h3>Commissions</h3>
+      <div id="com-summary" class="adm-com-summary"></div>
       <div class="adm-form-row">
         <div class="field"><label>Commission status</label>
           <select id="com-filter">
+            <option value="unpaid" selected>Unpaid (pending + ready)</option>
             <option value="">All</option><option value="none">None</option>
             <option value="pending">Pending</option><option value="approved">Approved</option>
             <option value="paid">Paid</option><option value="rejected">Rejected</option>
@@ -572,7 +575,31 @@ async function loadCommissions() {
 async function fetchCommissions() {
   const r = await callAdmin('list_commissions', { status: $('#com-filter').value, assigned: $('#com-assigned').value });
   comData = r.commissions || [];
+  renderCommissionSummary(r.summary);
   renderCommissionsTable();
+}
+
+// What is owed across every partner, whatever the filter shows: inside the
+// 14-day hold after the trip, past the hold and waiting on an approval, and
+// approved (ready for the next payout).
+function renderCommissionSummary(sm) {
+  const el = $('#com-summary');
+  if (!el) return;
+  if (!sm || !sm.total_owed) { el.innerHTML = '<p class="acct-sub" style="margin:0 0 14px;">Nothing owed to partners right now.</p>'; return; }
+  const cell = (label, value, sub) => `<div class="adm-com-cell"><div class="adm-com-label">${label}</div><div class="adm-com-value">${value}</div>${sub ? `<div class="adm-com-subtext">${sub}</div>` : ''}</div>`;
+  el.innerHTML = `
+    <style>
+      .adm-com-summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 4px 0 18px; }
+      @media (max-width: 760px) { .adm-com-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+      .adm-com-cell { border: 1px solid var(--wg200); border-radius: 10px; padding: 12px 14px; }
+      .adm-com-label { color: var(--wg600); font-size: .8rem; }
+      .adm-com-value { color: var(--navy); font-weight: 700; font-size: 1.15rem; margin-top: 2px; }
+      .adm-com-subtext { color: var(--wg600); font-size: .78rem; margin-top: 2px; }
+    </style>
+    ${cell('Owed to partners', money(sm.total_owed), `${sm.partners} partner${sm.partners === 1 ? '' : 's'}`)}
+    ${cell('Ready to pay out', money(sm.ready), 'Approved')}
+    ${cell('Waiting on approval', money(sm.awaiting_approval), 'Hold is over')}
+    ${cell('In the 14-day hold', money(sm.holding), sm.next_payable_on ? 'Next one payable ' + dayDate(String(sm.next_payable_on).slice(0, 10)) : '')}`;
 }
 
 function renderCommissionsTable() {
@@ -611,17 +638,16 @@ function renderCommissionsTable() {
         ? `<br><span style="display:inline-block;margin-top:8px;">Affiliate commission — ${COMMISSION_CATS.map(([k, l]) => `${l}: <strong>${rateLabel(aff.commissions[k])}</strong>`).join(' &nbsp;·&nbsp; ')} &nbsp;·&nbsp; Duration: <strong>${aff.commission_duration_months || 36} months</strong>${aff.source ? ` &nbsp;·&nbsp; Source: <strong>${esc(aff.source)}</strong>` : ''}</span>`
         : '';
       detail = `<tr class="adm-detail"><td colspan="7">
-        <strong>${esc(c.title || '?')}</strong>
-        ${c.where_ ? `&nbsp;·&nbsp; ${esc(c.where_)}` : ''}
-        &nbsp;·&nbsp; ${c.starts_on ? date(c.starts_on) : '—'}${c.ends_on ? ` to ${date(c.ends_on)}` : ''}
-        &nbsp;·&nbsp; Booking status: ${esc(c.booking_status || '—')}
-        &nbsp;·&nbsp; Ref: ${esc(c.reference || '—')}
-        &nbsp;·&nbsp; Total: ${money(c.booking_total, c.booking_currency)}
-        ${c.commission_hold_until ? `&nbsp;·&nbsp; Held until ${date(c.commission_hold_until)}` : ''}
-        ${c.note ? `&nbsp;·&nbsp; ${esc(c.note)}` : ''}
-        &nbsp;·&nbsp; Commission ID: ${esc(c.id)}
-        &nbsp;·&nbsp; ${esc(c.booking_kind || '')} order: ${esc(c.booking_id || '—')}
-        ${commLine}
+        <div style="max-width:560px;margin:6px 0 10px;">${timelineHtml(c)}</div>
+        <div style="color:var(--wg600);font-size:.85rem;">
+          Booking status: ${esc(c.booking_status || '—')}
+          &nbsp;·&nbsp; Ref: ${esc(c.reference || '—')}
+          &nbsp;·&nbsp; Total: ${money(c.booking_total, c.booking_currency)}
+          ${c.note ? `&nbsp;·&nbsp; ${esc(c.note)}` : ''}
+          &nbsp;·&nbsp; Commission ID: ${esc(c.id)}
+          &nbsp;·&nbsp; ${esc(c.booking_kind || '')} order: ${esc(c.booking_id || '—')}
+          ${commLine}
+        </div>
       </td></tr>`;
     }
     return main + detail;

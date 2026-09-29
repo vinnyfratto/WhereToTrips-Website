@@ -5,6 +5,7 @@
 //  get-affiliate-stats edge fn (server-side, caller-scoped).
 // ───────────────────────────────────────────────────────────────────
 import { requirePartner } from './wt-partner-shared.js';
+import { openTimelineModal, fmtDate, money as fmtMoney } from './wt-commission-timeline.js';
 import Chart from 'https://esm.sh/chart.js@4/auto';
 
 const $ = (id) => document.getElementById(id);
@@ -28,6 +29,70 @@ async function init() {
   renderIdentity(ctx.stats.affiliate);
   renderCards(ctx.stats.totals);
   renderCharts(ctx.stats.series, ctx.stats.funnel, ctx.stats.totals.currency);
+  renderBookings(ctx.stats.bookings || []);
+}
+
+// ── Your bookings ───────────────────────────────────────────────────
+// Unpaid = pending (inside the 14-day hold after the trip, or awaiting
+// approval) + approved (ready for the next payout). A cancelled trip's
+// reversed commission shows under Unpaid with its reason rather than just
+// disappearing. Each row opens its timeline.
+function renderBookings(bookings) {
+  const tabs = document.querySelectorAll('[data-pb-tab]');
+  let tab = 'unpaid';
+  const draw = () => {
+    tabs.forEach((b) => b.classList.toggle('active', b.dataset.pbTab === tab));
+    const rows = bookings.filter((b) => tab === 'paid'
+      ? b.commission_status === 'paid'
+      : b.commission_status !== 'paid');
+    const owed = bookings.filter((b) => b.commission_status === 'pending' || b.commission_status === 'approved');
+    const ready = owed.filter((b) => b.commission_status === 'approved');
+    const cur = (owed[0] || bookings[0] || {}).commission_currency;
+    const sum = owed.reduce((n, b) => n + Number(b.commission_amount || 0), 0);
+    const readySum = ready.reduce((n, b) => n + Number(b.commission_amount || 0), 0);
+    const paid = bookings.filter((b) => b.commission_status === 'paid');
+    $('pb-sum').textContent = tab === 'paid'
+      ? (paid.length ? `${paid.length} paid booking${paid.length === 1 ? '' : 's'}, ${fmtMoney(paid.reduce((n, b) => n + Number(b.commission_amount || 0), 0), cur)} in total.` : '')
+      : (owed.length
+        ? `${fmtMoney(sum, cur)} not yet paid out across ${owed.length} booking${owed.length === 1 ? '' : 's'}`
+          + (readySum ? `, ${fmtMoney(readySum, cur)} of it ready for the next payout.` : '. Commission becomes payable 14 days after each trip ends.')
+        : '');
+
+    const list = $('pb-list');
+    if (!rows.length) {
+      list.innerHTML = `<p class="pb-empty">${tab === 'paid' ? 'Nothing paid out yet.' : 'No unpaid bookings right now. When someone you referred books a trip, it shows up here.'}</p>`;
+      return;
+    }
+    list.innerHTML = '';
+    rows.forEach((b) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'pb-row';
+      const dates = b.starts_on ? fmtDate(b.starts_on) + (b.ends_on ? ' – ' + fmtDate(b.ends_on) : '') : '';
+      const cancelled = b.commission_status === 'reversed' || b.commission_status === 'rejected';
+      const when = b.commission_status === 'paid' ? 'Paid'
+        : b.commission_status === 'approved' ? 'Ready to pay out'
+        : cancelled ? 'Trip cancelled'
+        : b.commission_hold_until ? 'Payable ' + fmtDate(String(b.commission_hold_until).slice(0, 10)) : 'Pending';
+      btn.innerHTML = `
+        <div class="pb-main">
+          <div class="pb-title"></div>
+          <div class="pb-meta"></div>
+        </div>
+        <div class="pb-right">
+          <div class="pb-amt"></div>
+          <div class="pb-when${b.commission_status === 'approved' ? ' ready' : ''}"></div>
+        </div>`;
+      btn.querySelector('.pb-title').textContent = (b.booking_kind === 'flight' ? '✈ ' : '') + (b.title || (b.booking_kind === 'flight' ? 'Flight' : 'Hotel'));
+      btn.querySelector('.pb-meta').textContent = [b.traveller, b.where_, dates].filter(Boolean).join(' · ');
+      btn.querySelector('.pb-amt').textContent = cancelled ? '—' : fmtMoney(b.commission_amount, b.commission_currency);
+      btn.querySelector('.pb-when').textContent = when;
+      btn.addEventListener('click', () => openTimelineModal(b));
+      list.appendChild(btn);
+    });
+  };
+  tabs.forEach((b) => b.addEventListener('click', () => { tab = b.dataset.pbTab; draw(); }));
+  draw();
 }
 
 const COMMISSION_CATS = [

@@ -52,6 +52,38 @@ navActive: performance
       </div>
     </div>
 
+    {# Every commissionable booking: unpaid first, each one clickable for its
+       timeline to payout (wt-commission-timeline.js). #}
+    <style>
+      .pb-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
+      .pb-head h3 { margin: 0; }
+      .pb-tabs { display: inline-flex; background: var(--wg100, #F2F4F6); border-radius: 999px; padding: 3px; }
+      .pb-tabs button { border: 0; background: none; padding: 6px 14px; border-radius: 999px; font: inherit; font-size: .88rem; color: var(--wg600); cursor: pointer; }
+      .pb-tabs button.active { background: #fff; color: var(--navy); font-weight: 600; box-shadow: 0 1px 3px rgba(20,30,40,.12); }
+      .pb-sum { color: var(--wg600); font-size: .92rem; margin: 8px 0 12px; }
+      .pb-row { display: flex; width: 100%; text-align: left; gap: 14px; align-items: center; justify-content: space-between; padding: 12px 4px; border: 0; border-top: 1px solid var(--wg200); background: none; font: inherit; cursor: pointer; }
+      .pb-row:hover { background: var(--wg100, #F7F8FA); }
+      .pb-main { min-width: 0; }
+      .pb-title { color: var(--navy); font-weight: 600; }
+      .pb-meta { color: var(--wg600); font-size: .86rem; margin-top: 2px; }
+      .pb-right { text-align: right; flex: 0 0 auto; }
+      .pb-amt { color: var(--navy); font-weight: 700; }
+      .pb-when { color: var(--wg600); font-size: .82rem; margin-top: 2px; }
+      .pb-when.ready { color: #1e7a45; font-weight: 600; }
+      .pb-empty { color: var(--wg600); padding: 14px 4px; border-top: 1px solid var(--wg200); margin: 0; }
+    </style>
+    <div class="chart-card full" id="pb-card" style="margin-bottom: 30px;">
+      <div class="pb-head">
+        <h3>Your bookings</h3>
+        <div class="pb-tabs" role="tablist">
+          <button type="button" class="active" data-pb-tab="unpaid">Unpaid</button>
+          <button type="button" data-pb-tab="paid">Paid</button>
+        </div>
+      </div>
+      <p class="pb-sum" id="pb-sum"></p>
+      <div id="pb-list"></div>
+    </div>
+
     {# Charts #}
     <div class="chart-grid">
       <div class="chart-card">
