@@ -861,7 +861,7 @@ footer { background: var(--footer); padding: 72px 0 40px; }
    240px photo, same white Vibe Score stamp, same dashed azure roundel,
    same flat-azure name banner (rgba(32,156,224,0.8)), same amber-ruled
    reason line, same azure-over-amber button stack. Someone who has used
-   the app should recognise this card before they read a word of it.
+   the app should recognize this card before they read a word of it.
    Markup: src/_includes/sections/vibe_cards.njk
    ════════════════════════════════════════════════════════════════════ */
 .dest-grid {

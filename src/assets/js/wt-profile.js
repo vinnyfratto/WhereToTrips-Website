@@ -392,7 +392,7 @@ function travellerCard(t, open) {
       row('<div class="field"><label>Document number</label>' + secretInput('<input data-f="document_number" type="text" class="is-masked" autocomplete="off" spellcheck="false" value="' + esc(t.document_number || '') + '" />') + '</div>' +
           '<div class="field"><label>Expiration Date</label><input data-f="document_expiry" type="date" value="' + esc(t.document_expiry || '') + '" /></div>') +
       row('<div class="field"><label>Issuing country</label><select data-f="document_issuing_country">' + countryOpts(t.document_issuing_country) + '</select></div>' +
-          '<div class="field"><label>Known Traveller number <span class="hint">(9 characters)</span></label>' +
+          '<div class="field"><label>Known Traveler number <span class="hint">(9 characters)</span></label>' +
           secretInput('<input data-f="known_traveller_number" type="text" maxlength="9" class="is-masked" autocomplete="off" value="' + esc(t.known_traveller_number || '') + '" />') + '</div>') +
       row('<div class="field"><label>Redress number <span class="hint">(optional)</span></label>' +
           secretInput('<input data-f="redress_number" type="text" class="is-masked" autocomplete="off" value="' + esc(t.redress_number || '') + '" />') + '</div>' +
@@ -570,16 +570,16 @@ const SECTIONS = {
     title: 'Airport Security',
     blurb: 'Optional. Speeds up airport security.',
     read: (p) => readGrid([
-      { label: 'Known Traveller Number', html: secretHtml(p.known_traveller_number) },
+      { label: 'Known Traveler Number', html: secretHtml(p.known_traveller_number) },
       { label: 'Redress number', html: secretHtml(p.redress_number) },
     ]),
     edit: (p) =>
-      row(textField('known_traveller_number', 'Known Traveller Number', {
+      row(textField('known_traveller_number', 'Known Traveler Number', {
             value: p.known_traveller_number, placeholder: 'TSA PreCheck / Global Entry', hint: '(9 letters or digits)',
             maxlength: 9, secret: true }) +
           textField('redress_number', 'Redress number', { value: p.redress_number, placeholder: 'DHS TRIP number', secret: true })),
     validate: (v) => (v.known_traveller_number && !/^[A-Za-z0-9]{9}$/.test(v.known_traveller_number)
-      ? 'A Known Traveller Number is exactly 9 letters or digits.' : null),
+      ? 'A Known Traveler Number is exactly 9 letters or digits.' : null),
     collect: (v) => ({
       known_traveller_number: v.known_traveller_number ? String(v.known_traveller_number).trim().toUpperCase() : null,
       redress_number: orNull(v.redress_number),
@@ -1252,7 +1252,7 @@ export async function initProfileForm(supabase, user, opts = {}) {
     const lines = ['This permanently deletes your sign-in, profile, passport and contact details, saved travelers and your connections to them, saved destinations and your place in group trips.'];
     if (preview.upcomingBookings > 0) {
       lines.push('Your ' + preview.upcomingBookings + ' upcoming ' + (preview.upcomingBookings === 1 ? 'booking is' : 'bookings are') +
-        " NOT cancelled, but you won't see " + (preview.upcomingBookings === 1 ? 'it' : 'them') + ' here anymore. Keep your confirmation emails.');
+        " NOT canceled, but you won't see " + (preview.upcomingBookings === 1 ? 'it' : 'them') + ' here anymore. Keep your confirmation emails.');
     }
     if (preview.organizing > 0) lines.push('Group trips you organize pass to another member, or are deleted if no one else has joined.');
     lines.push('We keep booking records for tax and accounting, as the Privacy Statement explains.');

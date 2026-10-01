@@ -72,7 +72,7 @@ function renderBookings(bookings) {
       const cancelled = b.commission_status === 'reversed' || b.commission_status === 'rejected';
       const when = b.commission_status === 'paid' ? 'Paid'
         : b.commission_status === 'approved' ? 'Ready to pay out'
-        : cancelled ? 'Trip cancelled'
+        : cancelled ? 'Trip canceled'
         : b.commission_hold_until ? 'Payable ' + fmtDate(String(b.commission_hold_until).slice(0, 10)) : 'Pending';
       btn.innerHTML = `
         <div class="pb-main">

@@ -1,6 +1,6 @@
 {
   "preview": true,
-  "generated": "2026-09-27",
+  "generated": "2026-10-01",
   "hubs": [
     {
       "slug": "snorkeling",
@@ -9,7 +9,7 @@
       "phrase": "snorkel reefs and marine life",
       "shelf": {
         "name": "Diving, Snorkeling & Surfing",
-        "blurb": "Getting under the surface, from reef snorkelling off a beach to wreck and cave dives that need a certification."
+        "blurb": "Getting under the surface, from reef snorkeling off a beach to wreck and cave dives that need a certification."
       },
       "category": "Beaches & Water",
       "image": "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/diving_snorkeling/image_1.jpg",
@@ -21,7 +21,7 @@
           "subregion": "Brazil & the Southern Cone",
           "score": 91,
           "tier": "S",
-          "note": "Natural pools a kilometre offshore, reached by jangada at low tide",
+          "note": "Natural pools a kilometer offshore, reached by jangada at low tide",
           "months": "Sep to Mar",
           "monthsLong": "September to March",
           "gateway": {
@@ -186,7 +186,7 @@
           "subregion": "Pacific Islands",
           "score": 85,
           "tier": "A",
-          "note": "A UNESCO lagoon of about 24,000 square kilometres, the largest in the world",
+          "note": "A UNESCO lagoon of about 24,000 square kilometers, the largest in the world",
           "months": "Apr to Nov",
           "monthsLong": "April to November",
           "gateway": {
@@ -245,7 +245,7 @@
       "regions": [
         {
           "subregion": "Brazil & the Southern Cone",
-          "title": "Snorkelling & Coral Reefs in Brazil & the Southern Cone",
+          "title": "Snorkeling & Coral Reefs in Brazil & the Southern Cone",
           "count": 2,
           "top": 91,
           "leader": "The Pajucara & Maragogi pools, Brazil",
@@ -285,7 +285,7 @@
         },
         {
           "subregion": "Southern Africa",
-          "title": "Snorkelling & Coral Reefs in Southern Africa",
+          "title": "Snorkeling & Coral Reefs in Southern Africa",
           "count": 1,
           "top": 88,
           "leader": "The Bazaruto reefs, Mozambique",
@@ -309,7 +309,7 @@
         },
         {
           "subregion": "North Africa",
-          "title": "Snorkelling & Coral Reefs in North Africa",
+          "title": "Snorkeling & Coral Reefs in North Africa",
           "count": 1,
           "top": 85,
           "leader": "The Marsa Alam house reefs, Egypt",
@@ -360,7 +360,7 @@
       "faq": [
         {
           "q": "Where is the best place to snorkel reefs and marine life?",
-          "a": "The Pajucara & Maragogi pools, Brazil, in Brazil & the Southern Cone, scores highest in the WhereTo Vibe Engine at 91: Natural pools a kilometre offshore, reached by jangada at low tide. Next are Bonaire (90) and Sea lion & turtle snorkeling (La Loberia, Champion), Galapagos (90)."
+          "a": "The Pajucara & Maragogi pools, Brazil, in Brazil & the Southern Cone, scores highest in the WhereTo Vibe Engine at 91: Natural pools a kilometer offshore, reached by jangada at low tide. Next are Bonaire (90) and Sea lion & turtle snorkeling (La Loberia, Champion), Galapagos (90)."
         },
         {
           "q": "When is the best time to snorkel reefs and marine life?",
@@ -540,7 +540,7 @@
           "name": "Rose Island & Athol, Bahamas",
           "score": 75,
           "tier": "B",
-          "note": "Reef and wreck snorkelling minutes off New Providence",
+          "note": "Reef and wreck snorkeling minutes off New Providence",
           "months": "All year",
           "monthsLong": "all year",
           "gateway": {
@@ -1217,7 +1217,7 @@
           "label": "LGBTQ+ Travel",
           "score": 78,
           "tier": "A",
-          "note": "A hillside quarter that became the city’s gay centre",
+          "note": "A hillside quarter that became the city’s gay center",
           "place": "Lisbon’s Principe Real",
           "months": "Mar to Oct",
           "monthsLong": "March to October",

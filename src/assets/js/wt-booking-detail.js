@@ -548,7 +548,7 @@ function flightSections(order, live, roster, opts) {
 
   const paxList = litePassengers(order, roster);
   if (paxList.length) {
-    html += '<hr class="bk-divider" />' + section('Travellers', paxList.map(travellerRow).join(''));
+    html += '<hr class="bk-divider" />' + section('Travelers', paxList.map(travellerRow).join(''));
   }
 
   if (services.length) {
@@ -593,11 +593,11 @@ function flightSections(order, live, roster, opts) {
   if (!order.live_mode) {
     checkinHtml = '<p class="bk-body">This is a sandbox test booking — ' +
       esc(carrierName || 'the airline') + ' is not a real carrier, so there is no real check-in for it. ' +
-      'Once WhereTo is live, this section shows a direct link to the traveller’s actual airline.</p>';
+      'Once WhereTo is live, this section shows a direct link to the traveler’s actual airline.</p>';
   } else if (checkin) {
     checkinHtml = '<p class="bk-body">Check in directly with ' + esc(checkin.name) +
       ' using the airline PNR above and ' +
-      (order.passengers === 1 ? 'the traveller’s' : 'the lead traveller’s') + ' last name.</p>' +
+      (order.passengers === 1 ? 'the traveler’s' : 'the lead traveler’s') + ' last name.</p>' +
       '<a class="btn btn-primary bk-checkin-btn" href="' + esc(checkin.url) + '" target="_blank" rel="noopener">' +
       'Check in with ' + esc(checkin.name) + '</a>';
   } else {
@@ -876,7 +876,7 @@ export function renderDetail(ctx, item) {
         if (hotelImages.length) html += hero(hotelImages, 'buildings', 'bk-hero--sub');
         html += hotelSections(hotel, live.hotel, live.content, { includeDisclaimer: false, showMap: false });
         html += '<hr class="bk-divider" /><p class="bk-disclaimer">The flight and hotel above were booked ' +
-          'together but are charged and confirmed separately — cancelling or changing one does not affect ' +
+          'together but are charged and confirmed separately — canceling or changing one does not affect ' +
           'the other. Rates, taxes and fees for both were confirmed at booking. The airline controls flight ' +
           'schedules and seat assignments after ticketing; the property sets its own check-in requirements ' +
           'and may take a deposit or local tax at the desk. All times shown are local to the airport or ' +

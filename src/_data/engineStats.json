@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-21",
+  "generated": "2026-10-01",
   "stats": [
     {
       "key": "vibes",
@@ -240,7 +240,7 @@
     {
       "code": "iconic_cities_landmarks",
       "name": "Cities, Landmarks & Neighborhoods",
-      "blurb": "The big-name cities and the buildings people recognise, from capitals and skylines to futuristic waterfronts.",
+      "blurb": "The big-name cities and the buildings people recognize, from capitals and skylines to futuristic waterfronts.",
       "images": [
         "https://elements-resized.envatousercontent.com/envato-dam-assets-production/EVA/TRX/57/ea/b2/e1/af/v1_E10/E10HKIDA.jpg?w=1600&cf_fit=scale-down&q=85&format=auto&s=cc005bda5f1d8e4c9a04c4cf708f8d83595174823a33cc43fad10dc50571b1ca",
         "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/cities_nightlife/image_1_v2.jpg",
@@ -290,7 +290,7 @@
     {
       "code": "in_the_water",
       "name": "Beaches, Coasts & Islands",
-      "blurb": "Five ways to spend time on a coast, from famous stretches of sand to working harbours and quiet regional beaches.",
+      "blurb": "Five ways to spend time on a coast, from famous stretches of sand to working harbors and quiet regional beaches.",
       "images": [
         "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/water/image_1_v2.jpg",
         "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/in_the_water/image_2.jpg",
@@ -330,7 +330,7 @@
     {
       "code": "diving_snorkeling",
       "name": "Diving, Snorkeling & Surfing",
-      "blurb": "Getting under the surface, from reef snorkelling off a beach to wreck and cave dives that need a certification.",
+      "blurb": "Getting under the surface, from reef snorkeling off a beach to wreck and cave dives that need a certification.",
       "images": [
         "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/diving_snorkeling/image_1.jpg",
         "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/diving_snorkeling/image_2.jpg",
@@ -350,7 +350,7 @@
     {
       "code": "natural_wonders",
       "name": "Parks, Wilderness & Natural Wonders",
-      "blurb": "Nine kinds of landscape worth travelling for, from canyons and waterfalls to glaciers, fjords, caves and salt flats.",
+      "blurb": "Nine kinds of landscape worth traveling for, from canyons and waterfalls to glaciers, fjords, caves and salt flats.",
       "images": [
         "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/wildlife/image_1_v2.jpg",
         "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/wildlife/image_2_v2.jpg",

@@ -308,7 +308,7 @@ body{font-family:var(--sans);background:#DDE3E8;color:var(--charcoal);min-height
 <div class="wrap">
   <div class="pageTitle">
     <h1>Vibe Selection</h1>
-    <span class="sub">The traveller's vibe picker, running on live Vibe Engine data.</span>
+    <span class="sub">The traveler's vibe picker, running on live Vibe Engine data.</span>
   </div>
 
   <div class="controls">
@@ -966,7 +966,7 @@ body{font-family:var(--sans);background:#DDE3E8;color:var(--charcoal);min-height
       return '<option value="' + esc(s.subregion) + '"' + (s.subregion === S.subregion ? ' selected' : '') + '>' + esc(s.subregion) + '</option>';
     }).join('');
     // Browsers restore <select> state across a reload and can fire `change`
-    // afterwards, which would silently load a different sub-region than the one
+    // afterward, which would silently load a different sub-region than the one
     // in state/the URL. Force the DOM to match state.
     rs.value = S.region;
     ss.value = S.subregion;
@@ -1034,7 +1034,7 @@ body{font-family:var(--sans);background:#DDE3E8;color:var(--charcoal);min-height
     // Browsers restore <select> state on reload and fire `change` for it, which
     // would silently override a deep-linked ?region/&sub (loading a different
     // sub-region than the URL says). Restoration never produces a pointer or key
-    // gesture, so require one before honouring a change; anything else just
+    // gesture, so require one before honoring a change; anything else just
     // re-asserts the DOM from state. Handlers also validate against the index.
     [$('vs-region'), $('vs-sub')].forEach(function (el) {
       el.addEventListener('pointerdown', function () { S.ready = true; });

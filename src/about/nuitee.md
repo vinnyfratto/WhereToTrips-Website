@@ -44,7 +44,7 @@ WhereTo Trips has used Nuitée for both flights and hotels since July 2026. Here
 - **Connects to the airlines and hotels.** Nuitée holds the relationships with suppliers and global distribution systems, so the fares and rooms you see are live and bookable.
 - **Makes the booking.** Nuitée is the booking agent of record. When you confirm, it places the reservation with the airline or hotel and returns your confirmation.
 - **Takes the payment.** Nuitée is the merchant of record. Your card details go straight to its PCI-DSS-compliant payment processor, never to WhereTo Trips. Your card statement may show Nuitée or the airline or hotel rather than WhereTo.
-- **Handles refunds.** When a booking is cancelled or refunded, Nuitée returns the money to your card as the merchant of record.
+- **Handles refunds.** When a booking is canceled or refunded, Nuitée returns the money to your card as the merchant of record.
 - **Works with the airline when plans change.** Nuitée's around-the-clock flight desk picks up schedule changes and cancellations from the airline, rebooks or reissues where needed, and sends the updated booking back to us so the app stays current.
 
 ## What This Means for You

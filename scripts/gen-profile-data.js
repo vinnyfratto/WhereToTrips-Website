@@ -54,7 +54,7 @@ const out = `// ─────────────────────�
 //  Regenerate rather than hand-editing when any of those change.
 // ───────────────────────────────────────────────────────────────────
 
-/** ISO 3166-1 alpha-2 + international dialling code. */
+/** ISO 3166-1 alpha-2 + international dialing code. */
 export const COUNTRIES = ${json(COUNTRIES)};
 
 export const COUNTRY_NAME = Object.fromEntries(COUNTRIES.map((c) => [c.code, c.name]));
@@ -95,7 +95,7 @@ export const AIRLINES = ${json(AIRLINES)};
 
 export const HOTEL_LOYALTY = ${json(HOTEL)};
 
-/** The traveller's core travel personality, captured in the app's account
+/** The traveler's core travel personality, captured in the app's account
  *  walkthrough and stored on profiles.base_vibes. */
 export const BASE_VIBES = ${json(VIBES)};
 

@@ -95,7 +95,7 @@ function configWarnings(config) {
   const warnings = [];
   if (!config.tc_version) {
     warnings.push(`<strong>T&amp;C version is not configured.</strong> Onboarding item 2 cannot complete and no
-      acknowledgement can be recorded. Set <code>PCRM_TC_VERSION</code> as an edge function secret once the
+      acknowledgment can be recorded. Set <code>PCRM_TC_VERSION</code> as an edge function secret once the
       governing version is settled. The source documents currently disagree with themselves about their own
       version number, so this is deliberately not defaulted.`);
   }
@@ -259,7 +259,7 @@ async function loadQueue() {
       <h2 class="adm-section-h" style="margin-top:0; padding-top:0; border-top:0;">Awaiting review</h2>
       <p class="acct-sub">
         Review covers <strong>brand accuracy and correct use of the Marks only</strong>. It is not a compliance
-        review. Do not decline on tone, angle, style, or favourability (Agreement §5.6(a), T&amp;C §12.6).
+        review. Do not decline on tone, angle, style, or favorability (Agreement §5.6(a), T&amp;C §12.6).
       </p>
       <p class="acct-sub">
         Decision actions arrive with Phase 1d, alongside the platform mint operation. Until a code can be issued,

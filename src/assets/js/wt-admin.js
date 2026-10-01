@@ -237,7 +237,7 @@ async function loadInvites() {
           <div class="field"><label>Commission Duration (months)</label><input name="commission_duration_months" type="number" value="36" min="1" /></div>
           <div class="field"><label>Expires (days)</label><input name="expires_days" type="number" value="30" min="1" /></div>
         </div>
-        <p class="hint" style="margin:0 0 14px;">Revenue share is their cut of the commission WhereTo earns on a booking, not of what the traveller pays. Whole number, so 30 means 30%.</p>
+        <p class="hint" style="margin:0 0 14px;">Revenue share is their cut of the commission WhereTo earns on a booking, not of what the traveler pays. Whole number, so 30 means 30%.</p>
         <div class="adm-form-row" style="justify-content:flex-end;">
           <button type="submit" class="btn btn-primary btn-xs">Create invite</button>
         </div>

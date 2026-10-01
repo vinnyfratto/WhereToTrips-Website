@@ -721,7 +721,7 @@
 .ph-hero {
   position: relative; height: 190px; overflow: hidden;
   /* Azure at 30% is the no-saved-places state — a flat wash rather than a
-     stock photo of somewhere the traveller never picked. */
+     stock photo of somewhere the traveler never picked. */
   background: rgba(32, 156, 224, 0.3);
 }
 .ph-hero.has-photo { background: var(--wg100); }
@@ -809,7 +809,7 @@
 
 /* ── Grouped rows — no cards, hairline separators ── */
 .ph-group { margin-bottom: 30px; }
-/* Amber and centred, so each group reads as a divider between the rows rather
+/* Amber and centered, so each group reads as a divider between the rows rather
    than as another line of charcoal text among them — same change the app's
    ProfileHome carries. --amber-deep, not --amber: at this size the bright one
    washes out on the cream page. */
@@ -1025,7 +1025,7 @@ button.vibe-chip:hover { border-color: var(--rust); }
 .loy-group-head .pv-sub-head { margin-bottom: 12px; }
 .loy-group-head .pv-link-btn { padding: 0 0 12px; }
 
-/* A saved membership, read-only: the mark, then the programme and number.
+/* A saved membership, read-only: the mark, then the program and number.
    Not the fields that produced it. */
 .loy-saved-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
 .loy-saved {
@@ -1037,7 +1037,7 @@ button.vibe-chip:hover { border-color: var(--rust); }
 .loy-saved-name { font-family: var(--sans); font-weight: 600; font-size: 0.92rem; color: var(--navy); }
 .loy-saved-num  { font-family: var(--sans); font-size: 0.8rem; color: var(--ink-soft); }
 
-/* The mark. Hotel programmes are landscape WORDMARKS (intrinsic ratios run
+/* The mark. Hotel programs are landscape WORDMARKS (intrinsic ratios run
    2.3 to 4.9), so their slot is wide and short and the artwork is contained
    inside it, left-aligned, at its own shape — never squared off. Airlines are
    roundels and tail fins, so theirs is near-square. No box behind real
@@ -1053,7 +1053,7 @@ button.vibe-chip:hover { border-color: var(--rust); }
   letter-spacing: 0.5px; color: var(--navy);
 }
 
-/* Saved travellers — one disclosure per person, so a long list stays
+/* Saved travelers — one disclosure per person, so a long list stays
    scannable and only the one being edited is open. */
 .trav-list { display: flex; flex-direction: column; gap: 8px; }
 .trav { border: 1px solid var(--wg200); border-radius: var(--radius-sm); background: var(--wg100); }

@@ -66,7 +66,7 @@ export function commissionTimeline(row, now = new Date()) {
 
   if (cancelled) {
     steps.push({
-      key: 'cancelled', label: status === 'rejected' ? 'Commission rejected' : 'Trip cancelled',
+      key: 'cancelled', label: status === 'rejected' ? 'Commission rejected' : 'Trip canceled',
       note: 'No commission is paid on this booking.', done: true, bad: true,
     });
     return steps;
@@ -79,7 +79,7 @@ export function commissionTimeline(row, now = new Date()) {
     key: 'ready', label: 'Ready to pay out', date: row.commission_hold_until ? String(row.commission_hold_until).slice(0, 10) : null,
     note: readyDone ? 'Approved for the next payout.'
       : passed(row.commission_hold_until) ? 'Cancellation window closed. Awaiting approval.'
-      : 'Held for 14 days after the trip ends, in case it is cancelled.',
+      : 'Held for 14 days after the trip ends, in case it is canceled.',
     done: readyDone,
   });
   steps.push({

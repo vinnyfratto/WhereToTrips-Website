@@ -82,7 +82,7 @@ Reference: Varaus live demo — varaus-react.wpocean.com/home. Local template co
 
 ### Hero animation + Solar icons (done — verified in-browser via computed styles)
 - **Hero caption slide-in matches Varaus exactly:** per-slide captions; each caption child animates `fadeInLeft 1.5s both` (ease) with staggered delays **title 0.5s / subtitle 1s / buttons 1.5s** (eyebrow 0.2s), only on the active slide; inactive hold `fadeOutLeft`. Re-triggers on every slide change. Rotation 5s; respects prefers-reduced-motion. Confirmed: title delay 0.5s, subtitle 1s, btns 1.5s, dur 1.5s, fill both.
-- **Solar icon system** (reusable, matches the app): `icon` Eleventy shortcode in `.eleventy.js` renders `@iconify-json/solar` `bold-duotone` via `@iconify/utils` (same as the app's `generate-icons.js`). Usage `{% icon "compass" %}`; unknown names pass through so legacy emoji don't break. `plane` reuses the app's own custom glyph (Solar has no airplane — confirmed). Added `@iconify-json/solar` + `@iconify/utils` devDeps (Actions installs them). Replaced ALL made-up emoji/hand-drawn icons on the home page: highlights (wallet-money/compass/plane/users-group-rounded), why-tiles (global/wallet-money/map-point-favourite/users-group-rounded), Wander Together checklist (check-circle), video play (play). Removed the emoji badge on photo cards. `.ico` base class sizes at 1em (duotone inherits currentColor).
+- **Solar icon system** (reusable, matches the app): `icon` Eleventy shortcode in `.eleventy.js` renders `@iconify-json/solar` `bold-duotone` via `@iconify/utils` (same as the app's `generate-icons.js`). Usage `{% icon "compass" %}`; unknown names pass through so legacy emoji don't break. `plane` reuses the app's own custom glyph (Solar has no airplane — confirmed). Added `@iconify-json/solar` + `@iconify/utils` devDeps (Actions installs them). Replaced ALL made-up emoji/hand-drawn icons on the home page: highlights (wallet-money/compass/plane/users-group-rounded), why-tiles (global/wallet-money/map-point-favorite/users-group-rounded), Wander Together checklist (check-circle), video play (play). Removed the emoji badge on photo cards. `.ico` base class sizes at 1em (duotone inherits currentColor).
 - NOTE: footer social links keep real platform brand logos (Instagram/TikTok/X/Facebook) — Solar has no brand-logo glyphs, so those stay as accurate SVG marks, not invented UI icons.
 
 ### Not yet done / next
@@ -94,7 +94,7 @@ Reference: Varaus live demo — varaus-react.wpocean.com/home. Local template co
 ---
 
 ## Notes / watch-outs (from codebase audit)
-- Design tokens are split: color/font/width in `theme.json`; grey ramp, radii, shadows hardcoded in `base.njk` `:root`. A full palette change touches both.
+- Design tokens are split: color/font/width in `theme.json`; gray ramp, radii, shadows hardcoded in `base.njk` `:root`. A full palette change touches both.
 - Section palette is mirrored in `admin/config.yml` `&section_types` — new/renamed section *types* or *fields* are a two-file change (markup class changes are safe).
 - Base-layout inline JS is coupled to class/attribute names (`.reveal`, `.nav-toggle`, `[data-chip-target]`, and now `[data-hero-slider]`).
 - Stray legacy `src/_includes/base.njk` (unreferenced) — candidate for deletion; confirm first.

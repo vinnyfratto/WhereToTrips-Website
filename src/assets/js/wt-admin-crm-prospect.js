@@ -539,7 +539,7 @@ function paintCompliance() {
     </div>
 
     <div class="adm-card">
-      <h3>T&amp;C acknowledgements</h3>
+      <h3>T&amp;C acknowledgments</h3>
       <p class="acct-sub">Append-only. A new version produces a new row, never an edit.</p>
       <table class="adm-table">
         <thead><tr><th>Version</th><th>When</th><th>Method</th></tr></thead>
@@ -549,7 +549,7 @@ function paintCompliance() {
       </tbody></table>
       <div class="adm-form-row">
         <label class="field"><span>Version</span><input id="t-ver" placeholder="Leave blank to use the configured version" /></label>
-        <button id="t-save" type="button" class="btn btn-ghost">Record acknowledgement</button>
+        <button id="t-save" type="button" class="btn btn-ghost">Record acknowledgment</button>
       </div>
     </div>`;
 
@@ -572,7 +572,7 @@ function paintCompliance() {
   $('#t-save').addEventListener('click', async () => {
     const res = await callCrm('record_tc_ack', { prospect_id: ID, tc_version: $('#t-ver').value || null });
     if (!res.ok) { msg('error', res.error); return; }
-    msg('success', 'Acknowledgement recorded.');
+    msg('success', 'Acknowledgment recorded.');
     await load(); paintCompliance(); paintOnboarding();
   });
 }
