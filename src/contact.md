@@ -40,7 +40,7 @@ sections:
       pre: "Send us a "
       accent: "message"
       post: "."
-    body: "Questions about WhereTo, your account, or a trip? We're here to help."
+    body: "Questions about WhereTo or your account? We're here to help. For a flight or hotel you have already booked, contact Nuitée, our booking partner, using the details on our Nuitée page."
     intent: "contact_traveler"
     subject: "Traveler contact — WhereTo"
     placeholder: "How can we help?"

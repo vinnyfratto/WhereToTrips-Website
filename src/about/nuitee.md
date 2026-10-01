@@ -37,7 +37,7 @@ WhereTo Trips has used Nuitée for both flights and hotels since July 2026. Here
 - Searches live flights and hotels for you and shows real prices before you commit.
 - Collects the traveler details a booking needs and sends them to Nuitée to make the reservation.
 - Keeps your trip up to date in the app and sends you notices when something changes.
-- Is your first point of contact for help at [support@wheretotrips.com](mailto:support@wheretotrips.com).
+- Answers questions about the app and your account at [support@wheretotrips.com](mailto:support@wheretotrips.com) and in our [Help Center](https://support.wheretotrips.com).
 
 ### What Nuitée does for us
 
@@ -45,14 +45,42 @@ WhereTo Trips has used Nuitée for both flights and hotels since July 2026. Here
 - **Makes the booking.** Nuitée is the booking agent of record. When you confirm, it places the reservation with the airline or hotel and returns your confirmation.
 - **Takes the payment.** Nuitée is the merchant of record. Your card details go straight to its PCI-DSS-compliant payment processor, never to WhereTo Trips. Your card statement may show Nuitée or the airline or hotel rather than WhereTo.
 - **Handles refunds.** When a booking is canceled or refunded, Nuitée returns the money to your card as the merchant of record.
-- **Works with the airline when plans change.** Nuitée's around-the-clock flight desk picks up schedule changes and cancellations from the airline, rebooks or reissues where needed, and sends the updated booking back to us so the app stays current.
+- **Works with the airline when plans change.** Nuitée's around-the-clock flight desk picks up schedule changes and cancellations from the airline. It emails you with your options, rebooks or reissues where needed, and sends the updated booking back to us so the app stays current.
+- **Looks after your booking directly.** For changes, cancellations, refunds and problems while you travel, you deal with Nuitée rather than with us. Their contact details are in the How to Reach Nuitée section below.
 
 ## What This Means for You
 
 - **You pay what you see.** WhereTo Trips does not add a booking fee. We are paid a commission by Nuitée after your travel is complete, and that commission never changes which destinations or trips we suggest.
 - **Your card data stays out of our hands.** We only ever learn that your payment went through.
 - **Your contract is with the airline or hotel.** Each booking follows that supplier's own fare rules and cancellation policy, as described in our [Terms of Service](/legal/terms/).
-- **Start with us for help.** Contact [support@wheretotrips.com](mailto:support@wheretotrips.com) and we will work with Nuitée on your behalf.
+- **Contact Nuitée for help with a booking.** Their email addresses and phone numbers are below and in every booking email we send you. For anything else, visit our [Help Center](https://support.wheretotrips.com).
+
+## How to Reach Nuitée
+
+Nuitée answers every day of the year, around the clock. Put your booking reference and what your message is about in the subject line. Their response time starts once both are there. Your booking reference is in your confirmation email.
+
+### Flights
+
+| When | Email | They answer in |
+|---|---|---|
+| 2 or more days before you fly | [flights@nuitee.com](mailto:flights@nuitee.com) | 48 hours |
+| The day you fly | [priorityflights@nuitee.com](mailto:priorityflights@nuitee.com) | 2 to 3 hours |
+| After takeoff, before you land | [flights.inflight@nuitee.com](mailto:flights.inflight@nuitee.com) | 4 to 6 hours |
+| Stuck or turned away at the airport | [flights.emergency@nuitee.com](mailto:flights.emergency@nuitee.com) | 30 minutes to 1 hour |
+
+Prefer to call? **+1 888 401 1612** (toll free, any time). If you are stranded at the airport, call **+1 205 374 6805**.
+
+### Hotels
+
+| When | Email |
+|---|---|
+| Before or after your stay | [customer-support@nuitee.com](mailto:customer-support@nuitee.com) |
+| Check-in within the next 7 days | [emergencies@nuitee.com](mailto:emergencies@nuitee.com) |
+| While you are at the property | [inresort@nuitee.com](mailto:inresort@nuitee.com) |
+
+At the property, you can also call **+1 209 417 5014**. That line is answered only while you are at your destination.
+
+If your flight changes, Nuitée will email you with your options. Answer within 24 to 48 hours, because other flights can sell out and your refund and rebooking options can lapse.
 
 ## Learn More
 
