@@ -55,7 +55,7 @@ function renderBookings(bookings) {
       ? (paid.length ? `${paid.length} paid booking${paid.length === 1 ? '' : 's'}, ${fmtMoney(paid.reduce((n, b) => n + Number(b.commission_amount || 0), 0), cur)} in total.` : '')
       : (owed.length
         ? `${fmtMoney(sum, cur)} not yet paid out across ${owed.length} booking${owed.length === 1 ? '' : 's'}`
-          + (readySum ? `, ${fmtMoney(readySum, cur)} of it ready for the next payout.` : '. Commission becomes payable 14 days after each trip ends.')
+          + (readySum ? `, ${fmtMoney(readySum, cur)} of it ready for the next payout.` : '. Revenue becomes payable 14 days after each trip ends.')
         : '');
 
     const list = $('pb-list');
@@ -96,10 +96,10 @@ function renderBookings(bookings) {
 }
 
 const COMMISSION_CATS = [
-  ['flight', 'Flight Commission'],
-  ['hotel', 'Hotel Commission'],
-  ['car', 'Car Rental Commission'],
-  ['insurance', 'Trip Insurance Commission'],
+  ['flight', 'Flight Revenue'],
+  ['hotel', 'Hotel Revenue'],
+  ['car', 'Car Rental Revenue'],
+  ['insurance', 'Trip Insurance Revenue'],
 ];
 const DEFAULT_COMMISSIONS = {
   flight: { rate: 0.02, type: 'percent' }, hotel: { rate: 0.08, type: 'percent' },
@@ -131,7 +131,7 @@ function renderCommissionStructure(a) {
     const pct = (rate % 1 === 0 ? rate.toFixed(0) : rate.toFixed(1)) + '%';
     el.innerHTML =
       `<div class="comm-row"><span>Revenue share</span><strong>${pct} for ${months} months</strong></div>` +
-      `<p class="acct-sub" style="margin:10px 0 0;">Your share of the commission WhereTo earns on each booking your links bring in.</p>`;
+      `<p class="acct-sub" style="margin:10px 0 0;">Your share of the revenue WhereTo earns on each booking your links bring in.</p>`;
     return;
   }
 
@@ -191,7 +191,7 @@ function renderCharts(series, funnel, currency) {
       labels: series.labels,
       datasets: [
         { type: 'bar', label: 'Bookings', data: series.bookings, backgroundColor: navy, yAxisID: 'y', borderRadius: 3 },
-        { type: 'line', label: 'Commission (' + currency + ')', data: series.commission, borderColor: rust, backgroundColor: rust, yAxisID: 'y1', tension: 0.3, pointRadius: 0, borderWidth: 2 },
+        { type: 'line', label: 'Revenue (' + currency + ')', data: series.commission, borderColor: rust, backgroundColor: rust, yAxisID: 'y1', tension: 0.3, pointRadius: 0, borderWidth: 2 },
       ],
     },
     options: {

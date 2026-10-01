@@ -821,7 +821,7 @@ function prefsSubtitle(p) {
 // Shown only to the accounts they belong to.
 const ACCOUNT_ROWS = [
   { href: '/partner-dashboard/', icon: 'wallet', title: 'Partner Dashboard',
-    sub: () => 'Your referrals, bookings and commissions', gate: 'affiliate' },
+    sub: () => 'Your referrals, bookings and revenue', gate: 'affiliate' },
   { href: '/admin-dashboard/', icon: 'lock-keyhole', title: 'Admin Dashboard',
     sub: () => 'Every internal tool', gate: 'admin' },
 ];

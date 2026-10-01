@@ -45,7 +45,7 @@ const STATUS_LABEL = {
   paid:     'Paid',
   reversed: 'Reversed',
   rejected: 'Rejected',
-  none:     'No commission',
+  none:     'No revenue',
 };
 export function statusLabel(s) { return STATUS_LABEL[s] || s || '—'; }
 
@@ -66,8 +66,8 @@ export function commissionTimeline(row, now = new Date()) {
 
   if (canceled) {
     steps.push({
-      key: 'cancelled', label: status === 'rejected' ? 'Commission rejected' : 'Trip canceled',
-      note: 'No commission is paid on this booking.', done: true, bad: true,
+      key: 'cancelled', label: status === 'rejected' ? 'Revenue rejected' : 'Trip canceled',
+      note: 'No revenue is paid on this booking.', done: true, bad: true,
     });
     return steps;
   }
@@ -124,7 +124,7 @@ export function openTimelineModal(row) {
   injectStyles();
   const wrap = document.createElement('div');
   wrap.className = 'ctl-modal';
-  wrap.innerHTML = `<div class="ctl-sheet" role="dialog" aria-modal="true" aria-label="Commission timeline">
+  wrap.innerHTML = `<div class="ctl-sheet" role="dialog" aria-modal="true" aria-label="Revenue timeline">
       <button class="ctl-close" type="button" aria-label="Close">×</button>
       ${timelineHtml(row)}
     </div>`;
