@@ -8,15 +8,15 @@
 //
 //  "Ready to pay out" is commission_hold_until: CLAWBACK_DAYS (14) after the
 //  trip ends (app repo supabase/functions/_shared/commissions.ts), because
-//  a cancelled trip takes its commission with it. A cancelled booking or a
+//  a canceled trip takes its commission with it. A canceled booking or a
 //  reversed / rejected commission ends the timeline there instead.
 //
-//  Row shape (both callers normalise to it):
+//  Row shape (both callers normalize to it):
 //    { booking_kind, title, where_, starts_on, ends_on, booking_status,
 //      created_at, commission_amount, commission_currency,
 //      commission_status, commission_hold_until, reference? }
 //
-//  Bookings are identified by confirmation number only: no traveller names or
+//  Bookings are identified by confirmation number only: no traveler names or
 //  other personal details, on either page.
 // ───────────────────────────────────────────────────────────────────
 
@@ -53,7 +53,7 @@ export function statusLabel(s) { return STATUS_LABEL[s] || s || '—'; }
 export function commissionTimeline(row, now = new Date()) {
   const passed = (s) => { const d = toDate(s); return !!d && d <= now; };
   const status = row.commission_status || 'pending';
-  const cancelled = /cancel/i.test(row.booking_status || '') || status === 'reversed' || status === 'rejected';
+  const canceled = /cancel/i.test(row.booking_status || '') || status === 'reversed' || status === 'rejected';
   const isFlight = row.booking_kind === 'flight';
 
   const steps = [
@@ -64,7 +64,7 @@ export function commissionTimeline(row, now = new Date()) {
     steps.push({ key: 'end', label: isFlight ? 'Return flight' : 'Check-out', date: row.ends_on, done: passed(row.ends_on) });
   }
 
-  if (cancelled) {
+  if (canceled) {
     steps.push({
       key: 'cancelled', label: status === 'rejected' ? 'Commission rejected' : 'Trip canceled',
       note: 'No commission is paid on this booking.', done: true, bad: true,

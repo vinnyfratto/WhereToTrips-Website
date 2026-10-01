@@ -10,7 +10,7 @@
 //  Regenerate rather than hand-editing when any of those change.
 // ───────────────────────────────────────────────────────────────────
 
-/** ISO 3166-1 alpha-2 + international dialling code. */
+/** ISO 3166-1 alpha-2 + international dialing code. */
 export const COUNTRIES = [
   {
     "code": "AF",
@@ -1332,7 +1332,7 @@ export const HOTEL_LOYALTY = [
   }
 ];
 
-/** The traveller's core travel personality, captured in the app's account
+/** The traveler's core travel personality, captured in the app's account
  *  walkthrough and stored on profiles.base_vibes. */
 export const BASE_VIBES = [
   {

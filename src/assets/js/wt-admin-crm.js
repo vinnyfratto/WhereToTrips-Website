@@ -4,10 +4,10 @@
 //
 //  Spec: WhereTo_Partner_CRM_Build_Spec_v2.2 §8.1, §8.4, §8.9, Appendix C
 //
-//  Two display rules from the spec are honoured here and are easy to
+//  Two display rules from the spec are honored here and are easy to
 //  accidentally undo, so they are called out where they apply:
 //   • The dashboard LEADS with review queue health (§8.9). That is where the
-//     programme's contractual obligation lives.
+//     program's contractual obligation lives.
 //   • Engagement rate is never a default sort on a mixed-type list (§8.1).
 // ───────────────────────────────────────────────────────────────────
 import {

@@ -99,7 +99,7 @@ function readGrid(pairs) {
 function emptyNote(text) { return '<p class="pv-empty">' + esc(text) + '</p>'; }
 
 // ── Hidden until asked ──────────────────────────────────────────────
-// Passport, ID, Known Traveller and Redress numbers show as **** with an eye
+// Passport, ID, Known Traveler and Redress numbers show as **** with an eye
 // to reveal them, read or edit. A profile gets opened on shared screens and
 // in screenshots; an ID number has no business being legible by default.
 const EYE = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3.2"/></svg>';
@@ -166,7 +166,7 @@ function selectField(name, label, options, o) {
 const countryOptions = COUNTRIES.map((c) => ({ value: c.code, label: c.name }));
 
 /** State / province: a list for the US and Canada (stored as the code), free
- *  text elsewhere, labelled the way that country says it. Same as the app. */
+ *  text elsewhere, labeled the way that country says it. Same as the app. */
 function regionField(country, value) {
   const list = subdivisionsFor(country);
   const label = subdivisionLabel(country);
@@ -226,7 +226,7 @@ export function describeLoyalty(lp) {
   return hit ? hit.name : lp.code;
 }
 
-/** Programme codes with a bundled wordmark. World of Hyatt has no artwork yet
+/** Program codes with a bundled wordmark. World of Hyatt has no artwork yet
  *  and shows its monogram, exactly as in the app. */
 const HOTEL_PROGRAM_LOGOS = [
   'marriott_bonvoy', 'hilton_honors', 'ihg_one_rewards', 'wyndham_rewards',
@@ -240,7 +240,7 @@ function initialsOf(name) {
 
 /** The mark beside a saved membership — the app's ProgramMark, in HTML.
  *  Airlines resolve to a real logo off the same CDN the app uses. Hotel
- *  PROGRAMMES have no CDN, so the eight bundled wordmarks are served from
+ *  PROGRAMS have no CDN, so the eight bundled wordmarks are served from
  *  /assets/img/hotel-programs/; anything without artwork falls back to the
  *  same curated monogram the app shows.
  *
@@ -265,7 +265,7 @@ function loyaltyMark(lp) {
   return '<span class="loy-mark loy-mono">' + esc(mono) + '</span>';
 }
 
-/** A saved membership, read-only: mark, then programme and number. */
+/** A saved membership, read-only: mark, then program and number. */
 function loyaltyReadRow(lp) {
   return '<li class="loy-saved">' + loyaltyMark(lp) +
     '<span class="loy-saved-text">' +
@@ -359,13 +359,13 @@ function resolveAirlineCode(typed) {
   return hits.length === 1 ? hits[0].code : v;
 }
 
-// ── Saved travellers ────────────────────────────────────────────────
+// ── Saved travelers ────────────────────────────────────────────────
 
 /** The people this account books for. The account holder is NOT one of them:
- *  the app derives their traveller record from this same profile (see
- *  src/utils/selfTraveller.ts), so storing a second copy here would start
+ *  the app derives their traveler record from this same profile (see
+ *  src/utils/selfTraveler.ts), so storing a second copy here would start
  *  drifting the first time either was edited. */
-function travellerCard(t, open) {
+function travelerCard(t, open) {
   const name = [t.given_name, t.family_name].filter(Boolean).join(' ') || 'New traveler';
   // Never the document number here: the summary is always on screen.
   const sub = [t.document_number ? labelOf(DOC_TYPES, t.document_type || 'passport') + ' on file' : '', fmtDate(t.born_on)]
@@ -404,7 +404,7 @@ function travellerCard(t, open) {
     '</div></details>';
 }
 
-function readTravellers(listEl) {
+function readTravelers(listEl) {
   if (!listEl) return [];
   return [...listEl.querySelectorAll('[data-trav]')].map((card) => {
     const v = readScope(card.querySelector('.trav-body'), '[data-loy]');
@@ -670,7 +670,7 @@ const SECTIONS = {
   // (wt-travelers.js) is the whole list: you, the travelers you created and
   // the ones you invited, plus invites in flight. Edit covers the created ones,
   // the only ones whose details live in this account.
-  travellers: {
+  travelers: {
     title: 'Saved Travelers',
     blurb: 'Everyone you book for. Travelers you create keep their details here. ' +
       'Travelers you invite keep theirs in their own account.',
@@ -678,10 +678,10 @@ const SECTIONS = {
     edit: (p) => {
       const list = Array.isArray(p.saved_passengers) ? p.saved_passengers : [];
       return '<p class="tv-note">Edit the travelers you created. Invited travelers keep their details in their own account.</p>' +
-        '<div class="trav-list" data-trav-list>' + list.map((t) => travellerCard(t, false)).join('') + '</div>' +
+        '<div class="trav-list" data-trav-list>' + list.map((t) => travelerCard(t, false)).join('') + '</div>' +
         '<button type="button" class="pv-link-btn" data-add-trav>+ Add Traveler</button>';
     },
-    collect: (v, scope) => ({ saved_passengers: readTravellers(scope.querySelector('[data-trav-list]')) }),
+    collect: (v, scope) => ({ saved_passengers: readTravelers(scope.querySelector('[data-trav-list]')) }),
   },
 
   saved: {
@@ -838,7 +838,7 @@ const POLICY_ROWS = [
 /** Every section a row or tile can open, so a ?section= value can be checked.
  *  The four parts of `profile` are not navigable on their own — the app keeps
  *  them on one screen and so does this. */
-const SECTION_KEYS = ['profile', 'travellers', 'saved', 'flight', 'comms', 'security', 'help'];
+const SECTION_KEYS = ['profile', 'travelers', 'saved', 'flight', 'comms', 'security', 'help'];
 
 /** "Mary's", "James'", or "My" with no first name: the app's possessive(). */
 function possessive(first) {
@@ -987,7 +987,7 @@ export async function initProfileForm(supabase, user, opts = {}) {
         : '') +
       '<div class="ph-tiles">' +
         tile('profile', 'user-circle', esc(possessive(p.first_name)) + '<br />Profile') +
-        tile('travellers', 'users-group-rounded', 'Saved<br />Travelers',
+        tile('travelers', 'users-group-rounded', 'Saved<br />Travelers',
           (p.__people && p.__people.incoming.length) || 0) +
       '</div>' +
       wideTile('/account/bookings/', 'route', possessive(p.first_name) + ' Trips', false) +
@@ -1110,11 +1110,11 @@ export async function initProfileForm(supabase, user, opts = {}) {
     });
   }
 
-  /** Appends an empty traveller card, open and scrolled to. */
-  function addBlankTraveller() {
+  /** Appends an empty traveler card, open and scrolled to. */
+  function addBlankTraveler() {
     const list = mount.querySelector('[data-trav-list]');
     if (!list) return;
-    list.insertAdjacentHTML('beforeend', travellerCard({ id: uid(), title: 'mr' }, true));
+    list.insertAdjacentHTML('beforeend', travelerCard({ id: uid(), title: 'mr' }, true));
     list.lastElementChild.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   }
 
@@ -1124,7 +1124,7 @@ export async function initProfileForm(supabase, user, opts = {}) {
     await acceptFromUrl(supabase, (type, msg) => showAlert(alertId, type, msg));
     try { p.__people = await loadPeople(supabase, user); }
     catch (err) { console.error('[profile] saved travelers load failed:', err); return; }
-    repaintSection('travellers');
+    repaintSection('travelers');
     if (hub) repaintMenu();
   })();
 
@@ -1132,7 +1132,7 @@ export async function initProfileForm(supabase, user, opts = {}) {
   mount.addEventListener('click', (e) => {
     if (handleTravelersClick(e, {
       supabase, user, p,
-      repaint: () => { repaintSection('travellers'); if (hub) repaintMenu(); },
+      repaint: () => { repaintSection('travelers'); if (hub) repaintMenu(); },
       alert: (type, msg) => { if (msg) showAlert(alertId, type, msg); },
     })) return;
     const reveal = e.target.closest('[data-reveal]');
@@ -1158,7 +1158,7 @@ export async function initProfileForm(supabase, user, opts = {}) {
     const addLoy = e.target.closest('[data-add-loy]');
     if (addLoy) {
       // The button sits in its group's head; the list is that group's own.
-      // A traveller card still has a single unlabelled list, so fall back to
+      // A traveler card still has a single unlabeled list, so fall back to
       // the sibling list there.
       const type = addLoy.dataset.addLoy || 'airline';
       const group = addLoy.closest('.loy-group');
@@ -1173,13 +1173,13 @@ export async function initProfileForm(supabase, user, opts = {}) {
 
     // Add from the READ view: open the editor first, then drop the new card in.
     if (e.target.closest('[data-add-trav-new]')) {
-      editing.add('travellers');
+      editing.add('travelers');
       hideAlert(alertId);
-      repaintSection('travellers');
-      addBlankTraveller();
+      repaintSection('travelers');
+      addBlankTraveler();
       return;
     }
-    if (e.target.closest('[data-add-trav]')) { addBlankTraveller(); return; }
+    if (e.target.closest('[data-add-trav]')) { addBlankTraveler(); return; }
     const rmTrav = e.target.closest('[data-remove-trav]');
     if (rmTrav) { rmTrav.closest('[data-trav]').remove(); return; }
 
@@ -1204,8 +1204,8 @@ export async function initProfileForm(supabase, user, opts = {}) {
 
   });
 
-  // A traveller's summary follows the name as it is typed, so a card collapsed
-  // after editing is not still labelled "New traveller".
+  // A traveler's summary follows the name as it is typed, so a card collapsed
+  // after editing is not still labeled "New traveler".
   mount.addEventListener('input', (e) => {
     const f = e.target.dataset && e.target.dataset.f;
     if (f !== 'given_name' && f !== 'family_name') return;

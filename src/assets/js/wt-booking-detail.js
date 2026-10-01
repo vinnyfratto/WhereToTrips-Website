@@ -96,7 +96,7 @@ function confirmBlock(label, code, status, total, currency, rightLabel, rightVal
 
 // ── Hotel ───────────────────────────────────────────────────────────
 
-/** Itemised room rate — LiteAPI's book response carries the real split across
+/** Itemized room rate — LiteAPI's book response carries the real split across
  *  bookedRooms[], one entry PER ROOM, summed here rather than read off
  *  bookedRooms[0] alone (that silently dropped every room after the first for
  *  any 2+ room booking): `total` is what was actually charged, and
@@ -404,7 +404,7 @@ function liteSegmentGroups(order) {
 }
 
 /** The booked passenger record has no stable id linking back to a saved
- *  traveller — only a name. Matched here by normalised given+family name
+ *  traveler — only a name. Matched here by normalized given+family name
  *  against the account's roster. A booking made for someone not saved falls
  *  back to initials — never a wrong photo. */
 function litePassengers(order, roster) {
@@ -424,11 +424,11 @@ function litePassengers(order, roster) {
   }).filter((x) => x.name);
 }
 
-function travellerRow(pax) {
+function travelerRow(pax) {
   const initials = pax.name.trim().split(/\s+/).map((w) => w[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
   const avatar = pax.photo
-    ? '<img class="bk-traveller-photo" src="' + esc(pax.photo) + '" alt="" />'
-    : '<span class="bk-traveller-avatar">' + esc(initials || '?') + '</span>';
+    ? '<img class="bk-traveler-photo" src="' + esc(pax.photo) + '" alt="" />'
+    : '<span class="bk-traveler-avatar">' + esc(initials || '?') + '</span>';
   return '<div class="bk-info">' + avatar +
     '<span class="bk-info-text"><span class="bk-info-title">' + esc(pax.name) + '</span>' +
     (pax.type ? '<span class="bk-info-body">' + esc(pax.type) + '</span>' : '') + '</span></div>';
@@ -508,7 +508,7 @@ function flightSections(order, live, roster, opts) {
   let html = '<hr class="bk-divider" />';
 
   html += confirmBlock('BOOKING REFERENCE', order.booking_reference || '——', status,
-    order.total_amount, order.total_currency, 'TRAVELLERS', order.passengers == null ? '—' : order.passengers);
+    order.total_amount, order.total_currency, 'TRAVELERS', order.passengers == null ? '—' : order.passengers);
   html += '<hr class="bk-divider" />';
 
   // Itinerary — the stored journey's real legs when the payload has them,
@@ -548,7 +548,7 @@ function flightSections(order, live, roster, opts) {
 
   const paxList = litePassengers(order, roster);
   if (paxList.length) {
-    html += '<hr class="bk-divider" />' + section('Travelers', paxList.map(travellerRow).join(''));
+    html += '<hr class="bk-divider" />' + section('Travelers', paxList.map(travelerRow).join(''));
   }
 
   if (services.length) {
@@ -815,7 +815,7 @@ function flightMeta(order) {
     order.depart_date
       ? (order.return_date ? shortDate(order.depart_date) + ' – ' + shortDate(order.return_date) : shortDate(order.depart_date))
       : '',
-    order.passengers ? plural(order.passengers, 'traveller') : '',
+    order.passengers ? plural(order.passengers, 'traveler') : '',
     titleCase(order.fare_brand || order.cabin_class),
   ].filter(Boolean).join(' · ');
 }
@@ -824,7 +824,7 @@ function flightMeta(order) {
  *  rows first and re-rendering as each live call lands. */
 export function renderDetail(ctx, item) {
   const { supabase, destMap, roster, mount } = ctx;
-  // Guards a slow response from overwriting a page the traveller has already
+  // Guards a slow response from overwriting a page the traveler has already
   // navigated away from.
   const token = (ctx.token = (ctx.token || 0) + 1);
   const live = { hotel: null, flight: null, content: null };
@@ -857,7 +857,7 @@ export function renderDetail(ctx, item) {
               ? (flight.return_date ? shortDate(flight.depart_date) + ' – ' + shortDate(flight.return_date) : shortDate(flight.depart_date))
               : ''),
           hotel.nights ? plural(hotel.nights, 'night') : '',
-          flight && flight.passengers ? plural(flight.passengers, 'traveller') : '',
+          flight && flight.passengers ? plural(flight.passengers, 'traveler') : '',
           hotel.rooms ? plural(hotel.rooms, 'room') : '',
         ].filter(Boolean).join(' · ');
 
@@ -911,7 +911,7 @@ export function renderDetail(ctx, item) {
       let body = confirmBlock('BOOKING REFERENCE', order.booking_reference || '——', order.status,
         order.total_amount, order.total_currency, 'PASSENGERS', order.passenger_count == null ? '—' : order.passenger_count);
       if (passengers.length) {
-        body += '<hr class="bk-divider" />' + section('Passengers', passengers.map((p) => travellerRow({
+        body += '<hr class="bk-divider" />' + section('Passengers', passengers.map((p) => travelerRow({
           name: titleCase([p.given_name, p.family_name].filter(Boolean).join(' ')),
           type: p.type ? titleCase(p.type) : '',
         })).join(''));

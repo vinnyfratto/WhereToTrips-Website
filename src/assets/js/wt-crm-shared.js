@@ -151,7 +151,7 @@ export function parseCsv(text) {
 
   // Headers are the contract between the file and the importer, matched on
   // text rather than position, so column order and extra columns are tolerated
-  // (Appendix C). Normalisation itself happens server-side.
+  // (Appendix C). Normalization itself happens server-side.
   const headers = nonEmpty[0].map((h) => String(h).trim());
   const records = nonEmpty.slice(1).map((r) => {
     const o = {};

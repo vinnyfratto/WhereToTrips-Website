@@ -27,8 +27,8 @@ export const AIRLINE_NAMES = {
 
 // Best-effort "manage my booking / online check-in" entry point per carrier.
 // These are each airline's own generic page, not a deep link with the PNR
-// filled in — check-in URL params are not standardised, so a guessed
-// per-carrier format would silently break. The traveller still needs the
+// filled in — check-in URL params are not standardized, so a guessed
+// per-carrier format would silently break. The traveler still needs the
 // airline PNR and the lead passenger's last name once they land there.
 //
 // NOTE: sandbox bookings carry a mock carrier code ("ND" / "Nuitee Air") that

@@ -75,7 +75,7 @@
           // opaque underneath until it has finished. Cross-fading both at
           // once (old 1->0 while new 0->1) leaves them at 0.5 each in the
           // middle, which composites to a half-transparent card and shows
-          // the grey box behind it: a visible white blink, once per swap,
+          // the gray box behind it: a visible white blink, once per swap,
           // on 29 boxes. It reads as an image failing to load, which is
           // exactly what it got reported as.
           var outgoing = frames[i];
@@ -106,7 +106,7 @@
       timer = setInterval(tick, HOLD + FADE);
     }, Math.max(delay, 0.3) * 1000);
 
-    // The observer is a pure optimisation: stop swapping photos on a card
+    // The observer is a pure optimization: stop swapping photos on a card
     // nobody is looking at. It is allowed to never fire.
     if ('IntersectionObserver' in window) {
       new IntersectionObserver(function (entries) {

@@ -1,5 +1,5 @@
 // ───────────────────────────────────────────────────────────────────
-//  wt-bookings.js — the traveller's bookings on the website.
+//  wt-bookings.js — the traveler's bookings on the website.
 //  A port of the app's app/bookings/index.tsx list, plus the routing
 //  between it and the detail view (wt-booking-detail.js). One page:
 //  /account/bookings/ is the list, /account/bookings/?id=<order id> is
@@ -10,7 +10,7 @@
 // ───────────────────────────────────────────────────────────────────
 
 import {
-  fetchBookings, fetchTravellerRoster, buildBookingList, loadDestinationImages, destLookup,
+  fetchBookings, fetchTravelerRoster, buildBookingList, loadDestinationImages, destLookup,
   esc, money, fmtDateOnly, statusColor, looksLikePlaceName, stayLine, plural,
   carousel, startCarousels, statusLine, getFlightAirline,
 } from './wt-booking-kit.js';
@@ -48,7 +48,7 @@ function photoBlock(images, badge) {
     '</div>';
 }
 
-/** The airline's own mark, big enough to be what you recognise the card by —
+/** The airline's own mark, big enough to be what you recognize the card by —
  *  the flight equivalent of the hotel's photo. */
 function airlineMark(code, name) {
   const label = name || airlineName(code) || code || 'Flight';
@@ -104,7 +104,7 @@ function flightCard(order) {
       '<p class="bk-card-when">' + esc(dates + (order.cabin_class ? ' · ' + order.cabin_class : '')) + '</p>' +
       cardFooter('BOOKING REF', order.airline_pnr || order.booking_reference || '——',
         order.total_amount, order.total_currency,
-        order.passengers ? plural(order.passengers, 'traveller') : null) +
+        order.passengers ? plural(order.passengers, 'traveler') : null) +
     '</div>');
 }
 
@@ -117,7 +117,7 @@ function tripCard(hotel, flight, destMap) {
 
   // Combined status: only reads BOOKED when both legs actually are. While
   // either is still a placeholder the pair is not fully secured, which the
-  // traveller should know at a glance rather than see one confident word
+  // traveler should know at a glance rather than see one confident word
   // covering both.
   const bothBooked = String(hotel.status || '').toLowerCase() !== 'pending'
     && String(flight.status || '').toLowerCase() !== 'pending';
@@ -155,7 +155,7 @@ function duffelCard(order) {
       flightRoute(order.origin || '—', order.destination || '—') +
       '<p class="bk-card-when">' + esc(fmtDateOnly(order.departing_at)) + '</p>' +
       cardFooter('BOOKING REF', order.booking_reference || '——', order.total_amount, order.total_currency,
-        order.passenger_count ? plural(order.passenger_count, 'traveller') : null) +
+        order.passenger_count ? plural(order.passenger_count, 'traveler') : null) +
     '</div>');
 }
 
@@ -251,7 +251,7 @@ export async function initBookings(supabase) {
   if (!sess.session) {
     // Keep ?id= across the sign-in hop. Confirmation emails link straight to one
     // booking, and most people opening that link are not signed in yet — sending
-    // them to the bare list afterwards loses the thing they clicked.
+    // them to the bare list afterward loses the thing they clicked.
     const back = window.location.pathname + window.location.search;
     window.location.href = '/account/login/?next=' + encodeURIComponent(back);
     return;
@@ -260,7 +260,7 @@ export async function initBookings(supabase) {
 
   const [booked, roster] = await Promise.all([
     fetchBookings(supabase, user.id),
-    fetchTravellerRoster(supabase, user).catch(() => []),
+    fetchTravelerRoster(supabase, user).catch(() => []),
   ]);
 
   const items = buildBookingList(booked.orders, booked.hotelOrders, booked.flightOrders);

@@ -139,7 +139,7 @@ function renderOverview(d) {
 // the action an application needs is two tabs away, not two pages away.
 const APP_STATE_LABEL = { new: 'Needs review', invited: 'Invited', joined: 'Joined', expired: 'Invite expired' };
 // Amber is reserved for "this one needs you". An already-invited
-// applicant is waiting on THEM, so it goes grey - both states were
+// applicant is waiting on THEM, so it goes gray - both states were
 // amber at first and the two were indistinguishable in the row.
 const APP_STATE_PILL  = { new: 'pending', invited: 'used', joined: 'approved', expired: 'expired' };
 

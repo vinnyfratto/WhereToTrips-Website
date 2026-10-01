@@ -73,7 +73,7 @@ function wirePasswordMatch() {
     if (!pw2.value) { note.textContent = ''; note.style.color = ''; return; }
     const ok = pw.value === pw2.value;
     note.textContent = ok ? 'Passwords match.' : 'Passwords do not match.';
-    // Same two colours the .alert-success / .alert-error text uses — the
+    // Same two colors the .alert-success / .alert-error text uses — the
     // site's --rust token is azure under the reskin, so a mismatch in it
     // would read as an ordinary link, not a problem.
     note.style.color = ok ? '#1f5b34' : '#8f2c1b';

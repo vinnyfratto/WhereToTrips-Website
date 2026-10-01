@@ -28,7 +28,7 @@ const loyaltySrc = fs.readFileSync(APP + '/hotelLoyaltyPrograms.ts', 'utf8');
 const HOTEL = eval(arrayLiteral(loyaltySrc, 'export const HOTEL_LOYALTY_PROGRAMS'))
   // matchKeywords are app-side only. monogram comes along because the website
   // shows the same saved-membership row, and falls back to the same mark when
-  // a programme has no bundled wordmark.
+  // a program has no bundled wordmark.
   .map((p) => ({ code: p.code, name: p.name, monogram: p.monogram || '' }));
 
 const airlinesSrc = fs.readFileSync(APP + '/airlines.ts', 'utf8');

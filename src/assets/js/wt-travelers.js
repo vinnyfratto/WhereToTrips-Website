@@ -153,7 +153,7 @@ export function travelersRead(p) {
     html += '<li>' + avatar(t.profile_photo, t.given_name, t.family_name) +
       '<div class="tv-body"><span class="pv-list-name">' + esc(fullName(t.given_name, t.family_name)) + '</span>' +
       '<span class="tv-meta">' + esc(documentLine(t)) + '</span></div>' +
-      '<button type="button" class="tv-link" data-edit="travellers">Edit</button></li>';
+      '<button type="button" class="tv-link" data-edit="travelers">Edit</button></li>';
   }
 
   // Invited: name and photo only, by design. Under their own heading, as in

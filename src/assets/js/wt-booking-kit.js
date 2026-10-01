@@ -1,5 +1,5 @@
 // ───────────────────────────────────────────────────────────────────
-//  wt-booking-kit.js — the shared pieces of the traveller's bookings
+//  wt-booking-kit.js — the shared pieces of the traveler's bookings
 //  pages: data loading, the hotel/flight pairing rules, formatting, and
 //  the small render primitives both the list and the detail view use.
 //
@@ -56,9 +56,9 @@ export async function fetchBookings(supabase, userId) {
 }
 
 /** The account holder plus everyone they have saved, for matching a booked
- *  passenger name to a face. Mirrors src/utils/selfTraveller.ts allTravellers —
+ *  passenger name to a face. Mirrors src/utils/selfTraveler.ts allTravelers —
  *  the holder is derived from the profile, never stored twice. */
-export async function fetchTravellerRoster(supabase, user) {
+export async function fetchTravelerRoster(supabase, user) {
   const { data, error } = await supabase
     .from('profiles')
     .select('first_name,last_name,profile_photo,saved_passengers')

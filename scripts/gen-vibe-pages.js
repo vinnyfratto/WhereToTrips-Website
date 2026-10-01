@@ -45,7 +45,7 @@ const GUIDES = [{ subregion: "Caribbean", vibeKey: "reef_snorkeling" }];
 
 /* A hub's label is an action phrase in title case ("Snorkel Reefs &
    Marine Life"). Prose needs it in sentence case, and a lowercasing rule
-   can't know that "Italian" stays capitalised, so each hub's in-sentence
+   can't know that "Italian" stays capitalized, so each hub's in-sentence
    phrase is written once here. Missing → the label with its first letter
    lowered, which is right for most. */
 const PHRASE = {

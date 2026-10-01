@@ -34,7 +34,7 @@ async function init() {
 
 // ── Your bookings ───────────────────────────────────────────────────
 // Unpaid = pending (inside the 14-day hold after the trip, or awaiting
-// approval) + approved (ready for the next payout). A cancelled trip's
+// approval) + approved (ready for the next payout). A canceled trip's
 // reversed commission shows under Unpaid with its reason rather than just
 // disappearing. Each row opens its timeline.
 function renderBookings(bookings) {
@@ -69,10 +69,10 @@ function renderBookings(bookings) {
       btn.type = 'button';
       btn.className = 'pb-row';
       const dates = b.starts_on ? fmtDate(b.starts_on) + (b.ends_on ? ' – ' + fmtDate(b.ends_on) : '') : '';
-      const cancelled = b.commission_status === 'reversed' || b.commission_status === 'rejected';
+      const canceled = b.commission_status === 'reversed' || b.commission_status === 'rejected';
       const when = b.commission_status === 'paid' ? 'Paid'
         : b.commission_status === 'approved' ? 'Ready to pay out'
-        : cancelled ? 'Trip canceled'
+        : canceled ? 'Trip canceled'
         : b.commission_hold_until ? 'Payable ' + fmtDate(String(b.commission_hold_until).slice(0, 10)) : 'Pending';
       btn.innerHTML = `
         <div class="pb-main">
@@ -85,7 +85,7 @@ function renderBookings(bookings) {
         </div>`;
       btn.querySelector('.pb-title').textContent = (b.booking_kind === 'flight' ? '✈ ' : '') + (b.title || (b.booking_kind === 'flight' ? 'Flight' : 'Hotel'));
       btn.querySelector('.pb-meta').textContent = [b.reference ? 'Conf. ' + b.reference : '', b.where_, dates].filter(Boolean).join(' · ');
-      btn.querySelector('.pb-amt').textContent = cancelled ? '—' : fmtMoney(b.commission_amount, b.commission_currency);
+      btn.querySelector('.pb-amt').textContent = canceled ? '—' : fmtMoney(b.commission_amount, b.commission_currency);
       btn.querySelector('.pb-when').textContent = when;
       btn.addEventListener('click', () => openTimelineModal(b));
       list.appendChild(btn);
