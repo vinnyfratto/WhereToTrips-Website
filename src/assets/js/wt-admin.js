@@ -33,8 +33,8 @@ function money(n, c) {
 }
 function pct(r) { const v = (r == null ? 0 : Number(r)) * 100; return v.toFixed(v % 1 === 0 ? 0 : 1) + '%'; }
 const COMMISSION_CATS = [
-  ['flight', 'Flight Commission'], ['hotel', 'Hotel Commission'],
-  ['car', 'Car Rental Commission'], ['insurance', 'Trip Insurance Commission'],
+  ['flight', 'Flight Revenue'], ['hotel', 'Hotel Revenue'],
+  ['car', 'Car Rental Revenue'], ['insurance', 'Trip Insurance Revenue'],
 ];
 function rateLabel(cat) {
   if (!cat) return '—';
@@ -111,7 +111,7 @@ function renderOverview(d) {
       ${card('Affiliates', t.affiliates)}
       ${card('Referred signups', t.referrals)}
       ${card('Bookings', t.bookings)}
-      ${card('Commission owed', money(t.commission_liability))}
+      ${card('Revenue owed', money(t.commission_liability))}
     </div>
     <div class="adm-overview-grid">
       ${card('Clicks', t.clicks)}
@@ -126,7 +126,7 @@ function renderOverview(d) {
     <div class="adm-card">
       <h3>Top performers</h3>
       <div class="adm-wrap-scroll"><table class="adm-table">
-        <thead><tr><th>Code</th><th>Name</th><th class="num">Clicks</th><th class="num">Signups</th><th class="num">Bookings</th><th class="num">Commission</th></tr></thead>
+        <thead><tr><th>Code</th><th>Name</th><th class="num">Clicks</th><th class="num">Signups</th><th class="num">Bookings</th><th class="num">Revenue</th></tr></thead>
         <tbody>${rows || '<tr><td colspan="6">No affiliates yet.</td></tr>'}</tbody>
       </table></div>
     </div>`;
@@ -234,10 +234,10 @@ async function loadInvites() {
         <p class="adm-subhead">Terms</p>
         <div class="adm-form-row">
           <div class="field"><label>Revenue Share %</label><input name="revenue_share_percent" type="number" step="1" min="0" max="100" value="30" /></div>
-          <div class="field"><label>Commission Duration (months)</label><input name="commission_duration_months" type="number" value="36" min="1" /></div>
+          <div class="field"><label>Revenue Duration (months)</label><input name="commission_duration_months" type="number" value="36" min="1" /></div>
           <div class="field"><label>Expires (days)</label><input name="expires_days" type="number" value="30" min="1" /></div>
         </div>
-        <p class="hint" style="margin:0 0 14px;">Revenue share is their cut of the commission WhereTo earns on a booking, not of what the traveler pays. Whole number, so 30 means 30%.</p>
+        <p class="hint" style="margin:0 0 14px;">Revenue share is their cut of the revenue WhereTo earns on a booking, not of what the traveler pays. Whole number, so 30 means 30%.</p>
         <div class="adm-form-row" style="justify-content:flex-end;">
           <button type="submit" class="btn btn-primary btn-xs">Create invite</button>
         </div>
@@ -333,7 +333,7 @@ function renderAffiliatesTable() {
     return main + editor;
   }).join('');
   $('#aff-list').innerHTML = `<table class="adm-table">
-    <thead><tr><th>Code</th><th>Name</th><th>Status</th><th class="num">Clicks</th><th class="num">Signups</th><th class="num">App Sign-Ins</th><th class="num">Searches</th><th class="num">Bookings</th><th class="num">Commission</th><th></th></tr></thead>
+    <thead><tr><th>Code</th><th>Name</th><th>Status</th><th class="num">Clicks</th><th class="num">Signups</th><th class="num">App Sign-Ins</th><th class="num">Searches</th><th class="num">Bookings</th><th class="num">Revenue</th><th></th></tr></thead>
     <tbody>${rows || '<tr><td colspan="10">No affiliates yet.</td></tr>'}</tbody></table>`;
 
   $('#aff-list').querySelectorAll('[data-edit]').forEach((b) => {
@@ -369,13 +369,13 @@ function affEditorHtml(a) {
       <div class="field"><label>Status</label><select data-f="status">${['active', 'pending', 'suspended', 'terminated'].map((s) => opt(s, a.status)).join('')}</select></div>
       <div class="field"><label>Affiliate Source</label><select data-f="source">${srcList.map((s) => opt(s, srcCurrent)).join('')}</select></div>
     </div>
-    <p class="adm-subhead">Commissions</p>
-    ${commRow('flight', 'Flight Commission')}
-    ${commRow('hotel', 'Hotel Commission')}
-    ${commRow('car', 'Car Rental Commission')}
-    ${commRow('insurance', 'Trip Insurance Commission')}
+    <p class="adm-subhead">Revenue</p>
+    ${commRow('flight', 'Flight Revenue')}
+    ${commRow('hotel', 'Hotel Revenue')}
+    ${commRow('car', 'Car Rental Revenue')}
+    ${commRow('insurance', 'Trip Insurance Revenue')}
     <div class="adm-form-row" style="margin-top:10px;">
-      <div class="field"><label>Commission Duration (months)</label><input data-f="commission_duration_months" type="number" min="1" value="${months}" /></div>
+      <div class="field"><label>Revenue Duration (months)</label><input data-f="commission_duration_months" type="number" min="1" value="${months}" /></div>
       <button class="btn btn-primary btn-xs" data-save-aff="${a.id}">Save changes</button>
     </div>
   </div>`;
@@ -531,7 +531,7 @@ const COM_COLS = [
   { key: 'kind',       label: 'Type',           val: (c) => c.booking_kind || '' },
   { key: 'affiliate',  label: 'Affiliate',      val: (c) => (affName(c) || '~~~').toLowerCase() },
   { key: 'amount',     label: 'Booking amount', num: true, val: (c) => Number(c.booking_total || 0) },
-  { key: 'commission', label: 'Commission',     num: true, val: (c) => Number(c.commission_amount || 0) },
+  { key: 'commission', label: 'Revenue',        num: true, val: (c) => Number(c.commission_amount || 0) },
   { key: 'status',     label: 'Status',         val: (c) => c.commission_status || '' },
   { key: 'date',       label: 'Date',           val: (c) => c.created_at || '' },
 ];
@@ -545,10 +545,10 @@ async function loadCommissions() {
   if (!affiliateCache.length) { const ra = await callAdmin('list_affiliates'); affiliateCache = ra.affiliates || []; }
   panel('commissions').innerHTML = `
     <div class="adm-card">
-      <h3>Commissions</h3>
+      <h3>Revenue</h3>
       <div id="com-summary" class="adm-com-summary"></div>
       <div class="adm-form-row">
-        <div class="field"><label>Commission status</label>
+        <div class="field"><label>Revenue status</label>
           <select id="com-filter">
             <option value="unpaid" selected>Unpaid (pending + ready)</option>
             <option value="">All</option><option value="none">None</option>
@@ -635,7 +635,7 @@ function renderCommissionsTable() {
     if (comExpanded.has(c.id)) {
       const aff = c.affiliates;
       const commLine = (aff && aff.commissions)
-        ? `<br><span style="display:inline-block;margin-top:8px;">Affiliate commission — ${COMMISSION_CATS.map(([k, l]) => `${l}: <strong>${rateLabel(aff.commissions[k])}</strong>`).join(' &nbsp;·&nbsp; ')} &nbsp;·&nbsp; Duration: <strong>${aff.commission_duration_months || 36} months</strong>${aff.source ? ` &nbsp;·&nbsp; Source: <strong>${esc(aff.source)}</strong>` : ''}</span>`
+        ? `<br><span style="display:inline-block;margin-top:8px;">Affiliate revenue — ${COMMISSION_CATS.map(([k, l]) => `${l}: <strong>${rateLabel(aff.commissions[k])}</strong>`).join(' &nbsp;·&nbsp; ')} &nbsp;·&nbsp; Duration: <strong>${aff.commission_duration_months || 36} months</strong>${aff.source ? ` &nbsp;·&nbsp; Source: <strong>${esc(aff.source)}</strong>` : ''}</span>`
         : '';
       detail = `<tr class="adm-detail"><td colspan="7">
         <div style="max-width:560px;margin:6px 0 10px;">${timelineHtml(c)}</div>
@@ -644,7 +644,7 @@ function renderCommissionsTable() {
           &nbsp;·&nbsp; Ref: ${esc(c.reference || '—')}
           &nbsp;·&nbsp; Total: ${money(c.booking_total, c.booking_currency)}
           ${c.note ? `&nbsp;·&nbsp; ${esc(c.note)}` : ''}
-          &nbsp;·&nbsp; Commission ID: ${esc(c.id)}
+          &nbsp;·&nbsp; Revenue ID: ${esc(c.id)}
           &nbsp;·&nbsp; ${esc(c.booking_kind || '')} order: ${esc(c.booking_id || '—')}
           ${commLine}
         </div>
@@ -684,7 +684,7 @@ function renderCommissionsTable() {
       if (!sel || !sel.value) { msg('error', 'Pick an affiliate first.'); return; }
       const r2 = await callAdmin('assign_affiliate', { commission_id: b.dataset.assign, affiliate_id: sel.value });
       if (!r2.ok) { msg('error', 'Assign failed: ' + r2.error); return; }
-      msg('success', 'Affiliate assigned + commission calculated.');
+      msg('success', 'Affiliate assigned + revenue calculated.');
       fetchCommissions();
     });
   });
@@ -709,7 +709,7 @@ async function loadPayouts() {
   panel('payouts').innerHTML = `
     <div class="adm-card">
       <h3>Build draft payout</h3>
-      <p class="acct-sub">Snapshots an affiliate's <strong>approved</strong> commissions into a draft batch. No money moves — execution is deferred.</p>
+      <p class="acct-sub">Snapshots an affiliate's <strong>approved</strong> revenue into a draft batch. No money moves — execution is deferred.</p>
       <div class="adm-form-row">
         <div class="field"><label>Affiliate</label><select id="pay-aff" style="max-width:260px;">${opts || '<option>(none)</option>'}</select></div>
         <button id="pay-build" class="btn btn-primary btn-xs">Build draft</button>
@@ -720,7 +720,7 @@ async function loadPayouts() {
     const id = $('#pay-aff').value;
     const r = await callAdmin('build_payout', { affiliate_id: id });
     if (!r.ok) { msg('error', 'Build failed: ' + r.error); return; }
-    msg('success', `Draft payout built: ${money(r.payout.total_amount, r.payout.currency)} across ${r.commission_count} commissions.`);
+    msg('success', `Draft payout built: ${money(r.payout.total_amount, r.payout.currency)} across ${r.commission_count} bookings.`);
     renderPayouts();
   });
   renderPayouts();

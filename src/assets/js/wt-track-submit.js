@@ -33,20 +33,18 @@ function showSuccess(form, text) {
 // The server validates and normalizes all of it; this only collects.
 const PARTNER_FIELDS = ['first_name', 'last_name', 'company', 'phone', 'profile_url',
   'followers', 'website', 'city', 'state', 'metro', 'audience'];
-const PARTNER_REQUIRED = { first_name: 'first name', last_name: 'last name', email: 'email', company: 'creator or business name', terms: 'the program terms' };
+const PARTNER_REQUIRED = { first_name: 'first name', last_name: 'last name', email: 'email', company: 'creator or business name' };
 
 function partnerPayload(fd) {
   const partner = {};
   PARTNER_FIELDS.forEach((k) => { partner[k] = (fd.get(k) || '').toString().trim(); });
   partner.airports = fd.getAll('airports');
   partner.platforms = fd.getAll('platforms');
-  partner.terms = fd.get('terms') === 'on';
   return partner;
 }
 
 function missingPartnerFields(fd) {
-  return Object.keys(PARTNER_REQUIRED).filter((k) =>
-    k === 'terms' ? fd.get('terms') !== 'on' : !(fd.get(k) || '').toString().trim());
+  return Object.keys(PARTNER_REQUIRED).filter((k) => !(fd.get(k) || '').toString().trim());
 }
 
 function showError(form, submitBtn, originalLabel, text) {
