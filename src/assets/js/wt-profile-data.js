@@ -869,17 +869,17 @@ export const COUNTRIES = [
   },
   {
     "code": "KN",
-    "name": "St Kitts and Nevis",
+    "name": "St. Kitts and Nevis",
     "dial": "1869"
   },
   {
     "code": "LC",
-    "name": "St Lucia",
+    "name": "St. Lucia",
     "dial": "1758"
   },
   {
     "code": "VC",
-    "name": "St Vincent and the Grenadines",
+    "name": "St. Vincent and the Grenadines",
     "dial": "1784"
   },
   {

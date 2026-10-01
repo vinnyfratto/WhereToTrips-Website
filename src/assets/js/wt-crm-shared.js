@@ -42,7 +42,7 @@ export function daysAgo(s) {
   return `${d} days`;
 }
 
-export function titleise(s) {
+export function titleize(s) {
   return String(s ?? '').replace(/_/g, ' ').replace(/^\w/, (c) => c.toUpperCase());
 }
 

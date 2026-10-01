@@ -13,7 +13,7 @@
 //     deactivates a tracking asset.
 // ───────────────────────────────────────────────────────────────────
 import {
-  $, bootAdminPage, callCrm, date, dateTime, daysAgo, esc, msg, panel, titleise, wireTabs,
+  $, bootAdminPage, callCrm, date, dateTime, daysAgo, esc, msg, panel, titleize, wireTabs,
 } from './wt-crm-shared.js';
 
 const STAGES = [
@@ -47,9 +47,9 @@ function paintHeader() {
   const p = D.prospect;
   $('#pr-name').textContent = p.display_name;
   $('#pr-sub').textContent = [
-    titleise(p.stage),
+    titleize(p.stage),
     `${daysAgo(p.stage_entered_at)} in stage`,
-    titleise(p.creator_type),
+    titleize(p.creator_type),
     p.tier ? `Tier ${p.tier}` : null,
     p.market,
   ].filter(Boolean).join(' · ');
@@ -71,7 +71,7 @@ function paintHeader() {
   if (p.stage === 'terminated') {
     const core = p.termination_type === 'core_misconduct';
     banners.push(`<div class="alert show ${core ? 'alert-error' : 'alert-info'}">
-      <strong>Terminated (${esc(titleise(p.termination_type || 'unknown'))}).</strong>
+      <strong>Terminated (${esc(titleize(p.termination_type || 'unknown'))}).</strong>
       ${esc(p.termination_note || '')}
       ${core
         ? 'The Partner Share is forfeited from the termination date, including for travelers whose three-year terms have not expired (Agreement §8.6).'
@@ -115,7 +115,7 @@ function paintOverview() {
       <h3>Stage</h3>
       <div class="adm-form-row">
         <label class="field"><span>Move to</span><select id="s-stage">
-          ${STAGES.map((s) => `<option value="${s}" ${s === p.stage ? 'selected' : ''}>${esc(titleise(s))}</option>`).join('')}
+          ${STAGES.map((s) => `<option value="${s}" ${s === p.stage ? 'selected' : ''}>${esc(titleize(s))}</option>`).join('')}
         </select></label>
         <label class="field" style="flex:2;"><span>Reason (required for any non-sequential move)</span>
           <input id="s-reason" placeholder="Why this move" /></label>
@@ -179,7 +179,7 @@ function field(name, label, value, type = 'text') {
 }
 function select(name, label, options, value) {
   return `<label class="field"><span>${esc(label)}</span><select id="f-${name}">
-    ${options.map((o) => `<option value="${esc(o)}" ${o === (value ?? '') ? 'selected' : ''}>${o ? esc(titleise(o)) : '—'}</option>`).join('')}
+    ${options.map((o) => `<option value="${esc(o)}" ${o === (value ?? '') ? 'selected' : ''}>${o ? esc(titleize(o)) : '—'}</option>`).join('')}
   </select></label>`;
 }
 function check(name, label, value) {
@@ -198,7 +198,7 @@ function renderStageExtras() {
   } else if (target === 'terminated') {
     html = `
       <label class="field"><span>Termination type (required)</span><select id="s-term">
-        ${TERMINATION_TYPES.map((t) => `<option value="${t}">${esc(titleise(t))}</option>`).join('')}
+        ${TERMINATION_TYPES.map((t) => `<option value="${t}">${esc(titleize(t))}</option>`).join('')}
       </select></label>
       <label class="field"><span>Note</span><input id="s-termnote" /></label>
       <div id="s-termwarn"></div>`;
@@ -275,7 +275,7 @@ function paintChannels() {
         <thead><tr><th>Platform</th><th>Handle</th><th>Audience</th><th>Verified</th><th>Last active</th><th></th></tr></thead>
         <tbody>${(D.channels ?? []).map((c) => `
           <tr>
-            <td>${esc(titleise(c.platform))} ${c.is_primary ? '<span class="adm-pill">primary</span>' : ''}</td>
+            <td>${esc(titleize(c.platform))} ${c.is_primary ? '<span class="adm-pill">primary</span>' : ''}</td>
             <td>${c.url ? `<a href="${esc(c.url)}" target="_blank" rel="noopener noreferrer">${esc(c.handle || c.url)}</a>` : esc(c.handle ?? '—')}</td>
             <td>${c.audience_size ? `${Number(c.audience_size).toLocaleString()} ${esc(c.audience_metric ?? '')}` : '—'}</td>
             <td>${c.metrics_verified_at ? esc(date(c.metrics_verified_at)) : '<span class="acct-sub">estimate</span>'}</td>
@@ -288,12 +288,12 @@ function paintChannels() {
       <h4>Add a channel</h4>
       <div class="adm-grid-2">
         <label class="field"><span>Platform</span><select id="c-platform">
-          ${PLATFORMS.map((p) => `<option value="${p}">${esc(titleise(p))}</option>`).join('')}</select></label>
+          ${PLATFORMS.map((p) => `<option value="${p}">${esc(titleize(p))}</option>`).join('')}</select></label>
         <label class="field"><span>Handle</span><input id="c-handle" /></label>
         <label class="field"><span>URL</span><input id="c-url" type="url" /></label>
         <label class="field"><span>Audience size</span><input id="c-size" type="number" /></label>
         <label class="field"><span>Audience metric</span><select id="c-metric">
-          <option value="">—</option>${METRICS.map((m) => `<option value="${m}">${esc(titleise(m))}</option>`).join('')}</select></label>
+          <option value="">—</option>${METRICS.map((m) => `<option value="${m}">${esc(titleize(m))}</option>`).join('')}</select></label>
         <label class="field"><span>Metrics verified on</span><input id="c-verified" type="date" /></label>
         <label class="field"><span>Last activity</span><input id="c-active" type="date" /></label>
         <label class="field" style="flex-direction:row; align-items:center; gap:8px;">
@@ -378,9 +378,9 @@ function paintCommunications() {
         <label class="field"><span>Direction</span><select id="m-dir">
           <option value="outbound">Outbound</option><option value="inbound">Inbound</option></select></label>
         <label class="field"><span>Channel</span><select id="m-chan">
-          ${CHANNELS.map((c) => `<option value="${c}">${esc(titleise(c))}</option>`).join('')}</select></label>
+          ${CHANNELS.map((c) => `<option value="${c}">${esc(titleize(c))}</option>`).join('')}</select></label>
         <label class="field"><span>Outcome</span><select id="m-out">
-          <option value="">—</option>${OUTCOMES.map((o) => `<option value="${o}">${esc(titleise(o))}</option>`).join('')}</select></label>
+          <option value="">—</option>${OUTCOMES.map((o) => `<option value="${o}">${esc(titleize(o))}</option>`).join('')}</select></label>
         <label class="field"><span>When</span><input id="m-when" type="datetime-local" /></label>
       </div>
       <label class="field"><span>Subject</span><input id="m-subject" /></label>
@@ -394,7 +394,7 @@ function paintCommunications() {
       ${(D.communications ?? []).map((c) => `
         <div class="comm-row">
           <div>
-            <strong>${esc(titleise(c.direction))} · ${esc(titleise(c.channel))}</strong>
+            <strong>${esc(titleize(c.direction))} · ${esc(titleize(c.channel))}</strong>
             ${c.source === 'system' ? '<span class="adm-pill">system</span>' : ''}
             ${c.is_urgent_escalation ? '<span class="adm-pill" style="background:#B85C38;color:#fff;">urgent escalation</span>' : ''}
             ${c.attachments_withheld ? '<span class="adm-pill" title="An attachment existed and was deliberately not stored">attachment withheld</span>' : ''}
@@ -402,7 +402,7 @@ function paintCommunications() {
           </div>
           ${c.subject ? `<div>${esc(c.subject)}</div>` : ''}
           ${c.body ? `<div class="acct-sub" style="white-space:pre-wrap;">${esc(c.body)}</div>` : ''}
-          ${c.outcome ? `<div class="acct-sub">Outcome: ${esc(titleise(c.outcome))}</div>` : ''}
+          ${c.outcome ? `<div class="acct-sub">Outcome: ${esc(titleize(c.outcome))}</div>` : ''}
           ${c.direction === 'inbound' && !c.acknowledged_at
             ? `<button class="btn btn-ghost btn-xs" data-ack="${esc(c.id)}">Mark acknowledged</button>
                <span class="acct-sub">T&amp;C §9.1: within two business days</span>`
@@ -451,7 +451,7 @@ function paintContracts() {
           <tr>
             <td>${esc(c.agreement_version)}</td>
             <td>${esc(c.tc_version)}</td>
-            <td>${esc(titleise(c.status))}</td>
+            <td>${esc(titleize(c.status))}</td>
             <td>${esc(date(c.sent_at))}</td>
             <td>${esc(date(c.executed_at))}</td>
             <td>${esc(c.signer_name ?? '—')}</td>
@@ -463,7 +463,7 @@ function paintContracts() {
         <label class="field"><span>Agreement version *</span><input id="k-agr" placeholder="3.2" /></label>
         <label class="field"><span>T&amp;C version *</span><input id="k-tc" placeholder="3.2" /></label>
         <label class="field"><span>Status</span><select id="k-status">
-          ${CONTRACT_STATUSES.map((s) => `<option value="${s}">${esc(titleise(s))}</option>`).join('')}</select></label>
+          ${CONTRACT_STATUSES.map((s) => `<option value="${s}">${esc(titleize(s))}</option>`).join('')}</select></label>
         <label class="field"><span>Zoho Sign envelope ID</span><input id="k-env" /></label>
         <label class="field"><span>Signer name</span><input id="k-name" /></label>
         <label class="field"><span>Signer email</span><input id="k-email" type="email" /></label>
@@ -514,7 +514,7 @@ function paintCompliance() {
         <tbody>${(D.compliance_forms ?? []).map((f) => `
           <tr>
             <td>${f.form_type === 'w9' ? 'W-9' : 'ACH authorization'}</td>
-            <td>${esc(titleise(f.status))}</td>
+            <td>${esc(titleize(f.status))}</td>
             <td>${f.tax_year ?? '—'}</td>
             <td>${esc(date(f.verified_at))}</td>
             <td class="acct-sub">${esc(f.storage_location_ref ?? '—')}</td>
@@ -526,7 +526,7 @@ function paintCompliance() {
         <label class="field"><span>Form</span><select id="w-type">
           <option value="w9">W-9</option><option value="ach_authorization">ACH authorization</option></select></label>
         <label class="field"><span>Status</span><select id="w-status">
-          ${FORM_STATUSES.map((s) => `<option value="${s}">${esc(titleise(s))}</option>`).join('')}</select></label>
+          ${FORM_STATUSES.map((s) => `<option value="${s}">${esc(titleize(s))}</option>`).join('')}</select></label>
         <label class="field"><span>Tax year</span><input id="w-year" type="number" value="${new Date().getFullYear()}" /></label>
         <label class="field"><span>TIN type (type only, never the number)</span><select id="w-tin">
           <option value="">—</option><option value="ssn">SSN</option><option value="ein">EIN</option>
@@ -544,7 +544,7 @@ function paintCompliance() {
       <table class="adm-table">
         <thead><tr><th>Version</th><th>When</th><th>Method</th></tr></thead>
         <tbody>${(D.tc_acknowledgements ?? []).map((a) => `
-          <tr><td>${esc(a.tc_version)}</td><td>${esc(dateTime(a.acknowledged_at))}</td><td>${esc(titleise(a.method))}</td></tr>`).join('')
+          <tr><td>${esc(a.tc_version)}</td><td>${esc(dateTime(a.acknowledged_at))}</td><td>${esc(titleize(a.method))}</td></tr>`).join('')
           || '<tr><td colspan="3" class="acct-sub">None recorded.</td></tr>'}
       </tbody></table>
       <div class="adm-form-row">
@@ -591,8 +591,8 @@ function paintContent() {
         <tbody>${(D.submissions ?? []).map((s) => `
           <tr>
             <td>${s.draft_url ? `<a href="${esc(s.draft_url)}" target="_blank" rel="noopener noreferrer">${esc(s.title)}</a>` : esc(s.title)}</td>
-            <td>${esc(titleise(s.submission_kind))}${s.counts_toward_minimum ? '' : ' <span class="adm-pill">not counted</span>'}</td>
-            <td>${esc(titleise(s.status))}</td>
+            <td>${esc(titleize(s.submission_kind))}${s.counts_toward_minimum ? '' : ' <span class="adm-pill">not counted</span>'}</td>
+            <td>${esc(titleize(s.status))}</td>
             <td>${esc(date(s.submitted_at))}</td>
             <td>${esc(date(s.sla_due_at))}</td>
             <td>${esc(date(s.published_at))}</td>
@@ -615,7 +615,7 @@ function paintAssets() {
           <tr>
             <td><code>${esc(a.tracking_code)}</code></td>
             <td><a href="${esc(a.tracking_url)}" target="_blank" rel="noopener noreferrer">${esc(a.tracking_url)}</a></td>
-            <td>${esc(titleise(a.status))}</td>
+            <td>${esc(titleize(a.status))}</td>
             <td>${esc(date(a.issued_at))}</td>
             <td>${esc(date(a.first_attribution_at))}</td>
           </tr>`).join('') || `<tr><td colspan="5" class="acct-sub">No assets issued.
@@ -633,8 +633,8 @@ function paintActivity() {
         <tbody>${(D.activity ?? []).map((a) => `
           <tr>
             <td>${esc(dateTime(a.occurred_at))}</td>
-            <td>${esc(titleise(a.entity_type))}</td>
-            <td>${esc(titleise(a.action))}</td>
+            <td>${esc(titleize(a.entity_type))}</td>
+            <td>${esc(titleize(a.action))}</td>
             <td>${esc(a.actor_type)}</td>
             <td><code style="font-size:.75rem;">${esc(JSON.stringify(a.changed_fields ?? {}).slice(0, 200))}</code></td>
           </tr>`).join('') || '<tr><td colspan="5" class="acct-sub">Nothing logged yet.</td></tr>'}

@@ -12,7 +12,7 @@
 // ───────────────────────────────────────────────────────────────────
 import {
   $, bootAdminPage, callCrm, date, daysAgo, dateTime, esc, msg, panel,
-  parseCsv, titleise, wireTabs,
+  parseCsv, titleize, wireTabs,
 } from './wt-crm-shared.js';
 
 const STAGES = [
@@ -72,7 +72,7 @@ function renderOverview(d) {
       <table class="adm-table">
         <thead><tr><th>Stage</th><th style="text-align:right;">Count</th></tr></thead>
         <tbody>${STAGES.map((s) => `
-          <tr><td>${esc(titleise(s))}</td><td style="text-align:right;">${d.pipeline[s] ?? 0}</td></tr>`).join('')}
+          <tr><td>${esc(titleize(s))}</td><td style="text-align:right;">${d.pipeline[s] ?? 0}</td></tr>`).join('')}
         </tbody>
       </table>
     </div>
@@ -120,10 +120,10 @@ function renderPipeline() {
     <div class="adm-form-row">
       <label class="field"><span>Search</span><input id="f-search" type="search" placeholder="Name or email" /></label>
       <label class="field"><span>Stage</span><select id="f-stage">
-        <option value="">All</option>${STAGES.map((s) => `<option value="${s}">${esc(titleise(s))}</option>`).join('')}
+        <option value="">All</option>${STAGES.map((s) => `<option value="${s}">${esc(titleize(s))}</option>`).join('')}
       </select></label>
       <label class="field"><span>Creator type</span><select id="f-type">
-        <option value="">All</option>${CREATOR_TYPES.map((s) => `<option value="${s}">${esc(titleise(s))}</option>`).join('')}
+        <option value="">All</option>${CREATOR_TYPES.map((s) => `<option value="${s}">${esc(titleize(s))}</option>`).join('')}
       </select></label>
       <label class="field"><span>Tier</span><select id="f-tier">
         <option value="">All</option><option>A</option><option>B</option><option>C</option>
@@ -180,9 +180,9 @@ function applyFilters() {
     ].join(' ');
     return `<tr>
       <td><a href="/admin-crm-prospect/?id=${encodeURIComponent(p.id)}">${esc(p.display_name)}</a> ${flags}</td>
-      <td>${esc(titleise(p.stage))}</td>
+      <td>${esc(titleize(p.stage))}</td>
       <td>${esc(daysAgo(p.stage_entered_at))}</td>
-      <td>${esc(titleise(p.creator_type))}</td>
+      <td>${esc(titleize(p.creator_type))}</td>
       <td>${esc(p.tier ?? '—')}</td>
       <td>${esc(p.market ?? '—')}</td>
       <td>${esc([p.city, p.state_region, p.country].filter(Boolean).join(', ') || '—')}</td>
@@ -214,7 +214,7 @@ function showNewProspectForm() {
       <div class="adm-grid-2">
         <label class="field"><span>Display name *</span><input id="n-name" /></label>
         <label class="field"><span>Creator type *</span><select id="n-type">
-          ${CREATOR_TYPES.map((t) => `<option value="${t}">${esc(titleise(t))}</option>`).join('')}
+          ${CREATOR_TYPES.map((t) => `<option value="${t}">${esc(titleize(t))}</option>`).join('')}
         </select></label>
         <label class="field"><span>Email</span><input id="n-email" type="email" /></label>
         <label class="field"><span>Market</span><input id="n-market" placeholder="pilot" /></label>
@@ -271,7 +271,7 @@ async function loadQueue() {
           <tr>
             <td><a href="/admin-crm-prospect/?id=${encodeURIComponent(r.prospect_id)}">${esc(r.partner)}</a></td>
             <td>${r.draft_url ? `<a href="${esc(r.draft_url)}" target="_blank" rel="noopener noreferrer">${esc(r.title)}</a>` : esc(r.title)}</td>
-            <td>${esc(titleise(r.submission_kind))}</td>
+            <td>${esc(titleize(r.submission_kind))}</td>
             <td>${esc(daysAgo(r.submitted_at))}</td>
             <td>${slaPill(r.sla_state)}</td>
             <td>${r.event_at ? `${esc(date(r.event_at))} ${r.urgent ? '<span class="adm-pill">urgent</span>' : ''}` : '—'}</td>
@@ -389,8 +389,8 @@ async function loadActivity() {
         <tbody>${(res.activity ?? []).map((a) => `
           <tr>
             <td>${esc(dateTime(a.occurred_at))}</td>
-            <td>${esc(titleise(a.entity_type))}</td>
-            <td>${esc(titleise(a.action))}</td>
+            <td>${esc(titleize(a.entity_type))}</td>
+            <td>${esc(titleize(a.action))}</td>
             <td>${esc(a.actor_type)}</td>
             <td><code style="font-size:.75rem;">${esc(JSON.stringify(a.changed_fields ?? {}).slice(0, 160))}</code></td>
           </tr>`).join('') || '<tr><td colspan="5" class="acct-sub">Nothing logged yet.</td></tr>'}
