@@ -1,18 +1,24 @@
 {#- Partner portal header — intentionally separate from partials/header.njk
-    (the marketing site nav). Same logo + palette, own nav: Performance /
-    Submit Content / Settings, each a real URL (navActive set per-page in
-    frontmatter drives the active state below). -#}
+    (the marketing site nav). Same logo + palette, own nav. Five tabs in a
+    fixed order, each a real URL (navActive set per page in front matter marks
+    the current one with aria-current). Settings and Log out sit apart at the
+    right: they are account chrome, not portal tabs. -#}
 <header class="pnr-header">
   <div class="wrap pnr-nav">
     <a class="brand" href="/" aria-label="{{ site.brandName }} home">
       <img class="brand-logo" src="/assets/whereto-logo-azure.svg?v={{ buildTime }}" alt="{{ site.brandName }}" width="171" height="34" />
     </a>
     <span class="pnr-tag">Partner Portal</span>
-    <nav class="pnr-links" aria-label="Partner">
-      <a href="/partner-dashboard/" class="{{ 'is-active' if navActive == 'performance' else '' }}">Performance</a>
-      <a href="/partner-dashboard/content/" class="{{ 'is-active' if navActive == 'content' else '' }}">Submit Content</a>
-      <a href="/partner-dashboard/settings/" class="{{ 'is-active' if navActive == 'settings' else '' }}">Settings</a>
+    <nav class="pnr-links" aria-label="Partner portal">
+      <a href="/partner-dashboard/" {% if navActive == 'summary' %}aria-current="page"{% endif %}>Summary</a>
+      <a href="/partner-dashboard/content-performance/" {% if navActive == 'content-performance' %}aria-current="page"{% endif %}>Content performance</a>
+      <a href="/partner-dashboard/bookings/" {% if navActive == 'bookings' %}aria-current="page"{% endif %}>Bookings</a>
+      <a href="/partner-dashboard/revenue/" {% if navActive == 'revenue' %}aria-current="page"{% endif %}>Revenue</a>
+      <a href="/partner-dashboard/content/" {% if navActive == 'content' %}aria-current="page"{% endif %}>Submit content</a>
     </nav>
-    <button id="wt-logout" type="button" class="btn btn-ghost btn-xs pnr-logout">Log out</button>
+    <div class="pnr-util">
+      <a href="/partner-dashboard/settings/" {% if navActive == 'settings' %}aria-current="page"{% endif %}>Settings</a>
+      <button id="wt-logout" type="button" class="btn btn-ghost btn-xs pnr-logout">Log out</button>
+    </div>
   </div>
 </header>

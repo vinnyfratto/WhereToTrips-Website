@@ -1,0 +1,51 @@
+---
+layout: layouts/partner.njk
+permalink: /partner-dashboard/revenue/index.html
+title: "Revenue — Partner Portal — WhereTo"
+description: "What you have earned and what is coming."
+eleventyExcludeFromCollections: true
+navActive: revenue
+---
+<main id="wt-dash-page">
+
+  {# Loading / gate #}
+  <div id="wt-dash-gate" class="gate-msg">Loading…</div>
+
+  {# Not a partner #}
+  <div id="wt-dash-notaff" class="acct" style="display:none;">
+    <div class="acct-card" style="text-align:center;">
+      <p class="eyebrow">Partner program</p>
+      <h1>You're not a partner yet</h1>
+      <p class="acct-sub">This page is for WhereTo partners. Partner accounts are invitation-only.</p>
+      <p><a class="btn btn-primary" href="/account/profile/">Back to my account</a></p>
+      <p class="acct-links"><a href="/partners/">Learn about the creator program</a></p>
+    </div>
+  </div>
+
+  <div id="wt-dash-root" class="pp wrap" style="display:none;">
+
+    <div class="pp-head">
+      <div>
+        <p class="pp-eyebrow">Revenue</p>
+        <h1>What you've earned and what's coming</h1>
+        <p class="pp-lede">We process payments on the 1st and 15th of each month.</p>
+      </div>
+    </div>
+
+    <div class="pp-three" id="cards"></div>
+
+    <div class="pp-card pp-scroll">
+      <div class="pp-listhead">
+        <h2 id="list-title"></h2>
+        <p id="list-note"></p>
+      </div>
+      <table class="pp-t">
+        <caption class="pp-sr" id="list-cap"></caption>
+        <thead><tr id="head"></tr></thead>
+        <tbody id="rows"></tbody>
+        <tfoot><tr id="foot"></tr></tfoot>
+      </table>
+    </div>
+  </div>
+</main>
+<script type="module" src="/assets/js/wt-partner-revenue.js?v={{ buildTime }}"></script>

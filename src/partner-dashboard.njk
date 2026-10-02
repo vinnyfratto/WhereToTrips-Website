@@ -1,109 +1,57 @@
 ---
 layout: layouts/partner.njk
 permalink: /partner-dashboard/index.html
-title: "Performance — Partner Portal — WhereTo"
-description: "WhereTo partner performance dashboard."
+title: "Summary — Partner Portal — WhereTo"
+description: "Your WhereToTrips partner performance at a glance."
 eleventyExcludeFromCollections: true
-navActive: performance
+navActive: summary
 ---
 <main id="wt-dash-page">
 
   {# Loading / gate #}
-  <div id="wt-dash-gate" class="gate-msg">Loading your dashboard…</div>
+  <div id="wt-dash-gate" class="gate-msg">Loading…</div>
 
   {# Not a partner #}
   <div id="wt-dash-notaff" class="acct" style="display:none;">
     <div class="acct-card" style="text-align:center;">
       <p class="eyebrow">Partner program</p>
       <h1>You're not a partner yet</h1>
-      <p class="acct-sub">This dashboard is for WhereTo partners. Partner accounts are invitation-only.</p>
+      <p class="acct-sub">This page is for WhereTo partners. Partner accounts are invitation-only.</p>
       <p><a class="btn btn-primary" href="/account/profile/">Back to my account</a></p>
       <p class="acct-links"><a href="/partners/">Learn about the creator program</a></p>
     </div>
   </div>
 
-  {# Performance #}
-  <div id="wt-dash-root" class="dash" style="display:none;">
+  <div id="wt-dash-root" class="pp wrap" style="display:none;">
 
-    <div class="dash-head">
+    <div class="pp-head">
       <div>
-        <p class="eyebrow">Performance</p>
+        <p class="pp-eyebrow">Summary</p>
         <h1>Your performance</h1>
       </div>
+      <div role="group" aria-label="Time period" class="pp-seg" id="period"></div>
     </div>
 
-    {# The per-account code and its two share links used to sit here. Links
-       are per CONTENT now: a partner gets one when a post is approved, from
-       Submit content. A general code they could paste anywhere would sit
-       outside that and report nothing about which post did the work, so it
-       is no longer shown at all. The code still exists and still resolves —
-       it is the <partner> segment of every content link. #}
+    <div class="pp-kpis" id="kpis" aria-live="polite"></div>
 
-    {# Stat cards #}
-    <div class="stat-grid">
-      <div class="stat-card"><p class="label">Link clicks</p><p class="value" id="card-clicks">0</p></div>
-      <div class="stat-card"><p class="label">Referred signups</p><p class="value" id="card-referrals">0</p></div>
-      <div class="stat-card"><p class="label">First logins</p><p class="value" id="card-first-logins">0</p></div>
-      <div class="stat-card"><p class="label">Bookings</p><p class="value" id="card-bookings">0</p></div>
-      <div class="stat-card">
-        <p class="label">Revenue earned</p>
-        <p class="value" id="card-commission">$0.00</p>
-        <p class="sub">Pending <span id="comm-pending">$0</span> · Approved <span id="comm-approved">$0</span> · Paid <span id="comm-paid">$0</span></p>
-      </div>
-    </div>
-
-    {# Every commissionable booking: unpaid first, each one clickable for its
-       timeline to payout (wt-commission-timeline.js). #}
-    <style>
-      .pb-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
-      .pb-head h3 { margin: 0; }
-      .pb-tabs { display: inline-flex; background: var(--wg100, #F2F4F6); border-radius: 999px; padding: 3px; }
-      .pb-tabs button { border: 0; background: none; padding: 6px 14px; border-radius: 999px; font: inherit; font-size: .88rem; color: var(--wg600); cursor: pointer; }
-      .pb-tabs button.active { background: #fff; color: var(--navy); font-weight: 600; box-shadow: 0 1px 3px rgba(20,30,40,.12); }
-      .pb-sum { color: var(--wg600); font-size: .92rem; margin: 8px 0 12px; }
-      .pb-row { display: flex; width: 100%; text-align: left; gap: 14px; align-items: center; justify-content: space-between; padding: 12px 4px; border: 0; border-top: 1px solid var(--wg200); background: none; font: inherit; cursor: pointer; }
-      .pb-row:hover { background: var(--wg100, #F7F8FA); }
-      .pb-main { min-width: 0; }
-      .pb-title { color: var(--navy); font-weight: 600; }
-      .pb-meta { color: var(--wg600); font-size: .86rem; margin-top: 2px; }
-      .pb-right { text-align: right; flex: 0 0 auto; }
-      .pb-amt { color: var(--navy); font-weight: 700; }
-      .pb-when { color: var(--wg600); font-size: .82rem; margin-top: 2px; }
-      .pb-when.ready { color: #1e7a45; font-weight: 600; }
-      .pb-empty { color: var(--wg600); padding: 14px 4px; border-top: 1px solid var(--wg200); margin: 0; }
-    </style>
-    <div class="chart-card full" id="pb-card" style="margin-bottom: 30px;">
-      <div class="pb-head">
-        <h3>Your bookings</h3>
-        <div class="pb-tabs" role="tablist">
-          <button type="button" class="active" data-pb-tab="unpaid">Unpaid</button>
-          <button type="button" data-pb-tab="paid">Paid</button>
+    <div class="pp-two">
+      <section class="pp-card pp-panel" aria-labelledby="top-h">
+        <div class="pp-toprow">
+          <h2 id="top-h">Top content, all time</h2>
+          <a class="pp-outbtn" href="/partner-dashboard/content-performance/" style="display:inline-flex;align-items:center;text-decoration:none;">See all content</a>
         </div>
-      </div>
-      <p class="pb-sum" id="pb-sum"></p>
-      <div id="pb-list"></div>
-    </div>
+        <ol class="pp-top" id="top-list"></ol>
+      </section>
 
-    {# Charts #}
-    <div class="chart-grid">
-      <div class="chart-card">
-        <h3>Signups &amp; first logins (last 90 days)</h3>
-        <div class="canvas-wrap"><canvas id="chart-signups"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <h3>Bookings &amp; revenue (last 90 days)</h3>
-        <div class="canvas-wrap"><canvas id="chart-bookings"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <h3>Conversion funnel</h3>
-        <div class="canvas-wrap"><canvas id="chart-funnel"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <h3>Your revenue</h3>
-        <div id="commission-structure" class="comm-structure"></div>
-      </div>
+      <section class="pp-deep" aria-labelledby="pay-h">
+        <h2 id="pay-h">Next payout</h2>
+        <div class="amt" id="pay-amt">$0.00</div>
+        <div class="pp-pill" id="pay-pill"></div>
+        <div class="n" id="pay-n"></div>
+        <p class="note">We process payments on the 1st and 15th of each month, once your balance reaches $50.</p>
+        <a class="btn-w" href="/partner-dashboard/revenue/" style="display:inline-flex;align-items:center;text-decoration:none;">View revenue details</a>
+      </section>
     </div>
-
   </div>
 </main>
-<script type="module" src="/assets/js/wt-partner-performance.js?v={{ buildTime }}"></script>
+<script type="module" src="/assets/js/wt-partner-summary.js?v={{ buildTime }}"></script>

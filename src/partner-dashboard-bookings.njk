@@ -1,0 +1,69 @@
+---
+layout: layouts/partner.njk
+permalink: /partner-dashboard/bookings/index.html
+title: "Bookings — Partner Portal — WhereTo"
+description: "Every booking made by travelers you referred."
+eleventyExcludeFromCollections: true
+navActive: bookings
+---
+<main id="wt-dash-page">
+
+  {# Loading / gate #}
+  <div id="wt-dash-gate" class="gate-msg">Loading…</div>
+
+  {# Not a partner #}
+  <div id="wt-dash-notaff" class="acct" style="display:none;">
+    <div class="acct-card" style="text-align:center;">
+      <p class="eyebrow">Partner program</p>
+      <h1>You're not a partner yet</h1>
+      <p class="acct-sub">This page is for WhereTo partners. Partner accounts are invitation-only.</p>
+      <p><a class="btn btn-primary" href="/account/profile/">Back to my account</a></p>
+      <p class="acct-links"><a href="/partners/">Learn about the creator program</a></p>
+    </div>
+  </div>
+
+  <div id="wt-dash-root" class="pp wrap" style="display:none;">
+
+    <div class="pp-head">
+      <div>
+        <p class="pp-eyebrow">Bookings</p>
+        <h1>Every booking from your travelers</h1>
+      </div>
+    </div>
+
+    <div class="pp-card pp-filters">
+      <div>
+        <div id="dr-l" class="pp-lbl">Date booked</div>
+        <div role="group" aria-labelledby="dr-l" class="pp-seg" id="range"></div>
+      </div>
+      <div class="dates">
+        <div><label class="pp-lbl" for="b-from">From</label><input id="b-from" class="pp-inp" type="date"></div>
+        <div><label class="pp-lbl" for="b-to">To</label><input id="b-to" class="pp-inp" type="date"></div>
+      </div>
+      <div class="count" id="count" aria-live="polite"></div>
+    </div>
+
+    <div class="pp-card">
+      <div class="pp-scroll">
+        <table class="pp-t">
+          <caption class="pp-sr">Bookings</caption>
+          <thead>
+            <tr id="head"></tr>
+            <tr class="frow">
+              <td><select class="pp-inp sm" id="f-month" aria-label="Filter by month booked"></select></td>
+              <td></td><td></td>
+              <td><select class="pp-inp sm" id="f-type" aria-label="Filter by type"></select></td>
+              <td><button type="button" class="pp-linkbtn" id="clear">Clear all filters</button></td>
+              <td></td><td></td>
+              <td><select class="pp-inp sm" id="f-status" aria-label="Filter by status"></select></td>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+          <tfoot><tr id="foot"></tr></tfoot>
+        </table>
+      </div>
+      <div class="pp-pager" id="pager" hidden></div>
+    </div>
+  </div>
+</main>
+<script type="module" src="/assets/js/wt-partner-bookings.js?v={{ buildTime }}"></script>

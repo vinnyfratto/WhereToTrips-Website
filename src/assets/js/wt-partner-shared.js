@@ -74,3 +74,38 @@ export async function requirePartner() {
 
   return { supabase, user, stats };
 }
+
+// ── Portal pages (Summary, Content performance, Bookings, Revenue, Submit) ──
+// These talk to the partner-portal edge fn, which resolves the partner from the
+// session itself. Nothing here ever sends a partner id.
+export async function portal(action, body = {}) {
+  wireLogout();
+  const { data: sess } = await supabase.auth.getSession();
+  if (!sess.session) { window.location.href = '/account/login/'; return null; }
+  try {
+    const res = await fetch(FN + 'partner-portal', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': cfg.anonKey, 'Authorization': 'Bearer ' + sess.session.access_token },
+      body: JSON.stringify({ action, ...body }),
+    });
+    return await res.json();
+  } catch (_e) { return { ok: false, error: 'network' }; }
+}
+
+// Shows the right fallback for a portal response. Returns true when the page
+// should render its data.
+export function portalGate(j) {
+  const gate = $('wt-dash-gate'), notAff = $('wt-dash-notaff'), root = $('wt-dash-root');
+  if (j && j.ok && j.is_affiliate === false) {
+    if (gate) gate.style.display = 'none';
+    if (notAff) notAff.style.display = 'block';
+    return false;
+  }
+  if (!j || (!j.ok && j.error !== 'invalid')) {
+    if (gate) { gate.style.display = ''; gate.textContent = 'We could not load this page. Please refresh.'; }
+    return false;
+  }
+  if (gate) gate.style.display = 'none';
+  if (root) root.style.display = 'block';
+  return true;
+}

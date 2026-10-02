@@ -52,6 +52,7 @@
   </style>
   <link rel="stylesheet" href="/assets/styles.css?v={{ buildTime }}" />
   <link rel="stylesheet" href="/assets/account.css?v={{ buildTime }}" />
+  <link rel="stylesheet" href="/assets/partner-portal.css?v={{ buildTime }}" />
   {#- Public Supabase config (anon key — RLS-gated, safe to expose). Consumed by /assets/js/wt-partner-*.js -#}
   <script>window.WT_SUPABASE = { url: "{{ supabase.url }}", anonKey: "{{ supabase.anonKey }}" };</script>
   <script>
@@ -68,6 +69,10 @@
 
 <a id="top"></a>
 {{ content | safe }}
+
+<footer class="pp-foot">
+  <div class="wrap">Questions about your account? Write to <a href="mailto:{{ site.partnerSupportEmail }}">{{ site.partnerSupportEmail }}</a>.</div>
+</footer>
 
 </body>
 </html>

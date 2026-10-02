@@ -1,8 +1,8 @@
 ---
 layout: layouts/partner.njk
 permalink: /partner-dashboard/content/index.html
-title: "Submit Content — Partner Portal — WhereTo"
-description: "Submit promotional content as a WhereTo partner."
+title: "Submit content — Partner Portal — WhereTo"
+description: "Send content to WhereTo for approval."
 eleventyExcludeFromCollections: true
 navActive: content
 ---
@@ -22,54 +22,96 @@ navActive: content
     </div>
   </div>
 
-  {# Submit Content #}
-  <div id="wt-dash-root" class="dash" style="display:none;">
+  <div id="wt-dash-root" class="pp wrap" style="display:none;">
 
-    <div class="dash-head">
+    <div class="pp-head">
       <div>
-        <p class="eyebrow">Submit content</p>
-        <h1>Your content</h1>
+        <p class="pp-eyebrow">Submit content</p>
+        <h1>Send something for approval</h1>
       </div>
     </div>
 
-    <div class="acct-card" id="content-submissions">
-      <p class="acct-sub">Posted a blog, video, or social post about WhereTo? Log it here so we can track it.</p>
-      <div id="content-sub-alert" class="alert" role="status" aria-live="polite"></div>
+    <div class="pp-two">
+      <section class="pp-card pp-panel" aria-labelledby="form-h">
+        <div id="done" class="pp-done" hidden>
+          <h2 id="done-h" tabindex="-1">Received. We'll review it within three business days.</h2>
+          <p class="pp-hint" style="margin-bottom:20px;">Once it's approved, your tracking link and promo code appear on the Content performance tab.</p>
+          <button type="button" class="pp-ghost" id="again">Submit another</button>
+        </div>
 
-      <form id="content-sub-form" novalidate>
-        <div class="field-row">
-          <div class="field">
-            <label for="cs-platform">Platform</label>
-            <select id="cs-platform" name="platform">
-              <option value="instagram">Instagram</option>
-              <option value="tiktok">TikTok</option>
-              <option value="youtube">YouTube</option>
-              <option value="facebook">Facebook</option>
-              <option value="twitter">X / Twitter</option>
-              <option value="blog">Blog / Website</option>
-              <option value="other">Other</option>
-            </select>
+        <form id="form" class="pp-form" novalidate>
+          <h2 id="form-h" style="margin:0;">Content details</h2>
+          <div>
+            <div class="pp-lbl" id="mode-l">What are you sending?</div>
+            <div role="group" aria-labelledby="mode-l" class="pp-seg" id="mode"></div>
           </div>
-          <div class="field">
-            <label for="cs-url">Content link</label>
-            <input id="cs-url" name="content_url" type="url" placeholder="https://…" required />
-          </div>
-        </div>
-        <div class="field">
-          <label for="cs-title">Title / caption <span class="hint">(optional)</span></label>
-          <input id="cs-title" name="title" type="text" placeholder="e.g. Our Iceland trip with WhereTo" />
-        </div>
-        <div class="field">
-          <label for="cs-notes">Notes <span class="hint">(optional)</span></label>
-          <textarea id="cs-notes" name="notes" rows="3" placeholder="Anything else we should know?"></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">Submit content</button>
-      </form>
 
-      <h2 class="acct-section-title">Your submissions</h2>
-      <div id="content-sub-list" class="adm-wrap-scroll">Loading…</div>
+          <div>
+            <label class="pp-lbl" for="f-title">Title</label>
+            <input id="f-title" class="pp-inp" type="text" placeholder="Short name you'll recognize later" aria-describedby="e-title">
+            <p class="pp-err" id="e-title" role="alert"></p>
+          </div>
+          <div class="pp-fields2">
+            <div>
+              <label class="pp-lbl" for="f-kind">Content type</label>
+              <select id="f-kind" class="pp-inp">
+                <option>Video</option><option>Photo or carousel</option><option>Short post or story</option>
+                <option>Newsletter</option><option>Podcast episode</option><option>Article or blog post</option><option>Other</option>
+              </select>
+            </div>
+            <div>
+              <label class="pp-lbl" for="f-platform">Platform</label>
+              <select id="f-platform" class="pp-inp">
+                <option>Instagram</option><option>YouTube</option><option>TikTok</option><option>Facebook</option>
+                <option>Newsletter</option><option>Podcast</option><option>Blog or website</option><option>Other</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="g-url">
+            <label class="pp-lbl" for="f-url" id="l-url">Link to the content</label>
+            <input id="f-url" class="pp-inp" type="url" placeholder="https://" aria-describedby="e-url">
+            <p class="pp-hint" id="h-url" hidden>File uploads aren't open yet. Paste a link to the file (for example a shared Google Drive or Dropbox link) and we'll open it from there.</p>
+            <p class="pp-err" id="e-url" role="alert"></p>
+          </div>
+          <div id="g-event" class="pp-fields2" hidden>
+            <div>
+              <label class="pp-lbl" for="f-date">Event date</label>
+              <input id="f-date" class="pp-inp" type="date" aria-describedby="e-date">
+              <p class="pp-err" id="e-date" role="alert"></p>
+            </div>
+            <div>
+              <label class="pp-lbl" for="f-venue">Venue or channel</label>
+              <input id="f-venue" class="pp-inp" type="text" placeholder="Where it's happening" aria-describedby="e-venue">
+              <p class="pp-err" id="e-venue" role="alert"></p>
+            </div>
+          </div>
+
+          <div>
+            <label class="pp-lbl" for="f-notes">Notes for the reviewer</label>
+            <textarea id="f-notes" class="pp-inp" placeholder="Anything we should know before we look at it"></textarea>
+          </div>
+
+          <p class="pp-hint">Remember to include your sponsorship disclosure in the content itself.</p>
+          <p class="pp-err" id="e-form" role="alert"></p>
+          <div style="display:flex;flex-wrap:wrap;gap:12px;">
+            <button type="submit" class="pp-primary" id="send">Submit for approval</button>
+            <button type="button" class="pp-ghost" id="draft">Save draft</button>
+          </div>
+          <p class="pp-hint" id="saved" role="status" aria-live="polite"></p>
+        </form>
+      </section>
+
+      <aside class="pp-card pp-panel pp-next" aria-labelledby="next-h">
+        <h2 id="next-h" style="margin-bottom:14px;font-size:22px;">What happens next</h2>
+        <ol>
+          <li>We check the piece against our brand guidelines, usually within three business days.</li>
+          <li>If it's approved, we issue a tracking link and promo code for that piece.</li>
+          <li>The piece appears on your Content performance tab and starts collecting numbers.</li>
+          <li>If we ask for changes, the note comes to your email and you can resubmit.</li>
+        </ol>
+      </aside>
     </div>
-
   </div>
 </main>
 <script type="module" src="/assets/js/wt-partner-content.js?v={{ buildTime }}"></script>
