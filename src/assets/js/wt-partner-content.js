@@ -56,6 +56,42 @@ function clearFile() {
   $('e-file').textContent = '';
 }
 
+// A small JPEG of the piece (a frame for video), drawn in the browser, so the
+// Preview column shows the real thing. Best effort: anything that fails just
+// leaves the placeholder tile, and the submission goes ahead without one.
+async function makeThumb(file) {
+  const W = 136, H = 92;
+  try {
+    let src, sw, sh, done = () => {};
+    if (file.type.startsWith('image/') && file.type !== 'image/heic') {
+      src = await createImageBitmap(file); sw = src.width; sh = src.height; done = () => src.close();
+    } else if (file.type.startsWith('video/')) {
+      const url = URL.createObjectURL(file);
+      const v = document.createElement('video');
+      v.muted = true; v.playsInline = true; v.preload = 'auto'; v.src = url;
+      await new Promise((ok, no) => { v.onloadeddata = ok; v.onerror = no; setTimeout(no, 8000); });
+      v.currentTime = Math.min(1, (v.duration || 2) / 2);
+      await new Promise((ok, no) => { v.onseeked = ok; v.onerror = no; setTimeout(no, 8000); });
+      src = v; sw = v.videoWidth; sh = v.videoHeight; done = () => URL.revokeObjectURL(url);
+    } else return null;
+    if (!sw || !sh) { done(); return null; }
+    const c = document.createElement('canvas'); c.width = W; c.height = H;
+    const k = Math.max(W / sw, H / sh);                       // cover-fit, centered
+    c.getContext('2d').drawImage(src, (W - sw * k) / 2, (H - sh * k) / 2, sw * k, sh * k);
+    done();
+    return await new Promise((ok) => c.toBlob(ok, 'image/jpeg', 0.8));
+  } catch (_e) { return null; }
+}
+
+async function uploadPreview(file) {
+  const blob = await makeThumb(file);
+  if (!blob || !blob.size) return null;
+  const t = await portal('upload_url', { kind: 'preview', type: 'image/jpeg', size: blob.size });
+  if (!t || !t.ok) return null;
+  const { error } = await supabase.storage.from(BUCKET).uploadToSignedUrl(t.path, t.token, blob, { contentType: 'image/jpeg' });
+  return error ? null : t.path;
+}
+
 async function takeFile(file) {
   if (!file || uploading) return;
   $('e-file').textContent = '';
@@ -75,7 +111,7 @@ async function takeFile(file) {
     }
     const { error } = await supabase.storage.from(BUCKET).uploadToSignedUrl(ticket.path, ticket.token, file, { contentType: file.type });
     if (error) { clearFile(); $('e-file').textContent = 'The upload did not finish. Please try again.'; return; }
-    upload = { path: ticket.path, name: file.name };
+    upload = { path: ticket.path, name: file.name, preview_path: await uploadPreview(file) };
     drawFile(file, 'Ready');
   } catch (_e) {
     clearFile(); $('e-file').textContent = 'The upload did not finish. Please try again.';
