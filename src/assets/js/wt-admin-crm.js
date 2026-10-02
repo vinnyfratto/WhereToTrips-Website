@@ -262,22 +262,75 @@ async function loadQueue() {
         review. Do not decline on tone, angle, style, or favorability (Agreement §5.6(a), T&amp;C §12.6).
       </p>
       <p class="acct-sub">
-        Decision actions arrive with Phase 1d, alongside the platform mint operation. Until a code can be issued,
-        approving here would tell a partner they are approved and give them nothing to publish with.
+        Approving issues the partner a tracking link and code for that piece in the same step. The file is
+        private: <em>Open file</em> gives you a link that expires in five minutes.
       </p>
       ${rows.length ? `<div class="adm-wrap-scroll"><table class="adm-table">
-        <thead><tr><th>Partner</th><th>Title</th><th>Kind</th><th>Waiting</th><th>SLA</th><th>Event</th></tr></thead>
+        <thead><tr><th>Partner</th><th>Title</th><th>Kind</th><th>File</th><th>Waiting</th><th>SLA</th><th>Event</th><th></th></tr></thead>
         <tbody>${rows.map((r) => `
           <tr>
             <td><a href="/admin-crm-prospect/?id=${encodeURIComponent(r.prospect_id)}">${esc(r.partner)}</a></td>
-            <td>${r.draft_url ? `<a href="${esc(r.draft_url)}" target="_blank" rel="noopener noreferrer">${esc(r.title)}</a>` : esc(r.title)}</td>
+            <td>${esc(r.title)}</td>
             <td>${esc(titleize(r.submission_kind))}</td>
+            <td>${r.file ? `<button type="button" class="btn btn-ghost btn-xs" data-open-file="${esc(r.file.id)}">Open file</button>` : '—'}</td>
             <td>${esc(daysAgo(r.submitted_at))}</td>
             <td>${slaPill(r.sla_state)}</td>
             <td>${r.event_at ? `${esc(date(r.event_at))} ${r.urgent ? '<span class="adm-pill">urgent</span>' : ''}` : '—'}</td>
-          </tr>`).join('')}
+            <td><button type="button" class="btn btn-primary btn-xs" data-decide="${esc(r.id)}">Review</button></td>
+          </tr>
+          <tr hidden data-decide-row="${esc(r.id)}"><td colspan="8">
+            <div class="adm-form-row" style="flex-direction:column; align-items:stretch; gap:10px;">
+              <div role="radiogroup" aria-label="Decision" style="display:flex; gap:18px; flex-wrap:wrap;">
+                <label><input type="radio" name="d-${esc(r.id)}" value="approved" checked /> Approve</label>
+                <label><input type="radio" name="d-${esc(r.id)}" value="revisions_requested" /> Ask for changes</label>
+                <label><input type="radio" name="d-${esc(r.id)}" value="declined" /> Decline</label>
+              </div>
+              <fieldset data-checks style="border:0; padding:0; margin:0;">
+                <legend class="acct-sub" style="padding:0;">Approval needs all three (brand accuracy only):</legend>
+                <label style="display:block;"><input type="checkbox" data-check="check_description_accurate" /> WhereTo and what it does are described accurately</label>
+                <label style="display:block;"><input type="checkbox" data-check="check_live_vs_planned" /> Anything planned is not presented as available</label>
+                <label style="display:block;"><input type="checkbox" data-check="check_marks_used_correctly" /> Logo, name and Marks follow the brand guidelines</label>
+              </fieldset>
+              <label class="field"><span>Note to the partner <span class="hint">(required to ask for changes or decline; they see this)</span></span>
+                <textarea data-instructions rows="2"></textarea></label>
+              <label class="field"><span>Internal note <span class="hint">(never shown to the partner)</span></span>
+                <textarea data-internal rows="2"></textarea></label>
+              <div><button type="button" class="btn btn-primary" data-submit-decision="${esc(r.id)}">Save decision</button></div>
+            </div>
+          </td></tr>`).join('')}
         </tbody></table></div>` : '<p class="acct-sub">Nothing is waiting. </p>'}
     </div>`;
+
+  const q = panel('queue');
+  q.querySelectorAll('[data-open-file]').forEach((b) => b.addEventListener('click', async () => {
+    // Open the tab first (a popup blocker only allows it on the click itself), then point it at the link.
+    const tab = window.open('', '_blank');
+    const f = await callCrm('submission_file_url', { attachment_id: b.dataset.openFile });
+    if (f.ok && tab) { tab.opener = null; tab.location.href = f.url; }
+    else { if (tab) tab.close(); msg('error', 'Could not open the file: ' + (f.error || 'unknown error')); }
+  }));
+  q.querySelectorAll('[data-decide]').forEach((b) => b.addEventListener('click', () => {
+    const row = q.querySelector(`[data-decide-row="${CSS.escape(b.dataset.decide)}"]`);
+    row.hidden = !row.hidden;
+  }));
+  q.querySelectorAll('[data-submit-decision]').forEach((b) => b.addEventListener('click', async () => {
+    const id = b.dataset.submitDecision;
+    const row = q.querySelector(`[data-decide-row="${CSS.escape(id)}"]`);
+    const decision = row.querySelector('input[type=radio]:checked').value;
+    const params = {
+      submission_id: id, decision,
+      revision_instructions: row.querySelector('[data-instructions]').value,
+      reviewer_notes: row.querySelector('[data-internal]').value,
+    };
+    row.querySelectorAll('[data-check]').forEach((c) => { params[c.dataset.check] = c.checked; });
+    b.disabled = true;
+    const r = await callCrm('review_submission', params);
+    b.disabled = false;
+    if (!r.ok) { msg('error', r.error || 'Could not save the decision'); return; }
+    if (decision === 'approved' && r.asset) msg('success', `Approved. Tracking link issued: ${r.asset.tracking_url}`);
+    else msg('success', decision === 'declined' ? 'Declined.' : 'Changes requested.');
+    await loadQueue();
+  }));
 }
 
 function slaPill(state) {

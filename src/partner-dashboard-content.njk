@@ -68,11 +68,21 @@ navActive: content
             </div>
           </div>
 
-          <div id="g-url">
-            <label class="pp-lbl" for="f-url" id="l-url">Link to the content</label>
-            <input id="f-url" class="pp-inp" type="url" placeholder="https://" aria-describedby="e-url">
-            <p class="pp-hint" id="h-url" hidden>File uploads aren't open yet. Paste a link to the file (for example a shared Google Drive or Dropbox link) and we'll open it from there.</p>
-            <p class="pp-err" id="e-url" role="alert"></p>
+          <div id="g-file">
+            <div class="pp-lbl" id="l-file">Your file</div>
+            <div class="pp-drop" id="drop" role="button" tabindex="0" aria-labelledby="l-file" aria-describedby="h-file e-file">
+              <strong>Drag a file here</strong>
+              <span>or <u>choose a file</u> from your device</span>
+            </div>
+            <input id="f-file" type="file" hidden accept="image/jpeg,image/png,image/webp,image/gif,image/heic,application/pdf,video/mp4,video/quicktime,audio/mpeg,audio/wav">
+            <div class="pp-file" id="file-info" hidden>
+              <span class="pp-file-name" id="file-name"></span>
+              <span class="pp-file-size pp-num" id="file-size"></span>
+              <span class="pp-file-state" id="file-state" role="status" aria-live="polite"></span>
+              <button type="button" class="pp-linkbtn" id="file-remove">Remove</button>
+            </div>
+            <p class="pp-hint" id="h-file">One file. Images, PDF, MP4 or MOV video, and MP3 or WAV audio, up to 100 MB.</p>
+            <p class="pp-err" id="e-file" role="alert"></p>
           </div>
           <div id="g-event" class="pp-fields2" hidden>
             <div>

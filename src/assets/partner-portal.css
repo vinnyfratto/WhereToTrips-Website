@@ -142,3 +142,12 @@ textarea.pp-inp { min-height: 110px; resize: vertical; }
 }
 @media (prefers-reduced-motion: reduce) { .pp * { transition: none !important; animation: none !important; } }
 .pp [hidden] { display: none !important; }
+
+/* file picker */
+.pp-drop { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-align: center; padding: 28px 16px; border: 2px dashed #8E9BAA; border-radius: 12px; background: #FAFBFC; color: var(--ink-soft); cursor: pointer; }
+.pp-drop strong { color: var(--navy); font-size: 16px; }
+.pp-drop:hover, .pp-drop.over { border-color: var(--pp-blue); background: var(--azure-tint); }
+.pp-file { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px; margin-top: 10px; padding: 12px 14px; border: 1px solid var(--wg200); border-radius: 10px; background: #fff; }
+.pp-file-name { font-weight: 600; word-break: break-all; }
+.pp-file-size, .pp-file-state { font-size: 13px; color: var(--ink-soft); }
+.pp-file .pp-linkbtn { margin-left: auto; }
