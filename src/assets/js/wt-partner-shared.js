@@ -20,6 +20,16 @@ const FN = cfg.url + '/functions/v1/';
 
 const $ = (id) => document.getElementById(id);
 
+// The server no longer recognizes this session (for example, it was signed out in
+// another tab or browser), but this browser still holds the old token. Some pages
+// still look fine on that token, and the portal does not. Clear it and sign in again.
+async function sessionEnded() {
+  const gate = $('wt-dash-gate');
+  if (gate) { gate.style.display = ''; gate.textContent = 'Your session has ended. Taking you to sign in…'; }
+  try { await supabase.auth.signOut({ scope: 'local' }); } catch (_e) { /* the redirect is what matters */ }
+  window.location.href = '/account/login/';
+}
+
 function wireLogout() {
   const btn = $('wt-logout');
   if (!btn || btn.dataset.wired) return;
@@ -58,6 +68,7 @@ export async function requirePartner() {
       await new Promise((r) => setTimeout(r, 1500));
       stats = await ask();
     }
+    if (stats && stats.error === 'invalid_session') { await sessionEnded(); return null; }
   } catch (_e) {
     if (gate) gate.textContent = 'Could not load your account. Please refresh.';
     return null;
@@ -103,6 +114,7 @@ export async function portal(action, body = {}) {
       await new Promise((r) => setTimeout(r, 1500));
       j = await call();
     }
+    if (j && j.error === 'invalid_session') { await sessionEnded(); return null; }
     return j;
   } catch (_e) { return { ok: false, error: 'network' }; }
 }
@@ -111,6 +123,8 @@ export async function portal(action, body = {}) {
 // should render its data.
 export function portalGate(j) {
   const gate = $('wt-dash-gate'), notAff = $('wt-dash-notaff'), root = $('wt-dash-root');
+  // null means portal() is already sending the visitor to sign in; leave its message alone.
+  if (j === null) return false;
   if (j && j.ok && j.is_affiliate === false) {
     if (gate) gate.style.display = 'none';
     if (notAff) notAff.style.display = 'block';
