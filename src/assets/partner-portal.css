@@ -151,3 +151,85 @@ textarea.pp-inp { min-height: 110px; resize: vertical; }
 .pp-file-name { font-weight: 600; word-break: break-all; }
 .pp-file-size, .pp-file-state { font-size: 13px; color: var(--ink-soft); }
 .pp-file .pp-linkbtn { margin-left: auto; }
+
+/* ── My Content drop-down in the header (same menu as the main site's nav) ── */
+.pnr-links { align-items: center; }
+.pnr-links .nav-dropdown > button {
+  font: inherit; font-family: var(--sans); font-weight: 600; font-size: 0.86rem; color: var(--wg600);
+  background: none; border: 0; cursor: pointer; padding: 8px 16px; border-radius: 999px;
+  display: inline-flex; align-items: center; gap: 5px; white-space: nowrap;
+  transition: color .15s ease, background .15s ease;
+}
+.pnr-links .nav-dropdown > button:hover { color: var(--navy); background: var(--wg100); }
+.pnr-links .nav-dropdown.is-current > button { color: var(--pp-deep); background: var(--azure-tint, var(--wg100)); }
+.pnr-links .nav-dropdown > button .caret { font-size: 9px; }
+.pnr-links .nav-dropdown-menu { left: 0; right: auto; }
+/* the menu rows keep the main site's look, not the tab pills' */
+.pnr-links .nav-dropdown-menu a {
+  border-radius: 0; padding: 13px 20px; font-size: 14px; font-weight: 400; color: var(--navy);
+  background: var(--card); white-space: nowrap;
+}
+.pnr-links .nav-dropdown-menu a:hover { background: var(--azure-tint); color: var(--azure); }
+.pnr-links .nav-dropdown-menu a[aria-current="page"] { color: var(--azure); font-weight: 600; background: var(--azure-tint); }
+@media (max-width: 760px) {
+  /* The tab row scrolls sideways here, which would clip a floating menu, so the
+     three pages sit inline as ordinary tabs. */
+  .pnr-links .nav-dropdown { display: contents; }
+  .pnr-links .nav-dropdown > button { display: none; }
+  .pnr-links .nav-dropdown-menu {
+    display: contents; position: static; opacity: 1; visibility: visible; box-shadow: none; border: 0; background: none; min-width: 0;
+  }
+  .pnr-links .nav-dropdown-menu a {
+    margin-top: 0; border-radius: 999px; padding: 8px 16px; font-size: 0.86rem; font-weight: 600; color: var(--wg600); background: none; border-bottom: 0;
+  }
+  .pnr-links .nav-dropdown-menu a[aria-current="page"] { color: var(--pp-deep); background: var(--azure-tint, var(--wg100)); }
+}
+
+/* ── My Submissions ── */
+.pp-subfilters { padding: 16px 20px; margin-bottom: 16px; display: grid; grid-template-columns: minmax(200px, 1.6fr) repeat(3, minmax(130px, 1fr)) repeat(2, 150px) auto; gap: 12px 14px; align-items: end; }
+.pp-subfilters .pp-lbl { margin-bottom: 4px; font-size: 13px; }
+.pp-sumbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin: 0 0 14px; }
+.pp-sumchip { border: 1px solid var(--wg200); background: #fff; border-radius: 999px; padding: 6px 14px; font: inherit; font-size: 13px; font-weight: 600; color: var(--ink-soft); cursor: pointer; }
+.pp-sumchip:hover { border-color: var(--pp-blue); }
+.pp-sumchip[aria-pressed="true"] { background: var(--azure-tint); border-color: var(--pp-blue); color: var(--pp-deep); }
+.pp-sumchip b { font-variant-numeric: tabular-nums; margin-right: 4px; }
+.pp-sumcount { margin-left: auto; font-size: 14px; color: var(--ink-soft); }
+table.pp-t td.exp { width: 44px; padding-right: 0; }
+.pp-expbtn { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--wg200); background: #fff; cursor: pointer; font-size: 12px; color: var(--ink-soft); }
+.pp-expbtn:hover { background: var(--azure-tint); border-color: var(--pp-blue); }
+.pp-expbtn[aria-expanded="true"] { background: var(--azure-tint); color: var(--pp-deep); }
+tr.pp-detail > td { background: #FAFCFE; padding: 20px 24px 24px; border-bottom: 1px solid var(--wg200); }
+.pp-detail-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 24px; }
+.pp-detail h3 { font: 600 12px var(--sans); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); margin: 0 0 10px; }
+.pp-dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; font-size: 14px; }
+.pp-dl dt { color: var(--ink-soft); }
+.pp-dl dd { margin: 0; word-break: break-word; }
+.pp-note { margin: 12px 0 0; padding: 12px 14px; border-left: 3px solid var(--amber); background: #FFF8EA; border-radius: 0 8px 8px 0; font-size: 14px; }
+.pp-note b { display: block; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: #6B4200; margin-bottom: 4px; }
+.pp-code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; background: #F2F5F7; padding: 2px 8px; border-radius: 6px; }
+.pp-copy { margin-left: 8px; }
+.pp-prev { width: 96px; height: 65px; border-radius: 8px; object-fit: cover; border: 1px solid var(--wg200); }
+
+/* the timeline: a stepper that runs across, and stacks on a phone */
+.pp-tl { list-style: none; margin: 0; padding: 0; display: flex; gap: 0; }
+.pp-tl li { flex: 1 1 0; position: relative; padding-top: 26px; text-align: left; min-width: 0; padding-right: 8px; }
+.pp-tl li::before { content: ''; position: absolute; left: 0; top: 8px; width: 12px; height: 12px; border-radius: 50%; background: #fff; border: 2px solid var(--wg300); z-index: 1; }
+.pp-tl li::after { content: ''; position: absolute; left: 12px; right: 0; top: 13px; height: 2px; background: var(--wg200); }
+.pp-tl li:last-child::after { display: none; }
+.pp-tl li.done::before { background: #2E7D5B; border-color: #2E7D5B; }
+.pp-tl li.done::after { background: #2E7D5B; }
+.pp-tl li.current::before { border-color: var(--pp-blue); background: var(--azure-tint); box-shadow: 0 0 0 3px rgba(32, 156, 224, .18); }
+.pp-tl li.attention::before { background: var(--amber); border-color: var(--amber); }
+.pp-tl li.stopped::before { background: #9AA3AD; border-color: #9AA3AD; }
+.pp-tl .t { display: block; font-size: 13px; font-weight: 600; color: var(--navy); }
+.pp-tl li.todo .t { color: var(--ink-soft); font-weight: 500; }
+.pp-tl .d { display: block; font-size: 12px; color: var(--ink-soft); margin-top: 2px; }
+@media (max-width: 1100px) { .pp-subfilters { grid-template-columns: repeat(3, minmax(0, 1fr)); } .pp-subfilters .wide { grid-column: 1 / -1; } }
+@media (max-width: 760px) {
+  .pp-subfilters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pp-detail-grid { grid-template-columns: minmax(0, 1fr); }
+  .pp-tl { flex-direction: column; gap: 14px; }
+  .pp-tl li { padding: 0 0 0 28px; min-height: 22px; }
+  .pp-tl li::before { top: 3px; }
+  .pp-tl li::after { left: 5px; right: auto; top: 18px; bottom: -12px; width: 2px; height: auto; }
+}

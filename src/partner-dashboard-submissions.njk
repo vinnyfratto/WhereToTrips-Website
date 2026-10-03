@@ -1,0 +1,79 @@
+---
+layout: layouts/partner.njk
+permalink: /partner-dashboard/my-submissions/index.html
+title: "My Submissions — Partner Portal — WhereTo"
+description: "Everything you have submitted to WhereTo, and where each piece stands."
+eleventyExcludeFromCollections: true
+navActive: submissions
+---
+<main id="wt-dash-page">
+
+  {# Loading / gate #}
+  <div id="wt-dash-gate" class="gate-msg">Loading…</div>
+
+  {# Not a partner #}
+  <div id="wt-dash-notaff" class="acct" style="display:none;">
+    <div class="acct-card" style="text-align:center;">
+      <p class="eyebrow">Partner program</p>
+      <h1>You're not a partner yet</h1>
+      <p class="acct-sub">This page is for WhereTo partners. Partner accounts are invitation-only.</p>
+      <p><a class="btn btn-primary" href="/account/profile/">Back to my account</a></p>
+      <p class="acct-links"><a href="/partners/">Learn about the creator program</a></p>
+    </div>
+  </div>
+
+  <div id="wt-dash-root" class="pp wrap" style="display:none;">
+    <div class="pp-head">
+      <div>
+        <p class="pp-eyebrow">My Content</p>
+        <h1>My Submissions</h1>
+        <p class="pp-lede">Everything you've sent us and where each piece stands. Open a row to see its timeline, our note, and your tracking link once it's approved.</p>
+      </div>
+      <a class="pp-primary" href="/partner-dashboard/content/" style="display:inline-flex;align-items:center;text-decoration:none;">Submit content</a>
+    </div>
+
+    <div class="pp-sumbar" id="sumbar" role="group" aria-label="Filter by status"></div>
+
+    <div class="pp-card pp-subfilters">
+      <div class="wide">
+        <label class="pp-lbl" for="f-q">Search</label>
+        <input id="f-q" class="pp-inp" type="search" placeholder="Title, platform, file or code" autocomplete="off">
+      </div>
+      <div>
+        <label class="pp-lbl" for="f-status">Status</label>
+        <select id="f-status" class="pp-inp"></select>
+      </div>
+      <div>
+        <label class="pp-lbl" for="f-platform">Platform</label>
+        <select id="f-platform" class="pp-inp"></select>
+      </div>
+      <div>
+        <label class="pp-lbl" for="f-kind">Type</label>
+        <select id="f-kind" class="pp-inp"></select>
+      </div>
+      <div>
+        <label class="pp-lbl" for="f-from">Submitted from</label>
+        <input id="f-from" class="pp-inp" type="date">
+      </div>
+      <div>
+        <label class="pp-lbl" for="f-to">Submitted to</label>
+        <input id="f-to" class="pp-inp" type="date">
+      </div>
+      <div><button type="button" class="pp-linkbtn" id="clear">Clear filters</button></div>
+    </div>
+
+    <div class="pp-sumcount" id="count" aria-live="polite" style="margin:0 0 10px;"></div>
+
+    <div class="pp-card">
+      <div class="pp-scroll">
+        <table class="pp-t">
+          <caption class="pp-sr">My submissions</caption>
+          <thead><tr id="head"></tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+      <div class="pp-pager" id="pager" hidden></div>
+    </div>
+  </div>
+</main>
+<script type="module" src="/assets/js/wt-partner-submissions.js?v={{ buildTime }}"></script>

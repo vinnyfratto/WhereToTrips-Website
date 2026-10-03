@@ -1,8 +1,10 @@
 {#- Partner portal header — intentionally separate from partials/header.njk
-    (the marketing site nav). Same logo + palette, own nav. Five tabs in a
-    fixed order, each a real URL (navActive set per page in front matter marks
+    (the marketing site nav). Same logo + palette, own nav. Summary, My Content
+    (a drop-down: Content Performance, Submit Content, My Submissions), Bookings
+    and Revenue, each a real URL (navActive set per page in front matter marks
     the current one with aria-current). Settings and Log out sit apart at the
     right: they are account chrome, not portal tabs. -#}
+{%- set inMyContent = navActive in ['content-performance', 'content', 'submissions'] -%}
 <header class="pnr-header">
   <div class="wrap pnr-nav">
     <a class="brand" href="/" aria-label="{{ site.brandName }} home">
@@ -11,10 +13,16 @@
     <span class="pnr-tag">Partner Portal</span>
     <nav class="pnr-links" aria-label="Partner portal">
       <a href="/partner-dashboard/" {% if navActive == 'summary' %}aria-current="page"{% endif %}>Summary</a>
-      <a href="/partner-dashboard/content-performance/" {% if navActive == 'content-performance' %}aria-current="page"{% endif %}>Content performance</a>
+      <div class="nav-dropdown{% if inMyContent %} is-current{% endif %}">
+        <button type="button" aria-haspopup="true">My Content <span class="caret" aria-hidden="true">▾</span></button>
+        <div class="nav-dropdown-menu">
+          <a href="/partner-dashboard/content-performance/" {% if navActive == 'content-performance' %}aria-current="page"{% endif %}>Content Performance</a>
+          <a href="/partner-dashboard/content/" {% if navActive == 'content' %}aria-current="page"{% endif %}>Submit Content</a>
+          <a href="/partner-dashboard/my-submissions/" {% if navActive == 'submissions' %}aria-current="page"{% endif %}>My Submissions</a>
+        </div>
+      </div>
       <a href="/partner-dashboard/bookings/" {% if navActive == 'bookings' %}aria-current="page"{% endif %}>Bookings</a>
       <a href="/partner-dashboard/revenue/" {% if navActive == 'revenue' %}aria-current="page"{% endif %}>Revenue</a>
-      <a href="/partner-dashboard/content/" {% if navActive == 'content' %}aria-current="page"{% endif %}>Submit content</a>
     </nav>
     <div class="pnr-util">
       <a href="/partner-dashboard/settings/" {% if navActive == 'settings' %}aria-current="page"{% endif %}>Settings</a>
