@@ -70,7 +70,7 @@ function detailHtml(r) {
     ['Submitted', fmtDate(r.submitted)],
     r.decided ? ['Decision', fmtDate(r.decided)] : (r.review_due ? ['Review due', fmtDate(r.review_due)] : null),
     ['Content type', r.content_type],
-    r.file_name ? ['File', r.file_name + (r.file_bytes ? ' (' + bytes(r.file_bytes) + ')' : '')] : null,
+    r.file_name ? ['File', `<button type="button" class="pp-filelink" data-view="${esc(r.id)}" aria-haspopup="dialog">${esc(r.file_name)}</button>${r.file_bytes ? ' <span class="pp-filesize">(' + bytes(r.file_bytes) + ')</span>' : ''}`, true] : null,
     r.event_date ? ['Event', fmtDate(r.event_date) + (r.venue ? ' · ' + r.venue : '')] : null,
   ].filter(Boolean);
 
@@ -99,15 +99,81 @@ function detailHtml(r) {
       <div>
         <h3>Details</h3>
         <div style="display:flex;gap:14px;align-items:flex-start;">
-          ${r.preview_url ? `<img class="pp-prev" src="${esc(r.preview_url)}" alt="Preview of ${esc(r.title)}" width="96" height="65" loading="lazy">` : ''}
-          <dl class="pp-dl">${facts.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('')}</dl>
+          ${r.preview_url ? `<button type="button" class="pp-prevbtn" data-view="${esc(r.id)}" aria-haspopup="dialog" aria-label="View ${esc(r.file_name || r.title)}" title="View file"><img class="pp-prev" src="${esc(r.preview_url)}" alt="" width="96" height="65" loading="lazy"></button>` : ''}
+          <dl class="pp-dl">${facts.map(([k, v, html]) => `<dt>${esc(k)}</dt><dd>${html ? v : esc(v)}</dd>`).join('')}</dl>
         </div>
         ${link}
       </div>
     </div>`;
 }
 
+// ── The file viewer ─────────────────────────────────────────────────
+// A native <dialog>: focus stays inside while it is open, Escape closes it, and
+// focus returns to whatever opened it. The file is picked by its type; anything a
+// browser cannot show gets a plain message and the Download button, which is
+// always there.
+let rowsById = new Map();
+let dlg = null;
+
+function ensureDialog() {
+  if (dlg) return dlg;
+  dlg = document.createElement('dialog');
+  dlg.className = 'pp-dlg';
+  dlg.setAttribute('aria-labelledby', 'pp-dlg-title');
+  dlg.innerHTML = `<div class="pp-dlg-head"><h2 id="pp-dlg-title"></h2><button type="button" class="pp-dlg-x" aria-label="Close">×</button></div>
+    <div class="pp-dlg-body" id="pp-dlg-body"></div>
+    <div class="pp-dlg-foot"><span class="pp-dlg-meta" id="pp-dlg-meta"></span>
+      <a class="pp-primary" id="pp-dlg-dl" href="#" style="display:inline-flex;align-items:center;text-decoration:none;">Download</a>
+      <button type="button" class="pp-ghost" id="pp-dlg-close">Close</button></div>`;
+  document.body.appendChild(dlg);
+  const close = () => dlg.close();
+  dlg.querySelector('.pp-dlg-x').addEventListener('click', close);
+  dlg.querySelector('#pp-dlg-close').addEventListener('click', close);
+  // a click on the dim backdrop (the dialog element itself, outside its content) closes it
+  dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+  // stop playback and drop the file link when it closes
+  dlg.addEventListener('close', () => { dlg.querySelector('#pp-dlg-body').innerHTML = ''; });
+  return dlg;
+}
+
+function viewerHtml(f) {
+  const t = String(f.type || '').toLowerCase();
+  const u = esc(f.view_url), n = esc(f.name);
+  const nope = `<p class="pp-dlg-none">This file can't be shown in the browser. Use Download to open it on your device.</p>`;
+  if (t.startsWith('image/') && t !== 'image/heic') {
+    return `<img src="${u}" alt="${n}" class="pp-dlg-media" onerror="this.outerHTML=this.dataset.fallback" data-fallback="${esc(nope)}">`;
+  }
+  if (t.startsWith('video/')) return `<video src="${u}" class="pp-dlg-media" controls playsinline preload="metadata">${nope}</video>`;
+  if (t.startsWith('audio/')) return `<audio src="${u}" class="pp-dlg-audio" controls preload="metadata"></audio>`;
+  if (t === 'application/pdf') return `<iframe src="${u}" class="pp-dlg-frame" title="${n}"></iframe>`;
+  return nope;
+}
+
+async function openViewer(id, opener) {
+  const r = rowsById.get(id);
+  const d = ensureDialog();
+  d.querySelector('#pp-dlg-title').textContent = r ? r.file_name || r.title : 'Your file';
+  d.querySelector('#pp-dlg-meta').textContent = r && r.file_bytes ? bytes(r.file_bytes) : '';
+  d.querySelector('#pp-dlg-body').innerHTML = '<p class="pp-dlg-none" role="status">Loading…</p>';
+  const dl = d.querySelector('#pp-dlg-dl');
+  dl.removeAttribute('href'); dl.setAttribute('aria-disabled', 'true');
+  d.showModal();
+
+  // Fresh, short-lived links each time: the file is private.
+  const f = await portal('submission_file', { submission_id: id });
+  if (!d.open) return;                       // closed while it loaded
+  if (!f || !f.ok) {
+    d.querySelector('#pp-dlg-body').innerHTML = `<p class="pp-dlg-none">We couldn't open that file just now. Please try again.</p>`;
+    return;
+  }
+  d.querySelector('#pp-dlg-title').textContent = f.name;
+  d.querySelector('#pp-dlg-body').innerHTML = viewerHtml(f);
+  dl.href = f.download_url; dl.setAttribute('download', f.name); dl.removeAttribute('aria-disabled');
+  d.addEventListener('close', () => { if (opener && opener.focus) opener.focus(); }, { once: true });
+}
+
 function draw(j) {
+  rowsById = new Map(j.rows.map((r) => [r.id, r]));
   drawHead();
 
   // Status chips, with counts, act as quick filters.
@@ -158,6 +224,7 @@ function draw(j) {
     b.textContent = nowOpen ? '▾' : '▸';
     if (nowOpen) open.add(id); else open.delete(id);
   }));
+  $('rows').querySelectorAll('[data-view]').forEach((b) => b.addEventListener('click', () => openViewer(b.dataset.view, b)));
   $('rows').querySelectorAll('[data-copy]').forEach((b) => b.addEventListener('click', async () => {
     try { await navigator.clipboard.writeText(b.dataset.copy); b.textContent = 'Copied'; setTimeout(() => { b.textContent = 'Copy link'; }, 1500); } catch (_e) { /* the link is selectable text */ }
   }));

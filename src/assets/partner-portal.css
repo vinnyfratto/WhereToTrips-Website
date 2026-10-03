@@ -233,3 +233,35 @@ tr.pp-detail > td { background: #FAFCFE; padding: 20px 24px 24px; border-bottom:
   .pp-tl li::before { top: 3px; }
   .pp-tl li::after { left: 5px; right: auto; top: 18px; bottom: -12px; width: 2px; height: auto; }
 }
+
+/* ── Viewing a submitted file ── */
+.pp-filelink {
+  background: none; border: 0; padding: 0; margin: 0; font: inherit; text-align: left; cursor: pointer;
+  color: var(--pp-deep); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; word-break: break-all;
+}
+.pp-filelink:hover { color: var(--azure-press); text-decoration-thickness: 2px; }
+.pp-filesize { color: var(--ink-soft); white-space: nowrap; }
+.pp-prevbtn { padding: 0; border: 0; background: none; cursor: zoom-in; border-radius: 8px; line-height: 0; flex: 0 0 auto; }
+.pp-prevbtn:hover .pp-prev { border-color: var(--pp-blue); box-shadow: 0 0 0 3px rgba(32, 156, 224, .18); }
+.pp-prevbtn:focus-visible, .pp-filelink:focus-visible { outline: 2px solid var(--pp-blue); outline-offset: 2px; }
+
+dialog.pp-dlg {
+  /* the site reset zeroes margins, which would pin a modal to the top-left corner */
+  margin: auto; width: min(920px, 94vw); max-height: 92vh; padding: 0; border: 0; border-radius: 14px; background: #fff; color: var(--navy);
+  box-shadow: 0 24px 80px rgba(20, 30, 40, .35); font-family: var(--sans); overflow: hidden;
+}
+dialog.pp-dlg[open] { display: flex; flex-direction: column; }
+dialog.pp-dlg::backdrop { background: rgba(20, 30, 40, .62); }
+.pp-dlg-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 18px; border-bottom: 1px solid var(--wg200); }
+.pp-dlg-head h2 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: 20px; word-break: break-all; }
+.pp-dlg-x { width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--wg200); background: #fff; font-size: 24px; line-height: 1; cursor: pointer; color: var(--ink-soft); flex: 0 0 auto; }
+.pp-dlg-x:hover { background: var(--azure-tint); }
+.pp-dlg-body { flex: 1 1 auto; min-height: 220px; padding: 16px; display: flex; align-items: center; justify-content: center; background: #F2F5F7; overflow: auto; }
+.pp-dlg-media { max-width: 100%; max-height: 68vh; border-radius: 8px; background: #000; }
+.pp-dlg-audio { width: min(560px, 100%); }
+.pp-dlg-frame { width: 100%; height: 68vh; border: 0; background: #fff; border-radius: 6px; }
+.pp-dlg-none { margin: 0; color: var(--ink-soft); text-align: center; padding: 24px; }
+.pp-dlg-foot { display: flex; align-items: center; justify-content: flex-end; gap: 12px; padding: 12px 18px; border-top: 1px solid var(--wg200); flex-wrap: wrap; }
+.pp-dlg-meta { margin-right: auto; font-size: 13px; color: var(--ink-soft); }
+#pp-dlg-dl[aria-disabled="true"] { opacity: .5; pointer-events: none; }
+@media (max-width: 640px) { dialog.pp-dlg { width: 100vw; max-height: 100vh; border-radius: 0; } .pp-dlg-frame { height: 60vh; } }
