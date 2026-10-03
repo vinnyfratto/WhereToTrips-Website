@@ -13,7 +13,7 @@ const $ = (id) => document.getElementById(id);
 const COLS = [
   { k: 'submitted', label: 'Submitted' }, { k: 'title', label: 'Title', text: true },
   { k: 'platform', label: 'Platform', text: true }, { k: 'type', label: 'Type', text: true },
-  { k: 'status', label: 'Status', text: true }, { k: 'code', label: 'Tracking code', text: true },
+  { k: 'status', label: 'Status', text: true },
 ];
 const state = { sort: 'submitted', dir: 'desc', q: '', status: '', platform: '', kind: '', from: '', to: '', page: 1 };
 const open = new Set();             // rows left open survive a re-draw
@@ -142,11 +142,10 @@ function draw(j) {
           <td>${esc(r.platform)}</td>
           <td>${esc(r.kind_label)}</td>
           <td>${chip(r.status, r.status_label)}${r.review_due ? `<span class="pp-ref-alt">Review due ${esc(fmtDate(r.review_due))}</span>` : ''}</td>
-          <td class="nw">${r.tracking_code ? `<span class="pp-code">${esc(r.tracking_code)}</span>` : '—'}</td>
         </tr>
-        <tr class="pp-detail" id="d-${esc(r.id)}" ${isOpen ? '' : 'hidden'}><td colspan="7">${detailHtml(r)}</td></tr>`;
+        <tr class="pp-detail" id="d-${esc(r.id)}" ${isOpen ? '' : 'hidden'}><td colspan="6">${detailHtml(r)}</td></tr>`;
       }).join('')
-    : `<tr><td colspan="7" class="pp-empty-row">${c.total === 0
+    : `<tr><td colspan="6" class="pp-empty-row">${c.total === 0
         ? 'You haven\'t submitted anything yet. <a href="/partner-dashboard/content/">Submit content</a> and track it here.'
         : (filtering ? 'No submissions match these filters.' : 'Nothing to show.')}</td></tr>`;
 
