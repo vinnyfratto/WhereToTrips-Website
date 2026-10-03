@@ -1,7 +1,7 @@
 {#- Partner portal header — intentionally separate from partials/header.njk
     (the marketing site nav). Same logo + palette, own nav. Summary, My Content
-    (a drop-down: Content Performance, Submit Content, My Submissions), Bookings
-    and Revenue, each a real URL (navActive set per page in front matter marks
+    (a drop-down: Content Performance, Submit Content, My Submissions), Bookings,
+    Revenue and Assets, each a real URL (navActive set per page in front matter marks
     the current one with aria-current). Settings and Log out sit apart at the
     right: they are account chrome, not portal tabs. -#}
 {%- set inMyContent = navActive in ['content-performance', 'content', 'submissions'] -%}
@@ -23,6 +23,7 @@
       </div>
       <a href="/partner-dashboard/bookings/" {% if navActive == 'bookings' %}aria-current="page"{% endif %}>Bookings</a>
       <a href="/partner-dashboard/revenue/" {% if navActive == 'revenue' %}aria-current="page"{% endif %}>Revenue</a>
+      <a href="/partner-dashboard/assets/" {% if navActive == 'assets' %}aria-current="page"{% endif %}>Assets</a>
     </nav>
     <div class="pnr-util">
       <a href="/partner-dashboard/settings/" {% if navActive == 'settings' %}aria-current="page"{% endif %}>Settings</a>
