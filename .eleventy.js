@@ -1,5 +1,7 @@
 module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy("src/media");
+  // Plain files shared by link from the partners section, served exactly as-is.
+  eleventyConfig.addPassthroughCopy("src/partners/*.pdf");
   eleventyConfig.addPassthroughCopy("src/assets");
   eleventyConfig.addPassthroughCopy("src/admin");
   eleventyConfig.addPassthroughCopy("src/favicon.svg");
