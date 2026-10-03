@@ -1,10 +1,11 @@
 {#- Partner portal header — intentionally separate from partials/header.njk
     (the marketing site nav). Same logo + palette, own nav. Summary, My Content
-    (a drop-down: Content Performance, Submit Content, My Submissions), Bookings,
-    Revenue and Assets, each a real URL (navActive set per page in front matter marks
+    (a drop-down: Content Performance, Submit Content, My Submissions), My Revenue
+    (a drop-down: Followers' Bookings, My Revenue) and Assets, each a real URL (navActive set per page in front matter marks
     the current one with aria-current). Profile and Log out sit apart at the
     right: they are account chrome, not portal tabs. -#}
 {%- set inMyContent = navActive in ['content-performance', 'content', 'submissions'] -%}
+{%- set inMyRevenue = navActive in ['bookings', 'revenue'] -%}
 <header class="pnr-header">
   <div class="wrap pnr-nav">
     <a class="brand" href="/" aria-label="{{ site.brandName }} home">
@@ -21,8 +22,13 @@
           <a href="/partner-dashboard/my-submissions/" {% if navActive == 'submissions' %}aria-current="page"{% endif %}>My Submissions</a>
         </div>
       </div>
-      <a href="/partner-dashboard/bookings/" {% if navActive == 'bookings' %}aria-current="page"{% endif %}>Bookings</a>
-      <a href="/partner-dashboard/revenue/" {% if navActive == 'revenue' %}aria-current="page"{% endif %}>Revenue</a>
+      <div class="nav-dropdown{% if inMyRevenue %} is-current{% endif %}">
+        <button type="button" aria-haspopup="true">My Revenue <span class="caret" aria-hidden="true">▾</span></button>
+        <div class="nav-dropdown-menu">
+          <a href="/partner-dashboard/bookings/" {% if navActive == 'bookings' %}aria-current="page"{% endif %}>Followers' Bookings</a>
+          <a href="/partner-dashboard/revenue/" {% if navActive == 'revenue' %}aria-current="page"{% endif %}>My Revenue</a>
+        </div>
+      </div>
       <a href="/partner-dashboard/assets/" {% if navActive == 'assets' %}aria-current="page"{% endif %}>Assets</a>
     </nav>
     <div class="pnr-util">
