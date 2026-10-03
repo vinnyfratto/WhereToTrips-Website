@@ -7,27 +7,20 @@
 <title>Vibe Selection · WhereTo Admin</title>
 <link rel="icon" href="/favicon.svg" />
 <style>
+@font-face{font-family:'RCL Morland';font-style:normal;font-weight:400;font-display:swap;src:url('/assets/fonts/RCLMorland-Regular.ttf') format('truetype')}
 :root{
   --azure:#209CE0; --azure-pressed:#1B86C2; --azure-tint:#E6F4FC;
   --amber:#E69800; --amber-tint:#FBEFD6;
   --charcoal:#313131; --navy:#313131; --cream:#F2F5F7; --card:#FFFFFF;
   --gray200:#E2E7EB; --gray300:#D2D8DD; --gray500:#616770; --gray600:#464B53;
   --success:#3DA96E; --error:#DE4C4C;
-  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-  --serif:Georgia,"Times New Roman",serif;
+  --sans:'Noto Sans',system-ui,-apple-system,"Segoe UI",sans-serif;
+  --serif:'RCL Morland',Georgia,"Times New Roman",serif;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{font-family:var(--sans);background:#DDE3E8;color:var(--charcoal);min-height:100vh}
+body{font-family:var(--sans);background:#F2F5F7;color:var(--charcoal);min-height:100vh}
 
 /* header (shared admin nav) */
-.hdr{background:var(--navy);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:60}
-.hdr-left{display:flex;align-items:center;gap:22px}
-.hdr-logo-link{display:flex;align-items:center}
-.hdr-logo-img{height:22px;width:auto;display:block}
-.hdr-nav{display:flex;align-items:center;gap:4px}
-.hdr-tab{font-family:var(--sans);font-size:13px;font-weight:600;color:rgba(240,235,224,0.6);text-decoration:none;padding:6px 13px;border-radius:7px;transition:background .14s,color .14s;white-space:nowrap}
-.hdr-tab:hover{color:var(--cream);background:rgba(255,255,255,0.08)}
-.hdr-tab.active{color:var(--cream);background:rgba(255,255,255,0.13)}
 
 /* page chrome */
 .wrap{max-width:1400px;margin:0 auto;padding:20px 18px 48px}
@@ -255,6 +248,7 @@ body{font-family:var(--sans);background:#DDE3E8;color:var(--charcoal);min-height
   .phone{width:100%;max-width:393px}
 }
 </style>
+<link rel="stylesheet" href="/assets/admin-shell.css" />
 </head>
 <body>
 <div id="admin-gate-overlay" style="position:fixed;inset:0;z-index:99999;background:#313131;color:#FFFFFF;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;font-family:system-ui,sans-serif;text-align:center;padding:24px;">
@@ -287,23 +281,7 @@ body{font-family:var(--sans);background:#DDE3E8;color:var(--charcoal);min-height
   })();
 </script>
 
-<header class="hdr">
-  <div class="hdr-left">
-    <a href="/" class="hdr-logo-link" aria-label="WhereTo home"><img class="hdr-logo-img" src="/assets/whereto-logo-white.svg" alt="WhereTo" /></a>
-    <nav class="hdr-nav">
-      <a href="/admin-dashboard/" class="hdr-tab">Admin Home</a>
-      <a href="/DestImages/" class="hdr-tab">Destination Images</a>
-      <a href="/vibesimages/" class="hdr-tab">Vibe Images</a>
-      <a href="/vibes-engine/" class="hdr-tab">Vibes Engine</a>
-      <a href="/vibes-engine/dashboard.html" class="hdr-tab">Vibe Engine Tester</a>
-      <a href="/DashboardHero/" class="hdr-tab">Dashboard Hero</a>
-      <a href="/StockImages/" class="hdr-tab">Stock Image Ingest</a>
-      <a href="/VibeSelection/" class="hdr-tab active">Vibe Selection</a>
-      <a href="/VibeTaxonomy/" class="hdr-tab">Vibe Taxonomy</a>
-    </nav>
-  </div>
-  <div class="hdr-right"></div>
-</header>
+<script src="/assets/js/wt-admin-nav.js" data-logout="self"></script>
 
 <div class="wrap">
   <div class="pageTitle">

@@ -1,11 +1,10 @@
 ---
-layout: layouts/base.njk
+layout: layouts/admin.njk
 permalink: /admin-crm/index.html
 title: "Partner CRM — WhereTo"
 description: "Internal partner curation, onboarding, and content-approval CRM."
 eleventyExcludeFromCollections: true
 ---
-<link rel="stylesheet" href="/assets/account.css?v={{ buildTime }}" />
 <main id="wt-admin-page">
 
   <div id="adm-gate" class="gate-msg">Checking access…</div>
@@ -24,11 +23,6 @@ eleventyExcludeFromCollections: true
       <div>
         <p class="eyebrow">Internal · admin</p>
         <h1>Partner CRM</h1>
-      </div>
-      <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-        <a href="/admin-dashboard/" class="btn btn-ghost">Admin Home</a>
-        <a href="/admin-affiliates/" class="btn btn-ghost">Affiliate Admin</a>
-        <button id="adm-logout" type="button" class="btn btn-ghost">Log out</button>
       </div>
     </div>
 

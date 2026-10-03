@@ -22,14 +22,6 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--cream);color:var(--navy);font-family:var(--sans);font-size:15px;line-height:1.6;min-height:100vh}
-.hdr{position:sticky;top:0;z-index:100;background:var(--navy);height:56px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 20px rgba(0,0,0,.22)}
-.hdr-brand{display:flex;align-items:baseline;gap:10px}
-.hdr-logo{font-family:var(--serif);font-size:22px;color:var(--cream);letter-spacing:-.3px}
-.hdr-sub{font-family:var(--serif);font-style:italic;font-size:17px;color:var(--rust)}
-.hdr-right{display:flex;align-items:center;gap:12px}
-.hdr-badge{font-size:10px;font-weight:600;letter-spacing:1.8px;text-transform:uppercase;color:var(--rust);border:1.5px solid var(--rust);padding:3px 9px;border-radius:4px}
-.hdr-link{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.45);text-decoration:none;padding:6px 10px;border-radius:var(--r-sm);transition:color .14s,background .14s}
-.hdr-link:hover{color:var(--cream);background:rgba(255,255,255,.08)}
 .state-bar{background:var(--navy-lt);border-bottom:1px solid rgba(255,255,255,.07);padding:0 24px;height:42px;display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,255,255,.4);overflow-x:auto;white-space:nowrap}
 .state-bar .crumb{color:var(--cream)}
 .state-bar .sep{color:rgba(255,255,255,.25);font-weight:300;letter-spacing:0}
@@ -215,13 +207,8 @@ main{max-width:1100px;margin:0 auto;padding:36px 24px 80px}
 .spinner-sm{width:13px;height:13px;border:2px solid rgba(255,255,255,.2);border-top-color:var(--cream);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;flex-shrink:0}
 .inner-table tr.selected-row td{background:rgba(184,92,56,.06)}
 .row-sel-badge{font-size:9px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:var(--rust);background:rgba(184,92,56,.12);border:1px solid rgba(184,92,56,.3);border-radius:6px;padding:1px 6px;margin-left:6px;white-space:nowrap}
-.hdr-left{display:flex;align-items:center;gap:22px}
-.hdr-logo-link{display:flex;align-items:center}
-.hdr-logo-img{height:22px;width:auto;display:block}
-.hdr-nav{display:flex;align-items:center;gap:4px}
-.hdr-tab{font-family:var(--sans);font-size:13px;font-weight:600;color:rgba(240,235,224,0.6);text-decoration:none;padding:6px 13px;border-radius:7px;transition:background .14s,color .14s;white-space:nowrap}
-.hdr-tab:hover{color:var(--cream);background:rgba(255,255,255,0.08)}
-.hdr-tab.active{color:var(--cream);background:rgba(255,255,255,0.13)}</style>
+</style>
+<link rel="stylesheet" href="/assets/admin-shell.css" />
 </head>
 <body>
 <div id="admin-gate-overlay" style="position:fixed;inset:0;z-index:99999;background:#313131;color:#FFFFFF;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;font-family:system-ui,sans-serif;text-align:center;padding:24px;">
@@ -253,22 +240,7 @@ main{max-width:1100px;margin:0 auto;padding:36px 24px 80px}
     }
   })();
 </script>
-<header class="hdr">
-  <div class="hdr-left">
-    <a href="/" class="hdr-logo-link" aria-label="WhereTo home"><img class="hdr-logo-img" src="/assets/whereto-logo-white.svg" alt="WhereTo" /></a>
-    <nav class="hdr-nav">
-      <a href="/DestImages/" class="hdr-tab">Destination Images</a>
-      <a href="/vibesimages/" class="hdr-tab">Vibe Images</a>
-      <a href="/vibes-engine/" class="hdr-tab">Vibes Engine</a>
-      <a href="/vibes-engine/dashboard.html" class="hdr-tab active">Vibe Engine Tester</a>
-      <a href="/DashboardHero/" class="hdr-tab">Dashboard Hero</a>
-      <a href="/StockImages/" class="hdr-tab">Stock Image Ingest</a>
-      <a href="/VibeSelection/" class="hdr-tab">Vibe Selection</a>
-      <a href="/VibeTaxonomy/" class="hdr-tab">Vibe Taxonomy</a>
-    </nav>
-  </div>
-  <div class="hdr-right"></div>
-</header>
+<script src="/assets/js/wt-admin-nav.js" data-logout="self"></script>
 <div class="state-bar" id="state-bar">
   <span style="opacity:.35">Select a region to begin</span>
 </div>

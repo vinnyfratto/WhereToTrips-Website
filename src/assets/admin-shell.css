@@ -1,0 +1,105 @@
+/* ───────────────────────────────────────────────────────────────────
+   admin-shell.css — the admin header, on every admin page.
+
+   Looks like the main site's header (white bar, charcoal labels, azure on
+   hover) with the same drop-down menus as the main nav, and the partner
+   portal's "Logo | ADMIN PORTAL" lockup. Built from literal values so it is
+   identical on pages that define their own variables (the image tools).
+   Built by assets/js/wt-admin-nav.js.
+   ─────────────────────────────────────────────────────────────────── */
+.adm-hdr {
+  --ah-navy: #313131; --ah-azure: #209CE0; --ah-azure-press: #1B86C2; --ah-tint: #E6F4FC;
+  --ah-line: #E2E7EB; --ah-line2: #D2D8DD; --ah-muted: #616770; --ah-soft: #464B53;
+  position: sticky; top: 0; z-index: 1000;
+  background: rgba(255, 255, 255, 0.94);
+  -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--ah-line);
+  font-family: 'Noto Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: 15px; line-height: 1.4; color: var(--ah-navy);
+  box-sizing: border-box;
+}
+.adm-hdr *, .adm-hdr *::before, .adm-hdr *::after { box-sizing: border-box; }
+.adm-hdr a { text-decoration: none; }
+.adm-hdr-in { display: flex; align-items: center; gap: 22px; height: 72px; max-width: 1425px; margin: 0 auto; padding: 0 24px; }
+.adm-brand { flex: 0 0 auto; display: flex; align-items: center; }
+.adm-brand img { height: 34px; width: auto; display: block; }
+.adm-tag {
+  font-weight: 600; font-size: 0.7rem; letter-spacing: 1.2px; text-transform: uppercase; color: var(--ah-muted);
+  border-left: 1px solid var(--ah-line2); padding: 6px 0 6px 20px; white-space: nowrap;
+}
+.adm-tag:hover, .adm-tag.is-current { color: var(--ah-azure-press); }
+
+/* the drop-downs: same behavior and look as the main site's nav */
+.adm-nav { display: flex; align-items: center; gap: 24px; margin-left: clamp(8px, 2vw, 28px); margin-right: auto; }
+.adm-dd { position: relative; }
+.adm-dd > button {
+  font: inherit; font-weight: 500; letter-spacing: 0.2px; color: var(--ah-navy); white-space: nowrap;
+  background: none; border: 0; padding: 6px 0; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;
+  transition: color .15s ease;
+}
+.adm-dd > button:hover, .adm-dd.is-current > button { color: var(--ah-azure); }
+.adm-dd > button .caret { font-size: 9px; transition: transform .2s ease; }
+.adm-dd:hover > button .caret, .adm-dd:focus-within > button .caret { transform: rotate(180deg); }
+.adm-dd-menu {
+  position: absolute; top: calc(100% + 10px); left: 0;
+  border-radius: 12px; box-shadow: 0 10px 40px rgba(50, 50, 50, 0.10); border: 1px solid var(--ah-line);
+  min-width: 236px; overflow: hidden; background: #fff;
+  opacity: 0; visibility: hidden; transition: opacity .3s ease, visibility .3s;
+}
+.adm-dd-menu::before { content: ''; position: absolute; top: -12px; left: 0; right: 0; height: 12px; }
+.adm-dd:hover .adm-dd-menu, .adm-dd:focus-within .adm-dd-menu { opacity: 1; visibility: visible; }
+.adm-dd-menu a {
+  display: block; padding: 13px 20px; font-size: 14px; color: var(--ah-navy); letter-spacing: 0.2px; white-space: nowrap;
+  background: #fff; border-bottom: 1px solid var(--ah-line);
+  margin-top: 22px; transition: margin-top .5s ease, background .2s ease, color .2s ease;
+}
+.adm-dd-menu a:last-child { border-bottom: 0; }
+.adm-dd:hover .adm-dd-menu a, .adm-dd:focus-within .adm-dd-menu a { margin-top: 0; }
+.adm-dd-menu a:hover { background: var(--ah-tint); color: var(--ah-azure); }
+.adm-dd-menu a[aria-current="page"] { color: var(--ah-azure); font-weight: 600; background: var(--ah-tint); }
+
+.adm-util { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; }
+.adm-actions { display: inline-flex; align-items: center; gap: 8px; }
+.adm-actions:empty { display: none; }
+.adm-logout {
+  font: inherit; font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; cursor: pointer;
+  padding: 10px 16px; border-radius: 10px; background: #fff; color: var(--ah-azure-press); border: 1.5px solid var(--ah-line2);
+  transition: background .15s ease, border-color .15s ease;
+}
+.adm-logout:hover { background: var(--ah-tint); border-color: var(--ah-azure); }
+/* the image tools' settings gear moves into the bar */
+.adm-hdr .hdr-gear {
+  background: #fff; border: 1.5px solid var(--ah-line2); color: var(--ah-soft); cursor: pointer; font-size: 15px;
+  width: 38px; height: 38px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center;
+}
+.adm-hdr .hdr-gear:hover { background: var(--ah-tint); border-color: var(--ah-azure); color: var(--ah-azure-press); }
+.adm-hdr :is(a, button):focus-visible { outline: 2px solid var(--ah-azure); outline-offset: 2px; }
+
+/* hamburger (narrow screens), mirroring the main site's */
+.adm-toggle { display: none; flex-direction: column; justify-content: center; gap: 5px; width: 42px; height: 42px; padding: 0; border: 0; background: none; cursor: pointer; margin-left: auto; }
+.adm-toggle span { display: block; width: 22px; height: 2px; margin: 0 auto; background: var(--ah-navy); border-radius: 2px; transition: transform .2s ease, opacity .2s ease; }
+.adm-hdr.menu-open .adm-toggle span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.adm-hdr.menu-open .adm-toggle span:nth-child(2) { opacity: 0; }
+.adm-hdr.menu-open .adm-toggle span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.adm-mobile { display: none; }
+
+@media (max-width: 1000px) {
+  .adm-nav { display: none; }
+  .adm-util { margin-left: auto; }
+  .adm-toggle { display: flex; margin-left: 0; }
+  .adm-tag { padding-left: 14px; }
+  .adm-hdr.menu-open .adm-mobile {
+    display: flex; flex-direction: column; padding: 4px 24px 20px; background: #fff;
+    border-top: 1px solid var(--ah-line); max-height: calc(100vh - 72px); overflow-y: auto;
+  }
+  .adm-mobile a { font-size: 16px; font-weight: 500; color: var(--ah-navy); padding: 14px 0; border-bottom: 1px solid var(--ah-line); }
+  .adm-mobile a:hover, .adm-mobile a[aria-current="page"] { color: var(--ah-azure); }
+  .adm-mobile .adm-msub { color: var(--ah-soft); font-weight: 400; }
+  .adm-mlabel { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--ah-muted); padding: 18px 0 4px; }
+}
+@media (max-width: 640px) {
+  .adm-hdr-in { gap: 14px; padding: 0 16px; }
+  .adm-tag { display: none; }
+  .adm-brand img { height: 30px; }
+}
+@media (prefers-reduced-motion: reduce) { .adm-hdr * { transition: none !important; } }

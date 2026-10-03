@@ -1,11 +1,10 @@
 ---
-layout: layouts/base.njk
+layout: layouts/admin.njk
 permalink: /admin-dashboard/index.html
 title: "Admin — WhereTo"
 description: "Jump-off point for every WhereTo internal admin tool."
 eleventyExcludeFromCollections: true
 ---
-<link rel="stylesheet" href="/assets/account.css?v={{ buildTime }}" />
 <main id="wt-admin-page">
 
   <div id="adm-gate" class="gate-msg">Checking access…</div>
@@ -25,38 +24,35 @@ eleventyExcludeFromCollections: true
         <p class="eyebrow">Internal · admin</p>
         <h1>Admin dashboard</h1>
       </div>
-      <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-        <button id="adm-logout" type="button" class="btn btn-ghost">Log out</button>
-      </div>
     </div>
 
     <div id="adm-msg" class="alert" role="status" aria-live="polite"></div>
 
-    <h2 class="adm-section-h" style="margin-top:0; padding-top:0; border-top:0;">Partner program</h2>
+    <h2 class="adm-section-h" style="margin-top:0; padding-top:0; border-top:0;">Partners</h2>
     <div class="adm-tile-grid">
       <a class="adm-tile" href="/admin-crm/">
         <h3>Partner CRM</h3>
         <p>Prospects, pipeline, contracts, onboarding, review queue.</p>
       </a>
       <a class="adm-tile" href="/admin-affiliates/">
-        <h3>Affiliate Admin</h3>
-        <p>Invites, affiliates, revenue, payouts.</p>
+        <h3>Partner Admin</h3>
+        <p>Invites, partners, content review, revenue, payouts.</p>
       </a>
     </div>
 
-    <h2 class="adm-section-h">Analytics &amp; growth</h2>
+    <h2 class="adm-section-h">Analytics</h2>
     <div class="adm-tile-grid">
       <a class="adm-tile" href="/analytics/">
         <h3>Site Analytics</h3>
         <p>PostHog traffic, app usage, funnels, devices, location.</p>
       </a>
       <a class="adm-tile" href="/admin-submissions/">
-        <h3>Submission Admin</h3>
+        <h3>Site Submissions</h3>
         <p>Launch-notify, beta and contact form submissions.</p>
       </a>
     </div>
 
-    <h2 class="adm-section-h">Destinations &amp; images</h2>
+    <h2 class="adm-section-h">Images &amp; Vibes</h2>
     <div class="adm-tile-grid">
       <a class="adm-tile" href="/DestImages/">
         <h3>Destination Images</h3>
@@ -95,7 +91,7 @@ eleventyExcludeFromCollections: true
     <h2 class="adm-section-h">Content</h2>
     <div class="adm-tile-grid">
       <a class="adm-tile" href="/admin/">
-        <h3>WhereTo CMS</h3>
+        <h3>Site CMS</h3>
         <p>Sveltia git-based content editor.</p>
       </a>
     </div>

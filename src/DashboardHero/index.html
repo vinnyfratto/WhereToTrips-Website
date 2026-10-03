@@ -24,15 +24,6 @@
   *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
   body { background:var(--cream); color:var(--navy); font-family:var(--sans); font-size:15px; line-height:1.6; min-height:100vh; }
 
-  .hdr { position:sticky; top:0; z-index:100; background:var(--navy); height:56px; padding:0 24px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 2px 20px rgba(0,0,0,.22); }
-  .hdr-left { display:flex; align-items:center; gap:22px; }
-  .hdr-logo-img { height:22px; width:auto; display:block; }
-  .hdr-nav { display:flex; align-items:center; gap:4px; flex-wrap:wrap; }
-  .hdr-tab { font-family:var(--sans); font-size:13px; font-weight:600; color:rgba(240,235,224,0.6); text-decoration:none; padding:6px 13px; border-radius:7px; transition:background .14s, color .14s; white-space:nowrap; }
-  .hdr-tab:hover { color:var(--cream); background:rgba(255,255,255,0.08); }
-  .hdr-tab.active { color:var(--cream); background:rgba(255,255,255,0.13); }
-  .hdr-right { display:flex; align-items:center; gap:10px; }
-  .hdr-badge { font-size:10px; font-weight:600; letter-spacing:1.8px; text-transform:uppercase; color:var(--rust); border:1.5px solid var(--rust); padding:3px 9px; border-radius:4px; }
 
   .wrap { max-width:1080px; margin:0 auto; padding:26px 24px 120px; }
   .page-head { margin-bottom:22px; }
@@ -148,6 +139,7 @@
   .hidden { display:none !important; }
   #boot-error { color:var(--err); font-weight:600; padding:10px 0; }
 </style>
+<link rel="stylesheet" href="/assets/admin-shell.css" />
 </head>
 <body>
 <div id="admin-gate-overlay" style="position:fixed;inset:0;z-index:99999;background:#313131;color:#FFFFFF;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;font-family:system-ui,sans-serif;text-align:center;padding:24px;">
@@ -180,24 +172,7 @@
   })();
 </script>
 
-<header class="hdr">
-  <div class="hdr-left">
-    <a href="/" class="hdr-logo-link" aria-label="WhereTo home"><img class="hdr-logo-img" src="/assets/whereto-logo-white.svg" alt="WhereTo" /></a>
-    <nav class="hdr-nav">
-      <a href="/DestImages/" class="hdr-tab">Destination Images</a>
-      <a href="/vibesimages/" class="hdr-tab">Vibe Images</a>
-      <a href="/vibes-engine/" class="hdr-tab">Vibes Engine</a>
-      <a href="/vibes-engine/dashboard.html" class="hdr-tab">Vibe Engine Tester</a>
-      <a href="/DashboardHero/" class="hdr-tab active">Dashboard Hero</a>
-      <a href="/StockImages/" class="hdr-tab">Stock Image Ingest</a>
-      <a href="/VibeSelection/" class="hdr-tab">Vibe Selection</a>
-      <a href="/VibeTaxonomy/" class="hdr-tab">Vibe Taxonomy</a>
-    </nav>
-  </div>
-  <div class="hdr-right">
-    <span class="hdr-badge">Internal</span>
-  </div>
-</header>
+<script src="/assets/js/wt-admin-nav.js" data-logout="self"></script>
 
 <div class="wrap">
   <div class="page-head">
