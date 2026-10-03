@@ -9,6 +9,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 import { timelineHtml, fmtDate as dayDate } from './wt-commission-timeline.js';
+import { renderReviewQueue, countWaiting } from './wt-review-queue.js';
 const cfg = window.WT_SUPABASE || {};
 const supabase = createClient(cfg.url, cfg.anonKey, {
   auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
@@ -81,6 +82,7 @@ async function init() {
 
   renderOverview(data);
   loaded.overview = true;
+  showContentBadge();
 
   // The content alert email deep-links to #content, so a review is one
   // click from the inbox rather than a tab hunt.
@@ -411,117 +413,29 @@ async function saveAffiliate(id) {
 // The review half of the partner content funnel. Approving mints the
 // per-post /c/<code> link and emails it to the partner; the code is
 // generated server-side in the `admin` edge function, never here.
-const CONTENT_PLATFORM = {
-  instagram: 'Instagram', tiktok: 'TikTok', youtube: 'YouTube', facebook: 'Facebook',
-  twitter: 'X / Twitter', blog: 'Blog / Website', other: 'Other',
-};
-let contentFilter = 'pending';
+// ── Content ─────────────────────────────────────────────────────────
+// Submitted content is reviewed in the CRM review queue (partner-crm), the
+// same screen as the CRM hub's Review Queue tab, so a submission cannot be
+// waiting in one place and invisible in the other.
+const CRM_FN = cfg.url + '/functions/v1/partner-crm';
+async function callCrm(action, params = {}) {
+  const res = await fetch(CRM_FN, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'apikey': cfg.anonKey, 'Authorization': 'Bearer ' + TOKEN },
+    body: JSON.stringify({ action, ...params }),
+  });
+  return res.json().catch(() => ({ ok: false, error: 'network' }));
+}
 
 async function loadContent() {
-  panel('content').innerHTML = `
-    <div class="adm-card">
-      <h3>Partner content</h3>
-      <p class="acct-sub">Approving a piece mints its own tracking link and emails it to the partner. Rejecting sends them your note instead.</p>
-      <div class="adm-form-row" style="margin-bottom:14px;">
-        <div class="field">
-          <label>Show</label>
-          <select id="con-filter">
-            <option value="pending">Awaiting review</option>
-            <option value="approved">Approved</option>
-            <option value="rejected">Not approved</option>
-            <option value="">All</option>
-          </select>
-        </div>
-      </div>
-      <div id="con-list" class="adm-wrap-scroll">Loading…</div>
-    </div>`;
-
-  $('#con-filter').addEventListener('change', (e) => {
-    contentFilter = e.target.value;
-    renderContent();
-  });
-  renderContent();
+  await renderReviewQueue(panel('content'), { call: callCrm, notify: msg, onChange: showContentBadge });
 }
 
-async function renderContent() {
-  const list = $('#con-list');
-  list.textContent = 'Loading…';
-  const r = await callAdmin('list_content', { status: contentFilter });
-  if (!r.ok) { list.innerHTML = '<p class="acct-sub">Could not load content (' + esc(r.error || 'error') + ').</p>'; return; }
-
-  const rows = (r.rows || []).map((c) => `
-    <tr>
-      <td>${esc(c.partner_name || c.partner_code || '—')}</td>
-      <td>${esc(CONTENT_PLATFORM[c.platform] || c.platform)}</td>
-      <td>${esc(c.title || '—')}</td>
-      <td><a href="${esc(c.content_url)}" target="_blank" rel="noopener noreferrer">View</a></td>
-      <td><span class="adm-pill ${esc(c.status)}">${esc(c.status)}</span></td>
-      <td>${c.tracking_url ? `<a data-copy-link="${esc(c.tracking_url)}" href="#">${esc(c.tracking_url)}</a>` : '—'}</td>
-      <td class="num">${c.clicks}</td>
-      <td>${date(c.created_at)}</td>
-      <td>${c.status === 'pending'
-        ? `<button class="btn btn-primary btn-xs" data-approve="${c.id}">Approve</button>
-           <button class="btn btn-ghost btn-xs" data-reject="${c.id}">Reject</button>`
-        : c.status === 'rejected'
-          ? `<button class="btn btn-ghost btn-xs" data-approve="${c.id}">Approve</button>`
-          : ''}</td>
-    </tr>`).join('');
-
-  list.innerHTML = `<table class="adm-table">
-    <thead><tr><th>Partner</th><th>Platform</th><th>Title</th><th>Post</th><th>Status</th><th>Tracking link</th><th class="num">Clicks</th><th>Submitted</th><th></th></tr></thead>
-    <tbody>${rows || '<tr><td colspan="9">Nothing to review.</td></tr>'}</tbody></table>`;
-
-  list.querySelectorAll('[data-copy-link]').forEach((el) => {
-    el.addEventListener('click', async (ev) => {
-      ev.preventDefault();
-      const url = el.getAttribute('data-copy-link');
-      try { await navigator.clipboard.writeText(url); el.textContent = 'Copied!'; setTimeout(() => { el.textContent = url; }, 1200); } catch (_e) {}
-    });
-  });
-
-  list.querySelectorAll('[data-approve]').forEach((btn) => {
-    btn.addEventListener('click', () => review(btn.dataset.approve, 'approved', btn));
-  });
-  list.querySelectorAll('[data-reject]').forEach((btn) => {
-    btn.addEventListener('click', () => review(btn.dataset.reject, 'rejected', btn));
-  });
-}
-
-const REVIEW_ERRORS = {
-  content_code_taken: 'This partner already uses that code on another post. Pick a different one.',
-};
-
-async function review(id, decision, btn) {
-  // Approving asks for the code first, because it is the visible half of
-  // the link the partner pastes into a caption. Left blank it is generated.
-  // It only has to be unique within THIS partner, so a word that actually
-  // means something is usually still free.
-  let code = '';
-  if (decision === 'approved') {
-    const typed = prompt('Code for this post: /promo/<partner>/<code>\n\nLetters, numbers and hyphens. Leave blank to generate one.');
-    if (typed === null) return;
-    code = typed.trim().toLowerCase();
-    if (code && !/^[a-z0-9-]{2,40}$/.test(code)) {
-      msg('error', 'Code must be 2 to 40 characters: lowercase letters, numbers or hyphens.');
-      return;
-    }
-  }
-
-  // The note is optional on an approval and goes in the email; on a
-  // rejection it is the only thing the partner will be told, so ask for it.
-  const prompted = decision === 'rejected'
-    ? prompt('Why can\'t this be approved? (the partner sees this)')
-    : prompt('Anything to say to the partner? (optional)');
-  if (decision === 'rejected' && prompted === null) return;
-
-  btn.disabled = true;
-  const r = await callAdmin('review_content', { id, decision, review_note: prompted || '', content_code: code });
-  btn.disabled = false;
-  if (!r.ok) { msg('error', REVIEW_ERRORS[r.error] || ('Review failed: ' + r.error)); return; }
-  msg('success', decision === 'approved'
-    ? 'Approved. Tracking link ' + r.tracking_url + (r.emailed ? ' emailed to the partner.' : ' — no email on file.')
-    : 'Marked not approved' + (r.emailed ? ' and the partner was told.' : '.'));
-  renderContent();
+// "Content (2)" on the tab, so waiting submissions are visible from any tab.
+async function showContentBadge() {
+  const n = await countWaiting(callCrm);
+  const tab = document.querySelector('.adm-tab[data-tab="content"]');
+  if (tab) tab.textContent = n ? 'Content (' + n + ')' : 'Content';
 }
 
 // ── Commissions ─────────────────────────────────────────────────────

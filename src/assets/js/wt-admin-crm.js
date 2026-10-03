@@ -14,6 +14,7 @@ import {
   $, bootAdminPage, callCrm, date, daysAgo, dateTime, esc, msg, panel,
   parseCsv, titleize, wireTabs,
 } from './wt-crm-shared.js';
+import { renderReviewQueue } from './wt-review-queue.js';
 
 const STAGES = [
   'sourced', 'qualifying', 'qualified', 'contacted', 'engaged',
@@ -40,11 +41,11 @@ function renderOverview(d) {
         and no code means the partner cannot earn from that piece at all. Nothing is ever approved automatically.
       </p>
       <div class="stat-grid">
-        ${statCard('Waiting', q.waiting)}
-        ${statCard('Over 2-day target', q.over_target_2bd, q.over_target_2bd > 0 ? 'amber' : '')}
-        ${statCard('Over 3-day contract', q.over_contract_3bd, q.over_contract_3bd > 0 ? 'red' : '')}
-        ${statCard('Escalated', q.escalated, q.escalated > 0 ? 'red' : '')}
-        ${statCard('Imminent events', q.imminent_events, q.imminent_events > 0 ? 'amber' : '')}
+        ${statCard('Waiting', q.waiting, '', 'queue')}
+        ${statCard('Over 2-day target', q.over_target_2bd, q.over_target_2bd > 0 ? 'amber' : '', 'queue')}
+        ${statCard('Over 3-day contract', q.over_contract_3bd, q.over_contract_3bd > 0 ? 'red' : '', 'queue')}
+        ${statCard('Escalated', q.escalated, q.escalated > 0 ? 'red' : '', 'queue')}
+        ${statCard('Imminent events', q.imminent_events, q.imminent_events > 0 ? 'amber' : '', 'queue')}
         ${statCard('Oldest waiting', q.oldest_submitted_at ? daysAgo(q.oldest_submitted_at) : '—')}
       </div>
     </div>
@@ -81,8 +82,15 @@ function renderOverview(d) {
   `;
 }
 
-function statCard(label, value, tone = '') {
+function statCard(label, value, tone = '', goto = '') {
   const color = tone === 'red' ? 'var(--rust, #B85C38)' : tone === 'amber' ? '#E69800' : 'inherit';
+  // A card that leads somewhere is a real button, so it can be reached by keyboard.
+  if (goto) {
+    return `<button type="button" class="stat-card" data-goto="${esc(goto)}" style="text-align:left; cursor:pointer; font:inherit;">
+      <div style="font-size:1.6rem; font-weight:700; color:${color};">${esc(String(value))}</div>
+      <div class="acct-sub" style="margin:0;">${esc(label)} <span aria-hidden="true">→</span></div>
+    </button>`;
+  }
   return `<div class="stat-card">
     <div style="font-size:1.6rem; font-weight:700; color:${color};">${esc(String(value))}</div>
     <div class="acct-sub" style="margin:0;">${esc(label)}</div>
@@ -248,89 +256,9 @@ function showNewProspectForm() {
 }
 
 // ── Review queue (spec §8.4) ───────────────────────────────────────
+// Shared with the Affiliate program admin's Content tab (wt-review-queue.js).
 async function loadQueue() {
-  panel('queue').innerHTML = '<p class="acct-sub">Loading…</p>';
-  const res = await callCrm('review_queue');
-  if (!res.ok) { panel('queue').innerHTML = `<p class="acct-sub">Could not load (${esc(res.error)}).</p>`; return; }
-
-  const rows = res.queue;
-  panel('queue').innerHTML = `
-    <div class="adm-card">
-      <h2 class="adm-section-h" style="margin-top:0; padding-top:0; border-top:0;">Awaiting review</h2>
-      <p class="acct-sub">
-        Review covers <strong>brand accuracy and correct use of the Marks only</strong>. It is not a compliance
-        review. Do not decline on tone, angle, style, or favorability (Agreement §5.6(a), T&amp;C §12.6).
-      </p>
-      <p class="acct-sub">
-        Approving issues the partner a tracking link and code for that piece in the same step. The file is
-        private: <em>Open file</em> gives you a link that expires in five minutes.
-      </p>
-      ${rows.length ? `<div class="adm-wrap-scroll"><table class="adm-table">
-        <thead><tr><th>Partner</th><th>Title</th><th>Kind</th><th>File</th><th>Waiting</th><th>SLA</th><th>Event</th><th></th></tr></thead>
-        <tbody>${rows.map((r) => `
-          <tr>
-            <td><a href="/admin-crm-prospect/?id=${encodeURIComponent(r.prospect_id)}">${esc(r.partner)}</a></td>
-            <td>${esc(r.title)}</td>
-            <td>${esc(titleize(r.submission_kind))}</td>
-            <td>${r.file ? `<button type="button" class="btn btn-ghost btn-xs" data-open-file="${esc(r.file.id)}">Open file</button>` : '—'}</td>
-            <td>${esc(daysAgo(r.submitted_at))}</td>
-            <td>${slaPill(r.sla_state)}</td>
-            <td>${r.event_at ? `${esc(date(r.event_at))} ${r.urgent ? '<span class="adm-pill">urgent</span>' : ''}` : '—'}</td>
-            <td><button type="button" class="btn btn-primary btn-xs" data-decide="${esc(r.id)}">Review</button></td>
-          </tr>
-          <tr hidden data-decide-row="${esc(r.id)}"><td colspan="8">
-            <div class="adm-form-row" style="flex-direction:column; align-items:stretch; gap:10px;">
-              <div role="radiogroup" aria-label="Decision" style="display:flex; gap:18px; flex-wrap:wrap;">
-                <label><input type="radio" name="d-${esc(r.id)}" value="approved" checked /> Approve</label>
-                <label><input type="radio" name="d-${esc(r.id)}" value="revisions_requested" /> Ask for changes</label>
-                <label><input type="radio" name="d-${esc(r.id)}" value="declined" /> Decline</label>
-              </div>
-              <fieldset data-checks style="border:0; padding:0; margin:0;">
-                <legend class="acct-sub" style="padding:0;">Approval needs all three (brand accuracy only):</legend>
-                <label style="display:block;"><input type="checkbox" data-check="check_description_accurate" /> WhereTo and what it does are described accurately</label>
-                <label style="display:block;"><input type="checkbox" data-check="check_live_vs_planned" /> Anything planned is not presented as available</label>
-                <label style="display:block;"><input type="checkbox" data-check="check_marks_used_correctly" /> Logo, name and Marks follow the brand guidelines</label>
-              </fieldset>
-              <label class="field"><span>Note to the partner <span class="hint">(required to ask for changes or decline; they see this)</span></span>
-                <textarea data-instructions rows="2"></textarea></label>
-              <label class="field"><span>Internal note <span class="hint">(never shown to the partner)</span></span>
-                <textarea data-internal rows="2"></textarea></label>
-              <div><button type="button" class="btn btn-primary" data-submit-decision="${esc(r.id)}">Save decision</button></div>
-            </div>
-          </td></tr>`).join('')}
-        </tbody></table></div>` : '<p class="acct-sub">Nothing is waiting. </p>'}
-    </div>`;
-
-  const q = panel('queue');
-  q.querySelectorAll('[data-open-file]').forEach((b) => b.addEventListener('click', async () => {
-    // Open the tab first (a popup blocker only allows it on the click itself), then point it at the link.
-    const tab = window.open('', '_blank');
-    const f = await callCrm('submission_file_url', { attachment_id: b.dataset.openFile });
-    if (f.ok && tab) { tab.opener = null; tab.location.href = f.url; }
-    else { if (tab) tab.close(); msg('error', 'Could not open the file: ' + (f.error || 'unknown error')); }
-  }));
-  q.querySelectorAll('[data-decide]').forEach((b) => b.addEventListener('click', () => {
-    const row = q.querySelector(`[data-decide-row="${CSS.escape(b.dataset.decide)}"]`);
-    row.hidden = !row.hidden;
-  }));
-  q.querySelectorAll('[data-submit-decision]').forEach((b) => b.addEventListener('click', async () => {
-    const id = b.dataset.submitDecision;
-    const row = q.querySelector(`[data-decide-row="${CSS.escape(id)}"]`);
-    const decision = row.querySelector('input[type=radio]:checked').value;
-    const params = {
-      submission_id: id, decision,
-      revision_instructions: row.querySelector('[data-instructions]').value,
-      reviewer_notes: row.querySelector('[data-internal]').value,
-    };
-    row.querySelectorAll('[data-check]').forEach((c) => { params[c.dataset.check] = c.checked; });
-    b.disabled = true;
-    const r = await callCrm('review_submission', params);
-    b.disabled = false;
-    if (!r.ok) { msg('error', r.error || 'Could not save the decision'); return; }
-    if (decision === 'approved' && r.asset) msg('success', `Approved. Tracking link issued: ${r.asset.tracking_url}`);
-    else msg('success', decision === 'declined' ? 'Declined.' : 'Changes requested.');
-    await loadQueue();
-  }));
+  await renderReviewQueue(panel('queue'), { call: callCrm, notify: msg });
 }
 
 function slaPill(state) {
@@ -470,6 +398,12 @@ async function init() {
     }
   }
   if (can.import_prospects !== false) renderImport();
+
+  // Overview cards that lead somewhere (the queue figures) switch to that tab.
+  document.addEventListener('click', (e) => {
+    const g = e.target.closest('[data-goto]');
+    if (g) document.querySelector(`.adm-tab[data-tab="${g.dataset.goto}"]`)?.click();
+  });
 
   wireTabs((name) => {
     if (name === 'pipeline') loadPipeline();
