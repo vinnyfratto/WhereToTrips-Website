@@ -47,12 +47,17 @@ export async function requirePartner() {
 
   let stats;
   try {
-    const res = await fetch(FN + 'get-affiliate-stats', {
+    const ask = async () => (await fetch(FN + 'get-affiliate-stats', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'apikey': cfg.anonKey, 'Authorization': 'Bearer ' + token },
       body: '{}',
-    });
-    stats = await res.json();
+    })).json();
+    stats = await ask();
+    // A just-issued token can read as "issued at future" for a second or two.
+    for (let i = 0; i < 3 && stats && stats.error === 'invalid_session'; i++) {
+      await new Promise((r) => setTimeout(r, 1500));
+      stats = await ask();
+    }
   } catch (_e) {
     if (gate) gate.textContent = 'Could not load your account. Please refresh.';
     return null;
@@ -82,13 +87,23 @@ export async function portal(action, body = {}) {
   wireLogout();
   const { data: sess } = await supabase.auth.getSession();
   if (!sess.session) { window.location.href = '/account/login/'; return null; }
-  try {
+  const call = async () => {
     const res = await fetch(FN + 'partner-portal', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'apikey': cfg.anonKey, 'Authorization': 'Bearer ' + sess.session.access_token },
       body: JSON.stringify({ action, ...body }),
     });
     return await res.json();
+  };
+  try {
+    let j = await call();
+    // A token minted a moment ago can read as "issued at future" to Supabase's
+    // other servers for a second or two. Wait and ask again before giving up.
+    for (let i = 0; i < 3 && j && j.error === 'invalid_session'; i++) {
+      await new Promise((r) => setTimeout(r, 1500));
+      j = await call();
+    }
+    return j;
   } catch (_e) { return { ok: false, error: 'network' }; }
 }
 

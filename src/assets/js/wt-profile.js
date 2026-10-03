@@ -867,7 +867,7 @@ export async function initProfileForm(supabase, user, opts = {}) {
 
   maybeOptOutInternal(user.email);
 
-  const [{ data, error }, savedRes] = await Promise.all([
+  const fetchProfile = () => Promise.all([
     supabase.from('profiles').select(PROFILE_COLS).eq('id', user.id).single(),
     // Written by the app on every heart tap (saved_destinations, owner-only
     // RLS). A failure here must not take the whole profile down with it.
@@ -875,6 +875,15 @@ export async function initProfileForm(supabase, user, opts = {}) {
       .eq('user_id', user.id).order('created_at', { ascending: false })
       .then((r) => r, (e) => ({ data: null, error: e })),
   ]);
+  let [{ data, error }, savedRes] = await fetchProfile();
+  // Right after a sign-in, the database can briefly see the fresh token as
+  // "issued at future" (a small clock gap between Supabase's auth and data
+  // servers). It clears within a second or two, so wait and ask again rather
+  // than showing the visitor an error.
+  for (let i = 0; i < 3 && error && /issued at future/i.test(error.message || ''); i++) {
+    await new Promise((r) => setTimeout(r, 1500));
+    [{ data, error }, savedRes] = await fetchProfile();
+  }
   if (error) showAlert(alertId, 'error', 'Could not load your profile. ' + error.message);
   if (savedRes && savedRes.error) console.error('[profile] saved_destinations fetch failed:', savedRes.error.message);
 
