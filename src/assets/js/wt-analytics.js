@@ -15,7 +15,7 @@
 //  minutes.
 //
 //  "Go live" is an opt-in toggle next to the range buttons (Last hour/6
-//  hours/Today/This week/Last 30 days — Today stays the default view). It
+//  hours/Today/Last 7 days/Last 30 days — Today stays the default view). It
 //  swaps the aggregate cards for a raw, auto-refreshing feed of the last
 //  30 minutes of events (admin fn's analytics_live action) — for watching
 //  exactly what fires while actively testing, rather than waiting on
@@ -38,7 +38,7 @@ let liveMode = false;
 let pollTimer = null;
 const RANGES = [
   ['hour', 'Last hour'], ['6h', '6 hours'],
-  ['today', 'Today'], ['week', 'This week'], ['30d', 'Last 30 days'],
+  ['today', 'Today'], ['week', 'Last 7 days'], ['30d', 'Last 30 days'],
 ];
 
 const $ = (s, r = document) => r.querySelector(s);
@@ -511,7 +511,7 @@ function renderWebsiteAnalytics(d) {
 
   $('#analytics-root').innerHTML = `
     <div class="adm-form-row" style="justify-content:space-between; align-items:center; margin-bottom:14px;">
-      <p class="acct-sub" style="margin:0;">Live from PostHog · refreshes every 60s</p>
+      <p class="acct-sub" style="margin:0;">Live from PostHog · refreshes every 60s · times in Central (CT)</p>
       ${controlsHtml()}
     </div>
     ${totalsCards}
@@ -670,6 +670,7 @@ function renderAppAnalytics(d) {
     ? `<div class="adm-card"><h3>Totals</h3><p class="acct-sub">Unavailable — ${esc(errors.totals)}</p></div>`
     : `<div class="adm-overview-grid">
         ${card('Active users', d.totals.active_users)}
+        ${card('App installs', d.totals.installs ?? 0)}
         ${card('Sessions', d.totals.sessions ?? 0)}
         ${card('New signups', d.totals.signups)}
         ${card('Flights booked', d.totals.flight_bookings)}
