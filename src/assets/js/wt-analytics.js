@@ -34,8 +34,10 @@ const LIVE_REFRESH_MS = 4_000;
 let TOKEN = null;
 let currentChannel = 'website';
 let currentRange = 'today';
+let searchRange = '28d';
 let liveMode = false;
 let pollTimer = null;
+const SEARCH_RANGES = [['7d', 'Last 7 days'], ['28d', 'Last 28 days'], ['90d', 'Last 3 months']];
 const RANGES = [
   ['hour', 'Last hour'], ['6h', '6 hours'],
   ['today', 'Today'], ['week', 'Last 7 days'], ['30d', 'Last 30 days'],
@@ -82,6 +84,7 @@ async function init() {
     b.addEventListener('click', () => {
       if (b.dataset.channel === currentChannel) return;
       currentChannel = b.dataset.channel;
+      if (currentChannel === 'search') liveMode = false;
       document.querySelectorAll('[data-channel]').forEach((t) => t.classList.toggle('is-active', t.dataset.channel === currentChannel));
       tick();
     });
@@ -280,12 +283,18 @@ async function loadAnalytics(silent = false) {
   const root = $('#analytics-root');
   if (!silent) root.innerHTML = `<div class="adm-card">Loading…</div>`;
 
-  const d = await callAdmin('analytics_overview', { range: currentRange, channel: currentChannel });
+  const d = currentChannel === 'search'
+    ? await callAdmin('search_overview', { range: searchRange })
+    : await callAdmin('analytics_overview', { range: currentRange, channel: currentChannel });
 
   if (!d.ok) {
     const hint = d.error === 'posthog_not_configured'
       ? 'PostHog isn’t wired up on the backend yet — set POSTHOG_PROJECT_ID and POSTHOG_PERSONAL_API_KEY as secrets on the `admin` edge function, then redeploy it.'
-      : `PostHog query failed (${esc(d.error || 'unknown error')}).`;
+      : d.error === 'gsc_not_configured'
+        ? 'Search Console isn’t connected yet — add the GSC_SERVICE_ACCOUNT_JSON secret to the `admin` edge function (a Google service account added as a user on the Search Console property), then redeploy it.'
+        : currentChannel === 'search'
+          ? `Search Console query failed (${esc(d.error || 'unknown error')}).`
+          : `PostHog query failed (${esc(d.error || 'unknown error')}).`;
     root.innerHTML = `
       <div class="acct-card">
         <p class="eyebrow">Not available</p>
@@ -295,20 +304,27 @@ async function loadAnalytics(silent = false) {
     return;
   }
 
-  if (d.channel === 'travel') renderTravelMetrics(d);
+  if (d.channel === 'search') renderSearchAnalytics(d);
+  else if (d.channel === 'travel') renderTravelMetrics(d);
   else if (d.channel === 'app') renderAppAnalytics(d);
   else renderWebsiteAnalytics(d);
 }
 
 function rangeBtnsHtml() {
-  return RANGES.map(([key, label]) =>
-    `<button type="button" class="btn btn-xs ${key === currentRange ? 'btn-primary' : 'btn-ghost'}" data-range="${key}">${label}</button>`).join('');
+  const [list, active] = currentChannel === 'search' ? [SEARCH_RANGES, searchRange] : [RANGES, currentRange];
+  return list.map(([key, label]) =>
+    `<button type="button" class="btn btn-xs ${key === active ? 'btn-primary' : 'btn-ghost'}" data-range="${key}">${label}</button>`).join('');
 }
 function wireRangeBtns() {
   $('#analytics-root').querySelectorAll('[data-range]').forEach((b) => {
     b.addEventListener('click', () => {
-      if (b.dataset.range === currentRange) return;
-      currentRange = b.dataset.range;
+      if (currentChannel === 'search') {
+        if (b.dataset.range === searchRange) return;
+        searchRange = b.dataset.range;
+      } else {
+        if (b.dataset.range === currentRange) return;
+        currentRange = b.dataset.range;
+      }
       loadAnalytics();
     });
   });
@@ -319,9 +335,9 @@ function controlsHtml() {
   return `
     <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
       ${liveMode ? '' : rangeBtnsHtml()}
-      <button type="button" id="adm-live-btn" class="btn btn-xs ${liveMode ? 'btn-primary' : 'btn-ghost'}">
+      ${currentChannel === 'search' ? '' : `<button type="button" id="adm-live-btn" class="btn btn-xs ${liveMode ? 'btn-primary' : 'btn-ghost'}">
         ${liveMode ? '⏹ Stop live' : '🔴 Go live'}
-      </button>
+      </button>`}
     </div>`;
 }
 function wireControls() {
@@ -710,6 +726,113 @@ function renderAppAnalytics(d) {
     ${renderLocationSection(d)}`;
 
   wireControls();
+}
+
+// ── Search (Google Search Console) ──────────────────────────────────
+const fmtPct = (n) => (Number(n || 0) * 100).toFixed(1) + '%';
+const fmtPos = (n) => Number(n || 0).toFixed(1);
+const fmtInt = (n) => Number(n || 0).toLocaleString('en-US');
+function fmtDay(ymd) {
+  const [y, m, dd] = String(ymd).split('-').map(Number);
+  if (!y) return '—';
+  return new Date(Date.UTC(y, m - 1, dd)).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' });
+}
+function shortUrl(u) {
+  try { const x = new URL(u); return x.host.replace(/^wheretotrips\.com$/, '') + x.pathname + x.search; } catch { return u; }
+}
+
+function renderSearchAnalytics(d) {
+  const errors = d.errors || {};
+  const t = d.totals || {};
+  const maxImp = Math.max(1, ...(d.series || []).map((r) => r.impressions));
+  const seriesRows = (d.series || []).map((r) => `
+    <tr>
+      <td>${esc(fmtDay(r.date))}</td>
+      <td class="num">${fmtInt(r.clicks)}</td>
+      <td class="num">${fmtInt(r.impressions)}</td>
+      <td class="num">${fmtPos(r.position)}</td>
+      <td style="width:35%;">${bar(Math.round((r.impressions / maxImp) * 100))}</td>
+    </tr>`).join('');
+
+  const queries = d.queries || [];
+  const pages = d.pages || [];
+  const queryRowHtml = (q) => `<tr><td>${esc(q.query)}</td><td class="num">${fmtInt(q.clicks)}</td><td class="num">${fmtInt(q.impressions)}</td><td class="num">${fmtPct(q.ctr)}</td><td class="num">${fmtPos(q.position)}</td></tr>`;
+  const pageRowHtml = (p) => `<tr><td style="overflow-wrap:anywhere;"><a href="${esc(p.page)}" target="_blank" rel="noopener">${esc(shortUrl(p.page) || '/')}</a></td><td class="num">${fmtInt(p.clicks)}</td><td class="num">${fmtInt(p.impressions)}</td><td class="num">${fmtPos(p.position)}</td></tr>`;
+
+  const totalsCards = errors.totals
+    ? `<div class="adm-card"><h3>Totals</h3><p class="acct-sub">Unavailable — ${esc(errors.totals)}</p></div>`
+    : `<div class="adm-overview-grid">${card('Clicks', fmtInt(t.clicks))}${card('Impressions', fmtInt(t.impressions))}${card('Click-through rate', fmtPct(t.ctr))}${card('Average position', fmtPos(t.position))}</div>`;
+
+  const trafficCard = errCard('Search over time', `
+    <div class="adm-card">
+      <h3>Search over time</h3>
+      <div class="adm-wrap-scroll"><table class="adm-table">
+        <thead><tr><th>Day</th><th class="num">Clicks</th><th class="num">Impressions</th><th class="num">Position</th><th></th></tr></thead>
+        <tbody>${seriesRows || '<tr><td colspan="5">No data yet.</td></tr>'}</tbody>
+      </table></div>
+    </div>`, 'series', errors);
+
+  const queriesCard = errCard('Top queries', `
+    <div class="adm-card">
+      <h3>Top queries ${queries.length > 10 ? viewAllBtnHtml('queries') : ''}</h3>
+      <div class="adm-wrap-scroll"><table class="adm-table">
+        <thead><tr><th>Query</th><th class="num">Clicks</th><th class="num">Impressions</th><th class="num">CTR</th><th class="num">Position</th></tr></thead>
+        <tbody>${queries.slice(0, 10).map(queryRowHtml).join('') || '<tr><td colspan="5">No data yet.</td></tr>'}</tbody>
+      </table></div>
+    </div>`, 'queries', errors);
+
+  const pagesCard = errCard('Top pages', `
+    <div class="adm-card">
+      <h3>Top pages ${pages.length > 10 ? viewAllBtnHtml('pages') : ''}</h3>
+      <div class="adm-wrap-scroll"><table class="adm-table">
+        <thead><tr><th>Page</th><th class="num">Clicks</th><th class="num">Impressions</th><th class="num">Position</th></tr></thead>
+        <tbody>${pages.slice(0, 10).map(pageRowHtml).join('') || '<tr><td colspan="4">No data yet.</td></tr>'}</tbody>
+      </table></div>
+    </div>`, 'pages', errors);
+
+  const hostsCard = errCard('Where the pages live', `
+    <div class="adm-card">
+      <h3>Where the pages live</h3>
+      <p class="acct-sub" style="margin:-4px 0 12px;">Search Console covers every wheretotrips.com address, so the Help Center on support.wheretotrips.com is counted next to the website. ${fmtInt(d.pages_total)} pages got at least one impression in this range.</p>
+      <div class="adm-wrap-scroll"><table class="adm-table">
+        <thead><tr><th>Address</th><th class="num">Pages seen</th><th class="num">Clicks</th><th class="num">Impressions</th></tr></thead>
+        <tbody>${(d.hosts || []).map((h) => `<tr><td>${esc(h.host)}</td><td class="num">${fmtInt(h.pages)}</td><td class="num">${fmtInt(h.clicks)}</td><td class="num">${fmtInt(h.impressions)}</td></tr>`).join('') || '<tr><td colspan="4">No data yet.</td></tr>'}</tbody>
+      </table></div>
+    </div>`, 'pages', errors);
+
+  const sm = d.sitemaps || [];
+  const sitemapsCard = errCard('Sitemaps', `
+    <div class="adm-card">
+      <h3>Sitemaps</h3>
+      <div class="adm-wrap-scroll"><table class="adm-table">
+        <thead><tr><th>Sitemap</th><th>Last read</th><th class="num">Errors</th><th class="num">Warnings</th></tr></thead>
+        <tbody>${sm.map((s) => `<tr><td>${esc(s.path)}</td><td>${s.last_downloaded ? esc(new Date(s.last_downloaded).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: DASH_TZ })) : '—'}</td><td class="num">${s.errors}</td><td class="num">${s.warnings}</td></tr>`).join('') || '<tr><td colspan="4">No sitemaps submitted.</td></tr>'}</tbody>
+      </table></div>
+    </div>`, 'sitemaps', errors);
+
+  $('#analytics-root').innerHTML = `
+    <div class="adm-form-row" style="justify-content:space-between; align-items:center; margin-bottom:14px;">
+      <p class="acct-sub" style="margin:0;">Google Search Console · ${esc(d.window ? fmtDay(d.window.startDate) + ' to ' + fmtDay(d.window.endDate) : '')} · Google dates days in Pacific time and runs about 2 days behind</p>
+      ${controlsHtml()}
+    </div>
+    ${totalsCards}
+    ${trafficCard}
+    <div class="adm-overview-grid" style="grid-template-columns: 1fr 1fr;">
+      ${queriesCard}
+      ${pagesCard}
+    </div>
+    ${hostsCard}
+    ${sitemapsCard}`;
+
+  wireControls();
+  const map = {
+    queries: () => openDrillModal('All queries', ['Query', 'Clicks', 'Impressions', 'CTR', 'Position'], queries.map(queryRowHtml)),
+    pages: () => openDrillModal('Top pages', ['Page', 'Clicks', 'Impressions', 'Position'], pages.map(pageRowHtml)),
+  };
+  $('#analytics-root').querySelectorAll('[data-drill]').forEach((btn) => {
+    const fn = map[btn.dataset.drill];
+    if (fn) btn.addEventListener('click', fn);
+  });
 }
 
 // ── Travel Metrics ──────────────────────────────────────────────────
