@@ -79,8 +79,9 @@ function renderWebsiteAnalytics(d) {
   // by the backend; say how much, so nobody wonders why this is lower than the
   // raw PostHog count.
   const leftOut = [];
-  if (bots.bot_pageviews) leftOut.push(`${fmtInt(bots.bot_pageviews)} crawler pageviews (Google Play and other bots)`);
-  if (bots.internal_pageviews) leftOut.push(`${fmtInt(bots.internal_pageviews)} pageviews of our own admin pages`);
+  const pv = (n) => (Number(n) === 1 ? 'pageview' : 'pageviews');
+  if (bots.bot_pageviews) leftOut.push(`${fmtInt(bots.bot_pageviews)} crawler ${pv(bots.bot_pageviews)} (Google Play and other bots)`);
+  if (bots.internal_pageviews) leftOut.push(`${fmtInt(bots.internal_pageviews)} ${pv(bots.internal_pageviews)} of our own admin pages`);
   const leftOutNote = leftOut.length
     ? `<p class="acct-sub" style="margin:0 0 14px;">People only. Left out of every number below: ${leftOut.join(' and ')}.</p>`
     : '';
