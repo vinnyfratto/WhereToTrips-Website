@@ -48,6 +48,10 @@ let currentRange = 'today';
 let searchRange = '28d';
 let liveMode = false;
 let pollTimer = null;
+// Every load takes the next number. An answer that comes back after a newer load has
+// started (a tab or range was clicked while it was still in flight, or Go live was
+// toggled) is dropped, so a slow earlier answer never draws over the view now selected.
+let loadSeq = 0;
 const SEARCH_RANGES = [['7d', 'Last 7 days'], ['28d', 'Last 28 days'], ['90d', 'Last 3 months']];
 const RANGES = [
   ['hour', 'Last hour'], ['6h', '6 hours'],
@@ -140,7 +144,9 @@ async function loadLive(silent = false) {
   const root = $('#analytics-root');
   if (!silent) root.innerHTML = `<div class="adm-card">Loading…</div>`;
 
+  const seq = ++loadSeq;
   const d = await callAdmin('analytics_live', { channel: currentChannel });
+  if (seq !== loadSeq) return;
 
   if (!d.ok) {
     root.innerHTML = `
@@ -304,9 +310,11 @@ async function loadAnalytics(silent = false) {
   const root = $('#analytics-root');
   if (!silent) root.innerHTML = `<div class="adm-card">Loading…</div>`;
 
+  const seq = ++loadSeq;
   const d = currentChannel === 'search'
     ? await callAdmin('search_overview', { range: searchRange })
     : await callAdmin('analytics_overview', { range: currentRange, channel: currentChannel });
+  if (seq !== loadSeq) return;
 
   if (!d.ok) {
     const hint = d.error === 'posthog_not_configured'
