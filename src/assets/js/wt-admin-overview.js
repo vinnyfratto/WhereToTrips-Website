@@ -19,11 +19,12 @@ import { periodParams, renderPeriodControl } from './wt-padmin-period.js';
 const tile = (label, value, tip) => `<div class="pa-tile"><p class="k">${esc(label)}${tip ? ` <span class="pa-info" title="${esc(tip)}" aria-label="${esc(tip)}">i</span>` : ''}</p><p class="v">${value}</p></div>`;
 
 function renderTiles(s) {
+  const live = s.live !== false;
   $('#ov-volume').innerHTML = [
-    tile('Partners', num(s.partners), 'Partners active in the period: a download, a registration, a booking or a payment. For ALL, every partner.'),
-    tile('Downloads', num(s.downloads), 'App downloads attributed to a partner.'),
-    tile('Registered', num(s.registered), 'People who registered after arriving through a partner.'),
-    tile('Bookings', num(s.bookings), 'Bookings made through a partner in the period, not counting canceled ones.'),
+    tile('Partners', num(s.partners), 'Partners active in the period: a download, a registration, a booking or a payment. For ALL, every partner' + (live ? ' except the ones marked as test partners.' : '.')),
+    tile('Downloads', num(s.downloads), 'App downloads attributed to a partner' + (live ? ', from each store launch day.' : '.') + ' Android records the partner from the Play Store link. The App Store passes nothing along, so an iPhone is credited only when the person enters a partner code.'),
+    tile('Registered', num(s.registered), 'People who registered after arriving through a partner' + (live ? ', not counting test accounts.' : '.')),
+    tile('Bookings', num(s.bookings), 'Bookings made through a partner in the period, not counting canceled ones' + (live ? ' or sandbox and demo bookings.' : '.')),
   ].join('');
   $('#ov-money').innerHTML = [
     tile('Est. Total Rev', money(s.est_total_rev), "What WhereTo earns in commission on those bookings (an estimate: Nuitee pays after the fact)."),
@@ -67,7 +68,7 @@ boot(async () => {
     const [s, top] = await Promise.all([callPA('overview_summary', params), callPA('top_performers', { ...params, limit: 5 })]);
     if (mine !== seq) return;
     if (!s.ok) { $('#ov-volume').innerHTML = `<p class="acct-sub">Could not load the overview (${esc(s.error || 'error')}).</p>`; $('#ov-money').innerHTML = ''; return; }
-    period.setRange(s.period);
+    period.setRange(s.period, s);
     renderTiles(s);
     if (top.ok) table.set(top.rows);
   }

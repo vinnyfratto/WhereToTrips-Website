@@ -149,4 +149,36 @@
 .pa-legacy-links { margin: 30px 0 0; color: var(--ink-muted); font-size: 0.85rem; }
 .pa-legacy-links a { color: var(--azure-press); font-weight: 600; }
 
-@media (prefers-reduced-motion: reduce) { .pa-subtab, .pa-seg button { transition: none; } }
+/* ── Include test data: the switch, and which data the numbers cover ── */
+.pa-switch-wrap { display: inline-flex; align-items: center; gap: 8px; padding-bottom: 9px; }
+.pa-switch { position: relative; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.86rem; font-weight: 600; color: var(--ink-soft); user-select: none; }
+.pa-switch input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+.pa-switch-track { position: relative; width: 36px; height: 20px; flex: 0 0 auto; border-radius: 999px; background: var(--wg300); transition: background .15s ease; }
+.pa-switch-track::after {
+  content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%;
+  background: #fff; box-shadow: 0 1px 2px rgba(0, 0, 0, .3); transition: transform .15s ease;
+}
+.pa-switch input:checked + .pa-switch-track { background: var(--amber); }
+.pa-switch input:checked + .pa-switch-track::after { transform: translateX(16px); }
+.pa-switch input:focus-visible + .pa-switch-track { outline: 2px solid var(--azure); outline-offset: 2px; }
+.pa-scope { margin: -6px 0 16px; font-size: 0.84rem; color: var(--ink-muted); }
+.pa-scope.is-test { color: #8a5a00; background: var(--amber-tint); border: 1px solid #efd7a3; border-radius: var(--radius-sm); padding: 8px 12px; }
+.pa-scope[hidden] { display: none !important; }
+
+/* ── Data settings (admin home) ─────────────────────────────────── */
+.pa-settings { margin: 0 0 16px; }
+.pa-settings summary { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; cursor: pointer; list-style: none; }
+.pa-settings summary::-webkit-details-marker { display: none; }
+.pa-settings summary:focus-visible { outline: 2px solid var(--azure); outline-offset: 3px; border-radius: 4px; }
+.pa-settings-t { font-family: var(--serif); font-size: 1.05rem; color: var(--navy); }
+.pa-settings-t::before { content: "\25B8"; display: inline-block; width: 1.1em; color: var(--wg500); }
+.pa-settings details[open] .pa-settings-t::before { content: "\25BE"; }
+.pa-settings-s { font-size: 0.85rem; color: var(--ink-muted); }
+.pa-settings-body { margin-top: 16px; }
+.pa-settings-h { margin: 20px 0 8px; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-muted); }
+.pa-settings-h:first-child { margin-top: 0; }
+.pa-settings-p { margin: 8px 0 0; max-width: 72ch; line-height: 1.5; }
+.pa-settings .pa-form-grid { max-width: 460px; }
+.pa-settings .pa-actions { margin-top: 16px; }
+
+@media (prefers-reduced-motion: reduce) { .pa-subtab, .pa-seg button, .pa-switch-track, .pa-switch-track::after { transition: none; } }
