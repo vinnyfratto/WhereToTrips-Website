@@ -59,7 +59,7 @@
 .pa-controls input:focus, .pa-controls select:focus { outline: 2px solid var(--azure); outline-offset: 1px; border-color: var(--azure); }
 .pa-controls .pa-spacer { flex: 1 1 auto; }
 /* a class's display would otherwise beat the hidden attribute */
-.pa-controls[hidden], .pa-banner[hidden], .pa-tiles[hidden], .pa-actions[hidden] { display: none; }
+.pa-controls[hidden], .pa-banner[hidden], .pa-tiles[hidden], .pa-actions[hidden], .pa-controls [hidden] { display: none !important; }
 .pa-count { color: var(--ink-muted); font-size: 0.88rem; padding-bottom: 10px; }
 
 /* period buttons: Today / Weekly / Monthly / YTD / ALL */

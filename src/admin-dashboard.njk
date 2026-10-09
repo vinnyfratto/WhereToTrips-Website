@@ -20,7 +20,13 @@ eleventyExcludeFromCollections: true
 
     <div id="adm-msg" class="alert" role="status" aria-live="polite"></div>
 
-    <h2 class="adm-section-h" style="margin-top:0; padding-top:0; border-top:0;">Partners</h2>
+    {#- Site-wide summary for a period. Not partner-only: the Partner Overview has its own. -#}
+    <section aria-label="Site summary">
+      <div id="hs-period"></div>
+      <div class="pa-tiles cols-5" id="hs-tiles"></div>
+    </section>
+
+    <h2 class="adm-section-h">Partners</h2>
     <p class="adm-subhead" style="margin-top:6px;">Partner Admin</p>
     <div class="adm-tile-grid">
       <a class="adm-tile" href="/admin-affiliates/">
