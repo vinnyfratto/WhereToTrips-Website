@@ -55,6 +55,7 @@
     { label: 'Analytics', groups: [
       { items: [
         ['Site Analytics', '/analytics/'],
+        ['App Analytics', '/app-analytics/'],
         ['Site Submissions', '/admin-submissions/'],
       ] },
     ] },

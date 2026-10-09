@@ -1,0 +1,31 @@
+---
+layout: layouts/admin.njk
+permalink: /app-analytics/index.html
+title: "App Analytics — WhereTo"
+description: "Internal app analytics: PostHog usage, funnels, devices, location and travel metrics."
+eleventyExcludeFromCollections: true
+---
+{#- The app only. The website has its own page: analytics.njk. Both run on assets/js/wt-analytics-core.js. -#}
+<main id="wt-admin-page">
+
+  {% include "partials/admin-gate.njk" %}
+
+  <div id="adm-root" class="dash" style="display:none;">
+    <div class="dash-head">
+      <div>
+        <p class="eyebrow">Internal · admin</p>
+        <h1>App analytics</h1>
+      </div>
+    </div>
+
+    <div class="adm-tabs" role="tablist">
+      <button class="adm-tab is-active" data-channel="app">App</button>
+      <button class="adm-tab" data-channel="travel">Travel Metrics</button>
+    </div>
+
+    <div id="adm-msg" class="alert" role="status" aria-live="polite"></div>
+
+    <section id="analytics-root"></section>
+  </div>
+</main>
+<script type="module" src="/assets/js/wt-app-analytics.js?v={{ buildTime }}"></script>

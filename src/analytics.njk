@@ -2,21 +2,13 @@
 layout: layouts/admin.njk
 permalink: /analytics/index.html
 title: "Site Analytics — WhereTo"
-description: "Internal PostHog-backed website analytics dashboard."
+description: "Internal website analytics: PostHog traffic and Google Search Console."
 eleventyExcludeFromCollections: true
 ---
+{#- The website only. The app has its own page: app-analytics.njk. Both run on assets/js/wt-analytics-core.js. -#}
 <main id="wt-admin-page">
 
-  <div id="adm-gate" class="gate-msg">Checking access…</div>
-
-  <div id="adm-denied" class="acct" style="display:none;">
-    <div class="acct-card" style="text-align:center;">
-      <p class="eyebrow">Restricted</p>
-      <h1>Access denied</h1>
-      <p class="acct-sub">This area is for WhereTo program administrators only.</p>
-      <p><a class="btn btn-primary" href="/">Back to home</a></p>
-    </div>
-  </div>
+  {% include "partials/admin-gate.njk" %}
 
   <div id="adm-root" class="dash" style="display:none;">
     <div class="dash-head">
@@ -28,9 +20,7 @@ eleventyExcludeFromCollections: true
 
     <div class="adm-tabs" role="tablist">
       <button class="adm-tab is-active" data-channel="website">WhereToTrips.com</button>
-      <button class="adm-tab" data-channel="app">App</button>
-      <button class="adm-tab" data-channel="travel">Travel Metrics</button>
-    <button class="adm-tab" data-channel="search">Search</button>
+      <button class="adm-tab" data-channel="search">Search</button>
     </div>
 
     <div id="adm-msg" class="alert" role="status" aria-live="polite"></div>
@@ -38,4 +28,4 @@ eleventyExcludeFromCollections: true
     <section id="analytics-root"></section>
   </div>
 </main>
-<script type="module" src="/assets/js/wt-analytics.js?v={{ buildTime }}"></script>
+<script type="module" src="/assets/js/wt-site-analytics.js?v={{ buildTime }}"></script>
