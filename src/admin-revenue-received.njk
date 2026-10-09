@@ -2,7 +2,7 @@
 layout: layouts/admin.njk
 permalink: /admin-revenue-received/index.html
 title: "Revenue Received — WhereTo"
-description: "Revenue Received."
+description: "Money Nuitee has paid us, and which partner each dollar belongs to."
 eleventyExcludeFromCollections: true
 subnav: partner
 subnavActive: revenue
@@ -12,20 +12,19 @@ subnavActive: revenue
   {% include "partials/admin-gate.njk" %}
 
   <div id="adm-root" class="dash pa-wide" style="display:none;">
+    <div id="rr-back"></div>
     <div class="dash-head">
       <div>
-        <p class="eyebrow">Partner Admin</p>
-        <h1>Revenue Received</h1>
-        <p class="pa-lede">Money Nuitee has paid us, and which partner each dollar belongs to.</p>
+        <p class="eyebrow" id="rr-eyebrow">Partner Admin</p>
+        <h1 id="rr-title">Revenue Received</h1>
+        <div class="pa-meta" id="rr-meta"></div>
+        <p class="pa-lede" id="rr-lede">Money Nuitee has paid us, and which partner each dollar belongs to.</p>
       </div>
     </div>
 
     <div id="adm-msg" class="alert" role="status" aria-live="polite"></div>
 
-    <div class="adm-card pa-placeholder">
-      <h3>Being rebuilt</h3>
-      <p>This page is being rebuilt. The earlier version is still in <a class="pa-link" href="/admin-partner-legacy/#commissions">Legacy Partner Admin</a>.</p>
-    </div>
+    <div id="rr-body"></div>
   </div>
 </main>
-<script type="module" src="/assets/js/wt-admin-page.js?v={{ buildTime }}"></script>
+<script type="module" src="/assets/js/wt-admin-revenue-received.js?v={{ buildTime }}"></script>
