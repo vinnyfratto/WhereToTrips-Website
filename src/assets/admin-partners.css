@@ -55,9 +55,11 @@
   font-family: var(--sans); font-size: 0.9rem; padding: 9px 12px; background: #fff; color: var(--navy);
   border: 1px solid var(--wg300); border-radius: var(--radius-sm); min-width: 0;
 }
-.pa-controls input[type="search"] { width: min(340px, 100%); }
+.pa-controls input[type="search"] { width: 340px; max-width: 100%; }
 .pa-controls input:focus, .pa-controls select:focus { outline: 2px solid var(--azure); outline-offset: 1px; border-color: var(--azure); }
 .pa-controls .pa-spacer { flex: 1 1 auto; }
+/* a class's display would otherwise beat the hidden attribute */
+.pa-controls[hidden], .pa-banner[hidden], .pa-tiles[hidden], .pa-actions[hidden] { display: none; }
 .pa-count { color: var(--ink-muted); font-size: 0.88rem; padding-bottom: 10px; }
 
 /* period buttons: Today / Weekly / Monthly / YTD / ALL */
@@ -118,6 +120,7 @@
 .pa-link-btn { font: inherit; font-weight: 600; color: var(--azure-press); background: none; border: 0; padding: 0; cursor: pointer; text-align: left; }
 .pa-link-btn:hover { text-decoration: underline; }
 .pa-dash { color: var(--wg400); }
+.pa-clamp { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; max-width: 34ch; }
 
 /* ── Status pills ───────────────────────────────────────────────── */
 .pa-pill { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 0.74rem; font-weight: 600; white-space: nowrap; background: var(--wg200); color: var(--ink-soft); }

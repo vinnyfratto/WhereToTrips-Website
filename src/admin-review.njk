@@ -11,7 +11,7 @@ subnavActive: review
 
   {% include "partials/admin-gate.njk" %}
 
-  <div id="adm-root" class="dash pa-wide" style="display:none;">
+  <div id="adm-root" class="dash pa-xwide" style="display:none;">
     <div class="dash-head">
       <div>
         <p class="eyebrow">Partner Admin</p>
@@ -22,7 +22,34 @@ subnavActive: review
 
     <div id="adm-msg" class="alert" role="status" aria-live="polite"></div>
 
-    <div id="pa-host"></div>
+    <div class="adm-tabs" role="tablist" id="rv-tabs">
+      <button type="button" class="adm-tab" role="tab" data-tab="pending">Pending Review <span class="adm-badge" data-badge="review" hidden></span></button>
+      <button type="button" class="adm-tab" role="tab" data-tab="approved">Approved Requests</button>
+      <button type="button" class="adm-tab" role="tab" data-tab="rejected">Rejected Requests</button>
+      <button type="button" class="adm-tab" role="tab" data-tab="changes">Changes Requested</button>
+    </div>
+
+    <p class="pa-banner" id="rv-intro" hidden></p>
+
+    <div class="pa-controls" id="rv-controls" hidden>
+      <div class="field">
+        <label for="rv-q">Search by name</label>
+        <input id="rv-q" type="search" placeholder="Partner name, ID or code" autocomplete="off" />
+      </div>
+      <div class="field">
+        <label for="rv-from">From</label>
+        <input id="rv-from" type="date" />
+      </div>
+      <div class="field">
+        <label for="rv-to">To</label>
+        <input id="rv-to" type="date" />
+      </div>
+      <span class="pa-spacer"></span>
+      <span class="pa-count" id="rv-count" aria-live="polite"></span>
+    </div>
+
+    <div id="rv-decide"></div>
+    <div id="rv-table"></div>
   </div>
 </main>
 <script type="module" src="/assets/js/wt-admin-review.js?v={{ buildTime }}"></script>
