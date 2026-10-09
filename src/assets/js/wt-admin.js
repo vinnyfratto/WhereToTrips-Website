@@ -221,17 +221,25 @@ function affEditorHtml(a) {
       <div class="field"><label class="hint">Type</label><select data-f="${k}_type">${opt('percent', cat.type)}${opt('flat', cat.type)}</select></div>
     </div>`;
   };
+  // A revenue-share partner earns a cut of WhereTo's commission, which these
+  // per-product rows cannot express: saving them would turn the partner into a
+  // percent-of-the-fare one. Their rate is changed on the Partner Dashboard.
+  const revShare = !!(a.commissions && a.commissions.revenue_share) || a.commission_type === 'revshare';
+  const rates = revShare
+    ? `<p class="adm-subhead">Revenue</p>
+    <p class="hint" style="margin:0 0 10px;">This partner earns a revenue share. Change the rate on the <a href="/admin-partner/?id=${encodeURIComponent(a.id)}">Partner Dashboard</a>.</p>`
+    : `<p class="adm-subhead">Revenue</p>
+    ${commRow('flight', 'Flight Revenue')}
+    ${commRow('hotel', 'Hotel Revenue')}
+    ${commRow('car', 'Car Rental Revenue')}
+    ${commRow('insurance', 'Trip Insurance Revenue')}`;
   return `<div class="aff-editor" data-aff="${a.id}">
     <div class="adm-form-row">
       <div class="field"><label>Custom link (vanity)</label><input data-f="vanity_slug" value="${esc(a.vanity_slug || '')}" placeholder="(none)" /></div>
       <div class="field"><label>Status</label><select data-f="status">${['active', 'pending', 'suspended', 'terminated'].map((s) => opt(s, a.status)).join('')}</select></div>
       <div class="field"><label>Partner Source</label><select data-f="source">${srcList.map((s) => opt(s, srcCurrent)).join('')}</select></div>
     </div>
-    <p class="adm-subhead">Revenue</p>
-    ${commRow('flight', 'Flight Revenue')}
-    ${commRow('hotel', 'Hotel Revenue')}
-    ${commRow('car', 'Car Rental Revenue')}
-    ${commRow('insurance', 'Trip Insurance Revenue')}
+    ${rates}
     <div class="adm-form-row" style="margin-top:10px;">
       <div class="field"><label>Revenue Duration (months)</label><input data-f="commission_duration_months" type="number" min="1" value="${months}" /></div>
       <button class="btn btn-primary btn-xs" data-save-aff="${a.id}">Save changes</button>
@@ -250,7 +258,10 @@ async function saveAffiliate(id) {
     status: get('status'),
     source: get('source'),
     commission_duration_months: get('commission_duration_months'),
-    commissions: { flight: cat('flight'), hotel: cat('hotel'), car: cat('car'), insurance: cat('insurance') },
+    // Only when the per-product rows were shown (a revenue-share partner has none).
+    ...(root.querySelector('[data-f="flight_rate"]')
+      ? { commissions: { flight: cat('flight'), hotel: cat('hotel'), car: cat('car'), insurance: cat('insurance') } }
+      : {}),
   });
   if (!r.ok) { msg('error', 'Save failed: ' + r.error); return; }
   msg('success', 'Partner updated.');

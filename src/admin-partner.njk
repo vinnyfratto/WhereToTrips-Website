@@ -1,0 +1,29 @@
+---
+layout: layouts/admin.njk
+permalink: /admin-partner/index.html
+title: "Partner Dashboard — WhereTo"
+description: "One partner's record: content, performance, payments, 1099 and terms."
+eleventyExcludeFromCollections: true
+subnav: partner
+subnavActive: details
+---
+<main id="wt-admin-page">
+
+  {% include "partials/admin-gate.njk" %}
+
+  <div id="adm-root" class="dash pa-wide" style="display:none;">
+    <a class="pa-back" href="/admin-partners/">← Partner Details</a>
+    <div class="dash-head">
+      <div>
+        <p class="eyebrow">Partner Dashboard</p>
+        <h1 id="pd-name">…</h1>
+        <div class="pa-meta" id="pd-meta"></div>
+      </div>
+    </div>
+
+    <div id="adm-msg" class="alert" role="status" aria-live="polite"></div>
+
+    <div id="pd-body"></div>
+  </div>
+</main>
+<script type="module" src="/assets/js/wt-admin-partner.js?v={{ buildTime }}"></script>

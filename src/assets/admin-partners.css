@@ -26,6 +26,8 @@
 
 /* ── Page frame ─────────────────────────────────────────────────── */
 .dash.pa-wide { max-width: 1280px; }
+/* as wide as the header, for the tables with many columns (Partner Details) */
+.dash.pa-xwide { max-width: 1425px; }
 .pa-lede { color: var(--ink-muted); margin: 6px 0 0; max-width: 62ch; font-size: 0.95rem; line-height: 1.5; }
 .pa-back { display: inline-block; margin-bottom: 10px; font-size: 0.9rem; font-weight: 600; color: var(--azure-press); text-decoration: none; }
 .pa-back:hover { text-decoration: underline; }
@@ -53,7 +55,7 @@
   font-family: var(--sans); font-size: 0.9rem; padding: 9px 12px; background: #fff; color: var(--navy);
   border: 1px solid var(--wg300); border-radius: var(--radius-sm); min-width: 0;
 }
-.pa-controls input[type="search"] { width: min(280px, 100%); }
+.pa-controls input[type="search"] { width: min(340px, 100%); }
 .pa-controls input:focus, .pa-controls select:focus { outline: 2px solid var(--azure); outline-offset: 1px; border-color: var(--azure); }
 .pa-controls .pa-spacer { flex: 1 1 auto; }
 .pa-count { color: var(--ink-muted); font-size: 0.88rem; padding-bottom: 10px; }
