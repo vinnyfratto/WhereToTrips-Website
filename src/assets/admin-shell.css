@@ -57,6 +57,19 @@
 .adm-dd:hover .adm-dd-menu a, .adm-dd:focus-within .adm-dd-menu a { margin-top: 0; }
 .adm-dd-menu a:hover { background: var(--ah-tint); color: var(--ah-azure); }
 .adm-dd-menu a[aria-current="page"] { color: var(--ah-azure); font-weight: 600; background: var(--ah-tint); }
+/* a small heading that splits one menu into groups ("Partner Admin", "CRM") */
+.adm-dd-head {
+  display: block; padding: 12px 20px 6px; background: #fff; border-bottom: 1px solid var(--ah-line);
+  font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--ah-muted);
+}
+.adm-dd-menu > .adm-dd-head:not(:first-child) { border-top: 1px solid var(--ah-line2); }
+.adm-dd-menu a { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+/* a count beside an item (Review Queue: how many submissions are waiting) */
+.adm-badge {
+  display: inline-block; min-width: 20px; padding: 1px 7px; border-radius: 999px; text-align: center;
+  background: #E69800; color: #313131; font-size: 11px; font-weight: 700; line-height: 1.5; letter-spacing: 0;
+}
+.adm-badge[hidden] { display: none; }
 
 .adm-util { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; }
 .adm-actions { display: inline-flex; align-items: center; gap: 8px; }
@@ -96,6 +109,8 @@
   .adm-mobile a:hover, .adm-mobile a[aria-current="page"] { color: var(--ah-azure); }
   .adm-mobile .adm-msub { color: var(--ah-soft); font-weight: 400; }
   .adm-mlabel { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--ah-muted); padding: 18px 0 4px; }
+  .adm-mhead { font-size: 11px; font-weight: 700; color: var(--ah-soft); padding: 10px 0 0; }
+  .adm-mobile a { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 }
 @media (max-width: 640px) {
   .adm-hdr-in { gap: 14px; padding: 0 16px; }

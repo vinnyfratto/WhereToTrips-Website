@@ -1,0 +1,30 @@
+---
+layout: layouts/admin.njk
+permalink: /admin-financial/partner-ach/index.html
+title: "Partner Payment Processing (ACH) — WhereTo"
+description: "Partner Payment Processing (ACH)."
+eleventyExcludeFromCollections: true
+subnav: finance
+subnavActive: ach
+---
+<main id="wt-admin-page">
+
+  {% include "partials/admin-gate.njk" %}
+
+  <div id="adm-root" class="dash" style="display:none;">
+    <div class="dash-head">
+      <div>
+        <p class="eyebrow">Financial Tracking</p>
+        <h1>Partner Payment Processing (ACH)</h1>
+      </div>
+    </div>
+
+    <div id="adm-msg" class="alert" role="status" aria-live="polite"></div>
+
+    <div class="adm-card pa-placeholder">
+      <h3>Not built yet</h3>
+      <p>This page is waiting on its walkthrough. Completed payments will feed Payment History.</p>
+    </div>
+  </div>
+</main>
+<script type="module" src="/assets/js/wt-admin-page.js?v={{ buildTime }}"></script>

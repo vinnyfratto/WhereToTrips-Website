@@ -1,0 +1,145 @@
+/* ───────────────────────────────────────────────────────────────────
+   admin-partners.css — the pieces the redesigned Partner Admin pages share:
+   the tab strip under the header, period buttons, summary tiles, sortable
+   tables, status pills and banners. Built on the same tokens as the rest of
+   the admin (Azure / Amber / Charcoal, Noto Sans, RCL Morland headings).
+   Loaded by layouts/admin.njk, after account.css.
+   ─────────────────────────────────────────────────────────────────── */
+
+/* ── Tab strip under the header (one per section: Partner Admin, CRM, …) ── */
+.pa-subnav { background: #fff; border-bottom: 1px solid var(--wg200); }
+.pa-subnav-in {
+  display: flex; align-items: stretch; gap: 4px; max-width: 1425px; margin: 0 auto; padding: 0 24px;
+  overflow-x: auto; scrollbar-width: none;
+}
+.pa-subnav-in::-webkit-scrollbar { display: none; }
+.pa-subtab {
+  display: inline-flex; align-items: center; gap: 8px; white-space: nowrap;
+  padding: 14px 12px 12px; margin-bottom: -1px; border-bottom: 2px solid transparent;
+  font-family: var(--sans); font-size: 0.92rem; font-weight: 500; color: var(--ink-soft); text-decoration: none;
+  transition: color .15s ease, border-color .15s ease;
+}
+.pa-subtab:hover { color: var(--navy); }
+.pa-subtab.is-active { color: var(--azure); border-bottom-color: var(--azure); font-weight: 600; }
+.pa-subtab:focus-visible { outline: 2px solid var(--azure); outline-offset: -2px; border-radius: 4px; }
+.pa-subtab .adm-badge { font-size: 11px; }
+
+/* ── Page frame ─────────────────────────────────────────────────── */
+.dash.pa-wide { max-width: 1280px; }
+.pa-lede { color: var(--ink-muted); margin: 6px 0 0; max-width: 62ch; font-size: 0.95rem; line-height: 1.5; }
+.pa-back { display: inline-block; margin-bottom: 10px; font-size: 0.9rem; font-weight: 600; color: var(--azure-press); text-decoration: none; }
+.pa-back:hover { text-decoration: underline; }
+.pa-meta { color: var(--ink-muted); font-size: 0.9rem; margin: 8px 0 0; display: flex; flex-wrap: wrap; gap: 4px 18px; }
+.pa-meta strong { color: var(--navy); font-weight: 600; }
+.pa-section-gap { margin-top: 26px; }
+.pa-muted { color: var(--ink-muted); }
+.pa-small { font-size: 0.82rem; }
+
+/* ── Banners ────────────────────────────────────────────────────── */
+.pa-banner {
+  display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; margin: 0 0 22px;
+  padding: 12px 16px; border-radius: var(--radius-sm); font-size: 0.9rem; line-height: 1.45;
+  background: var(--azure-tint); color: var(--ink-soft); border: 1px solid #bfe0f3;
+}
+.pa-banner strong { color: var(--navy); }
+.pa-banner.is-warn { background: var(--amber-tint); border-color: #efd7a3; }
+.pa-banner.is-warn strong { color: #8a5a00; }
+
+/* ── Controls row: search, dates, period buttons, counts ────────── */
+.pa-controls { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px 14px; margin: 0 0 16px; }
+.pa-controls .field { margin: 0; }
+.pa-controls .field > label { margin-bottom: 4px; font-size: 0.78rem; }
+.pa-controls input[type="search"], .pa-controls input[type="text"], .pa-controls input[type="date"], .pa-controls select {
+  font-family: var(--sans); font-size: 0.9rem; padding: 9px 12px; background: #fff; color: var(--navy);
+  border: 1px solid var(--wg300); border-radius: var(--radius-sm); min-width: 0;
+}
+.pa-controls input[type="search"] { width: min(280px, 100%); }
+.pa-controls input:focus, .pa-controls select:focus { outline: 2px solid var(--azure); outline-offset: 1px; border-color: var(--azure); }
+.pa-controls .pa-spacer { flex: 1 1 auto; }
+.pa-count { color: var(--ink-muted); font-size: 0.88rem; padding-bottom: 10px; }
+
+/* period buttons: Today / Weekly / Monthly / YTD / ALL */
+.pa-seg { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+.pa-seg button {
+  font-family: var(--sans); font-size: 0.86rem; font-weight: 600; letter-spacing: .2px; cursor: pointer;
+  padding: 9px 14px; border-radius: var(--radius-sm); background: #fff; color: var(--ink-soft); border: 1px solid var(--wg300);
+  transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+.pa-seg button:hover { border-color: var(--azure); color: var(--azure-press); }
+.pa-seg button.is-active { background: var(--azure); border-color: var(--azure); color: #fff; }
+.pa-seg button:focus-visible { outline: 2px solid var(--azure); outline-offset: 2px; }
+.pa-range-note { color: var(--ink-muted); font-size: 0.85rem; padding-bottom: 10px; }
+
+/* ── Summary tiles ──────────────────────────────────────────────── */
+.pa-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; margin: 0 0 16px; }
+.pa-tiles.cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.pa-tiles.cols-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+@media (max-width: 980px) { .pa-tiles.cols-4, .pa-tiles.cols-5 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 460px) { .pa-tiles.cols-4, .pa-tiles.cols-5 { grid-template-columns: 1fr; } }
+.pa-tile {
+  background: var(--card); border: 1px solid var(--wg200); border-radius: var(--radius-md);
+  padding: 16px 18px 18px; box-shadow: var(--shadow-sm); min-width: 0;
+}
+.pa-tile .k { display: flex; align-items: center; gap: 6px; margin: 0 0 8px; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--ink-muted); }
+.pa-tile .v { margin: 0; font-family: var(--serif); font-size: 1.75rem; line-height: 1.1; color: var(--navy); overflow-wrap: anywhere; }
+.pa-tile .s { margin: 8px 0 0; font-size: 0.8rem; color: var(--ink-muted); }
+.pa-tile .v.is-loading { color: var(--wg400); }
+.pa-info {
+  display: inline-flex; align-items: center; justify-content: center; width: 15px; height: 15px; border-radius: 50%;
+  border: 1px solid var(--wg400); color: var(--wg500); font-size: 10px; font-weight: 700; cursor: help; text-transform: none; letter-spacing: 0;
+}
+
+/* ── Tables ─────────────────────────────────────────────────────── */
+.pa-table-wrap { background: var(--card); border: 1px solid var(--wg200); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); overflow-x: auto; }
+.pa-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+.pa-table th, .pa-table td { text-align: left; padding: 11px 12px; border-bottom: 1px solid var(--wg200); vertical-align: middle; }
+.pa-table thead th {
+  font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; color: var(--ink-muted);
+  background: var(--wg100); white-space: nowrap;
+}
+.pa-table tbody tr:last-child td { border-bottom: 0; }
+.pa-table tbody tr:hover td { background: #fafcfd; }
+.pa-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+.pa-table .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.84rem; }
+.pa-table .nowrap { white-space: nowrap; }
+.pa-table th.is-sortable { cursor: pointer; user-select: none; }
+.pa-table th.is-sortable:hover { color: var(--azure-press); }
+.pa-table th.is-sortable:focus-visible { outline: 2px solid var(--azure); outline-offset: -2px; }
+.pa-table th .arr { display: inline-block; width: 1em; margin-left: 3px; color: var(--wg400); font-size: 0.7rem; }
+.pa-table th.is-sorted { color: var(--navy); }
+.pa-table th.is-sorted .arr { color: var(--azure); }
+.pa-table tfoot td { font-weight: 700; background: var(--wg100); border-top: 1px solid var(--wg300); border-bottom: 0; }
+.pa-table td.is-empty, .pa-empty { color: var(--ink-muted); text-align: center; padding: 28px 12px; }
+.pa-table tr.pa-detail td { background: var(--wg100); color: var(--ink-soft); font-size: 0.84rem; }
+.pa-link { color: var(--azure-press); font-weight: 600; text-decoration: none; }
+.pa-link:hover { text-decoration: underline; }
+.pa-link-btn { font: inherit; font-weight: 600; color: var(--azure-press); background: none; border: 0; padding: 0; cursor: pointer; text-align: left; }
+.pa-link-btn:hover { text-decoration: underline; }
+.pa-dash { color: var(--wg400); }
+
+/* ── Status pills ───────────────────────────────────────────────── */
+.pa-pill { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 0.74rem; font-weight: 600; white-space: nowrap; background: var(--wg200); color: var(--ink-soft); }
+.pa-pill.is-pending, .pa-pill.is-unallocated, .pa-pill.is-waiting, .pa-pill.is-amber { background: var(--amber-tint); color: #8a5a00; }
+.pa-pill.is-approved, .pa-pill.is-allocated, .pa-pill.is-paid, .pa-pill.is-yes, .pa-pill.is-green { background: #eaf6ee; color: #1f5b34; }
+.pa-pill.is-rejected, .pa-pill.is-no, .pa-pill.is-red { background: #fdecea; color: #8f2c1b; }
+.pa-pill.is-changes, .pa-pill.is-partial, .pa-pill.is-blue { background: var(--azure-tint); color: var(--azure-press); }
+
+/* ── Small pieces ───────────────────────────────────────────────── */
+.pa-bar { display: flex; align-items: center; gap: 10px; min-width: 150px; }
+.pa-bar > span.t { width: 60px; height: 6px; border-radius: 3px; background: var(--wg200); overflow: hidden; flex: 0 0 auto; }
+.pa-bar > span.t > i { display: block; height: 100%; background: var(--azure); border-radius: 3px; }
+.pa-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.pa-card-h { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin: 0 0 14px; }
+.pa-card-h h3 { margin: 0; }
+.pa-form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px 14px; align-items: end; }
+.pa-form-grid .field { margin: 0; }
+.pa-kv { display: grid; grid-template-columns: max-content 1fr; gap: 6px 18px; font-size: 0.9rem; margin: 0; }
+.pa-kv dt { color: var(--ink-muted); }
+.pa-kv dd { margin: 0; color: var(--navy); }
+.pa-placeholder { text-align: left; }
+.pa-placeholder h3 { margin-bottom: 8px; }
+.pa-placeholder p { margin: 0; color: var(--ink-soft); max-width: 70ch; line-height: 1.55; }
+.pa-legacy-links { margin: 30px 0 0; color: var(--ink-muted); font-size: 0.85rem; }
+.pa-legacy-links a { color: var(--azure-press); font-weight: 600; }
+
+@media (prefers-reduced-motion: reduce) { .pa-subtab, .pa-seg button { transition: none; } }

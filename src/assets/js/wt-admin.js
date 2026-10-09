@@ -10,6 +10,8 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 import { timelineHtml, fmtDate as dayDate } from './wt-commission-timeline.js';
 import { renderReviewQueue, countWaiting } from './wt-review-queue.js';
+import { renderApplications } from './wt-admin-applications.js';
+import { renderInvites, carryApplicationIntoForm } from './wt-admin-invites.js';
 const cfg = window.WT_SUPABASE || {};
 const supabase = createClient(cfg.url, cfg.anonKey, {
   auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
@@ -110,7 +112,7 @@ function renderOverview(d) {
 
   panel('overview').innerHTML = `
     <div class="adm-overview-grid">
-      ${card('Affiliates', t.affiliates)}
+      ${card('Partners', t.affiliates)}
       ${card('Referred signups', t.referrals)}
       ${card('Bookings', t.bookings)}
       ${card('Revenue owed', money(t.commission_liability))}
@@ -129,177 +131,31 @@ function renderOverview(d) {
       <h3>Top performers</h3>
       <div class="adm-wrap-scroll"><table class="adm-table">
         <thead><tr><th>Code</th><th>Name</th><th class="num">Clicks</th><th class="num">Signups</th><th class="num">Bookings</th><th class="num">Revenue</th></tr></thead>
-        <tbody>${rows || '<tr><td colspan="6">No affiliates yet.</td></tr>'}</tbody>
+        <tbody>${rows || '<tr><td colspan="6">No partners yet.</td></tr>'}</tbody>
       </table></div>
     </div>`;
 }
 
-// ── Applications ────────────────────────────────────────────────────
-// Step 1 of the funnel, sitting in front of Invites so the tabs read in
-// the order the work happens. These also appear on /admin-submissions
-// with every other contact form, but that page can't act on one — and
-// the action an application needs is two tabs away, not two pages away.
-const APP_STATE_LABEL = { new: 'Needs review', invited: 'Invited', joined: 'Joined', expired: 'Invite expired' };
-// Amber is reserved for "this one needs you". An already-invited
-// applicant is waiting on THEM, so it goes gray - both states were
-// amber at first and the two were indistinguishable in the row.
-const APP_STATE_PILL  = { new: 'pending', invited: 'used', joined: 'approved', expired: 'expired' };
-
+// ── Applications and Invites ────────────────────────────────────────
+// The code moved to wt-admin-applications.js and wt-admin-invites.js, which the
+// CRM → Applications and CRM → Invites pages run too. This page still hosts
+// them as tabs so nothing that was reachable here is lost.
 async function loadApplications() {
-  panel('applications').innerHTML = `
-    <div class="adm-card">
-      <h3>Partner applications</h3>
-      <p class="acct-sub">Creators who applied through the site. "Invite" carries their name and email into the invite form — check the rates, then create it.</p>
-      <div id="app-list" class="adm-wrap-scroll">Loading…</div>
-    </div>`;
-  renderApplications();
+  await renderApplications(panel('applications'), { call: callAdmin, onInvite: inviteFromApplication });
 }
 
-async function renderApplications() {
-  const list = $('#app-list');
-  list.textContent = 'Loading…';
-  const r = await callAdmin('list_applications');
-  if (!r.ok) { list.innerHTML = '<p class="acct-sub">Could not load applications (' + esc(r.error || 'error') + ').</p>'; return; }
-
-  const rows = (r.rows || []).map((a) => `
-    <tr>
-      <td>${esc(a.name || '—')}</td>
-      <td>${esc(a.email || '—')}</td>
-      <td>${a.affiliate_code ? esc(a.affiliate_code) : esc(a.company || '—')}</td>
-      <td><span class="adm-pill ${APP_STATE_PILL[a.state] || 'pending'}">${esc(APP_STATE_LABEL[a.state] || a.state)}</span></td>
-      <td>${date(a.created_at)}</td>
-      <td>${a.message ? `<button class="btn btn-ghost btn-xs" data-app-note="${esc(a.id)}">Read</button>` : ''}</td>
-      <td>${a.email && a.state !== 'joined'
-        ? `<button class="btn btn-primary btn-xs" data-app-invite="${esc(a.id)}">${a.state === 'new' ? 'Invite' : 'Invite again'}</button>`
-        : ''}</td>
-    </tr>
-    ${a.message ? `<tr class="app-note" id="app-note-${esc(a.id)}" hidden><td colspan="7"><p class="acct-sub" style="white-space:pre-wrap; margin:0;">${esc(a.message)}</p></td></tr>` : ''}`).join('');
-
-  list.innerHTML = `<table class="adm-table">
-    <thead><tr><th>Name</th><th>Email</th><th>Company / Code</th><th>State</th><th>Applied</th><th></th><th></th></tr></thead>
-    <tbody>${rows || '<tr><td colspan="7">No applications yet.</td></tr>'}</tbody></table>`;
-
-  list.querySelectorAll('[data-app-note]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const row = $('#app-note-' + btn.dataset.appNote);
-      if (row) { row.hidden = !row.hidden; btn.textContent = row.hidden ? 'Read' : 'Hide'; }
-    });
-  });
-
-  list.querySelectorAll('[data-app-invite]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const app = (r.rows || []).find((x) => x.id === btn.dataset.appInvite);
-      if (app) inviteFromApplication(app);
-    });
-  });
-}
-
-// Hand the applicant over to the invite form rather than minting an
-// invite straight from here: the rates are a per-creator negotiation and
-// must not default themselves away behind a single click.
+// Build the invites panel BEFORE switching: switchTab fires its loader without
+// awaiting it, so switching first would leave us reaching for a form that isn't
+// in the DOM yet. Marking it loaded keeps switchTab from rendering it a second
+// time on top of the values we just filled in.
 async function inviteFromApplication(app) {
-  // Build the panel BEFORE switching: switchTab fires its loader without
-  // awaiting it, so switching first would leave us reaching for a form
-  // that isn't in the DOM yet. Marking it loaded keeps switchTab from
-  // rendering it a second time on top of the values we just filled in.
   if (!loaded.invites) { loaded.invites = true; await loadInvites(); }
   switchTab('invites');
-
-  const form = $('#inv-form');
-  if (!form) return;
-  if (form.elements.email) form.elements.email.value = app.email || '';
-  if (form.elements.intended_name) form.elements.intended_name.value = app.name || '';
-  // `source` is a fixed select of named programs, so it's left alone —
-  // assigning a value it has no option for sets it to nothing at all.
-  form.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  (form.elements.revenue_share_percent || form.elements.email)?.focus();
-  msg('success', 'Carried ' + (app.name || app.email) + ' over — check the revenue share, then create the invite.');
+  carryApplicationIntoForm(panel('invites'), app, msg);
 }
 
-// ── Invites ─────────────────────────────────────────────────────────
 async function loadInvites() {
-  panel('invites').innerHTML = `
-    <div class="adm-card">
-      <h3>Create invite</h3>
-      <form id="inv-form">
-        <div class="adm-form-row">
-          <div class="field"><label>Email</label><input name="email" type="email" placeholder="creator@example.com" /></div>
-          <div class="field"><label>Name</label><input name="intended_name" type="text" placeholder="Jane Traveler" /></div>
-          <div class="field"><label>Affiliate Source</label>
-            <select name="source">
-              <option value="Direct">Direct</option>
-              <option value="ABC Affiliate Program">ABC Affiliate Program</option>
-              <option value="XYZ Affiliate Program">XYZ Affiliate Program</option>
-            </select>
-          </div>
-        </div>
-        <p class="adm-subhead">Terms</p>
-        <div class="adm-form-row">
-          <div class="field"><label>Revenue Share %</label><input name="revenue_share_percent" type="number" step="1" min="0" max="100" value="30" /></div>
-          <div class="field"><label>Revenue Duration (months)</label><input name="commission_duration_months" type="number" value="36" min="1" /></div>
-          <div class="field"><label>Expires (days)</label><input name="expires_days" type="number" value="30" min="1" /></div>
-        </div>
-        <p class="hint" style="margin:0 0 14px;">Revenue share is their cut of the revenue WhereTo earns on a booking, not of what the traveler pays. Whole number, so 30 means 30%.</p>
-        <div class="adm-form-row" style="justify-content:flex-end;">
-          <button type="submit" class="btn btn-primary btn-xs">Create invite</button>
-        </div>
-      </form>
-      <div id="inv-result"></div>
-    </div>
-    <div class="adm-card">
-      <h3>Invites</h3>
-      <div id="inv-list" class="adm-wrap-scroll">Loading…</div>
-    </div>`;
-
-  $('#inv-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const fd = new FormData(e.target);
-    const r = await callAdmin('create_invite', {
-      email: fd.get('email'), intended_name: fd.get('intended_name'), source: fd.get('source'),
-      commission_duration_months: fd.get('commission_duration_months'), expires_days: fd.get('expires_days'),
-      revenue_share_percent: fd.get('revenue_share_percent'),
-    });
-    if (!r.ok) { msg('error', 'Create failed: ' + r.error); return; }
-    const link = SITE + '/AffiliateSignUp/?invite=' + r.token;
-    // The link is still shown once whether or not it was emailed: an
-    // invite minted without an address has to be handed over some other
-    // way, and even an emailed one is worth having on screen if the
-    // recipient says it never arrived.
-    $('#inv-result').innerHTML = `
-      <div class="adm-token-box">
-        <strong>${r.emailed ? 'Invite emailed. Link (shown once):' : 'Invite link (copy now — shown once, no email address given):'}</strong><br>
-        <a data-copy>${esc(link)}</a>
-      </div>`;
-    const a = $('#inv-result a[data-copy]');
-    a.addEventListener('click', async () => { try { await navigator.clipboard.writeText(link); a.textContent = 'Copied!'; setTimeout(() => a.textContent = link, 1200); } catch (_e) {} });
-    e.target.reset();
-    renderInviteList();
-  });
-
-  renderInviteList();
-}
-
-async function renderInviteList() {
-  const r = await callAdmin('list_invites');
-  const rows = (r.invites || []).map((i) => `
-    <tr>
-      <td>${esc(i.email || '—')}</td><td>${esc(i.intended_name || '—')}</td>
-      <td>${i.commission_rate == null ? 'default' : pct(i.commission_rate)}</td>
-      <td>${date(i.expires_at)}</td>
-      <td><span class="adm-pill ${i.state}">${i.state}</span></td>
-      <td>${i.state === 'pending' ? `<button class="btn btn-ghost btn-xs" data-revoke="${i.id}">Revoke</button>` : ''}</td>
-    </tr>`).join('');
-  $('#inv-list').innerHTML = `<table class="adm-table">
-    <thead><tr><th>Email</th><th>Name</th><th>Rev share</th><th>Expires</th><th>State</th><th></th></tr></thead>
-    <tbody>${rows || '<tr><td colspan="6">No invites yet.</td></tr>'}</tbody></table>`;
-  $('#inv-list').querySelectorAll('[data-revoke]').forEach((b) => {
-    b.addEventListener('click', async () => {
-      if (!confirm('Revoke this invite?')) return;
-      const r2 = await callAdmin('revoke_invite', { id: b.dataset.revoke });
-      if (!r2.ok) { msg('error', 'Revoke failed: ' + r2.error); return; }
-      msg('success', 'Invite revoked.'); renderInviteList();
-    });
-  });
+  await renderInvites(panel('invites'), { call: callAdmin, notify: msg, site: SITE });
 }
 
 // ── Affiliates ──────────────────────────────────────────────────────
@@ -310,7 +166,7 @@ const DEFAULT_COMMISSIONS = {
 const affExpanded = new Set();
 
 async function loadAffiliates() {
-  panel('affiliates').innerHTML = `<div class="adm-card"><h3>Affiliates</h3><div id="aff-list" class="adm-wrap-scroll">Loading…</div></div>`;
+  panel('affiliates').innerHTML = `<div class="adm-card"><h3>Partners</h3><div id="aff-list" class="adm-wrap-scroll">Loading…</div></div>`;
   const r = await callAdmin('list_affiliates');
   affiliateCache = r.affiliates || [];
   renderAffiliatesTable();
@@ -369,7 +225,7 @@ function affEditorHtml(a) {
     <div class="adm-form-row">
       <div class="field"><label>Custom link (vanity)</label><input data-f="vanity_slug" value="${esc(a.vanity_slug || '')}" placeholder="(none)" /></div>
       <div class="field"><label>Status</label><select data-f="status">${['active', 'pending', 'suspended', 'terminated'].map((s) => opt(s, a.status)).join('')}</select></div>
-      <div class="field"><label>Affiliate Source</label><select data-f="source">${srcList.map((s) => opt(s, srcCurrent)).join('')}</select></div>
+      <div class="field"><label>Partner Source</label><select data-f="source">${srcList.map((s) => opt(s, srcCurrent)).join('')}</select></div>
     </div>
     <p class="adm-subhead">Revenue</p>
     ${commRow('flight', 'Flight Revenue')}
@@ -397,7 +253,7 @@ async function saveAffiliate(id) {
     commissions: { flight: cat('flight'), hotel: cat('hotel'), car: cat('car'), insurance: cat('insurance') },
   });
   if (!r.ok) { msg('error', 'Save failed: ' + r.error); return; }
-  msg('success', 'Affiliate updated.');
+  msg('success', 'Partner updated.');
   const idx = affiliateCache.findIndex((x) => x.id === id);
   if (idx >= 0 && r.affiliate) {
     affiliateCache[idx] = {
@@ -443,7 +299,7 @@ const COMMISSION_STATUSES = ['none', 'pending', 'approved', 'paid', 'reversed', 
 const COM_COLS = [
   { key: 'booking',    label: 'Booking',        val: (c) => (c.reference || c.id || '').toLowerCase() },
   { key: 'kind',       label: 'Type',           val: (c) => c.booking_kind || '' },
-  { key: 'affiliate',  label: 'Affiliate',      val: (c) => (affName(c) || '~~~').toLowerCase() },
+  { key: 'affiliate',  label: 'Partner',        val: (c) => (affName(c) || '~~~').toLowerCase() },
   { key: 'amount',     label: 'Booking amount', num: true, val: (c) => Number(c.booking_total || 0) },
   { key: 'commission', label: 'Revenue',        num: true, val: (c) => Number(c.commission_amount || 0) },
   { key: 'status',     label: 'Status',         val: (c) => c.commission_status || '' },
@@ -471,11 +327,11 @@ async function loadCommissions() {
             <option value="reversed">Reversed</option>
           </select>
         </div>
-        <div class="field"><label>Affiliate</label>
+        <div class="field"><label>Partner</label>
           <select id="com-assigned">
             <option value="">All</option>
-            <option value="assigned">Affiliate assigned</option>
-            <option value="none">No affiliate</option>
+            <option value="assigned">Partner assigned</option>
+            <option value="none">No partner</option>
           </select>
         </div>
       </div>
@@ -549,7 +405,7 @@ function renderCommissionsTable() {
     if (comExpanded.has(c.id)) {
       const aff = c.affiliates;
       const commLine = (aff && aff.commissions)
-        ? `<br><span style="display:inline-block;margin-top:8px;">Affiliate revenue — ${COMMISSION_CATS.map(([k, l]) => `${l}: <strong>${rateLabel(aff.commissions[k])}</strong>`).join(' &nbsp;·&nbsp; ')} &nbsp;·&nbsp; Duration: <strong>${aff.commission_duration_months || 36} months</strong>${aff.source ? ` &nbsp;·&nbsp; Source: <strong>${esc(aff.source)}</strong>` : ''}</span>`
+        ? `<br><span style="display:inline-block;margin-top:8px;">Partner revenue — ${COMMISSION_CATS.map(([k, l]) => `${l}: <strong>${rateLabel(aff.commissions[k])}</strong>`).join(' &nbsp;·&nbsp; ')} &nbsp;·&nbsp; Duration: <strong>${aff.commission_duration_months || 36} months</strong>${aff.source ? ` &nbsp;·&nbsp; Source: <strong>${esc(aff.source)}</strong>` : ''}</span>`
         : '';
       detail = `<tr class="adm-detail"><td colspan="7">
         <div style="max-width:560px;margin:6px 0 10px;">${timelineHtml(c)}</div>
@@ -595,10 +451,10 @@ function renderCommissionsTable() {
   $('#com-list').querySelectorAll('[data-assign]').forEach((b) => {
     b.addEventListener('click', async () => {
       const sel = $(`[data-assign-sel="${b.dataset.assign}"]`);
-      if (!sel || !sel.value) { msg('error', 'Pick an affiliate first.'); return; }
+      if (!sel || !sel.value) { msg('error', 'Pick a partner first.'); return; }
       const r2 = await callAdmin('assign_affiliate', { commission_id: b.dataset.assign, affiliate_id: sel.value });
       if (!r2.ok) { msg('error', 'Assign failed: ' + r2.error); return; }
-      msg('success', 'Affiliate assigned + revenue calculated.');
+      msg('success', 'Partner assigned + revenue calculated.');
       fetchCommissions();
     });
   });
@@ -623,9 +479,9 @@ async function loadPayouts() {
   panel('payouts').innerHTML = `
     <div class="adm-card">
       <h3>Build draft payout</h3>
-      <p class="acct-sub">Snapshots an affiliate's <strong>approved</strong> revenue into a draft batch. No money moves — execution is deferred.</p>
+      <p class="acct-sub">Snapshots a partner's <strong>approved</strong> revenue into a draft batch. No money moves — execution is deferred.</p>
       <div class="adm-form-row">
-        <div class="field"><label>Affiliate</label><select id="pay-aff" style="max-width:260px;">${opts || '<option>(none)</option>'}</select></div>
+        <div class="field"><label>Partner</label><select id="pay-aff" style="max-width:260px;">${opts || '<option>(none)</option>'}</select></div>
         <button id="pay-build" class="btn btn-primary btn-xs">Build draft</button>
       </div>
     </div>
@@ -650,7 +506,7 @@ async function renderPayouts() {
       <td><span class="adm-pill ${p.status}">${p.status}</span></td>
       <td>${date(p.created_at)}</td></tr>`).join('');
   $('#pay-list').innerHTML = `<table class="adm-table">
-    <thead><tr><th>Affiliate</th><th>Period</th><th class="num">Total</th><th>Status</th><th>Created</th></tr></thead>
+    <thead><tr><th>Partner</th><th>Period</th><th class="num">Total</th><th>Status</th><th>Created</th></tr></thead>
     <tbody>${rows || '<tr><td colspan="5">No payout batches yet.</td></tr>'}</tbody></table>`;
 }
 

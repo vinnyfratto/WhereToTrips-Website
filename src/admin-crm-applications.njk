@@ -1,0 +1,27 @@
+---
+layout: layouts/admin.njk
+permalink: /admin-crm-applications/index.html
+title: "Applications — WhereTo"
+description: "Partner applications."
+eleventyExcludeFromCollections: true
+subnav: crm
+subnavActive: applications
+---
+<main id="wt-admin-page">
+
+  {% include "partials/admin-gate.njk" %}
+
+  <div id="adm-root" class="dash" style="display:none;">
+    <div class="dash-head">
+      <div>
+        <p class="eyebrow">CRM</p>
+        <h1>Applications</h1>
+      </div>
+    </div>
+
+    <div id="adm-msg" class="alert" role="status" aria-live="polite"></div>
+
+    <div id="pa-host"></div>
+  </div>
+</main>
+<script type="module" src="/assets/js/wt-admin-crm-applications.js?v={{ buildTime }}"></script>

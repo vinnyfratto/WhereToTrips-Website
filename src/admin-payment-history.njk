@@ -1,0 +1,31 @@
+---
+layout: layouts/admin.njk
+permalink: /admin-payment-history/index.html
+title: "Payment History — WhereTo"
+description: "Payment History."
+eleventyExcludeFromCollections: true
+subnav: partner
+subnavActive: payments
+---
+<main id="wt-admin-page">
+
+  {% include "partials/admin-gate.njk" %}
+
+  <div id="adm-root" class="dash pa-wide" style="display:none;">
+    <div class="dash-head">
+      <div>
+        <p class="eyebrow">Partner Admin</p>
+        <h1>Payment History</h1>
+        <p class="pa-lede">Every payment made to a partner.</p>
+      </div>
+    </div>
+
+    <div id="adm-msg" class="alert" role="status" aria-live="polite"></div>
+
+    <div class="adm-card pa-placeholder">
+      <h3>Being rebuilt</h3>
+      <p>This page is being rebuilt. The earlier version is still in <a class="pa-link" href="/admin-partner-legacy/#payouts">Legacy Partner Admin</a>.</p>
+    </div>
+  </div>
+</main>
+<script type="module" src="/assets/js/wt-admin-page.js?v={{ buildTime }}"></script>

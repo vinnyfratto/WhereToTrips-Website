@@ -1,0 +1,31 @@
+---
+layout: layouts/admin.njk
+permalink: /admin-partners/index.html
+title: "Partner Details — WhereTo"
+description: "Partner Details."
+eleventyExcludeFromCollections: true
+subnav: partner
+subnavActive: details
+---
+<main id="wt-admin-page">
+
+  {% include "partials/admin-gate.njk" %}
+
+  <div id="adm-root" class="dash pa-wide" style="display:none;">
+    <div class="dash-head">
+      <div>
+        <p class="eyebrow">Partner Admin</p>
+        <h1>Partner Details</h1>
+        <p class="pa-lede">One line per partner. Open a name for that partner's dashboard.</p>
+      </div>
+    </div>
+
+    <div id="adm-msg" class="alert" role="status" aria-live="polite"></div>
+
+    <div class="adm-card pa-placeholder">
+      <h3>Being rebuilt</h3>
+      <p>This page is being rebuilt. The earlier version is still in <a class="pa-link" href="/admin-partner-legacy/#affiliates">Legacy Partner Admin</a>.</p>
+    </div>
+  </div>
+</main>
+<script type="module" src="/assets/js/wt-admin-page.js?v={{ buildTime }}"></script>

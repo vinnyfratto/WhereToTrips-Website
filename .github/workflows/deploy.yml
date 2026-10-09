@@ -44,6 +44,10 @@ jobs:
           # Raises the GitHub API rate limit for the TechDocs doc fetch.
           GITHUB_TOKEN: ${{ github.token }}
 
+      # A menu link to a page that was not built is a dead end for the two admins.
+      - name: Check admin menus point at built pages
+        run: node scripts/check-admin-nav.mjs
+
       # Before deploy, while the OLD sitemap is still live to compare against.
       - name: List pages for IndexNow
         run: node scripts/indexnow.js diff _site/sitemap.xml indexnow-urls.json

@@ -4,47 +4,41 @@ permalink: /admin-affiliates/index.html
 title: "Partner Admin — WhereTo"
 description: "Internal partner program administration."
 eleventyExcludeFromCollections: true
+subnav: partner
+subnavActive: overview
 ---
+{#- The old page had seven tabs and the content-alert email deep-links to #content.
+    Those tabs have pages of their own now, so a bookmark or an old email lands
+    on the right one. The URL itself (/admin-affiliates/) stays the Partner Admin
+    home. Nothing was deleted: the old multi-tab page is at /admin-partner-legacy/. -#}
+<script>
+  (function () {
+    var go = {
+      applications: '/admin-crm-applications/', invites: '/admin-crm-invites/',
+      affiliates: '/admin-partners/', content: '/admin-review/',
+      commissions: '/admin-partner-legacy/#commissions', payouts: '/admin-partner-legacy/#payouts'
+    };
+    var to = go[location.hash.slice(1)];
+    if (to) location.replace(to);
+  })();
+</script>
 <main id="wt-admin-page">
 
-  <div id="adm-gate" class="gate-msg">Checking access…</div>
+  {% include "partials/admin-gate.njk" %}
 
-  <div id="adm-denied" class="acct" style="display:none;">
-    <div class="acct-card" style="text-align:center;">
-      <p class="eyebrow">Restricted</p>
-      <h1>Access denied</h1>
-      <p class="acct-sub">This area is for WhereTo program administrators only.</p>
-      <p><a class="btn btn-primary" href="/">Back to home</a></p>
-    </div>
-  </div>
-
-  <div id="adm-root" class="dash" style="display:none;">
+  <div id="adm-root" class="dash pa-wide" style="display:none;">
     <div class="dash-head">
       <div>
-        <p class="eyebrow">Internal · admin</p>
-        <h1>Partner admin</h1>
+        <p class="eyebrow">Partner Admin</p>
+        <h1>Overview</h1>
       </div>
-    </div>
-
-    <div class="adm-tabs" role="tablist">
-      <button class="adm-tab is-active" data-tab="overview">Overview</button>
-      <button class="adm-tab" data-tab="applications">Applications</button>
-      <button class="adm-tab" data-tab="invites">Invites</button>
-      <button class="adm-tab" data-tab="affiliates">Affiliates</button>
-      <button class="adm-tab" data-tab="content">Content</button>
-      <button class="adm-tab" data-tab="commissions">Revenue</button>
-      <button class="adm-tab" data-tab="payouts">Payouts</button>
     </div>
 
     <div id="adm-msg" class="alert" role="status" aria-live="polite"></div>
 
-    <section class="adm-panel" data-panel="overview"></section>
-    <section class="adm-panel" data-panel="applications" hidden></section>
-    <section class="adm-panel" data-panel="invites" hidden></section>
-    <section class="adm-panel" data-panel="affiliates" hidden></section>
-    <section class="adm-panel" data-panel="content" hidden></section>
-    <section class="adm-panel" data-panel="commissions" hidden></section>
-    <section class="adm-panel" data-panel="payouts" hidden></section>
+    <div id="pa-overview"></div>
+
+    <p class="pa-legacy-links">Looking for the earlier tabs? <a href="/admin-partner-legacy/">Legacy Partner Admin</a> still has the Revenue ledger and the Payout batches.</p>
   </div>
 </main>
-<script type="module" src="/assets/js/wt-admin.js?v={{ buildTime }}"></script>
+<script type="module" src="/assets/js/wt-admin-overview.js?v={{ buildTime }}"></script>

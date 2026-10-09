@@ -1,0 +1,13 @@
+{#- The tab strip under the admin header. The page's front matter names the strip
+    (`subnav`) and the active tab (`subnavActive`); the tabs live in
+    src/_data/adminSubnav.js. Badge slots are filled by wt-admin-nav.js. -#}
+{%- set strip = adminSubnav[subnav] -%}
+{%- if strip %}
+<nav class="pa-subnav" aria-label="{{ strip.label }}">
+  <div class="pa-subnav-in">
+    {%- for t in strip.tabs %}
+    <a class="pa-subtab{% if t.key == subnavActive %} is-active{% endif %}" href="{{ t.href }}"{% if t.key == subnavActive %} aria-current="page"{% endif %}>{{ t.label }}{% if t.badge %} <span class="adm-badge" data-badge="{{ t.badge }}" hidden></span>{% endif %}</a>
+    {%- endfor %}
+  </div>
+</nav>
+{%- endif %}

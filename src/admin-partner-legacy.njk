@@ -1,0 +1,45 @@
+---
+layout: layouts/admin.njk
+permalink: /admin-partner-legacy/index.html
+title: "Partner Admin (legacy) — WhereTo"
+description: "The earlier multi-tab Partner Admin page, kept so nothing is lost."
+eleventyExcludeFromCollections: true
+subnav: partner
+subnavActive: none
+---
+<main id="wt-admin-page">
+
+  {% include "partials/admin-gate.njk" %}
+
+  <div id="adm-root" class="dash" style="display:none;">
+    <div class="dash-head">
+      <div>
+        <p class="eyebrow">Partner Admin · legacy</p>
+        <h1>Partner admin (legacy)</h1>
+      </div>
+    </div>
+
+    <p class="pa-banner is-warn"><strong>Legacy view.</strong> Each of these tabs now has a page of its own under Partner Admin and CRM. This older page is kept so nothing that worked here is lost. The Revenue ledger and the Payout batches are only here for now.</p>
+
+    <div class="adm-tabs" role="tablist">
+      <button class="adm-tab is-active" data-tab="overview">Overview</button>
+      <button class="adm-tab" data-tab="applications">Applications</button>
+      <button class="adm-tab" data-tab="invites">Invites</button>
+      <button class="adm-tab" data-tab="affiliates">Partners</button>
+      <button class="adm-tab" data-tab="content">Content</button>
+      <button class="adm-tab" data-tab="commissions">Revenue</button>
+      <button class="adm-tab" data-tab="payouts">Payouts</button>
+    </div>
+
+    <div id="adm-msg" class="alert" role="status" aria-live="polite"></div>
+
+    <section class="adm-panel" data-panel="overview"></section>
+    <section class="adm-panel" data-panel="applications" hidden></section>
+    <section class="adm-panel" data-panel="invites" hidden></section>
+    <section class="adm-panel" data-panel="affiliates" hidden></section>
+    <section class="adm-panel" data-panel="content" hidden></section>
+    <section class="adm-panel" data-panel="commissions" hidden></section>
+    <section class="adm-panel" data-panel="payouts" hidden></section>
+  </div>
+</main>
+<script type="module" src="/assets/js/wt-admin.js?v={{ buildTime }}"></script>

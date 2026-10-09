@@ -1,0 +1,28 @@
+---
+layout: layouts/admin.njk
+permalink: /admin-review/index.html
+title: "Review Queue — WhereTo"
+description: "Review the content partners submit."
+eleventyExcludeFromCollections: true
+subnav: partner
+subnavActive: review
+---
+<main id="wt-admin-page">
+
+  {% include "partials/admin-gate.njk" %}
+
+  <div id="adm-root" class="dash pa-wide" style="display:none;">
+    <div class="dash-head">
+      <div>
+        <p class="eyebrow">Partner Admin</p>
+        <h1>Review Queue</h1>
+        <p class="pa-lede">Every piece of content partners submit, and what was decided.</p>
+      </div>
+    </div>
+
+    <div id="adm-msg" class="alert" role="status" aria-live="polite"></div>
+
+    <div id="pa-host"></div>
+  </div>
+</main>
+<script type="module" src="/assets/js/wt-admin-review.js?v={{ buildTime }}"></script>

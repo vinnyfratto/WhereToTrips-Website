@@ -55,6 +55,7 @@
   <link rel="stylesheet" href="/assets/styles.css?v={{ buildTime }}" />
   <link rel="stylesheet" href="/assets/account.css?v={{ buildTime }}" />
   <link rel="stylesheet" href="/assets/admin-shell.css?v={{ buildTime }}" />
+  <link rel="stylesheet" href="/assets/admin-partners.css?v={{ buildTime }}" />
   {#- Public Supabase config (anon key — RLS-gated, safe to expose). Consumed by /assets/js/wt-partner-*.js -#}
   <script>window.WT_SUPABASE = { url: "{{ supabase.url }}", anonKey: "{{ supabase.anonKey }}" };</script>
   <script>
@@ -69,6 +70,8 @@
 <body>
 {#- The one admin header, built by wt-admin-nav.js (nav lives there) -#}
 <script src="/assets/js/wt-admin-nav.js?v={{ buildTime }}"></script>
+{#- The tab strip under it, when the page names one (subnav / subnavActive front matter) -#}
+{% if subnav %}{% include "partials/admin-subnav.njk" %}{% endif %}
 
 <a id="top"></a>
 {{ content | safe }}
