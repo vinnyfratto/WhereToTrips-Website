@@ -12,7 +12,7 @@
 //
 //  renderDataSettings(host, { onSaved })
 // ───────────────────────────────────────────────────────────────────
-import { callPA, esc, fmtDate, notify, num } from './wt-padmin-core.js';
+import { callPA, esc, fmtDate, fmtDateTime, notify, num } from './wt-padmin-core.js';
 
 const plural = (n, one, many = one + 's') => `${num(n)} ${n === 1 ? one : many}`;
 
@@ -27,6 +27,15 @@ function leftOutLine(s) {
   const listed = c.ignored_users - c.demo_users;
   const bits = [plural(c.demo_users, 'demo traveler'), plural(Math.max(listed, 0), 'listed account'), plural(c.test_partners, 'test partner')];
   return `Left out of live figures right now: ${bits.join(', ')}.`;
+}
+
+/** One sentence on whether the app's own install record is working. */
+function installLine(i) {
+  if (!i) return 'The install record could not be read.';
+  if (!i.total) return 'Nothing has been recorded yet. App builds from before version 1.0.116 do not report installs, so this fills in as people install or update to the new build.';
+  const latest = i.latest_at ? ` Latest: ${fmtDateTime(i.latest_at)}${i.latest_version ? ` (version ${i.latest_version})` : ''}.` : '';
+  const bad = i.unmatched_codes ? ` ${plural(i.unmatched_codes, 'install')} carried a partner code that matched nobody.` : '';
+  return `${num(i.total)} recorded (Android ${num(i.android)}, iOS ${num(i.ios)}), ${num(i.linked_to_user)} tied to an account, ${num(i.with_partner)} credited to a partner.${latest}${bad}`;
 }
 
 export async function renderDataSettings(host, { onSaved }) {
@@ -86,7 +95,10 @@ export async function renderDataSettings(host, { onSaved }) {
           <button type="submit" class="btn btn-primary btn-xs" id="ds-save">Save settings</button>
           <button type="button" class="btn btn-ghost btn-xs" id="ds-reset">Undo changes</button>
         </div>
-      </form>`;
+      </form>
+
+      <h4 class="pa-settings-h">Install record</h4>
+      <p class="hint pa-settings-p">The app tells us itself when it is installed, so each install is counted once, tied to an account after sign-in, and credited to the partner whose Play Store link brought it. That last part is Android only: the App Store passes nothing along, so an iPhone is credited only when the person enters a partner code. ${esc(installLine(s.installs))}</p>`;
 
     $body.querySelector('#ds-reset').addEventListener('click', () => draw(s));
     $body.querySelector('#ds-form').addEventListener('submit', async (e) => {

@@ -29,9 +29,13 @@ const TILES = [
     key: 'downloads', label: 'Total Downloads',
     value: (s) => (s.downloads === null || s.downloads === undefined ? dash('Analytics could not be reached') : num(s.downloads)),
     sub: (s) => (s.downloads === null || s.downloads === undefined ? '' : platformLine(s)),
-    tip: (s) => (s.live
-      ? 'First opens of the app on each store, counted from that store\'s launch day. Phones used for testing are included.'
-      : 'Every first open of the app that analytics has recorded, partner-referred or not, including before launch.'),
+    tip: (s) => {
+      const base = s.live
+        ? 'First opens of the store app on each store, counted from that store\'s launch day. Development builds are left out; phones running the store version for testing are included.'
+        : 'Every first open of the app that analytics has recorded, partner-referred or not, including before launch.';
+      const rec = s.downloads_recorded;
+      return rec && rec.total > 0 ? `${base} The app's own install record, which leaves out test accounts, has ${num(rec.total)}.` : base;
+    },
   },
   {
     key: 'registered', label: 'Total Registered Users',
