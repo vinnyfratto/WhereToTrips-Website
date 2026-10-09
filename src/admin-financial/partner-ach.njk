@@ -11,7 +11,7 @@ subnavActive: ach
 
   {% include "partials/admin-gate.njk" %}
 
-  <div id="adm-root" class="dash" style="display:none;">
+  <div id="adm-root" class="dash pa-wide" style="display:none;">
     <div class="dash-head">
       <div>
         <p class="eyebrow">Financial Tracking</p>
@@ -23,8 +23,12 @@ subnavActive: ach
 
     <div class="adm-card pa-placeholder">
       <h3>Not built yet</h3>
-      <p>This page is waiting on its walkthrough. Completed payments will feed Payment History.</p>
+      <p>This page is waiting on its walkthrough. Completed payments will feed Payment History. Until then, the one thing it does is mark a payout paid once its ACH has gone out.</p>
     </div>
+
+    <h2 class="adm-section-h" style="margin-top:0;">Payouts waiting to be marked paid</h2>
+    <p class="pa-lede" style="margin:0 0 14px;">A payout is built on the 1st and 15th for each partner with $50.00 or more approved. Mark one paid only after its ACH has actually gone out. Its bookings then show as Paid, and it appears in Payment History.</p>
+    <div id="ach-table"></div>
   </div>
 </main>
-<script type="module" src="/assets/js/wt-admin-page.js?v={{ buildTime }}"></script>
+<script type="module" src="/assets/js/wt-admin-ach.js?v={{ buildTime }}"></script>

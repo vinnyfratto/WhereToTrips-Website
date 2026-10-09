@@ -2,7 +2,7 @@
 layout: layouts/admin.njk
 permalink: /admin-payment-history/index.html
 title: "Payment History — WhereTo"
-description: "Payment History."
+description: "Every payment made to a partner."
 eleventyExcludeFromCollections: true
 subnav: partner
 subnavActive: payments
@@ -22,10 +22,24 @@ subnavActive: payments
 
     <div id="adm-msg" class="alert" role="status" aria-live="polite"></div>
 
-    <div class="adm-card pa-placeholder">
-      <h3>Being rebuilt</h3>
-      <p>This page is being rebuilt. The earlier version is still in <a class="pa-link" href="/admin-partner-legacy/#payouts">Legacy Partner Admin</a>.</p>
+    <div class="pa-controls">
+      <div class="field">
+        <label for="ph-q">Search by name</label>
+        <input id="ph-q" type="search" placeholder="Partner name, ID or code" autocomplete="off" />
+      </div>
+      <div class="field">
+        <label for="ph-from">From</label>
+        <input id="ph-from" type="date" />
+      </div>
+      <div class="field">
+        <label for="ph-to">To</label>
+        <input id="ph-to" type="date" />
+      </div>
+      <span class="pa-spacer"></span>
+      <span class="pa-count" id="ph-count" aria-live="polite"></span>
     </div>
+
+    <div id="ph-table"></div>
   </div>
 </main>
-<script type="module" src="/assets/js/wt-admin-page.js?v={{ buildTime }}"></script>
+<script type="module" src="/assets/js/wt-admin-payment-history.js?v={{ buildTime }}"></script>
