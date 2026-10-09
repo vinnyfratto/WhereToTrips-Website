@@ -65,6 +65,14 @@ function timelineHtml(steps) {
     </li>`).join('')}</ol>`;
 }
 
+// Submit Content, with this piece's title, type and platform (and venue, for an event) already filled in.
+// Keeping the title is what lets us connect the new version to this one.
+function resubmitHref(r) {
+  const q = new URLSearchParams({ resubmit: '1', title: r.title || '', kind: r.content_type || '', platform: r.platform || '' });
+  if (r.kind === 'event') { q.set('mode', 'event'); if (r.venue) q.set('venue', r.venue); }
+  return '/partner-dashboard/content/?' + q.toString();
+}
+
 function detailHtml(r) {
   const facts = [
     ['Submitted', fmtDate(r.submitted)],
@@ -86,7 +94,7 @@ function detailHtml(r) {
     ? `<div class="pp-note"><b>A note from us</b>${esc(r.note_to_partner)}</div>` : '';
 
   const next = r.status === 'revisions_requested'
-    ? '<p class="pp-hint" style="margin-top:12px;">Make the change, then <a href="/partner-dashboard/content/">submit it again</a>.</p>'
+    ? `<p class="pp-hint" style="margin-top:12px;">Make the change, then <a href="${esc(resubmitHref(r))}">submit it again</a>. We fill in the details for you; keep the title the same.</p>`
     : r.status === 'declined'
       ? '<p class="pp-hint" style="margin-top:12px;">You\'re welcome to <a href="/partner-dashboard/content/">submit something new</a>.</p>' : '';
 

@@ -63,7 +63,7 @@ const decidedCol = (label) => ({ key: 'decided_at', label, kind: 'date', nowrap:
 const COLUMNS = {
   pending: [
     { key: 'partner_name', label: 'Partner', render: nameCol.render },
-    { key: 'title', label: 'Title', render: (r) => esc(r.title || '—') + (r.resubmitted_at ? ' ' + pill('Resubmitted', 'blue') : '') },
+    { key: 'title', label: 'Title', render: (r) => esc(r.title || '—') + (r.resubmitted ? ' ' + pill('Resubmitted', 'blue') : '') },
     { key: 'platform', label: 'Platform' },
     { key: 'kind', label: 'Kind' },
     { key: 'file', label: 'File', sortable: false, render: (r) => assetCell(r, true) },

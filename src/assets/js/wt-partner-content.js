@@ -158,11 +158,36 @@ function wireDrop() {
   $('file-remove').addEventListener('click', clearFile);
 }
 
+// "Submit it again" on My Submissions lands here with the earlier piece's details in the address.
+// Fill the form so the new version carries the same title (that is how we connect the two).
+function prefillResubmit() {
+  const q = new URLSearchParams(location.search);
+  if (q.get('resubmit') !== '1') return;
+  const title = (q.get('title') || '').slice(0, 200);
+  if (q.get('mode') === 'event') { mode = 'event'; drawMode(); }
+  if (title) $('f-title').value = title;
+  const pick = (id, label) => {
+    const opt = label && Array.from($(id).options).find((o) => o.text === label);
+    if (opt) $(id).value = opt.value;
+  };
+  pick('f-kind', q.get('kind'));
+  pick('f-platform', q.get('platform'));
+  if (mode === 'event' && q.get('venue')) $('f-venue').value = q.get('venue').slice(0, 300);
+  const hint = $('resubmit-hint');
+  if (hint) {
+    hint.textContent = title
+      ? 'You are sending a new version of "' + title + '". Keep the title the same so we can connect it to your earlier submission.'
+      : 'You are sending a new version of an earlier submission.';
+    hint.hidden = false;
+  }
+}
+
 async function init() {
   const j = await portal('me');
   if (!portalGate(j)) return;
   drawMode();
   wireDrop();
+  prefillResubmit();
   $('form').addEventListener('submit', (e) => { e.preventDefault(); send(false); });
   $('draft').addEventListener('click', () => send(true));
   $('again').addEventListener('click', () => {
