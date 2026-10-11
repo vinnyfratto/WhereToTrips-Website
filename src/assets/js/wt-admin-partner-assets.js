@@ -200,6 +200,21 @@ async function loadVideo(src, cors) {
   return v;
 }
 
+/** A JPEG of an image the admin chose to be the thumbnail (any image the browser can read). */
+async function thumbFromImage(file) {
+  try {
+    const bmp = await createImageBitmap(file);
+    const k = Math.min(1, THUMB_SIDE / Math.max(bmp.width, bmp.height));
+    const c = document.createElement('canvas');
+    c.width = Math.max(1, Math.round(bmp.width * k)); c.height = Math.max(1, Math.round(bmp.height * k));
+    const g = c.getContext('2d');
+    g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height);   // a PNG's clear parts would turn black in a JPEG
+    g.drawImage(bmp, 0, 0, c.width, c.height);
+    bmp.close();
+    return await new Promise((ok) => c.toBlob(ok, 'image/jpeg', 0.82));
+  } catch (_e) { return null; }
+}
+
 async function thumbFromFile(file) {
   if (!String(typeOf(file)).startsWith('video/')) return null;
   const url = URL.createObjectURL(file);
@@ -238,6 +253,8 @@ function openEditor(asset) {
         <textarea id="al-desc" rows="3" maxlength="2000">${esc(editing ? asset.description || '' : '')}</textarea></label>
       <label class="field"><span>${editing ? 'Replace the file' : 'File'} <span class="hint">${editing ? `(currently ${esc(asset.file_name)}; leave empty to keep it)` : '(image, PDF, video, audio, ZIP, Office document; up to 100 MB)'}</span></span>
         <input id="al-file" type="file" /></label>
+      ${editing && asset.kind === 'image' ? '' : `<label class="field"><span>Thumbnail image <span class="hint">(optional; for a video or PDF. A video's thumbnail is made from its first seconds when you add it; choose an image to use your own${editing && asset.has_preview ? '. It replaces the current thumbnail' : ''})</span></span>
+        <input id="al-thumb" type="file" accept="image/*" /></label>`}
       ${editing && asset.kind === 'video' && !asset.has_preview ? `<p class="pa-muted pa-small" style="margin:-4px 0 12px;">This video has no thumbnail yet, so partners see the word Video.
         <button type="button" class="pa-link-btn" id="al-mkthumb">Make a thumbnail from the stored video</button></p>` : ''}
       <label class="field"><span>Status</span>
@@ -276,6 +293,12 @@ async function save(asset, { storedThumb = false } = {}) {
         return;
       }
     }
+    const chosen = $('#al-thumb') ? $('#al-thumb').files[0] || null : null;
+    if (chosen) {
+      btn.textContent = 'Making thumbnail…';
+      preview = await uploadThumb(await thumbFromImage(chosen));
+      if (!preview) { notify('error', 'Could not use that image as a thumbnail. Choose a JPG or PNG.'); return; }
+    }
     if (file) {
       btn.textContent = 'Uploading…';
       const type = typeOf(file);
@@ -284,8 +307,10 @@ async function save(asset, { storedThumb = false } = {}) {
       const { error } = await supabase.storage.from(BUCKET).uploadToSignedUrl(t.path, t.token, file, { contentType: type });
       if (error) { notify('error', 'The upload did not finish. Try again.'); return; }
       upload = { path: t.path, name: file.name };
-      btn.textContent = 'Making thumbnail…';
-      preview = await uploadThumb(await thumbFromFile(file));   // null for anything but a video
+      if (!preview) {
+        btn.textContent = 'Making thumbnail…';
+        preview = await uploadThumb(await thumbFromFile(file));   // null for anything but a video
+      }
     }
     btn.textContent = 'Saving…';
     const r = await callPA('asset_save', {
@@ -299,6 +324,9 @@ async function save(asset, { storedThumb = false } = {}) {
     });
     if (!r.ok) { notify('error', r.message || r.error || 'Could not save the asset'); return; }
     notify('success', storedThumb ? 'Thumbnail added.' : asset ? 'Saved.' : 'Added.');
+    if (file && String(typeOf(file)).startsWith('video/') && !preview) {
+      notify('success', 'Added. This browser could not make a thumbnail from the video; Edit it and choose a thumbnail image.');
+    }
     $('#al-editor').innerHTML = '';
     await load();
   } finally {
