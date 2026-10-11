@@ -95,11 +95,16 @@ export async function requirePartner() {
 // These talk to the partner-portal edge fn, which resolves the partner from the
 // session itself. Nothing here ever sends a partner id.
 export async function portal(action, body = {}) {
+  return portalFn('partner-portal', action, body);
+}
+
+// The same call for another partner function (the Asset Library is partner-library).
+export async function portalFn(fn, action, body = {}) {
   wireLogout();
   const { data: sess } = await supabase.auth.getSession();
   if (!sess.session) { window.location.href = '/account/login/'; return null; }
   const call = async () => {
-    const res = await fetch(FN + 'partner-portal', {
+    const res = await fetch(FN + fn, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'apikey': cfg.anonKey, 'Authorization': 'Bearer ' + sess.session.access_token },
       body: JSON.stringify({ action, ...body }),

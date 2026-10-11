@@ -37,6 +37,7 @@
         ['Review Queue', '/admin-review/', [], 'review'],
         ['Revenue Received', '/admin-revenue-received/'],
         ['Payment History', '/admin-payment-history/'],
+        ['Asset Library', '/admin-partner-assets/'],
       ] },
       { heading: 'CRM', items: [
         ['Applications', '/admin-crm-applications/'],

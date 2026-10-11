@@ -1,0 +1,66 @@
+---
+layout: layouts/admin.njk
+permalink: /admin-partner-assets/index.html
+title: "Asset Library — WhereTo"
+description: "Add and manage the files partners can download, and see how often they are used."
+eleventyExcludeFromCollections: true
+subnav: partner
+subnavActive: assets
+---
+<main id="wt-admin-page">
+
+  {% include "partials/admin-gate.njk" %}
+
+  <div id="adm-root" class="dash pa-xwide" style="display:none;">
+    <div class="dash-head">
+      <div>
+        <p class="eyebrow">Partner Admin</p>
+        <h1>Asset Library</h1>
+        <p class="pa-lede">The files partners can download from their portal: logos, brand guidelines, photos, video and templates. Only published assets are visible to partners.</p>
+      </div>
+      <div>
+        <button type="button" class="btn btn-primary" id="al-add">Add asset</button>
+      </div>
+    </div>
+
+    <div id="adm-msg" class="alert" role="status" aria-live="polite"></div>
+
+    <div class="pa-tiles cols-4" id="al-tiles"></div>
+
+    <div id="al-editor"></div>
+
+    <div class="pa-controls">
+      <div class="field">
+        <label for="al-q">Search</label>
+        <input id="al-q" type="search" placeholder="Title, description or file name" autocomplete="off" />
+      </div>
+      <div class="field">
+        <label for="al-status">Status</label>
+        <select id="al-status">
+          <option value="">All</option>
+          <option value="published">Published</option>
+          <option value="draft">Draft</option>
+          <option value="archived">Archived</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="al-category">Category</label>
+        <select id="al-category"><option value="">All</option></select>
+      </div>
+      <span class="pa-spacer"></span>
+      <span class="pa-switch-wrap">
+        <label class="pa-switch" for="al-test">
+          <input id="al-test" type="checkbox" role="switch" />
+          <span class="pa-switch-track" aria-hidden="true"></span>
+          <span>Include test data</span>
+        </label>
+        <span class="pa-info" title="Downloads made by test partners are left out unless this is on. Nothing is deleted either way." aria-label="Downloads made by test partners are left out unless this is on. Nothing is deleted either way.">i</span>
+      </span>
+      <span class="pa-count" id="al-count" aria-live="polite"></span>
+    </div>
+
+    <div id="al-detail"></div>
+    <div id="al-table"></div>
+  </div>
+</main>
+<script type="module" src="/assets/js/wt-admin-partner-assets.js?v={{ buildTime }}"></script>

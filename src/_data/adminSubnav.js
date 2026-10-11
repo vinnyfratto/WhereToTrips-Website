@@ -16,6 +16,7 @@ module.exports = {
       { key: 'review', label: 'Review Queue', href: '/admin-review/', badge: 'review' },
       { key: 'revenue', label: 'Revenue Received', href: '/admin-revenue-received/' },
       { key: 'payments', label: 'Payment History', href: '/admin-payment-history/' },
+      { key: 'assets', label: 'Asset Library', href: '/admin-partner-assets/' },
     ],
   },
   crm: {

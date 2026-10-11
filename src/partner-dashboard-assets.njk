@@ -26,8 +26,24 @@ navActive: assets
     <div class="pp-head">
       <div>
         <p class="pp-eyebrow">Assets</p>
-        <h1>WhereTo Partner Asset Library coming soon</h1>
+        <h1>Asset Library</h1>
+        <p class="pp-lede">Logos, brand guidelines, photos, video and templates for promoting WhereTo. Download what you need.</p>
       </div>
+    </div>
+
+    <div id="al-inactive" class="pp-card pp-panel" hidden>
+      <h2>The library is not available</h2>
+      <p class="pp-empty">Your partner account is not active, so the Asset Library is closed. Write to <a href="mailto:partners@wheretotrips.com">partners@wheretotrips.com</a> if you have questions.</p>
+    </div>
+
+    <div id="al-body" hidden>
+      <div class="pp-al-bar">
+        <div class="pp-seg" id="al-cats" role="group" aria-label="Category"></div>
+        <label class="pp-sr" for="al-q">Search the library</label>
+        <input id="al-q" class="pp-inp pp-al-q" type="search" placeholder="Search the library" autocomplete="off" />
+      </div>
+      <p id="al-err" class="pp-err" role="alert"></p>
+      <div id="al-list"></div>
     </div>
   </div>
 </main>

@@ -265,3 +265,21 @@ dialog.pp-dlg::backdrop { background: rgba(20, 30, 40, .62); }
 .pp-dlg-meta { margin-right: auto; font-size: 13px; color: var(--ink-soft); }
 #pp-dlg-dl[aria-disabled="true"] { opacity: .5; pointer-events: none; }
 @media (max-width: 640px) { dialog.pp-dlg { width: 100vw; max-height: 100vh; border-radius: 0; } .pp-dlg-frame { height: 60vh; } }
+
+/* ── Asset Library (/partner-dashboard/assets/) ──────────────────── */
+.pp-al-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+.pp-al-q { max-width: 280px; }
+.pp-al-group { margin-bottom: 32px; }
+.pp-al-group h2 { font-family: var(--serif); font-weight: 400; font-size: 24px; margin: 0 0 14px; color: var(--navy); }
+.pp-al-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+.pp-al-card { display: flex; flex-direction: column; overflow: hidden; }
+.pp-al-prev { height: 168px; display: flex; align-items: center; justify-content: center; background: #F6F8FA; border-bottom: 1px solid var(--wg200); }
+.pp-al-prev img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.pp-al-kind { font-family: var(--serif); font-size: 28px; color: var(--ink-soft); }
+.pp-al-main { padding: 16px 18px 8px; flex: 1; }
+.pp-al-main h3 { font-family: var(--serif); font-weight: 400; font-size: 19px; margin: 0 0 6px; color: var(--navy); }
+.pp-al-desc { margin: 0 0 8px; font-size: 14px; color: var(--ink-soft); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.pp-al-meta { margin: 0; font-size: 12px; color: var(--ink-soft); }
+.pp-al-dl { margin: 8px 18px 18px; align-self: flex-start; }
+@media (max-width: 760px) { .pp-al-q { max-width: none; width: 100%; } .pp-al-grid { grid-template-columns: 1fr; } }
+.pp-seg[hidden] { display: none; }
