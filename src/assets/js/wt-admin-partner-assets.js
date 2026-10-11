@@ -53,7 +53,7 @@ function assetCell(r) {
   const thumb = r.thumb_url
     ? `<img class="pa-thumb" src="${esc(r.thumb_url)}" alt="" loading="lazy" width="44" height="44" />`
     : `<span class="pa-thumb pa-thumb-kind">${esc(r.kind_label)}</span>`;
-  return `<div class="pa-asset">${thumb}<div><strong>${esc(r.title)}</strong><br><span class="pa-muted pa-small">${esc(r.file_name)} · ${esc(size(r.size))}</span></div></div>`;
+  return `<div class="pa-asset"><button type="button" class="pa-thumb-btn" data-preview="${esc(r.id)}" aria-haspopup="dialog" aria-label="Preview ${esc(r.title)}" title="Preview">${thumb}</button><div><strong>${esc(r.title)}</strong><br><span class="pa-muted pa-small">${esc(r.file_name)} · ${esc(size(r.size))}</span></div></div>`;
 }
 
 const COLUMNS = [
@@ -84,6 +84,7 @@ function actionsCell(r) {
 function wireRows(host) {
   $$('[data-edit]', host).forEach((b) => b.addEventListener('click', () => openEditor(rows.find((r) => r.id === b.dataset.edit))));
   $$('[data-status]', host).forEach((b) => b.addEventListener('click', () => setStatus(b.dataset.id, b.dataset.status)));
+  $$('[data-preview]', host).forEach((b) => b.addEventListener('click', () => openPreview(rows.find((r) => r.id === b.dataset.preview), b)));
   $$('[data-who]', host).forEach((b) => b.addEventListener('click', () => showWho(b.dataset.who)));
   $$('[data-delete]', host).forEach((b) => b.addEventListener('click', () => remove(b.dataset.delete)));
   $$('[data-open]', host).forEach((b) => b.addEventListener('click', async () => {
@@ -123,6 +124,57 @@ async function load() {
   sel.value = categories.some((c) => c.key === keep) ? keep : '';
   drawTiles(r.summary);
   draw();
+}
+
+// ── Preview pop-up ──────────────────────────────────────────────────
+// What a partner will see, before it is published. A native <dialog>, so focus
+// stays inside and Escape closes it. Opening it is not a download and is not counted.
+let dlg = null;
+let openId = null;
+
+function ensureDialog() {
+  if (dlg) return dlg;
+  dlg = document.createElement('dialog');
+  dlg.className = 'pa-dlg';
+  dlg.setAttribute('aria-labelledby', 'pa-dlg-title');
+  dlg.innerHTML = `<div class="pa-dlg-head"><h2 id="pa-dlg-title"></h2><button type="button" class="pa-dlg-x" aria-label="Close">×</button></div>
+    <div class="pa-dlg-body" id="pa-dlg-body"></div>
+    <div class="pa-dlg-foot"><span class="pa-dlg-meta" id="pa-dlg-meta"></span>
+      <button type="button" class="btn btn-ghost btn-xs" id="pa-dlg-close">Close</button></div>`;
+  document.body.appendChild(dlg);
+  const close = () => dlg.close();
+  dlg.querySelector('.pa-dlg-x').addEventListener('click', close);
+  dlg.querySelector('#pa-dlg-close').addEventListener('click', close);
+  dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+  dlg.addEventListener('close', () => { dlg.querySelector('#pa-dlg-body').innerHTML = ''; openId = null; });
+  return dlg;
+}
+
+function viewerHtml(r, f) {
+  const t = String(f.type || '').toLowerCase();
+  const u = esc(f.url), n = esc(r.title);
+  const nope = '<p class="pa-dlg-none">This file cannot be shown in the browser. Partners can still download it.</p>';
+  if (t.startsWith('image/')) return `<img src="${u}" alt="${n}" class="pa-dlg-media">`;
+  if (t.startsWith('video/')) return `<video src="${u}" class="pa-dlg-media" controls playsinline preload="metadata">${nope}</video>`;
+  if (t.startsWith('audio/')) return `<audio src="${u}" class="pa-dlg-audio" controls preload="metadata"></audio>`;
+  if (t === 'application/pdf') return `<iframe src="${u}" class="pa-dlg-frame" title="${n}"></iframe>`;
+  return (r.thumb_url ? `<img src="${esc(r.thumb_url)}" alt="${n}" class="pa-dlg-media">` : '') + nope;
+}
+
+async function openPreview(r, opener) {
+  if (!r) return;
+  const d = ensureDialog();
+  openId = r.id;
+  d.querySelector('#pa-dlg-title').textContent = r.title;
+  d.querySelector('#pa-dlg-meta').textContent = `${r.file_name} · ${r.kind_label} · ${size(r.size)}`;
+  d.querySelector('#pa-dlg-body').innerHTML = '<p class="pa-dlg-none" role="status">Loading…</p>';
+  d.showModal();
+  d.addEventListener('close', () => { if (opener && opener.focus) opener.focus(); }, { once: true });
+  const f = await callPA('asset_file_url', { id: r.id });
+  if (!d.open || openId !== r.id) return;
+  d.querySelector('#pa-dlg-body').innerHTML = f.ok
+    ? viewerHtml(r, f)
+    : '<p class="pa-dlg-none">Could not open the file (' + esc(f.error || 'error') + ').</p>';
 }
 
 // ── Who downloaded one asset ────────────────────────────────────────

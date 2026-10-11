@@ -186,4 +186,22 @@
 /* ── Asset Library (admin) ───────────────────────────────────────── */
 .pa-asset { display: flex; align-items: center; gap: 12px; min-width: 220px; }
 .pa-thumb { width: 44px; height: 44px; flex: 0 0 auto; object-fit: contain; border-radius: 6px; background: #fff; border: 1px solid var(--wg200); }
+.pa-thumb-btn { padding: 0; border: 0; background: none; cursor: zoom-in; flex: 0 0 auto; border-radius: 6px; line-height: 0; }
+.pa-thumb-btn:hover .pa-thumb { border-color: var(--azure); }
+.pa-thumb-btn:focus-visible { outline: 2px solid var(--azure); outline-offset: 2px; }
+dialog.pa-dlg { margin: auto; width: min(920px, 94vw); max-height: 92vh; padding: 0; border: 0; border-radius: 14px; background: #fff; color: var(--navy); box-shadow: 0 24px 80px rgba(20, 30, 40, .35); overflow: hidden; }
+dialog.pa-dlg[open] { display: flex; flex-direction: column; }
+dialog.pa-dlg::backdrop { background: rgba(20, 30, 40, .62); }
+.pa-dlg-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 18px; border-bottom: 1px solid var(--wg200); }
+.pa-dlg-head h2 { margin: 0; font-family: var(--serif); font-weight: 400; font-size: 1.2rem; }
+.pa-dlg-x { width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--wg200); background: #fff; font-size: 24px; line-height: 1; cursor: pointer; color: var(--ink-soft); flex: 0 0 auto; }
+.pa-dlg-x:hover { background: var(--azure-tint); }
+.pa-dlg-body { flex: 1 1 auto; min-height: 220px; padding: 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; background: #F2F5F7; overflow: auto; }
+.pa-dlg-media { max-width: 100%; max-height: 68vh; border-radius: 8px; background: #fff; object-fit: contain; }
+.pa-dlg-audio { width: min(560px, 100%); }
+.pa-dlg-frame { width: 100%; height: 68vh; border: 0; background: #fff; border-radius: 6px; }
+.pa-dlg-none { margin: 0; color: var(--ink-muted); text-align: center; padding: 16px; }
+.pa-dlg-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 18px; border-top: 1px solid var(--wg200); flex-wrap: wrap; }
+.pa-dlg-meta { font-size: 0.82rem; color: var(--ink-muted); word-break: break-all; }
+@media (max-width: 640px) { dialog.pa-dlg { width: 100vw; max-height: 100vh; border-radius: 0; } .pa-dlg-frame { height: 60vh; } }
 .pa-thumb-kind { display: inline-flex; align-items: center; justify-content: center; font-size: 0.68rem; font-weight: 700; letter-spacing: .4px; text-transform: uppercase; color: var(--ink-muted); background: var(--wg100); text-align: center; }

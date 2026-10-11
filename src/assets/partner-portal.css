@@ -273,6 +273,12 @@ dialog.pp-dlg::backdrop { background: rgba(20, 30, 40, .62); }
 .pp-al-group h2 { font-family: var(--serif); font-weight: 400; font-size: 24px; margin: 0 0 14px; color: var(--navy); }
 .pp-al-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
 .pp-al-card { display: flex; flex-direction: column; overflow: hidden; }
+.pp-al-prevbtn { width: 100%; padding: 0; border-top: 0; border-left: 0; border-right: 0; cursor: zoom-in; font: inherit; }
+.pp-al-prevbtn:hover { background: var(--azure-tint); }
+.pp-al-btns { display: flex; align-items: center; gap: 16px; margin: 8px 18px 18px; }
+.pp-al-btns .pp-al-dl { margin: 0; }
+.pp-dlg-desc { margin: 0; padding: 12px 18px 0; font-size: 14px; color: var(--ink-soft); }
+.pp-dlg-img { object-fit: contain; background: #fff; }
 .pp-al-prev { height: 168px; display: flex; align-items: center; justify-content: center; background: #F6F8FA; border-bottom: 1px solid var(--wg200); }
 .pp-al-prev img { max-width: 100%; max-height: 100%; object-fit: contain; }
 .pp-al-kind { font-family: var(--serif); font-size: 28px; color: var(--ink-soft); }
@@ -280,6 +286,6 @@ dialog.pp-dlg::backdrop { background: rgba(20, 30, 40, .62); }
 .pp-al-main h3 { font-family: var(--serif); font-weight: 400; font-size: 19px; margin: 0 0 6px; color: var(--navy); }
 .pp-al-desc { margin: 0 0 8px; font-size: 14px; color: var(--ink-soft); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .pp-al-meta { margin: 0; font-size: 12px; color: var(--ink-soft); }
-.pp-al-dl { margin: 8px 18px 18px; align-self: flex-start; }
+.pp-al-dl { align-self: flex-start; }
 @media (max-width: 760px) { .pp-al-q { max-width: none; width: 100%; } .pp-al-grid { grid-template-columns: 1fr; } }
 .pp-seg[hidden] { display: none; }
