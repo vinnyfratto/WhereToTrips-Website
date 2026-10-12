@@ -182,9 +182,20 @@ permalink: "/TexasPartners/"
   }
 
   /* ── Closing CTA ──────────────────────────────────────────────────── */
-  .tp-mail-btn { font-size: 15px; text-transform: none; }
-  /* One long unbroken word: sized to the width so it never pushes the page wider. */
-  .tp-email { font-size: clamp(18px, 5.3vw, 44px); overflow-wrap: anywhere; }
+  .tp-mail-btn { font-size: 15px; text-transform: none; max-width: 100%; box-sizing: border-box; padding-inline: clamp(18px, 5vw, 32px); }
+  /* The address is one unbroken line at every width. It is sized to the band it
+     sits in (6cqi is about 1/16 of the band's width, and the address is about
+     15.7 em long), with a viewport-based size first for any browser without
+     container units. nowrap is the guarantee; the sizing keeps it inside. */
+  .download-band .tp-email {
+    font-size: clamp(13px, calc((100vw - 110px) / 17), 44px);
+    white-space: nowrap; overflow-wrap: normal;
+    max-width: none;   /* the shared band heading is capped at 18ch, which cuts the address */
+  }
+  @supports (font-size: 1cqi) {
+    .tp-closing-band { container-type: inline-size; }
+    .download-band .tp-email { font-size: clamp(13px, 5.9cqi, 44px); }
+  }
   .tp-flyer {
     display: inline-block; margin-top: 16px; font-size: 14px; font-weight: 600;
     color: rgba(255,255,255,0.86); text-decoration: underline; text-underline-offset: 3px;
@@ -495,7 +506,7 @@ permalink: "/TexasPartners/"
 {# ═══ Closing CTA ═══════════════════════════════════════════════════ #}
 <section class="block" id="or-email">
   <div class="wrap">
-    <div class="download-band reveal">
+    <div class="download-band tp-closing-band reveal">
       <span class="eyebrow">Questions? Email me directly</span>
       <h2 class="tp-email">Chris@WhereToTrips.com</h2>
       <p>wheretotrips.com/TexasPartners</p>
