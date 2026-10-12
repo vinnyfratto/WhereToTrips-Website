@@ -77,9 +77,15 @@ permalink: "/TexasPartners/"
     font-family: var(--serif); font-size: 34px; color: var(--amber);
     line-height: 1; margin-bottom: 6px;
   }
-  .tp-hl .highlight-text h4 .tp-unit {
-    font-family: var(--sans); font-size: 15px; font-weight: 600; margin-left: 3px;
+  /* Every percent sign on the page is a superscript, set in the face of the
+     number it follows. Raised with position rather than vertical-align so it
+     never changes the line's height. The text variant is larger because at
+     body sizes a half-size sign is too small to read. */
+  .tp-pct {
+    font-size: .5em; line-height: 0; position: relative; top: -0.78em;
+    margin-left: .06em; font-weight: inherit; font-style: normal; letter-spacing: 0;
   }
+  .tp-pct--text { font-size: .68em; top: -0.42em; margin-left: .04em; }
   .tp-hl .highlight-text p { font-size: 13.5px; }
   .tp-hl .highlight-text p strong { color: var(--navy); }
 
@@ -263,12 +269,12 @@ permalink: "/TexasPartners/"
     <div class="slide-caption">
       <div class="slide-eyebrow"><span class="eyebrow">Now recruiting Texas Founding Partners</span></div>
       <div class="slide-title">
-        <h1>Earn 30% on every trip.
+        <h1>Earn 30<span class="tp-pct">%</span> on every trip.
 <span class="italic">For as long as you're active.</span></h1>
       </div>
       <div class="slide-subtitle">
         <p class="lede">We're launching in Texas with a small group of Founding Partners. Every time
-          one of your followers books a trip on WhereTo, you get 30% of what we earn. There's no end
+          one of your followers books a trip on WhereTo, you get 30<span class="tp-pct tp-pct--text">%</span> of what we earn. There's no end
           date. You keep earning as long as you stay an active partner.</p>
       </div>
       <div class="btns">
@@ -286,7 +292,7 @@ permalink: "/TexasPartners/"
       <div class="highlight">
         <span class="highlight-icon">{% icon "hand-money" %}</span>
         <div class="highlight-text">
-          <h4>30<span class="tp-unit">%</span></h4>
+          <h4>30<span class="tp-pct">%</span></h4>
           <p><strong>Revenue share</strong><br>on every completed booking your followers make</p>
         </div>
       </div>
@@ -300,7 +306,7 @@ permalink: "/TexasPartners/"
       <div class="highlight">
         <span class="highlight-icon">{% icon "verified-check" %}</span>
         <div class="highlight-text">
-          <h4>100<span class="tp-unit">%</span></h4>
+          <h4>100<span class="tp-pct">%</span></h4>
           <p><strong>Vested on day one</strong><br>full Founding rate from your first booking</p>
         </div>
       </div>
@@ -324,8 +330,8 @@ permalink: "/TexasPartners/"
       </div>
       <div class="tp-cmp-row">
         <span class="tp-cmp-label">Revenue share</span>
-        <span class="tp-cmp-cell tp-cmp-rate is-founding">30%</span>
-        <span class="tp-cmp-cell tp-cmp-rate">20%</span>
+        <span class="tp-cmp-cell tp-cmp-rate is-founding">30<span class="tp-pct">%</span></span>
+        <span class="tp-cmp-cell tp-cmp-rate">20<span class="tp-pct">%</span></span>
       </div>
       <div class="tp-cmp-row">
         <span class="tp-cmp-label">How long you earn</span>
