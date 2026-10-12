@@ -1,14 +1,15 @@
 // ───────────────────────────────────────────────────────────────────
 //  wt-partner-shared.js — shared boot logic for the /partner-dashboard/*
-//  pages (Performance, Submit Content, Settings). Each page is its own real
-//  URL/Eleventy page sharing layouts/partner.njk + partials/partner-header.njk.
+//  pages (Summary, Content performance, Travelers, Bookings, Revenue, Submit
+//  content, Assets, Profile). Each page is its own real URL/Eleventy page
+//  sharing layouts/partner.njk + partials/partner-header.njk.
 //
-//  requirePartner() is the one gate every page calls: no session -> login;
+//  requirePartner() is the one gate the Profile page calls: no session -> login;
 //  no affiliates row (the program's internal/DB name for a partner — see
-//  get-affiliate-stats) -> shared "not a partner yet" panel. Also wires the
-//  Log out button that lives in the shared header, once, here — so a page
-//  that also uses wt-profile.js's initProfileForm() should pass a
-//  non-existent logoutId to avoid double-wiring the same button.
+//  get-affiliate-stats) -> shared "not a partner yet" panel. The tab pages use
+//  portal() + portalGate() below instead. The portal header has no Log out button
+//  any more (sign-out is on Profile, in the shared editor); wireLogout() stays
+//  as a no-op for any page that still carries a #wt-logout button.
 // ───────────────────────────────────────────────────────────────────
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 

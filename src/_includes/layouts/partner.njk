@@ -68,6 +68,12 @@
 <body>
 {% include "partials/partner-header.njk" %}
 
+{#- Status strip: tier, revenue share rate and activity window, under the header
+    on every portal page. Hidden until it has something true to say. wt-partner-strip.js
+    fills it from the `status` action; a page that already holds the status (Summary,
+    which sets `stripFrom: page`) fills it itself so the call is made once. -#}
+<div id="pp-strip" class="pp-strip" role="region" aria-label="Your partner status" hidden{% if stripFrom == 'page' %} data-from="page"{% endif %}></div>
+
 <a id="top"></a>
 {{ content | safe }}
 
@@ -75,5 +81,6 @@
   <div class="wrap">Questions about your account? Write to <a href="mailto:{{ site.partnerSupportEmail }}">{{ site.partnerSupportEmail }}</a>.</div>
 </footer>
 
+<script type="module" src="/assets/js/wt-partner-strip.js?v={{ buildTime }}"></script>
 </body>
 </html>

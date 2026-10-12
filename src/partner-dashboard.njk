@@ -2,9 +2,10 @@
 layout: layouts/partner.njk
 permalink: /partner-dashboard/index.html
 title: "Summary — Partner Portal — WhereTo"
-description: "Your WhereToTrips partner performance at a glance."
+description: "Your WhereToTrips partner status and performance at a glance."
 eleventyExcludeFromCollections: true
 navActive: summary
+stripFrom: page
 ---
 <main id="wt-dash-page">
 
@@ -27,31 +28,31 @@ navActive: summary
     <div class="pp-head">
       <div>
         <p class="pp-eyebrow">Summary</p>
-        <h1>Your performance</h1>
+        <h1>Your status and performance</h1>
       </div>
+    </div>
+
+    {# Three things a partner checks most, side by side: tier, activity window (or
+       guarantee), next payout. Filled by wt-partner-summary.js. #}
+    <div class="pp-three pp-status-row" id="status-row"></div>
+
+    {# One detail panel at a time, full width, directly under the row. #}
+    <div id="panels"></div>
+
+    <div class="pp-perf-head">
+      <h2>Performance</h2>
       <div role="group" aria-label="Time period" class="pp-seg" id="period"></div>
     </div>
 
     <div class="pp-kpis" id="kpis" aria-live="polite"></div>
 
-    <div class="pp-two">
-      <section class="pp-card pp-panel" aria-labelledby="top-h">
-        <div class="pp-toprow">
-          <h2 id="top-h">Top content, all time</h2>
-          <a class="pp-outbtn" href="/partner-dashboard/content-performance/" style="display:inline-flex;align-items:center;text-decoration:none;">See all content</a>
-        </div>
-        <ol class="pp-top" id="top-list"></ol>
-      </section>
-
-      <section class="pp-deep" aria-labelledby="pay-h">
-        <h2 id="pay-h">Next payout</h2>
-        <div class="amt" id="pay-amt">$0.00</div>
-        <div class="pp-pill" id="pay-pill"></div>
-        <div class="n" id="pay-n"></div>
-        <p class="note">We process payments on the 1st and 15th of each month, once your balance reaches $50.</p>
-        <a class="btn-w" href="/partner-dashboard/revenue/" style="display:inline-flex;align-items:center;text-decoration:none;">View revenue details</a>
-      </section>
-    </div>
+    <section class="pp-card pp-panel pp-topcard" aria-labelledby="top-h">
+      <div class="pp-toprow">
+        <h2 id="top-h">Top content, all time</h2>
+        <a class="pp-outbtn" href="/partner-dashboard/content-performance/">See all content</a>
+      </div>
+      <ol class="pp-top" id="top-list"></ol>
+    </section>
   </div>
 </main>
 <script type="module" src="/assets/js/wt-partner-summary.js?v={{ buildTime }}"></script>

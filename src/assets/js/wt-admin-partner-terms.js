@@ -49,7 +49,8 @@ export function renderTerms(host, partner, { call, notify, onSaved }) {
         <dt>Revenue share</dt>
         <dd>${share === null || share === undefined
           ? esc(legacyText(t.legacy_rates))
-          : `${esc(+share.toFixed(2))}% of the commission WhereTo earns, for ${esc(t.duration_months)} months`}</dd>
+          : `${esc(+share.toFixed(2))}% of the commission WhereTo earns, as the estimate stamped when a booking is made. What the partner is paid is set by their tier (see Partner program) when the booking is approved.`}</dd>
+        <dt>Referral window</dt><dd>${esc(t.duration_months)} months from a traveler's registration. A booking after that is not credited at booking time.</dd>
         <dt>Status</dt><dd>${pill(partner.status, STATUS_TONE[partner.status] ?? '')}</dd>
         <dt>Custom link</dt><dd>${t.vanity_slug ? esc(t.vanity_slug) : '<span class="pa-muted">None</span>'}</dd>
         <dt>Source</dt><dd>${t.source ? esc(t.source) : '<span class="pa-muted">None</span>'}</dd>
@@ -58,16 +59,16 @@ export function renderTerms(host, partner, { call, notify, onSaved }) {
         <div class="pa-form-grid">
           <div class="field"><label for="tf-status">Status</label>
             <select id="tf-status">${STATUSES.map((s) => `<option value="${s}"${s === partner.status ? ' selected' : ''}>${s}</option>`).join('')}</select></div>
-          <div class="field"><label for="tf-share">Revenue share % <span class="hint">of WhereTo's commission</span></label>
+          <div class="field"><label for="tf-share">Estimate stamped at booking % <span class="hint">of WhereTo's commission</span></label>
             <input id="tf-share" type="number" min="0" max="100" step="0.01" value="${share === null || share === undefined ? '' : esc(+share.toFixed(2))}" placeholder="${share === null || share === undefined ? 'unchanged' : ''}" /></div>
-          <div class="field"><label for="tf-months">Duration (months)</label>
+          <div class="field"><label for="tf-months">Referral window (months)</label>
             <input id="tf-months" type="number" min="1" max="240" step="1" value="${esc(t.duration_months ?? 36)}" /></div>
           <div class="field"><label for="tf-vanity">Custom link</label>
             <input id="tf-vanity" type="text" value="${esc(t.vanity_slug ?? '')}" placeholder="(none)" /></div>
           <div class="field"><label for="tf-source">Source</label>
             <select id="tf-source">${sources.map((s) => `<option value="${esc(s)}"${s === (t.source || 'Direct') ? ' selected' : ''}>${esc(s)}</option>`).join('')}</select></div>
         </div>
-        <p class="hint" style="margin:12px 0;">A new revenue share applies to bookings made after the change. Bookings already recorded keep the rate they were recorded with. Every change is logged.</p>
+        <p class="hint" style="margin:12px 0;">The partner's tier sets what they are paid when a booking is approved. The percentage here is only the estimate stamped when a booking is made, and applies to bookings made after the change. Every change is logged.</p>
         <div class="pa-actions">
           <button type="submit" class="btn btn-primary btn-xs">Save changes</button>
           <button type="button" class="btn btn-ghost btn-xs" id="terms-cancel">Cancel</button>

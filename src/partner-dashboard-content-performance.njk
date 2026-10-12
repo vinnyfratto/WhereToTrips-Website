@@ -2,7 +2,7 @@
 layout: layouts/partner.njk
 permalink: /partner-dashboard/content-performance/index.html
 title: "Content performance — Partner Portal — WhereTo"
-description: "Clicks, downloads and new accounts for every approved piece of content."
+description: "Clicks, downloads, new accounts and earnings for every approved piece of content."
 eleventyExcludeFromCollections: true
 navActive: content-performance
 ---
@@ -32,15 +32,15 @@ navActive: content-performance
       </div>
     </div>
     <div class="pp-card pp-scroll">
-      <table class="pp-t">
-        <caption class="pp-sr">Content assets with clicks, downloads and new accounts</caption>
+      <table class="pp-t pp-t--content">
+        <caption class="pp-sr">Content assets with clicks, downloads, new accounts and earnings</caption>
         <thead>
           <tr id="head"></tr>
           <tr class="frow">
-            <td><select class="pp-inp sm" id="f-month" aria-label="Filter by month requested"></select></td>
+            <td class="mon"><select class="pp-inp sm" id="f-month" aria-label="Filter by month requested"></select></td>
             <td><button type="button" class="pp-linkbtn" id="clear">Clear filters</button></td>
-            <td style="min-width:190px"><select class="pp-inp sm" id="f-channel" aria-label="Filter by channel"></select></td>
-            <td></td><td></td><td></td><td></td><td></td>
+            <td class="chan"><select class="pp-inp sm" id="f-channel" aria-label="Filter by channel"></select></td>
+            <td></td><td></td><td></td><td></td><td></td><td></td>
           </tr>
         </thead>
         <tbody id="rows"></tbody>

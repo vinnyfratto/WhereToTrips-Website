@@ -27,7 +27,7 @@ navActive: settings
 
     <div class="dash-head">
       <div>
-        <p class="eyebrow">Profile</p>
+        <p class="pp-eyebrow">Profile</p>
         <h1>Account &amp; travel preferences</h1>
       </div>
     </div>
@@ -38,6 +38,12 @@ navActive: settings
       {# Rendered by wt-profile.js — the same editor /account/profile/ uses, with
          its rail off (this portal has its own nav), so every section stacks. #}
       <div id="wt-profile-body"></div>
+    </div>
+
+    {# Sign-out. The portal header has no Log out button, and the editor's own Log Out
+       belongs to its hub, which is off here. wt-partner-shared.js wires #wt-logout. #}
+    <div class="pp-signout">
+      <button id="wt-logout" type="button" class="pp-ghost">Log out</button>
     </div>
 
   </div>

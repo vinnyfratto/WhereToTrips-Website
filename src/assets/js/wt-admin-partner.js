@@ -3,7 +3,7 @@
 //
 //  A permanent record of one partner: tiles, then five tabs (content
 //  submissions, content performance, payment history, 1099 history, T&C
-//  acceptance), then their terms. Every figure comes from the partner-admin
+//  acceptance), then their program standing and their terms. Every figure comes from the partner-admin
 //  function; the tables sort on every column except links.
 //
 //  The address is /admin-partner/?id=P-1003 (the public Partner ID).
@@ -12,6 +12,7 @@ import {
   boot, callPA, dataTable, esc, fmtDate, fmtDateTime, money, notify, num, pill, $, $$,
 } from './wt-padmin-core.js';
 import { renderTerms } from './wt-admin-partner-terms.js';
+import { renderProgram } from './wt-admin-partner-program.js';
 
 const id = new URLSearchParams(location.search).get('id');
 let partner = null;
@@ -189,6 +190,7 @@ function renderBody() {
     <div id="pd-panels">
       ${TABS.map((t) => `<section class="adm-panel" data-panel="${t.key}" hidden></section>`).join('')}
     </div>
+    <div id="pd-program" class="pa-section-gap"></div>
     <div id="pd-terms" class="pa-section-gap"></div>`;
   $$('.adm-tab', $('#pd-tabs')).forEach((b) => b.addEventListener('click', () => showTab(b.dataset.tab)));
 }
@@ -200,6 +202,8 @@ async function loadPartner() {
   renderHeader();
   renderTiles();
   renderTerms($('#pd-terms'), partner, { call: callPA, notify, onSaved: loadPartner });
+  // Not awaited: the page is usable while the program card loads, and a failure there never blocks it.
+  renderProgram($('#pd-program'), partner, { call: callPA, notify });
   return r;
 }
 

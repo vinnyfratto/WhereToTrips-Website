@@ -6,7 +6,7 @@
 //  shows its detail without another request.
 // ───────────────────────────────────────────────────────────────────
 import { portal, portalGate } from './wt-partner-shared.js';
-import { esc, fmtDate, options } from './wt-portal-ui.js';
+import { esc, fmtDate, options, tag } from './wt-portal-ui.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -20,17 +20,13 @@ const open = new Set();             // rows left open survive a re-draw
 let optionsFor = '';                // the filter lists are rebuilt only when their contents change
 let seq = 0, timer = null;
 
-// Status chip colors. The words always carry the meaning; color only helps.
-const CHIP = {
-  draft: ['#EEF1F5', '#464B53'], submitted: ['#E6F4FC', '#0F5F8F'], in_review: ['#E6F4FC', '#0F5F8F'],
-  pending_assets: ['#E6F4FC', '#0F5F8F'], revisions_requested: ['#FFF1D6', '#6B4200'],
-  approved: ['#BFE6D0', '#0F4D32'], published: ['#BFE6D0', '#0F4D32'], declined: ['#F6DEDA', '#8A2B1F'],
-  withdrawn: ['#EEF1F5', '#464B53'], removal_requested: ['#FFF1D6', '#6B4200'],
+// Status tag tones (the colors are tokens in partner-portal.css). The words always carry the
+// meaning; color only helps.
+const TONE = {
+  draft: 'quiet', submitted: 'info', in_review: 'info', pending_assets: 'info', revisions_requested: 'warn',
+  approved: 'ok', published: 'ok', declined: 'bad', withdrawn: 'quiet', removal_requested: 'warn',
 };
-const chip = (status, label) => {
-  const c = CHIP[status] || CHIP.draft;
-  return `<span class="pp-chip" style="background:${c[0]};color:${c[1]}">${esc(label)}</span>`;
-};
+const chip = (status, label) => tag(TONE[status] || 'quiet', label);
 const bytes = (n) => !n ? '' : n >= 1048576 ? (n / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB';
 
 async function load() {
@@ -65,7 +61,7 @@ function timelineHtml(steps) {
     </li>`).join('')}</ol>`;
 }
 
-// Submit Content, with this piece's title, type and platform (and venue, for an event) already filled in.
+// Submit content, with this piece's title, type and platform (and venue, for an event) already filled in.
 // Keeping the title is what lets us connect the new version to this one.
 function resubmitHref(r) {
   const q = new URLSearchParams({ resubmit: '1', title: r.title || '', kind: r.content_type || '', platform: r.platform || '' });
@@ -87,7 +83,7 @@ function detailHtml(r) {
        <div><a href="${esc(r.tracking_url)}" rel="noopener">${esc(String(r.tracking_url).replace(/^https?:\/\//, ''))}</a>
        <button type="button" class="pp-linkbtn pp-copy" data-copy="${esc(r.tracking_url)}">Copy link</button></div>
        <p class="pp-hint" style="margin-top:6px;">Code <span class="pp-code">${esc(r.tracking_code)}</span>${r.issued ? ' · issued ' + esc(fmtDate(r.issued)) : ''}.
-       Its clicks and new accounts show on <a href="/partner-dashboard/content-performance/">Content Performance</a>.</p>`
+       Its clicks and new accounts show on <a href="/partner-dashboard/content-performance/">Content performance</a>.</p>`
     : '';
 
   const note = r.note_to_partner

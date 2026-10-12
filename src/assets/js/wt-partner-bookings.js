@@ -5,7 +5,7 @@
 //  so the totals always cover the whole filtered set, not the visible page.
 // ───────────────────────────────────────────────────────────────────
 import { portal, portalGate } from './wt-partner-shared.js';
-import { esc, fmtDate, money, monthLabel, renderHead, renderSeg, options, chip, refCell } from './wt-portal-ui.js';
+import { esc, fmtDate, money, monthLabel, renderHead, renderSeg, options, chip, refCell, drawPager } from './wt-portal-ui.js';
 
 const $ = (id) => document.getElementById(id);
 const COLS = [
@@ -14,7 +14,7 @@ const COLS = [
   { k: 'amt', label: 'Est. revenue', right: true }, { k: 'status', label: 'Status', text: true },
 ];
 const state = { sort: 'booked', dir: 'desc', from: '', to: '', month: '', type: '', status: '', page: 1 };
-let optionsLoaded = false, seq = 0;
+let optionsFor = '', seq = 0;
 
 // Today in the portal's zone (Central), as YYYY-MM-DD, for the date presets.
 const centralDay = (offsetDays = 0) => {
@@ -34,6 +34,14 @@ async function load() {
 
 function reset() { state.page = 1; load(); }
 
+// A canceled booking has no revenue, so it shows a dash. A booking that is not
+// eligible (a trip by a traveler past their guarantee while the partner was
+// inactive) earns $0.00, and says so: it is not the same as canceled.
+function amount(r) {
+  if (r.status === 'not_eligible') return money(r.partner_share_cents || 0);
+  return r.partner_share_cents == null ? '—' : money(r.partner_share_cents);
+}
+
 function draw(j) {
   renderHead($('head'), COLS, state, reset);
 
@@ -46,11 +54,14 @@ function draw(j) {
   $('b-from').value = state.from;
   $('b-to').value = state.to;
 
-  if (!optionsLoaded) {
+  // The filter lists are rebuilt only when what they offer changes, so a menu is never reset under the
+  // user. "Not eligible" is in the status list only when the response says the partner has such a row.
+  const sig = JSON.stringify(j.filter_options);
+  if (sig !== optionsFor) {
     $('f-month').innerHTML = options(j.filter_options.months.map((m) => [m, monthLabel(m)]), 'All dates');
     $('f-type').innerHTML = options(j.filter_options.types, 'All types');
     $('f-status').innerHTML = options(j.filter_options.statuses.map((s) => [s.value, s.label]), 'All statuses');
-    optionsLoaded = true;
+    optionsFor = sig;
   }
   $('f-month').value = state.month; $('f-type').value = state.type; $('f-status').value = state.status;
 
@@ -65,22 +76,13 @@ function draw(j) {
         <td>${esc(r.type)}</td>
         <td class="nm">${esc(r.name)}</td>
         <td class="nw" style="font-size:13px">${refCell(r)}</td>
-        <td class="r pp-num nw">${r.partner_share_cents == null ? '—' : money(r.partner_share_cents)}</td>
+        <td class="r pp-num nw">${amount(r)}</td>
         <td>${chip(r.status, r.status_label)}</td></tr>`).join('')
     : '<tr><td colspan="8" class="pp-empty-row">No bookings match these filters.</td></tr>';
 
   $('foot').innerHTML = `<td colspan="6">${j.totals.active_count} active bookings</td><td class="r pp-num">${money(j.totals.partner_share_cents)}</td><td></td>`;
 
-  const pages = Math.max(1, Math.ceil(c.shown / c.page_size));
-  const pager = $('pager');
-  pager.hidden = pages <= 1;
-  if (pages > 1) {
-    pager.innerHTML = `<button type="button" class="pp-outbtn" id="prev" ${c.page <= 1 ? 'disabled' : ''}>Previous</button>
-      <span>Page ${c.page} of ${pages}</span>
-      <button type="button" class="pp-outbtn" id="next" ${c.page >= pages ? 'disabled' : ''}>Next</button>`;
-    $('prev').addEventListener('click', () => { state.page = c.page - 1; load(); });
-    $('next').addEventListener('click', () => { state.page = c.page + 1; load(); });
-  }
+  drawPager($('pager'), c, (p) => { state.page = p; load(); });
 }
 
 // Typing a custom range un-presses the presets (they only match exact ranges).

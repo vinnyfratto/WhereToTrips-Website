@@ -1,17 +1,18 @@
 // ───────────────────────────────────────────────────────────────────
 //  wt-partner-content-performance.js — /partner-dashboard/content-performance/
-//  One row per approved asset. Sorting and filtering happen on the server;
-//  the totals row covers the filtered rows.
+//  One row per approved asset, with the earnings it brought in (paid + approved +
+//  projected, canceled left out: the same basis as Total Est. Revenue). Sorting
+//  and filtering happen on the server; the totals row covers the filtered rows.
 // ───────────────────────────────────────────────────────────────────
 import { portal, portalGate } from './wt-partner-shared.js';
-import { esc, int, fmtDate, monthLabel, renderHead, options, previewTile } from './wt-portal-ui.js';
+import { esc, int, money, fmtDate, monthLabel, renderHead, options, previewTile } from './wt-portal-ui.js';
 
 const $ = (id) => document.getElementById(id);
 const COLS = [
   { k: 'date', label: 'Date requested' }, { k: 'name', label: 'Content', text: true },
   { k: 'channel', label: 'Channel', text: true }, { k: 'url', label: 'Tracking URL', text: true },
   { k: 'clicks', label: 'Clicks', right: true }, { k: 'downloads', label: 'Downloads', right: true },
-  { k: 'new_accounts', label: 'New Accounts', right: true },
+  { k: 'new_accounts', label: 'New Accounts', right: true }, { k: 'earn', label: 'Est. earnings', right: true },
 ];
 const state = { sort: 'date', dir: 'desc', month: '', channel: '' };
 let optionsLoaded = false, seq = 0;
@@ -38,7 +39,7 @@ function draw(j) {
   const none = !j.rows.length;
   const filtering = state.month || state.channel;
   $('rows').innerHTML = none
-    ? `<tr><td colspan="8" class="pp-empty-row">${filtering
+    ? `<tr><td colspan="9" class="pp-empty-row">${filtering
         ? 'No content matches these filters.'
         : 'Nothing here yet. Once a piece is approved it shows up here with its tracking link. <a href="/partner-dashboard/content/">Submit content</a>'}</td></tr>`
     : j.rows.map((r) => `<tr>
@@ -49,10 +50,11 @@ function draw(j) {
         <td class="r pp-num">${int(r.clicks)}</td>
         <td class="r pp-num">${int(r.downloads)}</td>
         <td class="r pp-num">${int(r.new_accounts)}</td>
+        <td class="r pp-num pp-strong nw">${money(r.est_earnings_cents)}</td>
         <td>${previewTile(r.channel, r.preview && r.preview.image_url)}</td></tr>`).join('');
 
   const t = j.totals;
-  $('foot').innerHTML = `<td colspan="4">Total</td><td class="r pp-num">${int(t.clicks)}</td><td class="r pp-num">${int(t.downloads)}</td><td class="r pp-num">${int(t.new_accounts)}</td><td></td>`;
+  $('foot').innerHTML = `<td colspan="4">Total</td><td class="r pp-num">${int(t.clicks)}</td><td class="r pp-num">${int(t.downloads)}</td><td class="r pp-num">${int(t.new_accounts)}</td><td class="r pp-num">${money(t.est_earnings_cents)}</td><td></td>`;
 }
 
 $('f-month').addEventListener('change', (e) => { state.month = e.target.value; load(); });

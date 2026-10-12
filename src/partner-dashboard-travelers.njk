@@ -1,0 +1,66 @@
+---
+layout: layouts/partner.njk
+permalink: /partner-dashboard/travelers/index.html
+title: "Travelers — Partner Portal — WhereTo"
+description: "Every traveler you brought in, with the date their guarantee ends."
+eleventyExcludeFromCollections: true
+navActive: travelers
+---
+<main id="wt-dash-page">
+
+  {# Loading / gate #}
+  <div id="wt-dash-gate" class="gate-msg">Loading…</div>
+
+  {# Not a partner #}
+  <div id="wt-dash-notaff" class="acct" style="display:none;">
+    <div class="acct-card" style="text-align:center;">
+      <p class="eyebrow">Partner program</p>
+      <h1>You're not a partner yet</h1>
+      <p class="acct-sub">This page is for WhereTo partners. Partner accounts are invitation-only.</p>
+      <p><a class="btn btn-primary" href="/account/profile/">Back to my account</a></p>
+      <p class="acct-links"><a href="/partners/">Learn about the creator program</a></p>
+    </div>
+  </div>
+
+  <div id="wt-dash-root" class="pp wrap" style="display:none;">
+
+    <div class="pp-head">
+      <div>
+        <p class="pp-eyebrow">Travelers</p>
+        <h1>Everyone you've brought in</h1>
+        <p class="pp-lede" id="intro"></p>
+      </div>
+    </div>
+
+    <div class="pp-four" id="cards"></div>
+
+    {# A partner with no travelers yet sees this instead of an empty table. #}
+    <div class="pp-card pp-panel" id="none" hidden>
+      <p class="pp-empty pp-empty--flat">No travelers yet. When someone creates an account from one of your links, they show up here with the date their guarantee ends.</p>
+    </div>
+
+    <div id="list">
+      <div class="pp-card pp-scroll">
+        <table class="pp-t">
+          <caption class="pp-sr">Registered travelers and guarantee end dates</caption>
+          <thead>
+            <tr id="head"></tr>
+            <tr class="frow">
+              <td></td><td></td>
+              <td><button type="button" class="pp-linkbtn" id="clear">Clear filters</button></td>
+              <td></td>
+              <td><select class="pp-inp sm" id="f-status" aria-label="Filter by status"></select></td>
+              <td></td><td></td>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+        <div class="pp-pager" id="pager" hidden></div>
+      </div>
+      <p class="pp-footnote">Traveler IDs are masked. We don't show names or contact details. "Ongoing" means the traveler is past the guarantee and you keep earning while you stay active.</p>
+    </div>
+
+    <p class="pp-sr" id="count" aria-live="polite"></p>
+  </div>
+</main>
+<script type="module" src="/assets/js/wt-partner-travelers.js?v={{ buildTime }}"></script>

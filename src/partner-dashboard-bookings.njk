@@ -1,7 +1,7 @@
 ---
 layout: layouts/partner.njk
 permalink: /partner-dashboard/bookings/index.html
-title: "Followers' Bookings — Partner Portal — WhereTo"
+title: "Bookings — Partner Portal — WhereTo"
 description: "Every booking made by travelers you referred."
 eleventyExcludeFromCollections: true
 navActive: bookings
@@ -26,9 +26,8 @@ navActive: bookings
 
     <div class="pp-head">
       <div>
-        <p class="pp-eyebrow">My Revenue</p>
-        <h1>Followers' Bookings</h1>
-        <p class="pp-lede">Every booking made by the travelers you referred.</p>
+        <p class="pp-eyebrow">Bookings</p>
+        <h1>Every booking from your travelers</h1>
       </div>
     </div>
 
@@ -53,10 +52,10 @@ navActive: bookings
             <tr class="frow">
               <td><select class="pp-inp sm" id="f-month" aria-label="Filter by month booked"></select></td>
               <td></td><td></td>
-              <td><select class="pp-inp sm" id="f-type" aria-label="Filter by type"></select></td>
+              <td class="typ"><select class="pp-inp sm" id="f-type" aria-label="Filter by type"></select></td>
               <td><button type="button" class="pp-linkbtn" id="clear">Clear all filters</button></td>
               <td></td><td></td>
-              <td><select class="pp-inp sm" id="f-status" aria-label="Filter by status"></select></td>
+              <td class="sta"><select class="pp-inp sm" id="f-status" aria-label="Filter by status"></select></td>
             </tr>
           </thead>
           <tbody id="rows"></tbody>

@@ -158,7 +158,7 @@ function wireDrop() {
   $('file-remove').addEventListener('click', clearFile);
 }
 
-// "Submit it again" on My Submissions lands here with the earlier piece's details in the address.
+// "Submit it again" on My submissions lands here with the earlier piece's details in the address.
 // Fill the form so the new version carries the same title (that is how we connect the two).
 function prefillResubmit() {
   const q = new URLSearchParams(location.search);
