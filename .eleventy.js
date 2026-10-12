@@ -2,6 +2,9 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy("src/media");
   // Plain files shared by link from the partners section, served exactly as-is.
   eleventyConfig.addPassthroughCopy("src/partners/*.pdf");
+  // The Texas flyer is also shared as /Partners/texas-partner-flyer.pdf (capital P).
+  // Pages URLs are case-sensitive, so this copy is what makes that spelling work.
+  eleventyConfig.addPassthroughCopy({ "src/partners/texas-partner-flyer.pdf": "Partners/texas-partner-flyer.pdf" });
   eleventyConfig.addPassthroughCopy("src/assets");
   eleventyConfig.addPassthroughCopy("src/admin");
   eleventyConfig.addPassthroughCopy("src/favicon.svg");
