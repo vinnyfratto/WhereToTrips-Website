@@ -225,6 +225,17 @@ document.addEventListener('click', () => {
   if (columnsPickerOpen) { columnsPickerOpen = false; if (liveMode) renderLiveFeed(lastLiveEvents); }
 });
 
+// Who did it: "First L." for a signed-in person, "Not signed in" plus the short
+// device id for everyone else, and a Test tag for our own and demo accounts.
+function whoHtml(e) {
+  const short = esc(String(e.distinct_id || '').slice(0, 8));
+  const label = e.who
+    ? `${esc(e.who)}`
+    : `<span class="acct-sub" style="font-size:.85em;">Not signed in · ${short}</span>`;
+  const tag = e.is_test ? ' <span class="adm-pill" title="A test account (Data settings)">Test</span>' : '';
+  return label + tag;
+}
+
 function renderLiveFeed(events) {
   lastLiveEvents = events;
   const cols = LIVE_PROP_KEYS.filter((k) => liveColumns.has(k));
@@ -236,7 +247,7 @@ function renderLiveFeed(events) {
       <td style="white-space:nowrap;">${esc(relTime(e.ms))}</td>
       <td>${esc(eventLabel(e.event))}</td>
       ${cells}
-      <td class="acct-sub" style="font-size:.8em; white-space:nowrap;">${esc(String(e.distinct_id || '').slice(0, 8))}</td>
+      <td style="white-space:nowrap;">${whoHtml(e)}</td>
     </tr>`;
   }).join('');
   const colHeads = cols.map((k) => `<th>${esc(k)}</th>`).join('');
