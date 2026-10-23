@@ -1295,9 +1295,9 @@ footer { background: var(--footer); padding: 72px 0 40px; }
    ════════════════════════════════════════════════════════════════════ */
 .noads-points {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: clamp(32px, 4vw, 52px);
-  max-width: 980px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(28px, 3.4vw, 44px);
+  max-width: 1100px;
   margin: 0 auto;
 }
 .noads-rule {
@@ -1307,7 +1307,7 @@ footer { background: var(--footer); padding: 72px 0 40px; }
   background: var(--amber);
   margin-bottom: 14px;
 }
-.noads-point h3 { font-size: 23px; line-height: 1.25; margin-bottom: 10px; }
+.noads-point h3 { font-weight: 700; font-size: 21px; line-height: 1.25; margin-bottom: 10px; }
 .noads-point p { color: var(--ink-soft); line-height: 1.75; }
 .noads-closer {
   max-width: 720px;
@@ -1327,7 +1327,7 @@ footer { background: var(--footer); padding: 72px 0 40px; }
 }
 .noads-link a:hover { text-decoration: underline; }
 
-@media (max-width: 760px) {
+@media (max-width: 900px) {
   .noads-points { grid-template-columns: 1fr; }
 }
 

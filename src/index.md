@@ -110,24 +110,21 @@ sections:
     limit: 6
     footnote: Vibe scores are how the WhereTo Vibe Engine ranks these destinations. Your own matches are scored against your budget, dates and departure city in the app.
   - type: no_ads
-    eyebrow: No ads. Not now, not later.
+    eyebrow: Our promise
     title:
-      pre: The only thing we sell you
-      accent: is a trip
+      pre: No
+      accent: in-app ads
       post: .
-    lede: And none of it comes with in-app ads. Not Google's, not Amazon's, not anybody's. You are too important to us to be treated as someone else's ad revenue.
+    lede: The only things you'll see in WhereTo are your potential destinations. No banners, no sponsored results, and no full-screen ad to close before you can pick a hotel. We don't serve Google ads or Amazon ads, and we never will.
     id: no-ads
     background: false
     points:
-      - title: There is no ad slot to sell
-        body: No banner across the bottom. No sponsored result wearing a badge. No full-screen thing you have to close before you can get back to picking a hotel. We didn't build one and we aren't going to.
-      - title: What you tell us stays with us
-        body: Your budget, your dates, who's coming, the places you looked at twice. We don't sell personal information, and we don't hand it to anyone for their own marketing. That's in our Privacy Statement, not just on this page.
-      - title: Nobody buys their way up your list
-        body: No hotel and no airline pays us to sit higher in your results. The order you see is the order the Vibe Engine scored, against your budget and the vibes you picked. If something's at the top, it's because it fit.
-      - title: We do watch the app, just not you
-        body: We monitor which screens people get stuck on, what crashed, how long a search took. We use that to fix things and it would be irresponsible for us not to. But the way we look at it, your traffic and interests are yours and aren't for sale.
-    closer: Our business is finding you a great trip you might not have otherwise known about. We aren't interested in becoming ad space for Google, Amazon and the others.
+      - title: Nobody pays to move up your list
+        body: No hotel and no airline buys a higher spot. The order you see is the order the Vibe Engine scored, based on your budget and your vibes.
+      - title: Your information is not for sale
+        body: We don't sell your personal information, and we don't hand it to anyone for their own marketing.
+      - title: Your trip gets all the attention
+        body: Your destinations, your flights, your hotels. Nothing else is competing for your attention.
     link:
       label: Read the Privacy Statement
       href: /legal/privacy/
