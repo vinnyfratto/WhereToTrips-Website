@@ -86,29 +86,6 @@ sections:
         body: The Vibe Engine will match you with destinations that meet your vibes. All scored, ranked, and bookable.
       - title: Book your trip package
         body: Each returned destination comes with suggested hotel and flights to match your budget. Change either as you see fit.
-  - type: app_modes
-    eyebrow: Four ways in
-    title:
-      pre: Start with what you want
-      accent: to do
-      post: .
-    lede: "Most travel apps start by asking what airport you're flying to. WhereTo Trips asks something better: what do you actually want to do when you get there?"
-    body: We flip the traditional model on its head by just asking you what you actually want to do and experience, then show you what destinations match. There are four ways to find the trip that was built for you.
-    id: ways
-    background: true
-  - type: vibe_cards
-    eyebrow: Featured Travel Vibes
-    title:
-      pre: The place you'd never have
-      accent: thought of
-      post: .
-    id: vibes
-    background: false
-    center: true
-    intro: Six vibes the engine scores near the top, matched to the destination almost nobody names first. Same feeling, fewer crowds, usually less money.
-    columns: 3
-    limit: 6
-    footnote: Vibe scores are how the WhereTo Vibe Engine ranks these destinations. Your own matches are scored against your budget, dates and departure city in the app.
   - type: no_ads
     eyebrow: Our promise
     title:
@@ -117,7 +94,7 @@ sections:
       post: .
     lede: The only things you'll see in WhereTo are your potential destinations. No banners, no sponsored results, and no full-screen ad to close before you can pick a hotel. We don't serve Google ads or Amazon ads, and we never will.
     id: no-ads
-    background: false
+    background: true
     points:
       - title: Nobody pays to move up your list
         body: No hotel and no airline buys a higher spot. The order you see is the order the Vibe Engine scored, based on your budget and your vibes.
@@ -128,6 +105,29 @@ sections:
     link:
       label: Read the Privacy Statement
       href: /legal/privacy/
+  - type: app_modes
+    eyebrow: Four ways in
+    title:
+      pre: Start with what you want
+      accent: to do
+      post: .
+    lede: "Most travel apps start by asking what airport you're flying to. WhereTo Trips asks something better: what do you actually want to do when you get there?"
+    body: We flip the traditional model on its head by just asking you what you actually want to do and experience, then show you what destinations match. There are four ways to find the trip that was built for you.
+    id: ways
+    background: false
+  - type: vibe_cards
+    eyebrow: Featured Travel Vibes
+    title:
+      pre: The place you'd never have
+      accent: thought of
+      post: .
+    id: vibes
+    background: true
+    center: true
+    intro: Six vibes the engine scores near the top, matched to the destination almost nobody names first. Same feeling, fewer crowds, usually less money.
+    columns: 3
+    limit: 6
+    footnote: Vibe scores are how the WhereTo Vibe Engine ranks these destinations. Your own matches are scored against your budget, dates and departure city in the app.
   - type: cta_band
     eyebrow: Ready to wander?
     title:

@@ -17,17 +17,6 @@ sections:
       alt: "The ten kinds of trip WhereTo starts from, from beaches and food to cities and wildlife"
     imageCycle: "categories"
 
-  - type: app_modes
-    eyebrow: "Four ways in"
-    title:
-      pre: "Pick the one that matches what you "
-      accent: "already know"
-      post: "."
-    lede: "Some people know nothing but the month they can travel. Some know the region. Some know the hotel. Some are trying to get six friends to agree on anything at all. Each of those is a different starting point, so each one gets its own way in."
-    body: "All four end in the same place: real destinations, scored against your budget and the things you want to do, with flights and hotels priced and bookable."
-    id: "ways"
-    background: true
-
   - type: engine_stats
     eyebrow: "The Vibe Engine"
     title:
@@ -39,6 +28,17 @@ sections:
     background: false
     body: "Every guide behind those scores is researched from sources published in the last two years, and every destination is scored on the same six things: how distinctive the experience is there, how good it is, how much of it there is, how easy it is to reach, how reliable it is by season, and what it costs you."
 
+  - type: app_modes
+    eyebrow: "Four ways in"
+    title:
+      pre: "Pick the one that matches what you "
+      accent: "already know"
+      post: "."
+    lede: "Some people know nothing but the month they can travel. Some know the region. Some know the hotel. Some are trying to get six friends to agree on anything at all. Each of those is a different starting point, so each one gets its own way in."
+    body: "All four end in the same place: real destinations, scored against your budget and the things you want to do, with flights and hotels priced and bookable."
+    id: "ways"
+    background: true
+
   - type: steps
     eyebrow: "What the engine weighs"
     title:
@@ -47,7 +47,7 @@ sections:
       post: "."
     lede: "A place has to clear the practical things before the fun ones count for anything."
     id: "scoring"
-    background: true
+    background: false
     steps:
       - title: "Can you afford the whole trip"
         body: "Flight and hotel together, against the budget you set, from your own departure airport."
@@ -66,7 +66,7 @@ sections:
       post: "."
     lede: "This is the picker, not a tag cloud. Every collection opens into the travel styles underneath it, and each of those is scored against real destinations."
     id: "collections"
-    background: false
+    background: true
     footnote: "Same collections, same photos as the app."
 
   - type: cta_band
