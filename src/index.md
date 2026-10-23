@@ -13,11 +13,11 @@ sections:
       WhereTo is the only travel app on the map that is truly interested in you and what you want to experience. 
       Not just what airport you want to fly to.
     primaryBtn:
-      label: Become a Beta Tester
-      href: /beta-signup/
+      label: Get the App
+      href: /app/
     ghostBtn:
-      label: Notify me when Launched
-      href: /notify-launch/
+      label: See how it works
+      href: /how-it-works/
     slides:
       - src: /media/WhereTo_Hero_Beach.jpg
         alt: Turquoise water lapping a wide tropical beach from above
@@ -38,7 +38,7 @@ sections:
         title: 12,000+ Vibes
         text: We'll match your vibes to real destinations worldwide.
       - icon: plane
-        title: 900+ Destinations
+        title: 1,000+ Destinations
         text: Book flights on all major airlines and all major hotels
       - icon: users-group-rounded
         title: Group travel
@@ -46,10 +46,10 @@ sections:
           Imagine being able to plan and book together.
           Now you can!
   - type: feature_split
-    eyebrow: Currently Under Development
+    eyebrow: Now Available
     title:
-      pre: Scheduled to launch
-      accent: October 2026
+      pre: Live now on
+      accent: iOS and Android
       post: ''
     lede: It's about time the travel app industry got disrupted by someone with the traveler's best interests in mind.
     image:
@@ -64,12 +64,12 @@ sections:
     stats: []
     features: []
     cta:
-      label: Join the Beta
-      href: /beta-signup/
+      label: Get the App
+      href: /app/
   - type: steps
     eyebrow: How it works
     title:
-      pre: 12,000+ Vibes, 900+ Destinations.
+      pre: 12,000+ Vibes, 1,000+ Destinations.
       accent: A new kind of travel app
       post: ''
     lede: |-
@@ -81,7 +81,7 @@ sections:
       - title: Tell us what you know
         body: Budget, dates, and who's coming.
       - title: Pick your vibe
-        body: Over 12,000 individual interests (we call vibes) are mapped and scored across over 900 global destinations.
+        body: Over 12,000 individual interests (we call vibes) are mapped and scored across over 1,000 global destinations.
       - title: Your destinations
         body: The Vibe Engine will match you with destinations that meet your vibes. All scored, ranked, and bookable.
       - title: Book your trip package
@@ -138,6 +138,5 @@ sections:
       accent: waiting
       post: .
     id: download
-    body: Launching October 2026 on iOS and Android
-    formLabel: Notify me on launch
+    body: Available now on iOS and Android
 ---

@@ -12,7 +12,7 @@
   },
   "url": "https://wheretotrips.com",
   "contactEmail": "ccupero@vcinnovationsgroup.com",
-  "launchMode": "pre",
+  "launchMode": "post",
   "cta": {
     "pre": {
       "label": "Notify Me on Launch",
@@ -20,12 +20,12 @@
     },
     "post": {
       "label": "Get the App",
-      "href": "/notify-launch/"
+      "href": "/app/"
     }
   },
   "store": {
-    "appleHref": "#",
-    "googleHref": "#"
+    "appleHref": "https://apps.apple.com/us/app/whereto-trips/id6798015454",
+    "googleHref": "https://play.google.com/store/apps/details?id=com.vcinnovationsgroup.whereto"
   },
   "forms": {
     "provider": "web3forms",
@@ -103,12 +103,8 @@
           "href": "/how-it-works/"
         },
         {
-          "label": "Become a Beta Tester",
-          "href": "/beta-signup/"
-        },
-        {
-          "label": "Notify Me at Launch",
-          "href": "/notify-launch/"
+          "label": "Help Center",
+          "href": "https://support.wheretotrips.com"
         }
       ]
     },

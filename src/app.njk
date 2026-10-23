@@ -1,0 +1,79 @@
+---
+layout: layouts/base.njk
+title: "Get the WhereTo App — iOS & Android"
+description: "Download WhereTo for iPhone and Android, for trips departing from US airports. Free to download, no subscription, and no in-app ads."
+permalink: /app/
+---
+{#
+  The download page: what the app is, the two official store badges, and the
+  no-ads promise. Everything else on the site points here. The badges are the
+  files in /StoreBadges/, shown as published (don't recolor or crop them).
+  /get-app/ is the device-aware version that partner links land on.
+#}
+<style>
+  .app-hero { max-width: 1100px; margin: 0 auto; padding: 72px 24px 88px; display: grid; grid-template-columns: 1.1fr .9fr; gap: 56px; align-items: center; }
+  .app-hero h1 { font-size: clamp(38px, 5vw, 60px); line-height: 1.1; }
+  .app-hero h1 em { color: var(--azure); }
+  .app-lede { margin-top: 20px; font-size: 19px; max-width: 30em; }
+  .app-facts { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 22px; font-size: 15px; color: var(--wg600); }
+  .app-facts b { color: var(--navy); font-weight: 600; }
+  .app-badges { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 26px; }
+  .app-badges img { display: block; width: auto; }
+  .app-badges .apple { height: 54px; }
+  .app-badges .google { height: 80px; margin: -13px -8px; } /* Google's PNG carries built-in padding */
+  .app-art { display: flex; justify-content: center; }
+  .app-art img { width: 100%; max-width: 400px; height: auto; }
+
+  .noads { background: var(--wg100); padding: 64px 24px; text-align: center; }
+  .noads-in { max-width: 1080px; margin: 0 auto; }
+  .noads h2 { font-size: clamp(32px, 4vw, 46px); line-height: 1.15; }
+  .noads-lede { max-width: 40em; margin: 16px auto 0; font-size: 18px; }
+  .noads-pts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 38px; text-align: left; }
+  .noads-pts h3 { font-weight: 700; font-size: 20px; line-height: 1.3; margin-bottom: 6px; }
+  .noads-pts p { font-size: 15.5px; line-height: 1.65; }
+  .noads-link { display: inline-block; margin-top: 30px; color: var(--azure); font-weight: 600; font-size: 15px; }
+
+  @media (max-width: 820px) {
+    .app-hero { grid-template-columns: 1fr; padding-top: 40px; gap: 32px; text-align: center; }
+    .app-lede { margin-left: auto; margin-right: auto; }
+    .app-badges, .app-facts { justify-content: center; }
+    .app-art { order: -1; }
+    .app-art img { max-width: 260px; }
+    .noads-pts { grid-template-columns: 1fr; gap: 22px; }
+  }
+</style>
+
+<main>
+  <section class="app-hero">
+    <div>
+      <span class="eyebrow">Free on iPhone and Android</span>
+      <h1>Where will your vibes <em>take you?</em></h1>
+      <p class="app-lede">Tell WhereTo your budget, dates, and what you want to do. It finds the destinations that fit, then books your flights and hotels in the same app.</p>
+
+      <div class="app-facts">
+        <span><b>Free</b> to download, no subscription</span>
+        <span><b>US departures</b> to destinations worldwide</span>
+      </div>
+
+      <div class="app-badges">
+        <a href="{{ site.store.appleHref }}"><img class="apple" src="/StoreBadges/app-store-badge-black.svg" alt="Download on the App Store" height="54" /></a>
+        <a href="{{ site.store.googleHref }}"><img class="google" src="/StoreBadges/google-play-badge.png" alt="Get it on Google Play" height="80" /></a>
+      </div>
+    </div>
+    <div class="app-art"><img src="/media/oniPhone_2.png" alt="The WhereTo app on a phone" width="400" /></div>
+  </section>
+
+  <section class="noads">
+    <div class="noads-in">
+      <span class="eyebrow">Our promise</span>
+      <h2>No in-app ads</h2>
+      <p class="noads-lede">The only things you'll see in WhereTo are your potential destinations. No banners, no sponsored results, and no full-screen ad to close before you can pick a hotel. We don't serve Google ads or Amazon ads, and we never will.</p>
+      <div class="noads-pts">
+        <div><h3>Nobody pays to move up your list</h3><p>No hotel and no airline buys a higher spot. The order you see is the order the Vibe Engine scored, based on your budget and your vibes.</p></div>
+        <div><h3>Your information is not for sale</h3><p>We don't sell your personal information, and we don't hand it to anyone for their own marketing.</p></div>
+        <div><h3>Your trip gets all the attention</h3><p>Your destinations, your flights, your hotels. Nothing else is competing for your attention.</p></div>
+      </div>
+      <a class="noads-link" href="/legal/privacy/">Read our Privacy Statement</a>
+    </div>
+  </section>
+</main>

@@ -11,8 +11,8 @@ sections:
       post: "."
     lede: "Say you're thinking Europe, the Mediterranean. That narrows it to a few hundred places, which isn't the same as narrowing it down."
     primaryBtn:
-      label: "Notify me on launch"
-      href: "/notify-launch/"
+      label: "Get the App"
+      href: "/app/"
     image:
       src: "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/land_nature/image_1_v2.jpg"
       alt: "A river running through a wide green valley under high ridges"

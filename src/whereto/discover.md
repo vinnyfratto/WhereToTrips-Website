@@ -11,8 +11,8 @@ sections:
       post: "."
     lede: "For when you have no idea where to go, and every list you've looked at so far started with an airport."
     primaryBtn:
-      label: "Notify me on launch"
-      href: "/notify-launch/"
+      label: "Get the App"
+      href: "/app/"
     imageCycle: "categories"
     image:
       alt: "The ten kinds of trip WhereTo starts from, from beaches and food to cities and wildlife"

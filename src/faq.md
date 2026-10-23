@@ -1,7 +1,7 @@
 ---
 layout: layouts/page.njk
 title: "FAQ — WhereTo travel app"
-description: "Answers to common questions about WhereTo: how the modes differ, where booking happens, whether prices are real, when the app launches, and how Wander Together privacy works."
+description: "Answers to common questions about WhereTo: how the modes differ, where booking happens, whether prices are real, where to get the app, and how Wander Together privacy works."
 sections:
   - type: faq_accordion
     asH1: true
@@ -24,7 +24,7 @@ sections:
       - q: "Where can I use WhereTo?"
         a: "WhereTo plans trips that depart from US airports, including US territories such as Puerto Rico. Destinations are worldwide. If your trip starts outside the United States, WhereTo can't plan it yet."
       - q: "Is WhereTo available now?"
-        a: "Not yet. WhereTo is in pre-launch and arrives on iOS and Android in October 2026. Leave your email on the Notify Me at Launch page and we will tell you the moment it opens."
+        a: "Yes. WhereTo is free to download on the App Store for iPhone and on Google Play for Android. Visit the Get the App page for both links."
 
   - type: cta_band
     eyebrow: "Still curious?"

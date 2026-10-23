@@ -11,8 +11,8 @@ sections:
       post: "."
     lede: "Most travel search starts with a three-letter code and calls that a destination. An airport is how you get somewhere. It isn't the thing you're choosing."
     primaryBtn:
-      label: "Notify me on launch"
-      href: "/notify-launch/"
+      label: "Get the App"
+      href: "/app/"
     image:
       src: "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/destination-stock-images/1d9679d8-62e7-469d-b152-049ee7119da8/fetched-naples-pexels-1785537223066-0.jpg"
       alt: "The bay of Naples with Vesuvius behind the city"

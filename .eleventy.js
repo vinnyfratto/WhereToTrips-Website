@@ -15,6 +15,7 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy("src/.well-known");
   eleventyConfig.addPassthroughCopy("src/vibes-engine");
   eleventyConfig.addPassthroughCopy("src/DestImages");
+  eleventyConfig.addPassthroughCopy("src/StoreBadges");
   eleventyConfig.addPassthroughCopy("src/vibesimages");
   eleventyConfig.addPassthroughCopy("src/DashboardHero");
   eleventyConfig.addPassthroughCopy("src/VibeSelection");

@@ -39,7 +39,9 @@
     "/privacy/",
     "/terms/",
     "/join/",
-    "/promo/"
+    "/promo/",
+    "/notify-launch/",
+    "/beta-signup/"
   ],
   "aiBots": [
     "GPTBot",

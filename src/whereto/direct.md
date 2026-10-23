@@ -11,8 +11,8 @@ sections:
       post: "."
     lede: "Not every trip needs deciding. Sometimes it's your sister's wedding, or the same week in the same town you take every year."
     primaryBtn:
-      label: "Notify me on launch"
-      href: "/notify-launch/"
+      label: "Get the App"
+      href: "/app/"
     image:
       src: "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/stays_romance/image_1_v2.jpg"
       alt: "A quiet resort terrace looking out over the water at dusk"

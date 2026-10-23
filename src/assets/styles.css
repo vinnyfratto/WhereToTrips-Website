@@ -680,22 +680,9 @@ a.card-photo:hover .card-photo-link span { transform: translateX(4px); }
 .download-band .email-capture input[type="email"]::placeholder { color: rgba(255,255,255,0.5); }
 .download-band .app-disclaimer { color: rgba(255,255,255,0.55); }
 .store-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
-.store-btn {
-  display: inline-flex; align-items: center; gap: 13px;
-  background: rgba(255,255,255,0.1); color: var(--cream);
-  border: 1.5px solid rgba(255,255,255,0.25);
-  border-radius: 14px; padding: 14px 26px;
-  transition: background .2s, transform .18s, box-shadow .18s;
-  backdrop-filter: blur(8px);
-}
-.store-btn:hover {
-  background: rgba(255,255,255,0.18); transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgba(0,0,0,0.3);
-}
-.store-btn svg { flex-shrink: 0; }
-.store-btn-label { display: flex; flex-direction: column; text-align: left; }
-.store-btn-sub { font-size: 10px; font-weight: 300; letter-spacing: 1px; text-transform: uppercase; opacity: 0.65; }
-.store-btn-name { font-family: var(--serif); font-size: 19px; line-height: 1.2; }
+.store-badge { display: inline-flex; align-items: center; transition: transform .18s; }
+.store-badge:hover { transform: translateY(-2px); }
+.store-badge img { display: block; width: auto; }
 
 /* ── Footer ─────────────────────────────── */
 footer { background: var(--footer); padding: 72px 0 40px; }

@@ -11,8 +11,8 @@ sections:
       post: "."
     lede: "Three weeks of messages, four suggestions, nobody booking. Everyone sets their own budget and their own vibes, and the app finds where you all actually overlap."
     primaryBtn:
-      label: "Notify me on launch"
-      href: "/notify-launch/"
+      label: "Get the App"
+      href: "/app/"
     image:
       src: "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/cities_nightlife/image_2_v2.jpg"
       alt: "A group out together at night in a lit-up city street"

@@ -11,8 +11,8 @@ sections:
       post: "."
     lede: "Most travel apps start by asking what airport you're flying to. We ask what you actually want to do when you get there, then show you the places that match. There are four ways in, and the same engine sits under all of them."
     primaryBtn:
-      label: "Notify me on launch"
-      href: "/notify-launch/"
+      label: "Get the App"
+      href: "/app/"
     image:
       alt: "The ten kinds of trip WhereTo starts from, from beaches and food to cities and wildlife"
     imageCycle: "categories"

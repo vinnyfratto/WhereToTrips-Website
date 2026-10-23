@@ -25,7 +25,8 @@ noindex: true
 <link rel="stylesheet" href="/assets/account.css?v={{ buildTime }}" />
 <style>
   .ga-actions { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
-  .ga-actions .btn { width: 100%; text-align: center; }
+  .ga-actions { align-items: center; }
+  .ga-actions .store-badge img { display: block; width: auto; }
   .ga-code-wrap { margin: 22px 0 6px; }
   .ga-code-label { color: var(--wg600); font-size: .95rem; margin: 0 0 8px; }
   .ga-code {
@@ -84,8 +85,9 @@ noindex: true
     var appStore = 'https://apps.apple.com/app/id' + APP_ID
       + (code ? '?ct=' + encodeURIComponent(code) + (APPSTORE_PROVIDER_TOKEN ? '&pt=' + APPSTORE_PROVIDER_TOKEN : '') + '&mt=8' : '');
 
-    var playBtn  = '<a class="btn btn-primary" href="' + play + '">Get it on Google Play</a>';
-    var appleBtn = '<a class="btn btn-primary" href="' + appStore + '">Download on the App Store</a>';
+    // The official badges, kept as published (see /StoreBadges/).
+    var playBtn  = '<a class="store-badge" href="' + play + '"><img src="/StoreBadges/google-play-badge.png" alt="Get it on Google Play" height="80" /></a>';
+    var appleBtn = '<a class="store-badge" href="' + appStore + '"><img src="/StoreBadges/app-store-badge-black.svg" alt="Download on the App Store" height="54" /></a>';
     document.getElementById('ga-stores').innerHTML =
       isIOS ? appleBtn : isAndroid ? playBtn : appleBtn + playBtn;
 

@@ -11,8 +11,8 @@ sections:
       post: "."
     lede: "A vibe is a thing you want to do on a trip. Eat somewhere that takes its food seriously. Dive off a beach instead of a boat. Sit in a temple people still use. We score every destination against every vibe it genuinely delivers, one at a time."
     primaryBtn:
-      label: "Notify me on launch"
-      href: "/notify-launch/"
+      label: "Get the App"
+      href: "/app/"
     image:
       src: "https://pvqwxphrmcvmztlkzhsg.supabase.co/storage/v1/object/public/vibe-taxonomy/shelves/diving_snorkeling/image_1.jpg"
       alt: "A snorkeler over a shallow reef in clear water"
