@@ -680,9 +680,15 @@ a.card-photo:hover .card-photo-link span { transform: translateX(4px); }
 .download-band .email-capture input[type="email"]::placeholder { color: rgba(255,255,255,0.5); }
 .download-band .app-disclaimer { color: rgba(255,255,255,0.55); }
 .store-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
-.store-badge { display: inline-flex; align-items: center; transition: transform .18s; }
+/* The two official badges, same visible height. Apple's SVG is trimmed to the badge, so
+   it is simply 54px tall. Google's PNG (646x250) carries 41px of clear space on every
+   side, so at 80px tall the padding is 13px; pulling it back with a negative margin
+   leaves a visible badge 54px tall and puts both on one line. max-width:none keeps the
+   PNG from being squeezed narrower than its own shape inside a shrink-to-fit link. */
+.store-badge { display: inline-flex; align-items: center; height: 54px; transition: transform .18s; }
 .store-badge:hover { transform: translateY(-2px); }
-.store-badge img { display: block; width: auto; }
+.store-badge img { display: block; width: auto; max-width: none; height: 54px; }
+.store-badge-google img { height: 80px; margin: -13px; }
 
 /* ── Footer ─────────────────────────────── */
 footer { background: var(--footer); padding: 72px 0 40px; }

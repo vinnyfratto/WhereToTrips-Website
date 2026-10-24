@@ -25,7 +25,6 @@ noindex: true
 <style>
   .ga-actions { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
   .ga-actions { align-items: center; }
-  .ga-actions .store-badge img { display: block; width: auto; }
   .ga-trust { margin: 26px auto 0; max-width: 430px; }
   .ga-trust-line span { white-space: nowrap; }
   .ga-trust-line { text-wrap: balance; margin: 0; font-weight: 700; color: var(--navy); font-size: 1rem; }
@@ -80,8 +79,8 @@ noindex: true
       + (code ? '?ct=' + encodeURIComponent(code) + (APPSTORE_PROVIDER_TOKEN ? '&pt=' + APPSTORE_PROVIDER_TOKEN : '') + '&mt=8' : '');
 
     // The official badges, kept as published (see /StoreBadges/).
-    var playBtn  = '<a class="store-badge" href="' + play + '"><img src="/StoreBadges/google-play-badge.png" alt="Get it on Google Play" height="80" /></a>';
-    var appleBtn = '<a class="store-badge" href="' + appStore + '"><img src="/StoreBadges/app-store-badge-black.svg" alt="Download on the App Store" height="54" /></a>';
+    var playBtn  = '<a class="store-badge store-badge-google" href="' + play + '"><img src="/StoreBadges/google-play-badge.png" alt="Get it on Google Play" height="80" /></a>';
+    var appleBtn = '<a class="store-badge store-badge-apple" href="' + appStore + '"><img src="/StoreBadges/app-store-badge-black.svg" alt="Download on the App Store" height="54" /></a>';
     document.getElementById('ga-stores').innerHTML =
       isIOS ? appleBtn : isAndroid ? playBtn : appleBtn + playBtn;
   })();

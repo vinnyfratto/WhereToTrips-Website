@@ -18,9 +18,6 @@ permalink: /app/
   .app-facts { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 22px; font-size: 15px; color: var(--wg600); }
   .app-facts b { color: var(--navy); font-weight: 600; }
   .app-badges { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 26px; }
-  .app-badges img { display: block; width: auto; }
-  .app-badges .apple { height: 54px; }
-  .app-badges .google { height: 80px; margin: -13px -8px; } /* Google's PNG carries built-in padding */
   .app-art { display: flex; justify-content: center; }
   .app-art img { width: 100%; max-width: 400px; height: auto; }
 
@@ -56,8 +53,8 @@ permalink: /app/
       </div>
 
       <div class="app-badges">
-        <a href="{{ site.store.appleHref }}"><img class="apple" src="/StoreBadges/app-store-badge-black.svg" alt="Download on the App Store" height="54" /></a>
-        <a href="{{ site.store.googleHref }}"><img class="google" src="/StoreBadges/google-play-badge.png" alt="Get it on Google Play" height="80" /></a>
+        <a class="store-badge store-badge-apple" href="{{ site.store.appleHref }}"><img src="/StoreBadges/app-store-badge-black.svg" alt="Download on the App Store" height="54" /></a>
+        <a class="store-badge store-badge-google" href="{{ site.store.googleHref }}"><img src="/StoreBadges/google-play-badge.png" alt="Get it on Google Play" height="80" /></a>
       </div>
     </div>
     <div class="app-art"><img src="/media/oniPhone_2.png" alt="The WhereTo app on a phone" width="400" /></div>
