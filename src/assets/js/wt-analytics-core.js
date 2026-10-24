@@ -173,12 +173,15 @@ function relTime(ms) {
 // picked live via the ⚙ Columns button (liveColumns below) — session-only,
 // nothing here persists yet. A "save this view" step is the natural next
 // thing to add once it's clear which columns people actually want kept.
+// `location` is not an event property: the admin fn fills it from PostHog's own
+// reading of the address the event came from ("Dallas, TX"), so it is approximate.
 const LIVE_PROP_KEYS = [
+  'location',
   'destination_code', 'destination_id', 'booking_id', 'search_id',
   'click_type', 'product_type', 'entry_point', 'module_source',
   'price', 'value', 'currency', 'passenger_count', '$pathname', 'surface',
 ];
-let liveColumns = new Set(['destination_code', 'booking_id', 'search_id', 'product_type', 'price']);
+let liveColumns = new Set(['location', 'destination_code', 'booking_id', 'search_id', 'product_type', 'price']);
 let columnsPickerOpen = false;
 let lastLiveEvents = [];
 
