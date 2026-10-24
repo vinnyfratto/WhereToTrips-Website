@@ -244,7 +244,7 @@ function renderLiveFeed(events) {
   const cols = LIVE_PROP_KEYS.filter((k) => liveColumns.has(k));
   const rows = events.map((e) => {
     const p = e.properties || {};
-    const cells = cols.map((k) => `<td class="acct-sub" style="font-size:.85em;">${esc(p[k] ?? '')}</td>`).join('');
+    const cells = cols.map((k) => `<td class="acct-sub" style="font-size:.85em;${k === 'location' ? ' white-space:nowrap;' : ''}">${esc(p[k] ?? '')}</td>`).join('');
     return `
     <tr>
       <td style="white-space:nowrap;">${esc(relTime(e.ms))}</td>
