@@ -16,8 +16,7 @@ noindex: true
     its first open (app src/utils/partnerRef.ts) and links the account at
     sign-up, whichever way they sign up. utm_source/utm_campaign also make
     Play Console's acquisition report count installs per partner.
-  • App Store: Apple passes nothing to the app, so the code is shown here to
-    type into the app's sign-up screen. ct= names the partner in App Store
+  • App Store: Apple passes nothing to the app. ct= names the partner in App Store
     Connect's campaign report once APPSTORE_PROVIDER_TOKEN is filled in
     (App Store Connect > App Analytics > Acquisition > Campaigns > Generate
     a campaign link: the pt= value).
@@ -27,15 +26,6 @@ noindex: true
   .ga-actions { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
   .ga-actions { align-items: center; }
   .ga-actions .store-badge img { display: block; width: auto; }
-  .ga-code-wrap { margin: 22px 0 6px; }
-  .ga-code-label { color: var(--wg600); font-size: .95rem; margin: 0 0 8px; }
-  .ga-code {
-    display: inline-flex; align-items: center; gap: 12px; padding: 10px 16px;
-    border-radius: 10px; background: var(--wg100, #F2F4F6);
-    font-family: var(--mono, ui-monospace, monospace); font-size: 1.2rem;
-    letter-spacing: 2px; color: var(--navy);
-  }
-  .ga-copy { font-family: inherit; font-size: .85rem; letter-spacing: 0; border: 0; background: none; color: var(--azure); font-weight: 600; cursor: pointer; }
   .ga-note { color: var(--wg600); font-size: .95rem; margin: 22px 0 0; }
   .ga-note a { color: var(--azure); font-weight: 600; }
 </style>
@@ -47,11 +37,6 @@ noindex: true
     <p class="acct-sub">Plan trips around your vibes, then book flights and hotels in one place.</p>
 
     <div class="ga-actions" id="ga-stores"></div>
-
-    <div class="ga-code-wrap" id="ga-code-wrap" style="display:none;">
-      <p class="ga-code-label" id="ga-code-label">When you create your account in the app, enter this partner code:</p>
-      <div class="ga-code"><span id="ga-code"></span><button class="ga-copy" id="ga-copy" type="button">Copy</button></div>
-    </div>
 
     <p class="ga-note">Rather start on the web? <a href="/account/signup/">Create your account here</a>, then sign in to the app with it.</p>
   </div>
@@ -90,21 +75,5 @@ noindex: true
     var appleBtn = '<a class="store-badge" href="' + appStore + '"><img src="/StoreBadges/app-store-badge-black.svg" alt="Download on the App Store" height="54" /></a>';
     document.getElementById('ga-stores').innerHTML =
       isIOS ? appleBtn : isAndroid ? playBtn : appleBtn + playBtn;
-
-    if (code) {
-      document.getElementById('ga-code').textContent = code;
-      document.getElementById('ga-code-wrap').style.display = 'block';
-      if (isAndroid) {
-        // Carried through the install; the code is only a backup here.
-        document.getElementById('ga-code-label').textContent =
-          'Your partner code comes with the app. If the sign-up screen asks, it is:';
-      }
-      document.getElementById('ga-copy').addEventListener('click', function () {
-        var btn = this;
-        (navigator.clipboard ? navigator.clipboard.writeText(code) : Promise.reject())
-          .then(function () { btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = 'Copy'; }, 1500); })
-          .catch(function () {});
-      });
-    }
   })();
 </script>
