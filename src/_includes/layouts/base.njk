@@ -107,10 +107,23 @@
   </script>
   {#- Meta Pixel — dataset "WhereToTrips.com Pixel" in the VC Innovations Group
       business portfolio. Same gates as PostHog: never on /admin* pages and
-      never in a browser marked internal, so our own visits don't train ads. -#}
+      never in a browser marked internal, so our own visits don't train ads.
+      Also never when the visitor has opted out of sharing: either their browser
+      sends Global Privacy Control, or they used the "Do Not Sell or Share My
+      Personal Information" link (/privacy-choices/), which sets wt_ad_optout.
+      Privacy Statement Section 8.2 promises exactly this. -#}
   {% if site.analytics.metaPixelId %}
   <script>
-    if (!wtInternal && !/^\/admin/.test(window.location.pathname)) {
+    var wtAdOptOut = navigator.globalPrivacyControl === true;
+    try { if (localStorage.getItem('wt_ad_optout') === '1') wtAdOptOut = true; } catch (e) { /* storage blocked: GPC alone decides */ }
+    if (wtAdOptOut) {
+      // Drop Meta's browser cookies if an earlier visit set them.
+      ['_fbp', '_fbc'].forEach(function (c) {
+        document.cookie = c + '=; Max-Age=0; path=/';
+        document.cookie = c + '=; Max-Age=0; path=/; domain=.' + location.hostname.replace(/^www\./, '');
+      });
+    }
+    if (!wtInternal && !wtAdOptOut && !/^\/admin/.test(window.location.pathname)) {
       !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
       fbq('init', '{{ site.analytics.metaPixelId }}');
       fbq('track', 'PageView');
