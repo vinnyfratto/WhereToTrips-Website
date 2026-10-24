@@ -32,7 +32,7 @@ We collect the categories of personal information described below, depending on 
 | Travel booking details | Traveler names, contact details, booking dates, itinerary preferences and special requests. For flights: full name as shown on government-issued ID, date of birth and gender. For international itineraries: passport number, nationality and expiration date | You, directly | Completing and managing travel reservations | 7 years after travel is completed, for tax, accounting and dispute-resolution requirements |
 | Payment information | None. Card details are entered into our booking partner's secure payment interface. WhereTo receives only confirmation that payment was completed | Not collected by WhereTo | Not applicable; payment is collected by our booking partner as merchant of record | Not retained by WhereTo |
 | Approximate location | IP-based or coarse location (e.g., city or region level) | Your device, automatically | Localizing search results, fraud prevention, account security | 13 months |
-| Device and usage data | Device type, operating system, app version, crash logs, interaction data, and (on Android) the Android advertising ID; on the Site, pages viewed and button clicks | Your device, automatically | App functionality, diagnostics, improving the App | 24 months |
+| Device and usage data | Device type, operating system, app version, crash logs, interaction data, the Android advertising ID (on Android), and the Identifier for Advertisers (on Apple devices, only if you allow tracking); on the Site, pages viewed and button clicks | Your device, automatically | App functionality, diagnostics, improving the App | 24 months |
 
 ### 2.1 Account Creation and Authentication
 
@@ -56,7 +56,7 @@ We collect approximate location information, such as the location associated wit
 
 ### 2.4 Automatically Collected Information
 
-Like most apps, we automatically collect certain technical information when you use the App, including device identifiers, operating system and version, app version, language settings, log and diagnostic data, and general usage and interaction data (such as features used and pages viewed). On Android, we also collect the Android advertising ID. On our website, we collect pages viewed and button clicks. This information helps us operate, secure, troubleshoot, improve the App, and measure the performance of our advertising campaigns.
+Like most apps, we automatically collect certain technical information when you use the App, including device identifiers, operating system and version, app version, language settings, log and diagnostic data, and general usage and interaction data (such as features used and pages viewed). On Android, we also collect the Android advertising ID. On Apple devices, the App asks whether you allow it to track your activity, as Apple requires, and we collect your device's Identifier for Advertisers ("IDFA") only if you choose to allow tracking. On our website, we collect pages viewed and button clicks. This information helps us operate, secure, troubleshoot, improve the App, and measure the performance of our advertising campaigns.
 
 ### 2.5 Travel Booking and Traveler Information
 
@@ -96,7 +96,7 @@ We share personal information only in the circumstances described below. Some of
 | Nuitée (booking platform and agent of record) and travel booking suppliers | Traveler name, contact information, and itinerary details necessary to fulfill your reservation, including the traveler identifiers airlines require for flight bookings | To complete and service the travel booking you requested |
 | Nuitée and its payment processor | Payment details you enter at checkout, collected and processed by Nuitée as merchant of record through its payment processor | To process payment for your booking; WhereTo is not a party to the card transaction and receives only confirmation of payment |
 | Google / Meta (Facebook) | Authentication tokens exchanged if you choose to sign in with these services | To verify your identity and let you log in without a separate password |
-| Meta Platforms, Inc. (advertising measurement) | Android advertising ID, app install and app open events; website visits and button clicks via the Meta Pixel | Advertising measurement and attribution (e.g., whether an ad led to an install or visit to the Site), and to help show our ads to similar audiences. See Section 8.2 for opt-out options. |
+| Meta Platforms, Inc. (advertising measurement) | App install and app open events, the Android advertising ID, and on Apple devices the IDFA if you allow tracking; website visits and button clicks via the Meta Pixel | Advertising measurement and attribution (e.g., whether an ad led to an install or visit to the Site), and to help show our ads to similar audiences. See Section 8.2 for opt-out options. |
 | Service providers (hosting, analytics, customer support tools) | Limited data necessary for the provider to perform its function | To operate, secure, and improve the App, under contractual confidentiality and use restrictions |
 | Legal and safety authorities | Information as required to comply with law, enforce our terms, or protect rights and safety | Legal compliance and protection of users, the public, and the Company |
 | Government agencies (TSA, U.S. Customs and Border Protection) | Passenger identifying information required for aviation security and border screening, including full name, date of birth, gender, and for international travel passport and nationality details | To comply with the TSA Secure Flight program and Advance Passenger Information System requirements |
@@ -135,13 +135,14 @@ Residents of certain U.S. states (including California, Colorado, Connecticut, V
 
 ### 8.2 Your Privacy Choices — Do Not Sell or Share My Personal Information
 
-We share certain data (Android advertising ID and app and website events) with Meta Platforms for advertising measurement and attribution. Under the CCPA and similar state laws, this may qualify as "selling" or "sharing" personal information. You have the right to opt out.
+We share certain data (app and website events, the Android advertising ID, and on Apple devices the IDFA if you allow tracking) with Meta Platforms for advertising measurement and attribution. Under the CCPA and similar state laws, this may qualify as "selling" or "sharing" personal information. You have the right to opt out.
 
 How to opt out:
 
 - **Website:** click the "Do Not Sell or Share My Personal Information" link in the footer of wheretotrips.com.
 - **App:** go to Settings → Privacy → Privacy Choices within the WhereTo Trips app.
 - **Android advertising ID:** go to your device Settings → Privacy → Ads → Delete advertising ID, or select "Opt out of Ads Personalization." This prevents apps from using your advertising ID for targeted advertising across your device.
+- **Apple devices:** when the App asks whether to allow tracking, choose "Ask App Not to Track," and the App will not collect your IDFA. You can change this choice at any time in your device Settings → Privacy & Security → Tracking. This choice controls the IDFA only; to also stop the app install and app open events described above, use Privacy Choices in the App.
 - **Global Privacy Control (GPC):** our website reads the GPC browser signal. If your browser or extension sends a GPC signal, we treat it as an opt-out of sharing for advertising purposes automatically, without any further action required.
 
 If you opt out, we will stop sharing your information with Meta for advertising measurement and attribution. Opting out does not affect other disclosures described in this Privacy Statement, such as sharing necessary to complete a booking.
@@ -160,7 +161,7 @@ We will verify your identity before processing a deletion request (typically by 
 
 ## 9. Cookies and Similar Technologies
 
-Our website (wheretotrips.com) uses the Meta Pixel, a tracking tool that collects pages viewed and button clicks and sends that information to Meta Platforms for advertising measurement. Our Android app includes the Meta SDK, which collects the Android advertising ID and app install and open events for the same purpose. We also use cookies and similar technologies to support authentication, remember preferences, and analyze usage. Where required by applicable law, we will provide additional notice and obtain consent for non-essential technologies. See Section 8.2 for opt-out options.
+Our website (wheretotrips.com) uses the Meta Pixel, a tracking tool that collects pages viewed and button clicks and sends that information to Meta Platforms for advertising measurement. The App includes the Meta SDK, which collects app install and open events for the same purpose, together with the Android advertising ID on Android devices and, on Apple devices, the IDFA only if you allow tracking. We also use cookies and similar technologies to support authentication, remember preferences, and analyze usage. Where required by applicable law, we will provide additional notice and obtain consent for non-essential technologies. See Section 8.2 for opt-out options.
 
 ## 10. Third-Party Services and Links
 
@@ -180,7 +181,7 @@ The App is not directed to, and is not intended for use by, individuals under th
 
 We may update this Privacy Statement from time to time to reflect changes in our practices, technology, legal requirements, or other factors. We will post the updated version in the App with a revised "Last Updated" date, and, where required by law, will provide additional notice or obtain consent before making material changes. Your continued use of the App after an update constitutes acceptance of the revised Privacy Statement.
 
-Summary of changes in this version (October 24, 2026): we added Section 2.6 (Partner Referrals), which describes how we attribute App downloads and new accounts to the partner who referred you, and a corresponding purpose in Section 3.
+Summary of changes in this version (October 24, 2026): we added Section 2.6 (Partner Referrals), which describes how we attribute App downloads and new accounts to the partner who referred you, and a corresponding purpose in Section 3. We also extended the Meta SDK disclosures to the App on Apple devices, where the IDFA is collected only if you allow tracking, in Section 2 (the table and Section 2.4), Section 4 (Disclosures), Section 8.2 (a new opt-out for Apple devices), and Section 9 (Cookies and SDKs).
 
 Summary of changes in the October 23, 2026 version: we added disclosures about our use of the Meta Pixel on wheretotrips.com and the Meta SDK in our Android app for advertising measurement and attribution; updated Section 2.4 (Automatically Collected Information), Section 3 (Purposes), Section 4 (Disclosures), Section 8.1 (State Residents notice), Section 8.2 (new "Your Privacy Choices" and opt-out), Section 9 (Cookies and SDKs), and Section 10 (Third-Party Services) accordingly. The account deletion section is renumbered from 8.2 to 8.3.
 
