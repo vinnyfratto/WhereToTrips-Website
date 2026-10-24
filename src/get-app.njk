@@ -17,9 +17,11 @@ noindex: true
     sign-up, whichever way they sign up. utm_source/utm_campaign also make
     Play Console's acquisition report count installs per partner.
   • App Store: Apple passes nothing to the app. ct= names the partner in App Store
-    Connect's campaign report once APPSTORE_PROVIDER_TOKEN is filled in
-    (App Store Connect > App Analytics > Acquisition > Campaigns > Generate
-    a campaign link: the pt= value).
+    Connect's campaign report (Analytics > Acquisition > Campaigns), and pt= is
+    our provider token from that page's "Generate a Campaign Link". Those are
+    totals only. The partner's credit for the person comes two ways: the app's
+    server matches the install to this click by network (record-install), and
+    the code shown below can be typed under Partner code at sign-up.
 #}
 <link rel="stylesheet" href="/assets/account.css?v={{ buildTime }}" />
 <style>
@@ -31,6 +33,12 @@ noindex: true
   .ga-trust-sub { text-wrap: balance; margin: 8px 0 0; color: var(--wg600); font-size: .95rem; line-height: 1.5; }
   .ga-note { color: var(--wg600); font-size: .95rem; margin: 22px 0 0; }
   .ga-note a { color: var(--azure); font-weight: 600; }
+  .ga-code { margin: 22px auto 0; max-width: 380px; padding: 16px 18px; border: 1px solid var(--wg200, #e3e5e8); border-radius: 14px; }
+  .ga-code[hidden] { display: none; }
+  .ga-code-label { margin: 0; color: var(--wg600); font-size: .9rem; }
+  .ga-code-value { margin: 4px 0 10px; font-size: 1.6rem; font-weight: 800; letter-spacing: .04em; color: var(--navy); word-break: break-all; }
+  .ga-code-copy { font: inherit; font-weight: 700; color: #fff; background: var(--azure); border: 0; border-radius: 999px; padding: 10px 22px; cursor: pointer; }
+  .ga-code-help { text-wrap: balance; margin: 12px 0 0; color: var(--wg600); font-size: .95rem; line-height: 1.5; }
 </style>
 
 <main class="acct">
@@ -40,6 +48,14 @@ noindex: true
     <p class="acct-sub">Plan trips around your vibes, then book flights and hotels in one place.</p>
 
     <div class="ga-actions" id="ga-stores"></div>
+
+    {# iPhone only, and only after a partner's link: the App Store cannot carry the code into the app. #}
+    <div class="ga-code" id="ga-code" hidden>
+      <p class="ga-code-label">Your partner code</p>
+      <p class="ga-code-value" id="ga-code-text"></p>
+      <button type="button" class="ga-code-copy" id="ga-code-copy">Copy code</button>
+      <p class="ga-code-help">When you create your account in the app, paste it under Partner code so the creator who sent you gets the credit.</p>
+    </div>
 
     <div class="ga-trust">
       <p class="ga-trust-line"><span>Free to download.</span> <span>No subscription.</span> <span>No in-app ads.</span></p>
@@ -52,8 +68,8 @@ noindex: true
 
 <script>
   (function () {
-    // Fill in from App Store Connect to count installs per partner there.
-    var APPSTORE_PROVIDER_TOKEN = '';
+    // Our provider token, from App Store Connect's "Generate a Campaign Link".
+    var APPSTORE_PROVIDER_TOKEN = '129265814';
     var APP_ID  = '6798015454';
     var PACKAGE = 'com.vcinnovationsgroup.whereto';
 
@@ -75,13 +91,29 @@ noindex: true
       : '';
     var play = 'https://play.google.com/store/apps/details?id=' + PACKAGE
       + (referrer ? '&referrer=' + encodeURIComponent(referrer) : '');
-    var appStore = 'https://apps.apple.com/app/id' + APP_ID
-      + (code ? '?ct=' + encodeURIComponent(code) + (APPSTORE_PROVIDER_TOKEN ? '&pt=' + APPSTORE_PROVIDER_TOKEN : '') + '&mt=8' : '');
+    // Apple's own campaign link format, so the install shows under Campaigns.
+    var appStore = code
+      ? 'https://apps.apple.com/app/apple-store/id' + APP_ID + '?pt=' + APPSTORE_PROVIDER_TOKEN + '&ct=' + encodeURIComponent(code) + '&mt=8'
+      : 'https://apps.apple.com/app/id' + APP_ID;
 
     // The official badges, kept as published (see /StoreBadges/).
     var playBtn  = '<a class="store-badge store-badge-google" href="' + play + '"><img src="/StoreBadges/google-play-badge.png" alt="Get it on Google Play" height="80" /></a>';
     var appleBtn = '<a class="store-badge store-badge-apple" href="' + appStore + '"><img src="/StoreBadges/app-store-badge-black.svg" alt="Download on the App Store" height="54" /></a>';
     document.getElementById('ga-stores').innerHTML =
       isIOS ? appleBtn : isAndroid ? playBtn : appleBtn + playBtn;
+
+    // Android carries the code itself (install referrer), so only iPhone shows it.
+    if (code && isIOS) {
+      var box = document.getElementById('ga-code');
+      var btn = document.getElementById('ga-code-copy');
+      document.getElementById('ga-code-text').textContent = code;
+      box.hidden = false;
+      btn.addEventListener('click', function () {
+        var done = function () { btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = 'Copy code'; }, 1500); };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(code).then(done, function () { /* the code is on screen to type */ });
+        }
+      });
+    }
   })();
 </script>
