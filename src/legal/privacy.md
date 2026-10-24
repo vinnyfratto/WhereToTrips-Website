@@ -140,7 +140,7 @@ We share certain data (app and website events, the Android advertising ID, and o
 How to opt out:
 
 - **Website:** click the "Do Not Sell or Share My Personal Information" link in the footer of wheretotrips.com.
-- **App:** go to Settings → Privacy → Privacy Choices within the WhereTo Trips app.
+- **App:** open the menu, then go to About → Privacy Choices within the WhereTo Trips app.
 - **Android advertising ID:** go to your device Settings → Privacy → Ads → Delete advertising ID, or select "Opt out of Ads Personalization." This prevents apps from using your advertising ID for targeted advertising across your device.
 - **Apple devices:** when the App asks whether to allow tracking, choose "Ask App Not to Track," and the App will not collect your IDFA. You can change this choice at any time in your device Settings → Privacy & Security → Tracking. This choice controls the IDFA only; to also stop the app install and app open events described above, use Privacy Choices in the App.
 - **Global Privacy Control (GPC):** our website reads the GPC browser signal. If your browser or extension sends a GPC signal, we treat it as an opt-out of sharing for advertising purposes automatically, without any further action required.
