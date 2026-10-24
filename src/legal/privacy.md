@@ -182,5 +182,4 @@ If you have questions, concerns, or requests regarding this Privacy Statement or
 **VC Innovations Group LLC d/b/a WhereTo Trips**<br>
 Attn: Privacy Department<br>
 Email: [privacy@wheretotrips.com](mailto:privacy@wheretotrips.com)<br>
-Account or Data Deletion Requests: [privacy@wheretotrips.com](mailto:privacy@wheretotrips.com)<br>
-Mailing Address: [insert company mailing address]
+Account or Data Deletion Requests: [privacy@wheretotrips.com](mailto:privacy@wheretotrips.com)

@@ -218,5 +218,4 @@ If you have questions about these Terms, please contact us at:
 
 **VC Innovations Group LLC d/b/a WhereTo Trips**<br>
 Attn: Legal Department<br>
-Email: [support@wheretotrips.com](mailto:support@wheretotrips.com)<br>
-Mailing Address: [insert company mailing address]
+Email: [support@wheretotrips.com](mailto:support@wheretotrips.com)
