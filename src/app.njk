@@ -18,6 +18,7 @@ permalink: /app/
   .app-facts { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 22px; font-size: 15px; color: var(--wg600); }
   .app-facts b { color: var(--navy); font-weight: 600; }
   .app-badges { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 26px; }
+  .app-badges .store-badge[hidden] { display: none; } /* the badge rule sets display, which would otherwise beat [hidden] */
   .app-art { display: flex; justify-content: center; }
   .app-art img { width: 100%; max-width: 400px; height: auto; }
 
@@ -53,8 +54,8 @@ permalink: /app/
       </div>
 
       <div class="app-badges">
-        <a class="store-badge store-badge-apple" href="{{ site.store.appleHref }}"><img src="/StoreBadges/app-store-badge-black.svg" alt="Download on the App Store" height="54" /></a>
-        <a class="store-badge store-badge-google" href="{{ site.store.googleHref }}"><img src="/StoreBadges/google-play-badge.png" alt="Get it on Google Play" height="80" /></a>
+        <a class="store-badge store-badge-apple" data-store="apple" href="{{ site.store.appleHref }}"><img src="/StoreBadges/app-store-badge-black.svg" alt="Download on the App Store" height="54" /></a>
+        <a class="store-badge store-badge-google" data-store="google" href="{{ site.store.googleHref }}"><img src="/StoreBadges/google-play-badge.png" alt="Get it on Google Play" height="80" /></a>
       </div>
     </div>
     <div class="app-art"><img src="/media/oniPhone_2.png" alt="The WhereTo app on a phone" width="400" /></div>
@@ -74,3 +75,18 @@ permalink: /app/
     </div>
   </section>
 </main>
+
+<script>
+  /* Phones see only their own store's badge. Both badges are in the page, so a
+     computer, a tablet, a crawler or a browser without scripts still sees both;
+     this only hides the one that does not apply. Same test as /get-app/. */
+  (function () {
+    var ua = navigator.userAgent || '';
+    var ios = /iPhone|iPod/i.test(ua);
+    var android = /Android/i.test(ua) && /Mobile/i.test(ua);
+    var hide = ios ? 'google' : android ? 'apple' : '';
+    if (!hide) return;
+    var el = document.querySelector('.app-badges [data-store="' + hide + '"]');
+    if (el) el.hidden = true;
+  })();
+</script>
