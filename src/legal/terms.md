@@ -1,12 +1,12 @@
 ---
 title: "Terms of Service"
-updated: "June 25, 2026"
+updated: "October 23, 2026"
 effective: "June 25, 2026"
 description: "The terms governing your use of the WhereTo Trips app and wheretotrips.com, operated by VC Innovations Group LLC d/b/a WhereTo Trips."
 ---
 
 **Operated by VC Innovations Group LLC d/b/a WhereTo Trips**<br>
-Effective Date: June 25, 2026 &nbsp;|&nbsp; Last Updated: June 25, 2026
+Effective Date: June 25, 2026 &nbsp;|&nbsp; Last Updated: October 23, 2026
 
 VC Innovations Group LLC, a Texas limited liability company doing business as WhereTo Trips ("WhereTo Trips," "Company," "we," "us," or "our"), develops and operates the WhereTo Trips mobile application for iOS and Android (the "App") and the website at wheretotrips.com (the "Site"), through which users can discover, compare, and book travel reservations, including but not limited to flights, hotels, and other travel-related services (the "Services"). These Terms of Service ("Terms") constitute a legally binding agreement between you ("you," "user," or "your") and WhereTo Trips governing your access to and use of the App and the Site. References in these Terms to "WhereTo Trips" mean VC Innovations Group LLC, the legal entity with which you are contracting; "WhereTo Trips" is the assumed name under which that entity does business.
 
@@ -127,6 +127,8 @@ Sections of these Terms that by their nature should survive termination, includi
 ## 13. Privacy
 
 Your use of the App is also governed by our [Privacy Statement](/legal/privacy/), which describes how we collect, use, and disclose personal information, including in connection with third-party sign-in providers, our booking partner, and its payment processor. The same Privacy Statement applies to information we collect through wheretotrips.com and any other website we operate that links to it. Please review the Privacy Statement before using the App or the website.
+
+Your use of the App is subject to our Privacy Statement, which describes how we use advertising and measurement tools.
 
 ## 14. Modifications to the App and These Terms
 

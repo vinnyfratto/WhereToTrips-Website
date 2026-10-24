@@ -98,8 +98,8 @@ sections:
     points:
       - title: Nobody pays to move up your list
         body: No hotel and no airline buys a higher spot. The order you see is the order the Vibe Engine scored, based on your budget and your vibes.
-      - title: Your information is not for sale
-        body: We don't sell your personal information, and we don't hand it to anyone for their own marketing.
+      - title: Your information stays yours
+        body: We use it to plan and book your trip. The only advertising measurement we do is with Meta, and you can opt out at any time.
       - title: Your trip gets all the attention
         body: Your destinations, your flights, your hotels. Nothing else is competing for your attention.
     link:

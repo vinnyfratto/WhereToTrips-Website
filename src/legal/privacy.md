@@ -1,18 +1,20 @@
 ---
 title: "Privacy Statement"
-updated: "June 25, 2026"
+updated: "October 23, 2026"
 effective: "June 25, 2026"
 description: "How VC Innovations Group LLC d/b/a WhereTo Trips collects, uses, discloses, and protects personal information in the WhereTo Trips app and on wheretotrips.com."
 ---
 
 **Operated by VC Innovations Group LLC d/b/a WhereTo Trips**<br>
-Effective Date: June 25, 2026 &nbsp;|&nbsp; Last Updated: June 25, 2026
+Effective Date: June 25, 2026 &nbsp;|&nbsp; Last Updated: October 23, 2026
 
 VC Innovations Group LLC, a Texas limited liability company doing business as WhereTo Trips ("WhereTo Trips," "Company," "we," "us," or "our"), provides the WhereTo Trips travel application (the "App") and the website at wheretotrips.com (the "Site," and together with the App, the "Services"). References in this Privacy Statement to "WhereTo Trips" mean VC Innovations Group LLC, the legal entity that operates the Services. This Privacy Statement explains how we collect, use, disclose, and protect personal information when you access or use the App or the Site, and describes the choices and rights available to you. References to the App include the Site except where the context requires otherwise, such as descriptions of booking and payment, which take place only in the App.
 
 The Services are offered only in the United States, to individuals who are at least 18 years of age. The App is distributed only through the United States storefronts of the Apple App Store and Google Play, which are determined by the billing address associated with your store account, and reservations made through the App must originate in the United States. United States residency is not a requirement. This Privacy Statement is intended to satisfy applicable disclosure requirements under U.S. federal and state law, including comprehensive state privacy laws such as the California Consumer Privacy Act ("CCPA"), as amended by the California Privacy Rights Act ("CPRA"), and similar laws in other states. We do not market or offer the Services outside the United States, and this Privacy Statement does not address obligations under the laws of other jurisdictions, such as the EU General Data Protection Regulation or the UK GDPR. If we expand the Services to other regions in the future, we will update this Privacy Statement accordingly before doing so.
 
 By creating an account, accessing, or using the App or the Site, you acknowledge that you have read and understood this Privacy Statement. If you do not agree with our practices, please do not use the Services.
+
+Your use of the App is also subject to our Terms of Service. The Terms of Service describe your agreement with WhereTo Trips, including how bookings are made, payment terms, and dispute resolution. This Privacy Statement describes how we use advertising and measurement tools as part of operating the Services.
 
 ## 1. Scope and Eligibility
 
@@ -30,7 +32,7 @@ We collect the categories of personal information described below, depending on 
 | Travel booking details | Traveler names, contact details, booking dates, itinerary preferences and special requests. For flights: full name as shown on government-issued ID, date of birth and gender. For international itineraries: passport number, nationality and expiration date | You, directly | Completing and managing travel reservations | 7 years after travel is completed, for tax, accounting and dispute-resolution requirements |
 | Payment information | None. Card details are entered into our booking partner's secure payment interface. WhereTo receives only confirmation that payment was completed | Not collected by WhereTo | Not applicable; payment is collected by our booking partner as merchant of record | Not retained by WhereTo |
 | Approximate location | IP-based or coarse location (e.g., city or region level) | Your device, automatically | Localizing search results, fraud prevention, account security | 13 months |
-| Device and usage data | Device type, operating system, app version, crash logs, interaction data | Your device, automatically | App functionality, diagnostics, improving the App | 24 months |
+| Device and usage data | Device type, operating system, app version, crash logs, interaction data, and (on Android) the Android advertising ID; on the Site, pages viewed and button clicks | Your device, automatically | App functionality, diagnostics, improving the App | 24 months |
 
 ### 2.1 Account Creation and Authentication
 
@@ -54,7 +56,7 @@ We collect approximate location information, such as the location associated wit
 
 ### 2.4 Automatically Collected Information
 
-Like most apps, we automatically collect certain technical information when you use the App, including device identifiers, operating system and version, app version, language settings, log and diagnostic data, and general usage and interaction data (such as features used and pages viewed). This information helps us operate, secure, troubleshoot, and improve the App.
+Like most apps, we automatically collect certain technical information when you use the App, including device identifiers, operating system and version, app version, language settings, log and diagnostic data, and general usage and interaction data (such as features used and pages viewed). On Android, we also collect the Android advertising ID. On our website, we collect pages viewed and button clicks. This information helps us operate, secure, troubleshoot, improve the App, and measure the performance of our advertising campaigns.
 
 ### 2.5 Travel Booking and Traveler Information
 
@@ -75,17 +77,19 @@ We use the personal information described above for the following purposes:
 - To communicate with you, including booking confirmations, service updates, and responses to inquiries.
 - To detect, investigate, and prevent fraud, abuse, and security incidents.
 - To maintain, secure, debug, and improve the App's functionality and performance.
+- To measure and improve the performance of our advertising, including whether an ad led to an app install or a visit to the Site.
 - To comply with applicable legal obligations and enforce our Terms of Service.
 
-## 4. No Sale of Personal Information; Limited Disclosures
+## 4. Disclosures to Third Parties
 
-WhereTo Trips does not sell personal information, and we do not share your personal information with third parties for their own independent marketing purposes. We disclose personal information only in the limited circumstances described below, and only to the extent necessary for the stated purpose.
+We share personal information only in the circumstances described below. Some of this sharing, including sharing with Meta Platforms for advertising measurement, may constitute "sharing" or "sale" of personal information under certain state privacy laws. You have the right to opt out; see Section 8.2 for how to do that.
 
 | Recipient | What We Share | Why |
 | --- | --- | --- |
 | Nuitée (booking platform and agent of record) and travel booking suppliers | Traveler name, contact information, and itinerary details necessary to fulfill your reservation, including the traveler identifiers airlines require for flight bookings | To complete and service the travel booking you requested |
 | Nuitée and its payment processor | Payment details you enter at checkout, collected and processed by Nuitée as merchant of record through its payment processor | To process payment for your booking; WhereTo is not a party to the card transaction and receives only confirmation of payment |
 | Google / Meta (Facebook) | Authentication tokens exchanged if you choose to sign in with these services | To verify your identity and let you log in without a separate password |
+| Meta Platforms, Inc. (advertising measurement) | Android advertising ID, app install and app open events; website visits and button clicks via the Meta Pixel | Advertising measurement and attribution (e.g., whether an ad led to an install or visit to the Site), and to help show our ads to similar audiences. See Section 8.2 for opt-out options. |
 | Service providers (hosting, analytics, customer support tools) | Limited data necessary for the provider to perform its function | To operate, secure, and improve the App, under contractual confidentiality and use restrictions |
 | Legal and safety authorities | Information as required to comply with law, enforce our terms, or protect rights and safety | Legal compliance and protection of users, the public, and the Company |
 | Government agencies (TSA, U.S. Customs and Border Protection) | Passenger identifying information required for aviation security and border screening, including full name, date of birth, gender, and for international travel passport and nationality details | To comply with the TSA Secure Flight program and Advance Passenger Information System requirements |
@@ -122,7 +126,20 @@ To exercise any of these rights, please contact us using the information in Sect
 
 Residents of certain U.S. states (including California, Colorado, Connecticut, Virginia, Utah, and others with comprehensive privacy laws) may have additional rights, including the right to know, delete, correct, and opt out of certain processing, including the use of certain cookie-based or cross-context advertising technologies, to the extent applicable. As stated above, WhereTo Trips does not sell or share personal information. We collect certain sensitive personal information, described in Section 2.5, and we use it only as necessary to provide the App and the travel services you request. Because our use is limited to those purposes, we are not required to offer a separate right to limit the use of sensitive personal information.
 
-### 8.2 Access, Correction, and Account Deletion
+### 8.2 Your Privacy Choices — Do Not Sell or Share My Personal Information
+
+We share certain data (Android advertising ID and app and website events) with Meta Platforms for advertising measurement and attribution. Under the CCPA and similar state laws, this may qualify as "selling" or "sharing" personal information. You have the right to opt out.
+
+How to opt out:
+
+- **Website:** click the "Do Not Sell or Share My Personal Information" link in the footer of wheretotrips.com.
+- **App:** go to Settings → Privacy → Privacy Choices within the WhereTo Trips app.
+- **Android advertising ID:** go to your device Settings → Privacy → Ads → Delete advertising ID, or select "Opt out of Ads Personalization." This prevents apps from using your advertising ID for targeted advertising across your device.
+- **Global Privacy Control (GPC):** our website reads the GPC browser signal. If your browser or extension sends a GPC signal, we treat it as an opt-out of sharing for advertising purposes automatically, without any further action required.
+
+If you opt out, we will stop sharing your information with Meta for advertising measurement and attribution. Opting out does not affect other disclosures described in this Privacy Statement, such as sharing necessary to complete a booking.
+
+### 8.3 Access, Correction, and Account Deletion
 
 You have the right to access, correct, and delete your personal data at any time. To request access to, correction of, or deletion of your personal information, or to request deletion of your account and all associated data, you may email us at [privacy@wheretotrips.com](mailto:privacy@wheretotrips.com).
 
@@ -136,11 +153,17 @@ We will verify your identity before processing a deletion request (typically by 
 
 ## 9. Cookies and Similar Technologies
 
-The App and the Site may use cookies, SDKs, and similar technologies to support authentication, remember preferences, analyze usage, and maintain security. Where required by applicable law, we will provide additional notice and obtain consent for non-essential technologies.
+Our website (wheretotrips.com) uses the Meta Pixel, a tracking tool that collects pages viewed and button clicks and sends that information to Meta Platforms for advertising measurement. Our Android app includes the Meta SDK, which collects the Android advertising ID and app install and open events for the same purpose. We also use cookies and similar technologies to support authentication, remember preferences, and analyze usage. Where required by applicable law, we will provide additional notice and obtain consent for non-essential technologies. See Section 8.2 for opt-out options.
 
 ## 10. Third-Party Services and Links
 
-The App integrates with third-party services, including Google, Facebook (Meta), Stripe, and our travel booking suppliers. These third parties are responsible for their own privacy practices, and we encourage you to review their respective privacy policies. This Privacy Statement does not apply to the practices of third parties that we do not own or control.
+The App integrates with third-party services, including Google, Meta (Facebook), Nuitée, Stripe, and our travel booking suppliers. Each of these parties operates under its own privacy policy, which we encourage you to review:
+
+- Meta Platforms: [https://www.facebook.com/privacy/policy/](https://www.facebook.com/privacy/policy/)
+- Google: [https://policies.google.com/privacy](https://policies.google.com/privacy)
+- Stripe: [https://stripe.com/privacy](https://stripe.com/privacy)
+
+This Privacy Statement does not apply to the practices of third parties that we do not own or control.
 
 ## 11. Children's Privacy
 
@@ -149,6 +172,8 @@ The App is not directed to, and is not intended for use by, individuals under th
 ## 12. Changes to This Privacy Statement
 
 We may update this Privacy Statement from time to time to reflect changes in our practices, technology, legal requirements, or other factors. We will post the updated version in the App with a revised "Last Updated" date, and, where required by law, will provide additional notice or obtain consent before making material changes. Your continued use of the App after an update constitutes acceptance of the revised Privacy Statement.
+
+Summary of changes in this version (October 23, 2026): we added disclosures about our use of the Meta Pixel on wheretotrips.com and the Meta SDK in our Android app for advertising measurement and attribution; updated Section 2.4 (Automatically Collected Information), Section 3 (Purposes), Section 4 (Disclosures), Section 8.1 (State Residents notice), Section 8.2 (new "Your Privacy Choices" and opt-out), Section 9 (Cookies and SDKs), and Section 10 (Third-Party Services) accordingly. The account deletion section is renumbered from 8.2 to 8.3.
 
 ## 13. Contact Us
 
