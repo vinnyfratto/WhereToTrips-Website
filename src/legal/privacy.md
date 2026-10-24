@@ -1,12 +1,12 @@
 ---
 title: "Privacy Statement"
-updated: "October 23, 2026"
+updated: "October 24, 2026"
 effective: "June 25, 2026"
 description: "How VC Innovations Group LLC d/b/a WhereTo Trips collects, uses, discloses, and protects personal information in the WhereTo Trips app and on wheretotrips.com."
 ---
 
 **Operated by VC Innovations Group LLC d/b/a WhereTo Trips**<br>
-Effective Date: June 25, 2026 &nbsp;|&nbsp; Last Updated: October 23, 2026
+Effective Date: June 25, 2026 &nbsp;|&nbsp; Last Updated: October 24, 2026
 
 VC Innovations Group LLC, a Texas limited liability company doing business as WhereTo Trips ("WhereTo Trips," "Company," "we," "us," or "our"), provides the WhereTo Trips travel application (the "App") and the website at wheretotrips.com (the "Site," and together with the App, the "Services"). References in this Privacy Statement to "WhereTo Trips" mean VC Innovations Group LLC, the legal entity that operates the Services. This Privacy Statement explains how we collect, use, disclose, and protect personal information when you access or use the App or the Site, and describes the choices and rights available to you. References to the App include the Site except where the context requires otherwise, such as descriptions of booking and payment, which take place only in the App.
 
@@ -66,6 +66,12 @@ Some of this information is sensitive personal information under California law.
 
 You may provide information about other travelers, such as family members or colleagues traveling with you. When you do, you represent that you have the authority to provide their information to us. We handle information about other travelers in the same way we handle information about you.
 
+### 2.6 Partner Referrals
+
+Some users learn about the App through a link shared by a creator or other participant in our partner program (a "partner"). When you follow a partner's link to the Site, we record the visit together with a one-way, salted hash of the network (IP) address it came from. We do not store the network address itself. On Android, the partner's code is passed to the App through Google Play when you install it. The Apple App Store does not pass this information, so when you install the App on an Apple device, we compare the hashed network address of your first App session with recent partner link visits. If a visit from the same network shortly before the install points to a single partner, we credit that partner with your download and, if you create an account on that install, with your account. You may also enter a partner code yourself when you create your account.
+
+We use this information only to attribute your download and account to the partner who referred you, so that the partner receives proper credit under our partner program. We do not use it to track you across other companies' apps or websites, to build a profile about you, or for advertising, and we do not disclose the hashed network address to the partner or to any other third party.
+
 ## 3. How We Use Your Information
 
 We use the personal information described above for the following purposes:
@@ -78,6 +84,7 @@ We use the personal information described above for the following purposes:
 - To detect, investigate, and prevent fraud, abuse, and security incidents.
 - To maintain, secure, debug, and improve the App's functionality and performance.
 - To measure and improve the performance of our advertising, including whether an ad led to an app install or a visit to the Site.
+- To attribute App downloads and new accounts to the partner who referred you, as described in Section 2.6.
 - To comply with applicable legal obligations and enforce our Terms of Service.
 
 ## 4. Disclosures to Third Parties
@@ -173,7 +180,9 @@ The App is not directed to, and is not intended for use by, individuals under th
 
 We may update this Privacy Statement from time to time to reflect changes in our practices, technology, legal requirements, or other factors. We will post the updated version in the App with a revised "Last Updated" date, and, where required by law, will provide additional notice or obtain consent before making material changes. Your continued use of the App after an update constitutes acceptance of the revised Privacy Statement.
 
-Summary of changes in this version (October 23, 2026): we added disclosures about our use of the Meta Pixel on wheretotrips.com and the Meta SDK in our Android app for advertising measurement and attribution; updated Section 2.4 (Automatically Collected Information), Section 3 (Purposes), Section 4 (Disclosures), Section 8.1 (State Residents notice), Section 8.2 (new "Your Privacy Choices" and opt-out), Section 9 (Cookies and SDKs), and Section 10 (Third-Party Services) accordingly. The account deletion section is renumbered from 8.2 to 8.3.
+Summary of changes in this version (October 24, 2026): we added Section 2.6 (Partner Referrals), which describes how we attribute App downloads and new accounts to the partner who referred you, and a corresponding purpose in Section 3.
+
+Summary of changes in the October 23, 2026 version: we added disclosures about our use of the Meta Pixel on wheretotrips.com and the Meta SDK in our Android app for advertising measurement and attribution; updated Section 2.4 (Automatically Collected Information), Section 3 (Purposes), Section 4 (Disclosures), Section 8.1 (State Residents notice), Section 8.2 (new "Your Privacy Choices" and opt-out), Section 9 (Cookies and SDKs), and Section 10 (Third-Party Services) accordingly. The account deletion section is renumbered from 8.2 to 8.3.
 
 ## 13. Contact Us
 
