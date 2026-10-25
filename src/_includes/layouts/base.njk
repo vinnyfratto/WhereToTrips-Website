@@ -127,6 +127,38 @@
       !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
       fbq('init', '{{ site.analytics.metaPixelId }}');
       fbq('track', 'PageView');
+
+      // Conversions for the ad campaigns (Texas Pilot - Content Creators). One
+      // delegated listener, so the badges that get-app.njk builds with script
+      // are covered too. Every action is a standard "Lead" (the event a Leads
+      // campaign optimizes for) tagged with what it was, and the call and the
+      // email also fire their own standard event so they can be counted apart.
+      //   store badge        -> Lead  (content_category app_store_click)
+      //   schedule.wheretotrips.com -> Lead + Schedule (partner_call)
+      //   mailto Chris@      -> Lead + Contact  (partner_email)
+      // Only runs where the Pixel itself loaded, so the opt-out, GPC and
+      // internal-browser gates above cover it with no extra check.
+      document.addEventListener('click', function (e) {
+        var a = e.target && e.target.closest ? e.target.closest('a') : null;
+        if (!a || typeof fbq !== 'function') return;
+        var href = a.getAttribute('href') || '';
+        var lead = null, also = null;
+        if (a.classList.contains('store-badge')) {
+          lead = { content_name: /play\.google\.com/.test(href) ? 'Google Play' : 'App Store', content_category: 'app_store_click' };
+        } else if (/^https?:\/\/schedule\.wheretotrips\.com/i.test(href)) {
+          lead = { content_name: 'Book a short call', content_category: 'partner_call' };
+          also = 'Schedule';
+        } else if (/^mailto:chris@wheretotrips\.com/i.test(href)) {
+          lead = { content_name: 'Email Chris', content_category: 'partner_email' };
+          also = 'Contact';
+        }
+        if (!lead) return;
+        lead.page = window.location.pathname;
+        try {
+          fbq('track', 'Lead', lead);
+          if (also) fbq('track', also, lead);
+        } catch (err) { /* a tracking failure must never block the click */ }
+      }, true);
     }
   </script>
   {% endif %}
