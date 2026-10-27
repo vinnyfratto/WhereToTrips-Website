@@ -1,0 +1,71 @@
+---
+title: "You're booked | WhereTo Trips Partner Program"
+description: "Your call with Chris is on the calendar."
+layout: layouts/base.njk
+permalink: /book-a-call/thanks/
+eleventyExcludeFromCollections: true
+noindex: true
+---
+{#- ══════════════════════════════════════════════════════════════════
+    After-booking page. Zoho Bookings redirects here once a time is booked
+    (set in Zoho: the service's booking settings, redirect after booking ->
+    https://wheretotrips.com/book-a-call/thanks/). Landing here is the ONE
+    signal that a call was actually booked, so this page fires:
+      • Meta Pixel  Schedule  {content_category: 'partner_call_booked'}
+      • PostHog     partner_call_booked
+    Both only where base.njk loaded them, so GPC, the Do Not Sell opt-out and
+    our own internal browsers send nothing. Once per browser session, so a
+    reload or a back-and-forward does not count a second booking.
+
+    The "Book a short call" CLICK is a separate, earlier signal (a Lead, from
+    base.njk's click listener). Clicks say interest; this page says booked.
+-#}
+{%- set mailto = "mailto:Chris@WhereToTrips.com?subject=Texas%20Partner%20Pilot" -%}
+{%- set flyer = "/Partners/texas-partner-flyer.pdf" -%}
+
+<style>
+  .bt-wrap { max-width: 760px; margin: 0 auto; text-align: center; padding-top: clamp(28px, 6vw, 72px); }
+  .bt-check { font-size: 72px; line-height: 1; color: var(--azure); }
+  .bt-steps { margin: 36px auto 0; padding: 0; list-style: none; text-align: left; max-width: 560px; border-top: 1px solid var(--wg200); }
+  .bt-steps li { display: flex; gap: 18px; padding: 18px 0; border-bottom: 1px solid var(--wg200); }
+  .bt-num { font-family: var(--serif); font-style: italic; font-size: 36px; line-height: 1; color: var(--amber); flex: none; width: 28px; }
+  .bt-steps h3 { font-size: 19px; margin: 2px 0 4px; }
+  .bt-steps p { margin: 0; color: var(--ink-soft); font-size: 15px; line-height: 1.6; }
+  .bt-links { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 34px; }
+  .bt-small { margin-top: 22px; font-size: 14px; color: var(--ink-soft); }
+  .bt-small a { color: var(--azure); font-weight: 600; }
+</style>
+
+<section class="block">
+  <div class="wrap">
+    <div class="bt-wrap">
+      <div class="bt-check">{% icon "check-circle" %}</div>
+      <span class="eyebrow" style="margin-top: 18px;">You're booked</span>
+      <h1 style="font-size: clamp(34px, 5vw, 56px); margin: 0;">Talk soon. <span class="italic">Chris is looking forward to it.</span></h1>
+      <p class="lede" style="margin: 16px auto 0;">A confirmation with the time and a calendar invite is on its way to your email.
+        Need to change it? Use the link in that email.</p>
+
+      <ul class="bt-steps">
+        <li><span class="bt-num">1</span><div><h3>Before the call</h3><p>Skim the partner flyer, and have a rough idea of where your audience lives and what they travel for.</p></div></li>
+        <li><span class="bt-num">2</span><div><h3>On the call</h3><p>We talk fit, walk through the Founding terms, and answer your questions.</p></div></li>
+        <li><span class="bt-num">3</span><div><h3>After</h3><p>If it is a fit, you sign online and get your partner code the same week.</p></div></li>
+      </ul>
+
+      <div class="bt-links">
+        <a class="btn btn-primary" href="{{ flyer }}" target="_blank" rel="noopener">Download the partner flyer</a>
+        <a class="btn btn-ghost" href="/TexasPartners/">Back to the Founding terms</a>
+      </div>
+      <p class="bt-small">Questions before then? <a href="{{ mailto }}" data-wt-no-track>Chris@WhereToTrips.com</a></p>
+    </div>
+  </div>
+</section>
+
+<script>
+  (function () {
+    var KEY = 'wt_call_booked_sent';
+    try { if (sessionStorage.getItem(KEY)) return; sessionStorage.setItem(KEY, '1'); } catch (e) { /* storage blocked: send once anyway */ }
+    var props = { content_name: 'Partner onboarding call', content_category: 'partner_call_booked', page: '/book-a-call/' };
+    try { if (typeof fbq === 'function') fbq('track', 'Schedule', props); } catch (e) {}
+    try { if (window.posthog && posthog.capture) posthog.capture('partner_call_booked', { source: 'zoho_bookings_redirect' }); } catch (e) {}
+  })();
+</script>

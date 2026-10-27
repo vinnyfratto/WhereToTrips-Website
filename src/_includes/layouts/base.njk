@@ -134,17 +134,22 @@
       // campaign optimizes for) tagged with what it was, and the call and the
       // email also fire their own standard event so they can be counted apart.
       //   store badge        -> Lead  (content_category app_store_click)
-      //   schedule.wheretotrips.com -> Lead + Schedule (partner_call)
+      //   /book-a-call/      -> Lead  (partner_call); the booked Schedule fires on /book-a-call/thanks/
+      //   schedule.wheretotrips.com -> Lead + Schedule (partner_call), the direct Zoho link
       //   mailto Chris@      -> Lead + Contact  (partner_email)
+      // A link marked data-wt-no-track is skipped (the fallback buttons on
+      // /book-a-call/ and its thanks page, which would count the same person twice).
       // Only runs where the Pixel itself loaded, so the opt-out, GPC and
       // internal-browser gates above cover it with no extra check.
       document.addEventListener('click', function (e) {
         var a = e.target && e.target.closest ? e.target.closest('a') : null;
-        if (!a || typeof fbq !== 'function') return;
+        if (!a || typeof fbq !== 'function' || a.hasAttribute('data-wt-no-track')) return;
         var href = a.getAttribute('href') || '';
         var lead = null, also = null;
         if (a.classList.contains('store-badge')) {
           lead = { content_name: /play\.google\.com/.test(href) ? 'Google Play' : 'App Store', content_category: 'app_store_click' };
+        } else if (/^(https?:\/\/(www\.)?wheretotrips\.com)?\/book-a-call\/?(#.*)?$/i.test(href)) {
+          lead = { content_name: 'Book a short call', content_category: 'partner_call' };
         } else if (/^https?:\/\/schedule\.wheretotrips\.com/i.test(href)) {
           lead = { content_name: 'Book a short call', content_category: 'partner_call' };
           also = 'Schedule';
