@@ -171,7 +171,7 @@ function renderWebsiteAnalytics(d) {
   // raw PostHog count.
   const leftOut = [];
   const pv = (n) => (Number(n) === 1 ? 'pageview' : 'pageviews');
-  if (bots.bot_pageviews) leftOut.push(`${fmtInt(bots.bot_pageviews)} crawler ${pv(bots.bot_pageviews)} (Google Play and other bots)`);
+  if (bots.bot_pageviews) leftOut.push(`${fmtInt(bots.bot_pageviews)} crawler ${pv(bots.bot_pageviews)} (Google Play, Meta's ad checks and other bots)`);
   if (bots.internal_pageviews) leftOut.push(`${fmtInt(bots.internal_pageviews)} ${pv(bots.internal_pageviews)} of our own admin pages`);
   const leftOutNote = leftOut.length
     ? `<p class="acct-sub" style="margin:0 0 14px;">People only. Left out of every number below: ${leftOut.join(' and ')}.</p>`
@@ -338,7 +338,7 @@ function renderWebsiteAnalytics(d) {
   const botsCard = errCard('Traffic quality (bot detection)', `
     <div class="adm-card">
       <h3>Traffic quality (bot detection)</h3>
-      <p class="acct-sub" style="margin:-4px 0 12px;">Visits whose user agent matches a known crawler, bot or headless browser, including Google Play's listing checks. They are left out of every number above. Anything spoofing a real browser UA will read as human, so treat this as a floor, not a ceiling.</p>
+      <p class="acct-sub" style="margin:-4px 0 12px;">Visits whose user agent matches a known crawler, bot or headless browser, including Google Play's listing checks, plus any "Chrome" older than version 100: Chrome updates itself, so one years out of date is a script posing as a phone (Meta's ad checks and a crawler from Shanghai look like this). They are left out of every number above. Anything posing as a current browser still reads as human, so treat this as a floor, not a ceiling.</p>
       <div class="adm-overview-grid" style="margin-bottom:16px;">
         ${card('Bot pageviews', `${fmtInt(bots.bot_pageviews)} <span class="acct-sub" style="font-size:.6em;">(${bots.bot_pct}%)</span>`)}
         ${card('Bot visitors', fmtInt(bots.bot_visitors))}
