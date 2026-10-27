@@ -123,6 +123,21 @@ function renderLocationSection(d) {
     </div>`;
 }
 
+// Our own and test accounts (the list under Data settings) are left out of both
+// tabs. Say how much, or say plainly when the list could not be read, because
+// then the numbers include our own testing.
+function testAccountsNote(d) {
+  const errors = d.errors || {};
+  if (errors.test_accounts) {
+    return `<p class="alert alert-error" style="display:block; margin:0 0 14px;">Test accounts could not be read, so these numbers include our own testing. (${esc(errors.test_accounts)})</p>`;
+  }
+  const t = d.test_excluded;
+  const detail = t && t.people
+    ? `: ${t.people} ${t.people === 1 ? 'person' : 'people'} and ${Number(t.events).toLocaleString('en-US')} events in this period`
+    : '';
+  return `<p class="acct-sub" style="margin:0 0 14px;">Real people only. Our own and test accounts (Data settings) are left out of every number below${detail}.</p>`;
+}
+
 function renderAppAnalytics(d) {
   const errors = d.errors || {};
   const maxCount = Math.max(1, ...(d.series || []).map((r) => r.active_users));
@@ -139,22 +154,29 @@ function renderAppAnalytics(d) {
   const funnelCards = errors.funnels
     ? `<div class="adm-card"><h3>Funnels</h3><p class="acct-sub">Unavailable — ${esc(errors.funnels)}</p></div>`
     : (d.funnels || []).map((f) => {
+      // People, in order: each step counts those who also did every step before it.
       const rows = f.steps.map((s, i) => `
         <tr>
-          <td>${i + 1}. ${esc(eventLabel(s.event))}</td>
+          <td>${i + 1}. ${esc(s.label || eventLabel(s.event))}</td>
           <td class="num">${s.count}</td>
+          <td class="num">${i === 0 ? '—' : (s.prev_pct ?? s.pct) + '%'}</td>
           <td class="num">${i === 0 ? '100%' : s.pct + '%'}</td>
-          <td style="width:30%;">${bar(s.pct)}</td>
+          <td style="width:26%;">${bar(s.pct)}</td>
         </tr>`).join('');
       return `
         <div class="adm-card">
           <h3>${esc(f.label)}</h3>
+          ${f.note ? `<p class="acct-sub" style="margin:-4px 0 12px;">${esc(f.note)}</p>` : ''}
           <div class="adm-wrap-scroll"><table class="adm-table">
-            <thead><tr><th>Step</th><th class="num">Count</th><th class="num">% of step 1</th><th></th></tr></thead>
-            <tbody>${rows || '<tr><td colspan="4">No data yet.</td></tr>'}</tbody>
+            <thead><tr><th>Step</th><th class="num">People</th><th class="num">Of previous</th><th class="num">Of step 1</th><th></th></tr></thead>
+            <tbody>${rows || '<tr><td colspan="5">No data yet.</td></tr>'}</tbody>
           </table></div>
         </div>`;
     }).join('');
+  const funnelsHtml = `
+    <h2 class="adm-section-h">Funnels</h2>
+    <p class="acct-sub" style="margin:-4px 0 16px;">People who took each step in order. A step counts someone only if they also did every step above it, within the window shown.</p>
+    ${funnelCards}`;
 
   const totalsCards = errors.totals
     ? `<div class="adm-card"><h3>Totals</h3><p class="acct-sub">Unavailable — ${esc(errors.totals)}</p></div>`
@@ -191,10 +213,11 @@ function renderAppAnalytics(d) {
       <p class="acct-sub" style="margin:0;">Live from PostHog · refreshes every 60s</p>
       ${controlsHtml()}
     </div>
+    ${testAccountsNote(d)}
     ${totalsCards}
     ${seriesCard}
     ${topEventsCard}
-    ${funnelCards}
+    ${funnelsHtml}
     ${addonsCardHtml(d, errors)}
     ${renderDeviceSection(d)}
     ${renderLocationSection(d)}`;
@@ -272,6 +295,7 @@ function renderTravelMetrics(d) {
       <p class="acct-sub" style="margin:0;">Live from PostHog · refreshes every 60s</p>
       ${controlsHtml()}
     </div>
+    ${testAccountsNote(d)}
     ${topCards}
     ${workflows}
     <div class="adm-overview-grid" style="grid-template-columns: 1fr 1fr 1fr;">
