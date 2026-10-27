@@ -10,7 +10,8 @@ permalink: "/TexasPartners/"
     Mirrors texas-partner-flyer.pdf (Oct 2026), served at
     /Partners/texas-partner-flyer.pdf, in the flyer's own order:
     offer, Founding vs Standard terms, who we are, what followers get,
-    how it works, three steps, then the application and contact.
+    how it works, three steps, then the application, the booking
+    calendar and contact.
 
     Built from the site's own sections rather than as a port of the PDF:
     hero-slider, highlights, feature-split, tile, step-card,
@@ -29,7 +30,15 @@ permalink: "/TexasPartners/"
     ══════════════════════════════════════════════════════════════════ -#}
 
 {%- set mailto = "mailto:Chris@WhereToTrips.com?subject=Texas%20Partner%20Pilot" -%}
-{%- set schedule = "https://schedule.wheretotrips.com" -%}
+{#- Every "Book a short call" on the page scrolls to the calendar at the
+    bottom (#book-a-call) instead of leaving for Zoho's own page, which
+    carries no Pixel and no PostHog. bookingSrc is Zoho Bookings' embed
+    view: schedule.wheretotrips.com itself refuses to be framed
+    (X-Frame-Options: SAMEORIGIN), /portal-embed is the version that allows
+    it. After a booking, Zoho redirects to /TexasPartners/booked/, which is
+    where the "booked" event fires. -#}
+{%- set booking = "#book-a-call" -%}
+{%- set bookingSrc = "https://schedule.wheretotrips.com/portal-embed#/wheretotrips" -%}
 {%- set flyer = "/Partners/texas-partner-flyer.pdf" -%}
 
 {#- The flyer's copy for the four ways in. The photos and links come from
@@ -187,6 +196,51 @@ permalink: "/TexasPartners/"
     max-width: 62ch;
   }
 
+  /* ── Book a short call ────────────────────────────────────────────────
+     Phones: intro, then the calendar, then the details, so the calendar is
+     what a "Book a short call" tap lands next to. Wider: intro and details
+     stack on the left, the calendar on the right. */
+  .tp-book { display: grid; grid-template-columns: 1fr; gap: 26px; grid-template-areas: "intro" "cal" "details"; }
+  .tp-book-intro { grid-area: intro; } .tp-cal-col { grid-area: cal; } .tp-book-details { grid-area: details; }
+  .tp-book-intro h2 { margin: 0; }
+  .tp-book-meta { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0 0; padding: 0; list-style: none; }
+  .tp-book-meta li {
+    font-size: 13px; font-weight: 600; letter-spacing: .04em; color: var(--navy);
+    background: var(--azure-tint); border-radius: 999px; padding: 7px 14px;
+  }
+  .tp-host { display: flex; align-items: center; gap: 14px; }
+  .tp-avatar {
+    width: 56px; height: 56px; border-radius: 50%; flex: none; display: flex; align-items: center; justify-content: center;
+    background: var(--navy); color: #fff; font-family: var(--serif); font-size: 22px; letter-spacing: .02em;
+  }
+  .tp-host strong { display: block; color: var(--navy); font-size: 16px; }
+  .tp-host span { color: var(--ink-soft); font-size: 14px; }
+  .tp-cover { margin: 20px 0 0; padding: 0; list-style: none; border-top: 1px solid var(--wg200); }
+  .tp-cover li { padding: 16px 0; border-bottom: 1px solid var(--wg200); }
+  .tp-cover h3 { font-size: 19px; margin: 0 0 4px; }
+  .tp-cover p { margin: 0; color: var(--ink-soft); font-size: 15px; line-height: 1.6; }
+  /* The calendar is Zoho's page in a frame. The "loading" line sits behind
+     it, so the frame is never an empty white box while Zoho starts up. */
+  .tp-cal {
+    position: relative; background: #fff; border: 1px solid var(--wg200); border-radius: 22px;
+    overflow: hidden; box-shadow: 0 24px 50px rgba(20, 40, 60, .08);
+  }
+  .tp-cal-wait {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    color: var(--ink-muted); font-size: 14px;
+  }
+  .tp-cal iframe { position: relative; display: block; width: 100%; height: 820px; border: 0; background: transparent; }
+  .tp-cal-alt { margin-top: 12px; font-size: 13.5px; color: var(--ink-muted); text-align: center; }
+  .tp-cal-alt a { color: var(--azure); font-weight: 600; }
+  @media (min-width: 900px) {
+    .tp-book {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); grid-template-areas: "intro cal" "details cal";
+      column-gap: 48px; row-gap: 28px; align-items: start;
+    }
+    .tp-cal-col { position: sticky; top: 110px; }
+    .tp-cal iframe { height: 700px; }
+  }
+
   /* ── Closing CTA ──────────────────────────────────────────────────── */
   .tp-mail-btn { font-size: 15px; text-transform: none; max-width: 100%; box-sizing: border-box; padding-inline: clamp(18px, 5vw, 32px); }
   /* The address is one unbroken line at every width. It is sized to the band it
@@ -278,7 +332,7 @@ permalink: "/TexasPartners/"
           date. You keep earning as long as you stay an active partner.</p>
       </div>
       <div class="btns">
-        <a class="btn btn-primary" href="{{ schedule }}" target="_blank" rel="noopener">Book a short call</a>
+        <a class="btn btn-primary" href="{{ booking }}">Book a short call</a>
         <a class="btn btn-hero-ghost" href="#what-you-earn">See the Founding terms</a>
       </div>
     </div>
@@ -350,7 +404,7 @@ permalink: "/TexasPartners/"
     <div class="download-band tp-cta-band reveal">
       <h2>Founding spots are limited.</h2>
       <p>Book a short call and we'll walk you through it.</p>
-      <a class="btn btn-light tp-mail-btn" href="{{ schedule }}" target="_blank" rel="noopener">schedule.wheretotrips.com</a>
+      <a class="btn btn-light tp-mail-btn" href="{{ booking }}">Pick a time</a>
     </div>
   </div>
 </section>
@@ -467,8 +521,8 @@ permalink: "/TexasPartners/"
       <div class="step-card">
         <div class="step-num">1</div>
         <h3>Book a short call</h3>
-        <p>A quick conversation about fit. Pick a time at
-          <a href="{{ schedule }}" target="_blank" rel="noopener">schedule.wheretotrips.com</a>.</p>
+        <p>A quick conversation about fit.
+          <a href="{{ booking }}">Pick a time below</a>.</p>
       </div>
       <div class="step-card">
         <div class="step-num">2</div>
@@ -509,6 +563,51 @@ permalink: "/TexasPartners/"
   {% include "sections/partner_application.njk" %}
 </div>
 
+{# ═══ Book a short call ══════════════════════════════════════════════
+   Every "Book a short call" on the page scrolls here. The calendar is
+   Zoho Bookings, framed; a booking made in it redirects to
+   /TexasPartners/booked/ (set in Zoho), the one place a booked call is
+   counted. The link under the frame is for a browser that blocks the
+   frame; data-wt-no-track keeps it from counting the same person's
+   interest twice. #}
+<section class="block" id="book-a-call">
+  <div class="wrap">
+    <div class="tp-book">
+      <div class="tp-book-intro reveal">
+        <span class="eyebrow">Book a short call</span>
+        <h2>Pick a time <span class="italic">with Chris.</span></h2>
+        <p class="lede" style="margin-top: 14px;">Thirty minutes to see if the Founding Partner program
+          fits your audience, walk through the terms, and answer anything you want to ask.</p>
+        <ul class="tp-book-meta">
+          <li>30 minutes</li>
+          <li>Phone or video</li>
+          <li>No cost, no commitment</li>
+        </ul>
+      </div>
+
+      <div class="tp-book-details reveal">
+        <div class="tp-host">
+          <div class="tp-avatar" aria-hidden="true">CC</div>
+          <div><strong>Chris Cupero</strong><span>Partnerships, WhereTo Trips</span></div>
+        </div>
+        <ul class="tp-cover">
+          <li><h3>Is it a fit?</h3><p>What you cover, who follows you, and how travel fits your content.</p></li>
+          <li><h3>The Founding terms</h3><p>30<span class="tp-pct tp-pct--text">%</span> of what we earn on every trip your followers book, for as long as you stay active.</p></li>
+          <li><h3>Next steps</h3><p>If it is a fit, the agreement is signed online and you get your partner code.</p></li>
+        </ul>
+      </div>
+
+      <div class="tp-cal-col">
+        <div class="tp-cal">
+          <div class="tp-cal-wait">Loading open times…</div>
+          <iframe id="tp-cal-frame" data-src="{{ bookingSrc }}" title="Pick a time for your call with Chris" allow="fullscreen"></iframe>
+        </div>
+        <p class="tp-cal-alt">Calendar not showing? <a href="https://schedule.wheretotrips.com" target="_blank" rel="noopener" data-wt-no-track>Open it in a new tab</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
 {# ═══ Closing CTA ═══════════════════════════════════════════════════ #}
 <section class="block" id="or-email">
   <div class="wrap">
@@ -536,9 +635,19 @@ permalink: "/TexasPartners/"
 
 {# Sticky reply bar — phones only, and never over the form it duplicates. #}
 <div class="tp-bar" id="tp-bar">
-  <a class="btn btn-primary" href="{{ schedule }}" target="_blank" rel="noopener">Book a short call</a>
+  <a class="btn btn-primary" href="{{ booking }}">Book a short call</a>
 </div>
 <script>
+  // Zoho's calendar takes several seconds to start up, so it begins loading as
+  // soon as the page itself has finished rather than when it scrolls into
+  // view (loading="lazy"), where a "Book a short call" tap would land on a
+  // blank frame. After the load event, so it never slows the hero.
+  (function () {
+    var f = document.getElementById('tp-cal-frame');
+    if (!f) return;
+    function go() { if (!f.src) f.src = f.getAttribute('data-src'); }
+    if (document.readyState === 'complete') go(); else window.addEventListener('load', go);
+  })();
   (function () {
     var bar = document.getElementById('tp-bar');
     var hero = document.querySelector('.hero-slider');

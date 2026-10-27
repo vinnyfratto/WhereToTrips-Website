@@ -2,15 +2,18 @@
 title: "You're booked | WhereTo Trips Partner Program"
 description: "Your call with Chris is on the calendar."
 layout: layouts/base.njk
-permalink: /book-a-call/thanks/
+permalink: /TexasPartners/booked/
 eleventyExcludeFromCollections: true
 noindex: true
 ---
 {#- ══════════════════════════════════════════════════════════════════
     After-booking page. Zoho Bookings redirects here once a time is booked
-    (set in Zoho: the service's booking settings, redirect after booking ->
-    https://wheretotrips.com/book-a-call/thanks/). Landing here is the ONE
-    signal that a call was actually booked, so this page fires:
+    on the calendar at the bottom of /TexasPartners/ (set in Zoho: redirect
+    after booking -> https://wheretotrips.com/TexasPartners/booked/).
+    The calendar is framed, so the redirect can land inside the frame; the
+    script below moves it up to the whole tab and counts it there, once.
+    Landing here is the ONE signal that a call was actually booked, so
+    this page fires:
       • Meta Pixel  Schedule  {content_category: 'partner_call_booked'}
       • PostHog     partner_call_booked
     Both only where base.njk loaded them, so GPC, the Do Not Sell opt-out and
@@ -62,9 +65,14 @@ noindex: true
 
 <script>
   (function () {
+    // Inside the Zoho frame on /TexasPartners/: take over the whole tab, and
+    // let that load do the counting so the booking is counted once.
+    if (window.top !== window.self) {
+      try { window.top.location.replace(window.location.href); return; } catch (e) { /* cross-origin top: count here */ }
+    }
     var KEY = 'wt_call_booked_sent';
     try { if (sessionStorage.getItem(KEY)) return; sessionStorage.setItem(KEY, '1'); } catch (e) { /* storage blocked: send once anyway */ }
-    var props = { content_name: 'Partner onboarding call', content_category: 'partner_call_booked', page: '/book-a-call/' };
+    var props = { content_name: 'Partner onboarding call', content_category: 'partner_call_booked', page: '/TexasPartners/' };
     try { if (typeof fbq === 'function') fbq('track', 'Schedule', props); } catch (e) {}
     try { if (window.posthog && posthog.capture) posthog.capture('partner_call_booked', { source: 'zoho_bookings_redirect' }); } catch (e) {}
   })();
