@@ -6,7 +6,6 @@
 //    src/data/hotelLoyaltyPrograms.ts → HOTEL_LOYALTY (codes + names; the
 //                                       matchKeywords are app-side only)
 //    src/data/airlines.ts             → AIRLINES
-//    src/data/baseVibes.ts            → BASE_VIBES + BASE_VIBE_CAP
 //  Regenerate rather than hand-editing when any of those change.
 // ───────────────────────────────────────────────────────────────────
 
@@ -1331,61 +1330,6 @@ export const HOTEL_LOYALTY = [
     "monogram": ""
   }
 ];
-
-/** The traveler's core travel personality, captured in the app's account
- *  walkthrough and stored on profiles.base_vibes. */
-export const BASE_VIBES = [
-  {
-    "key": "beach",
-    "label": "Beaches"
-  },
-  {
-    "key": "city_break",
-    "label": "City Life"
-  },
-  {
-    "key": "food_wine",
-    "label": "Food & Wine"
-  },
-  {
-    "key": "nature",
-    "label": "Nature"
-  },
-  {
-    "key": "mountains",
-    "label": "Mountains"
-  },
-  {
-    "key": "adventure",
-    "label": "Adventure"
-  },
-  {
-    "key": "culture",
-    "label": "Culture & Arts"
-  },
-  {
-    "key": "history",
-    "label": "History"
-  },
-  {
-    "key": "nightlife",
-    "label": "Nightlife"
-  },
-  {
-    "key": "wildlife",
-    "label": "Wildlife"
-  },
-  {
-    "key": "luxury",
-    "label": "Luxury"
-  },
-  {
-    "key": "wellness",
-    "label": "Wellness & Spa"
-  }
-];
-
-export const BASE_VIBE_CAP = 4;
 
 // ── Hotel brand groups (copied from the app's src/data/hotelChains.ts) ──
 // The app's Preferences picker saves flight_prefs.preferredHotelChains as these

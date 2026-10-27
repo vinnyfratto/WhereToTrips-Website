@@ -34,12 +34,6 @@ const HOTEL = eval(arrayLiteral(loyaltySrc, 'export const HOTEL_LOYALTY_PROGRAMS
 const airlinesSrc = fs.readFileSync(APP + '/airlines.ts', 'utf8');
 const AIRLINES = eval(arrayLiteral(airlinesSrc, 'export const AIRLINES: Airline[]'));
 
-// baseVibes.ts resolves photos through another module — only the key/label
-// pairs matter here, so they are read out of its RAW table.
-const vibesSrc = fs.readFileSync(APP + '/baseVibes.ts', 'utf8');
-const VIBES = eval(arrayLiteral(vibesSrc, 'const RAW:')).map((v) => ({ key: v.key, label: v.label }));
-const CAP = Number(/BASE_VIBE_CAP = (\d+)/.exec(vibesSrc)[1]);
-
 const json = (v) => JSON.stringify(v, null, 2).replace(/\n/g, '\n');
 
 const out = `// ───────────────────────────────────────────────────────────────────
@@ -50,7 +44,6 @@ const out = `// ─────────────────────�
 //    src/data/hotelLoyaltyPrograms.ts → HOTEL_LOYALTY (codes + names; the
 //                                       matchKeywords are app-side only)
 //    src/data/airlines.ts             → AIRLINES
-//    src/data/baseVibes.ts            → BASE_VIBES + BASE_VIBE_CAP
 //  Regenerate rather than hand-editing when any of those change.
 // ───────────────────────────────────────────────────────────────────
 
@@ -94,14 +87,8 @@ export const BUDGET_FLEX = [
 export const AIRLINES = ${json(AIRLINES)};
 
 export const HOTEL_LOYALTY = ${json(HOTEL)};
-
-/** The traveler's core travel personality, captured in the app's account
- *  walkthrough and stored on profiles.base_vibes. */
-export const BASE_VIBES = ${json(VIBES)};
-
-export const BASE_VIBE_CAP = ${CAP};
 `;
 
 fs.writeFileSync(require('path').join(__dirname, '../src/assets/js/wt-profile-data.js'), out);
 console.log('wrote wt-profile-data.js —', COUNTRIES.length, 'countries,', HOTEL.length, 'hotel programs,',
-  AIRLINES.length, 'airlines,', VIBES.length, 'base vibes (cap ' + CAP + ')');
+  AIRLINES.length, 'airlines');
