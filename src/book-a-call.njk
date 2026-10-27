@@ -69,16 +69,20 @@ bookingSrc: ""
   .bc-placeholder h3 { margin: 6px 0 0; font-size: 24px; }
   .bc-placeholder p { margin: 0; color: var(--ink-soft); max-width: 34ch; line-height: 1.6; }
 
+  /* Phones: intro, then the calendar, then the details, so the thing they came for
+     is one scroll away. Wider: intro and details stack on the left, calendar on the right. */
+  .bc-grid { grid-template-areas: "intro" "cal" "details"; }
+  .bc-intro { grid-area: intro; } .bc-cal { grid-area: cal; } .bc-details { grid-area: details; }
   @media (min-width: 900px) {
-    .bc-grid { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 48px; align-items: start; }
-    .bc-side { position: sticky; top: 110px; }
+    .bc-grid { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); grid-template-areas: "intro cal" "details cal"; column-gap: 48px; row-gap: 0; align-items: start; }
+    .bc-cal { position: sticky; top: 110px; }
   }
 </style>
 
 <section class="block bc-head">
   <div class="wrap">
     <div class="bc-grid">
-      <div class="bc-side">
+      <div class="bc-intro">
         <span class="eyebrow">Texas Founding Partners</span>
         <h1 style="font-size: clamp(34px, 4.6vw, 54px); margin: 0;">Book a short call <span class="italic">with Chris.</span></h1>
         <p class="lede" style="margin-top: 14px;">Thirty minutes to see if the Founding Partner program fits your audience,
@@ -89,7 +93,9 @@ bookingSrc: ""
           <li>Phone or video</li>
           <li>No cost, no commitment</li>
         </ul>
+      </div>
 
+      <div class="bc-details">
         <div class="bc-host">
           <div class="bc-avatar" aria-hidden="true">CC</div>
           <div><strong>Chris Cupero</strong><span>Partnerships, WhereTo Trips</span></div>
