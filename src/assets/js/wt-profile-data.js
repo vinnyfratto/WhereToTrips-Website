@@ -6,7 +6,11 @@
 //    src/data/hotelLoyaltyPrograms.ts → HOTEL_LOYALTY (codes + names; the
 //                                       matchKeywords are app-side only)
 //    src/data/airlines.ts             → AIRLINES
-//  Regenerate rather than hand-editing when any of those change.
+//    src/data/hotelChains.ts          → HOTEL_CHAINS
+//    src/data/subdivisions.ts         → US_STATES + CA_PROVINCES
+//    src/components/profile/ProfileKit.tsx → BUDGET_FLEX (its labels)
+//  Regenerate rather than hand-editing when any of those change, with
+//  node scripts/gen-profile-data.js. It writes this whole file.
 // ───────────────────────────────────────────────────────────────────
 
 /** ISO 3166-1 alpha-2 + international dialing code. */
