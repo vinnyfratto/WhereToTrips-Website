@@ -135,7 +135,7 @@ function testAccountsNote(d) {
   const detail = t && t.people
     ? `: ${t.people} ${t.people === 1 ? 'person' : 'people'} and ${Number(t.events).toLocaleString('en-US')} events in this period`
     : '';
-  return `<p class="acct-sub" style="margin:0 0 14px;">Real people only. Our own and test accounts (Data settings) are left out of every number below${detail}.</p>`;
+  return `<p class="acct-sub" style="margin:0 0 14px;">Real people only. Our own and test accounts (Data settings) and our own test builds are left out of every number below${detail}.</p>`;
 }
 
 function renderAppAnalytics(d) {
