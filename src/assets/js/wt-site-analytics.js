@@ -54,6 +54,88 @@ function audienceTable(title, rows, errKey, errors, { label, total, pageviews = 
     </div>`, errKey, errors);
 }
 
+// ── Conversions ─────────────────────────────────────────────────────
+// What each action kind from the admin fn's `actions` rows is called here. A form
+// is its intent (the hidden "intent" field each form posts).
+const ACTION_LABELS = {
+  partner_call_click: 'Clicked “Book a short call”',
+  partner_call_booked: 'Booked a call with Chris',
+  partner_email_click: 'Clicked “Email Chris”',
+  app_store_click: 'Clicked the App Store badge',
+  google_play_click: 'Clicked the Google Play badge',
+  sign_up: 'Created a website account',
+  login: 'Signed in',
+};
+const FORM_LABELS = {
+  creator_partner: 'Applied to be a creator partner',
+  beta_signup: 'Signed up for the beta',
+  newsletter: 'Joined the newsletter',
+  notify_launch: 'Asked to hear at launch',
+  app_link: 'Asked for the app link',
+  contact: 'Sent the contact form',
+  contact_traveler: 'Sent the contact form (traveler)',
+};
+const actionLabel = (a) => (a.kind === 'form'
+  ? (FORM_LABELS[a.detail] || `Sent a form (${a.detail || 'no intent'})`)
+  : (ACTION_LABELS[a.kind] || a.kind));
+
+function conversionsHtml(d, errors) {
+  const actions = d.actions || [];
+  const peopleOf = (kind, detail) => actions
+    .filter((a) => a.kind === kind && (detail === undefined || a.detail === detail))
+    .reduce((n, a) => n + a.people, 0);
+  // An empty cards row means the actions query failed; the intro line says so.
+  const cards = errors.actions ? '' : `<div class="adm-overview-grid">
+      ${card('Store badge clicks', fmtInt(peopleOf('app_store_click') + peopleOf('google_play_click')))}
+      ${card('“Book a short call” clicks', fmtInt(peopleOf('partner_call_click')))}
+      ${card('Calls booked', fmtInt(peopleOf('partner_call_booked')))}
+      ${card('“Email Chris” clicks', fmtInt(peopleOf('partner_email_click')))}
+      ${card('Partner applications', fmtInt(peopleOf('form', 'creator_partner')))}
+    </div>`;
+
+  const actionRows = actions.map((a) => `
+      <tr><td>${esc(actionLabel(a))}</td><td class="num">${fmtInt(a.people)}</td><td class="num">${fmtInt(a.count)}</td><td>${esc(a.top_page || '—')}</td></tr>`).join('');
+  const actionsCard = errCard('Every action', `
+    <div class="adm-card">
+      <h3>Every action</h3>
+      <div class="adm-wrap-scroll"><table class="adm-table">
+        <thead><tr><th>Action</th><th class="num">People</th><th class="num">Times</th><th>Most often on</th></tr></thead>
+        <tbody>${actionRows || '<tr><td colspan="4">Nothing yet in this period.</td></tr>'}</tbody>
+      </table></div>
+    </div>`, 'actions', errors);
+
+  const funnel = d.partner_funnel || [];
+  const sum = (k) => funnel.reduce((n, r) => n + (Number(r[k]) || 0), 0);
+  const rate = (part, whole) => (whole > 0 ? Math.round((part / whole) * 100) + '%' : '—');
+  const funnelRow = (r, strong) => {
+    const td = (v) => `<td class="num">${strong ? `<strong>${fmtInt(v)}</strong>` : fmtInt(v)}</td>`;
+    return `<tr><td>${strong ? '<strong>All sources</strong>' : esc(r.source)}</td>${td(r.visitors)}${td(r.call_clicks)}${td(r.booked)}${td(r.emailed)}${td(r.applied)}<td class="num">${rate(r.call_clicks, r.visitors)}</td></tr>`;
+  };
+  const totalRow = funnel.length > 1
+    ? funnelRow({ visitors: sum('visitors'), call_clicks: sum('call_clicks'), booked: sum('booked'), emailed: sum('emailed'), applied: sum('applied') }, true)
+    : '';
+  const funnelCard = errCard('Texas Partners page', `
+    <div class="adm-card">
+      <h3>Texas Partners page</h3>
+      <p class="acct-sub" style="margin:-4px 0 12px;">People, by where their visit came from: the ad campaign by name when they arrived on an ad, otherwise the channel. “Booked” counts the page Zoho opens after a booking, live from Oct 27, 2026; earlier bookings on Zoho’s own page are not here. Click rate is clicks on “Book a short call” out of visitors.</p>
+      <div class="adm-wrap-scroll"><table class="adm-table">
+        <thead><tr><th>Source</th><th class="num">Visitors</th><th class="num">Clicked book</th><th class="num">Booked</th><th class="num">Emailed Chris</th><th class="num">Applied</th><th class="num">Click rate</th></tr></thead>
+        <tbody>${funnel.map((r) => funnelRow(r, false)).join('') || '<tr><td colspan="7">No visits in this period.</td></tr>'}${totalRow}</tbody>
+      </table></div>
+    </div>`, 'partner_funnel', errors);
+
+  return `
+    <h2 class="adm-section-h">Conversions</h2>
+    <p class="acct-sub" style="margin:-4px 0 16px;">
+      People who did each thing, from PostHog. Clicks come from PostHog’s automatic click capture, so they reach back to
+      the start of the data. Meta’s Pixel counts fewer, because it skips anyone who opted out of sharing.
+      ${errors.actions ? ` Unavailable — ${esc(errors.actions)}` : ''}
+    </p>
+    ${cards}
+    ${funnelCard}
+    ${actionsCard}`;
+}
+
 function renderWebsiteAnalytics(d) {
   const errors = d.errors || {};
   const eng = errors.channels ? null : (d.engagement || null);
@@ -70,7 +152,16 @@ function renderWebsiteAnalytics(d) {
 
   const pages = d.top_pages || [];
   const refs = d.top_referrers || [];
-  const pageRowHtml = (p) => `<tr><td>${esc(p.path)}</td><td class="num">${p.views}</td></tr>`;
+  // Time on page and scroll depth, from the page_engagement rows (PostHog's
+  // $pageleave), matched to each page by path.
+  const engByPath = new Map((d.page_engagement || []).map((e) => [e.path, e]));
+  const engCells = (path) => {
+    const e = engByPath.get(path);
+    return e
+      ? `<td class="num">${fmtDuration(e.median_seconds)}</td><td class="num">${e.avg_scroll_pct}%</td><td class="num">${e.reached_end_pct}%</td>`
+      : '<td class="num">—</td><td class="num">—</td><td class="num">—</td>';
+  };
+  const pageRowHtml = (p) => `<tr><td>${esc(p.path)}</td><td class="num">${p.views}</td>${engCells(p.path)}</tr>`;
   const refRowHtml = (r) => `<tr><td>${esc(r.domain)}</td><td class="num">${r.visits}</td></tr>`;
   const pageRows = pages.slice(0, 10).map(pageRowHtml).join('');
   const refRows = refs.slice(0, 10).map(refRowHtml).join('');
@@ -142,9 +233,10 @@ function renderWebsiteAnalytics(d) {
   const topPagesCard = errCard('Top pages', `
     <div class="adm-card">
       <h3>Top pages ${pages.length > 10 ? viewAllBtnHtml('pages') : ''}</h3>
+      <p class="acct-sub" style="margin:-4px 0 12px;">Time is the median time on the page. Scroll is how far down people got on average; End is the share who reached 90% of it.</p>
       <div class="adm-wrap-scroll"><table class="adm-table">
-        <thead><tr><th>Page</th><th class="num">Views</th></tr></thead>
-        <tbody>${pageRows || '<tr><td colspan="2">No data yet.</td></tr>'}</tbody>
+        <thead><tr><th>Page</th><th class="num">Views</th><th class="num">Time</th><th class="num">Scroll</th><th class="num">End</th></tr></thead>
+        <tbody>${pageRows || '<tr><td colspan="5">No data yet.</td></tr>'}</tbody>
       </table></div>
     </div>`, 'top_pages', errors);
 
@@ -268,7 +360,9 @@ function renderWebsiteAnalytics(d) {
     ${totalsCards}
     ${trafficCard}
     ${channelsCard}
-    <div class="adm-overview-grid" style="grid-template-columns: 1fr 1fr;">
+    ${conversionsHtml(d, errors)}
+    <h2 class="adm-section-h">Pages</h2>
+    <div class="adm-overview-grid" style="grid-template-columns: 1.6fr 1fr;">
       ${topPagesCard}
       ${topRefCard}
     </div>
@@ -278,12 +372,12 @@ function renderWebsiteAnalytics(d) {
     ${botsCard}`;
 
   wireControls();
-  wireWebsiteDrillButtons({ pages, refs, campaigns, paths, bots });
+  wireWebsiteDrillButtons({ pages, refs, campaigns, paths, bots, pageRowHtml });
 }
 
-function wireWebsiteDrillButtons({ pages, refs, campaigns, paths, bots }) {
+function wireWebsiteDrillButtons({ pages, refs, campaigns, paths, bots, pageRowHtml }) {
   const map = {
-    pages: () => openDrillModal('All pages', ['Page', 'Views'], pages.map((p) => `<tr><td>${esc(p.path)}</td><td class="num">${p.views}</td></tr>`)),
+    pages: () => openDrillModal('All pages', ['Page', 'Views', 'Time', 'Scroll', 'End'], pages.map(pageRowHtml)),
     referrers: () => openDrillModal('All referrers', ['Domain', 'Visits'], refs.map((r) => `<tr><td>${esc(r.domain)}</td><td class="num">${r.visits}</td></tr>`)),
     campaigns: () => openDrillModal('All campaigns', ['Source', 'Medium', 'Campaign', 'Pageviews', 'Visitors'],
       campaigns.map((c) => `<tr><td>${esc(c.source)}</td><td>${esc(c.medium)}</td><td>${esc(c.campaign)}</td><td class="num">${c.pageviews}</td><td class="num">${c.visitors}</td></tr>`)),
