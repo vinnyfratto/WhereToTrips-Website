@@ -104,8 +104,8 @@ function tierPanel(m) {
       <div class="pp-two2">
         <div>
           <div class="pp-fields2 pp-stats">
-            <div class="pp-stat"><div class="pp-serif pp-num">${int(t.thisYear)}</div><div class="pp-sub">${esc(t.thisYearLabel)}</div></div>
-            <div class="pp-stat"><div class="pp-serif pp-num">${int(t.lastYear)}</div><div class="pp-sub">${esc(t.lastYearLabel)}</div></div>
+            <div class="pp-stat"><div class="pp-serif pp-num">${int(t.completed)}</div><div class="pp-sub">Trips completed</div></div>
+            <div class="pp-stat"><div class="pp-serif pp-num">${int(t.booked)}</div><div class="pp-sub">Trips booked, not yet completed</div></div>
           </div>
           ${t.pending ? `<div class="pp-callout">${esc(t.pending.text)}</div>` : ''}
           ${t.next ? `<div class="pp-nextline">

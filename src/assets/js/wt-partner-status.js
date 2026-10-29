@@ -80,9 +80,8 @@ function describeTier(s) {
     top: !founding && !next,
     pending,
     thisYear,
-    lastYear: Number(t.trips_last_year) || 0,
-    thisYearLabel: `Completed trips in ${t.year} so far`,
-    lastYearLabel: `Completed trips in ${Number(t.year) - 1}`,
+    completed: Number(t.trips_completed) || 0,
+    booked: Number(t.trips_booked) || 0,
     hold,
     footnote: RULES.trips,
   };
