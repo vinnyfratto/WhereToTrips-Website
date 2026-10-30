@@ -2,7 +2,9 @@
     capture-submission (intent creator_partner), which writes it straight into
     Zoho CRM Leads, matched against the prospects already there. The picklist
     values below are the CRM's own and must match it exactly; the server drops
-    anything it does not recognize rather than guess. -#}
+    anything it does not recognize rather than guess.
+    Optional per page: s.short leaves out metro, airports and the audience box,
+    s.companyLabel renames the company field. -#}
 <section class="block{% if s.background %} tint{% endif %}" id="{{ s.id or 'apply' }}">
   <div class="wrap">
     <div class="sec-head center reveal">
@@ -20,7 +22,8 @@
         <input type="text" name="last_name" placeholder="Last name" aria-label="Last name" autocomplete="family-name" required />
       </div>
       <input type="email" name="email" placeholder="you@email.com" aria-label="Email address" autocomplete="email" required />
-      <input type="text" name="company" placeholder="Creator or business name" aria-label="Creator or business name" autocomplete="organization" required />
+      {%- set companyLabel = s.companyLabel or "Creator or business name" %}
+      <input type="text" name="company" placeholder="{{ companyLabel }}" aria-label="{{ companyLabel }}" data-missing-label="{{ companyLabel | lower }}" autocomplete="{{ 'off' if s.companyLabel else 'organization' }}" required />
       <input type="tel" name="phone" placeholder="Phone (optional)" aria-label="Phone" autocomplete="tel" />
 
       <fieldset class="form-radio-group">
@@ -45,6 +48,7 @@
           {%- endfor %}
         </select>
       </div>
+      {%- if not s.short %}
       <select name="metro" aria-label="Your metro area">
         <option value="">Metro area</option>
         {%- for m in ["Houston", "Dallas", "Austin", "San Antonio", "Texas (statewide)", "Other"] %}
@@ -59,6 +63,7 @@
       </fieldset>
 
       <textarea name="audience" rows="5" placeholder="Tell us about your audience and what you cover" aria-label="About your audience"></textarea>
+      {%- endif %}
 
       <button type="submit" class="btn btn-primary">{{ s.buttonLabel or 'Apply to become a partner' }}</button>
     </form>

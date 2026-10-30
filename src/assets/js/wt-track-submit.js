@@ -73,7 +73,7 @@ async function handleSubmit(e) {
   if (isPartner) {
     const missing = missingPartnerFields(fd);
     if (missing.length) {
-      showError(form, null, '', 'Please add ' + missing.map((k) => PARTNER_REQUIRED[k]).join(', ') + '.');
+      showError(form, null, '', 'Please add ' + missing.map((k) => form.elements[k]?.dataset.missingLabel || PARTNER_REQUIRED[k]).join(', ') + '.');
       return;
     }
   }
