@@ -19,6 +19,7 @@
       <a href="{{ link.href }}"{% if link.newTab %} target="_blank" rel="noopener"{% endif %}>{{ link.label }}</a>
       {%- endif %}
       {%- endfor %}
+      {%- if site.partnerNav.length %}
       <div class="nav-dropdown nav-dropdown-end">
         <button type="button" aria-haspopup="true">Partner With Us <span class="caret">▾</span></button>
         <div class="nav-dropdown-menu">
@@ -27,6 +28,7 @@
           {%- endfor %}
         </div>
       </div>
+      {%- endif %}
     </nav>
     <div class="nav-cta">
       <a class="btn btn-ghost" href="/account/login/" data-wt-account>Log In</a>
@@ -51,9 +53,11 @@
     <a href="{{ link.href }}"{% if link.newTab %} target="_blank" rel="noopener"{% endif %}>{{ link.label }}</a>
     {%- endif %}
     {%- endfor %}
+    {%- if site.partnerNav.length %}
     <span class="mobile-menu-label">Partner With Us</span>
     {%- for link in site.partnerNav %}
     <a class="mobile-sub" href="{{ link.href }}">{{ link.label }}</a>
     {%- endfor %}
+    {%- endif %}
   </div>
 </header>
