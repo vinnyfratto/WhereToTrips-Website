@@ -16,6 +16,10 @@ noindex: true
   Replaces vinnyfratto.github.io/Wander_App/..., which stopped existing when
   that repo went private: every invite link had been a GitHub "Site not found".
 
+  /join/?open=1 is the welcome email's "Open WhereTo Trips" button: the app if
+  it is installed (the link itself opens it), otherwise this page sends the
+  visitor to their store.
+
   The code is read in the browser and never sent anywhere. The app route is
   whereto:///group/CODE, whereto:///together/CODE or whereto:///invite/TOKEN.
 #}
@@ -59,6 +63,13 @@ noindex: true
       </div>
       <p class="join-note">Don't have the app yet? Install it and create your free account, then tap your invite link again.</p>
       <p class="join-note">On a computer? <a id="join-web" href="#">Accept on the website</a> instead.</p>
+      <div class="join-stores" data-stores></div>
+    </div>
+
+    <div id="join-open-app" style="display:none;">
+      <p class="eyebrow">WhereTo Trips</p>
+      <h1>Get the WhereTo Trips app</h1>
+      <p class="acct-sub">Taking you to the store now. Already have the app? Open it from your home screen.</p>
       <div class="join-stores" data-stores></div>
     </div>
 
@@ -109,6 +120,19 @@ noindex: true
       document.getElementById('join-accept').href = inviteLink;
       document.getElementById('join-web').href = '/account/profile/?section=travelers&invite=' + token;
       tryOpen(inviteLink);
+      return;
+    }
+
+    // The welcome email's "Open WhereTo Trips" button (/join/?open=1). With the
+    // app installed the link never gets here: Universal / App Links open the
+    // app (app/+native-intent.tsx sends a bare /join/ to the dashboard). So
+    // anyone on this page needs the app: forward them to the right store.
+    if (params.has('open')) {
+      document.getElementById('join-invite').style.display = 'none';
+      document.getElementById('join-open-app').style.display = 'block';
+      if (isIOS || isAndroid) {
+        setTimeout(function () { window.location.replace(isIOS ? APPSTORE : PLAY); }, 400);
+      }
       return;
     }
 
