@@ -317,7 +317,153 @@ function renderTravelMetrics(d) {
   wireControls();
 }
 
+// ── User Flow ───────────────────────────────────────────────────────
+// How people move through the app, from the screen each route change reports.
+// The dashboard is "/". Routes are shown by the name a person would use.
+const SCREEN_NAMES = {
+  '/': 'Dashboard',
+  '/search/discover': 'WhereTo: Discover',
+  '/search/traditional': 'WhereTo: Explore',
+  '/search/direct': 'WhereTo: Direct',
+  '/group': 'Wander Together',
+  '/group/[id]': 'Wander Together: trip',
+  '/saved': 'Saved Destinations',
+  '/profile': 'My Profile',
+  '/search': 'Search',
+  '/search/results': 'Search results',
+  '/search/vibe-explore': 'Destination blog',
+  '/bookings': 'My Bookings',
+  '/bookings/passengers': 'Booking: traveler details',
+  '/bookings/staging': 'Booking: your trip',
+  '/more': 'More',
+};
+const screenName = (route) => SCREEN_NAMES[route] || route;
+// The four tiles and the trip banner, so they always show even with no taps yet.
+const DASHBOARD_TILES = ['/search/discover', '/search/traditional', '/group', '/search/direct'];
+
+function simpleTable(title, note, head, rows, colspan, errKey, errors) {
+  if (errors && errors[errKey]) {
+    return `<div class="adm-card"><h3>${esc(title)}</h3><p class="acct-sub">Unavailable — ${esc(errors[errKey])}</p></div>`;
+  }
+  return `
+    <div class="adm-card">
+      <h3>${esc(title)}</h3>
+      ${note ? `<p class="acct-sub" style="margin:-4px 0 12px;">${note}</p>` : ''}
+      <div class="adm-wrap-scroll"><table class="adm-table">
+        <thead><tr>${head}</tr></thead>
+        <tbody>${rows || `<tr><td colspan="${colspan}">No data yet.</td></tr>`}</tbody>
+      </table></div>
+    </div>`;
+}
+const th = (label, num) => `<th${num ? ' class="num"' : ''}>${esc(label)}</th>`;
+
+function renderUserFlow(d) {
+  const errors = d.errors || {};
+  const sess = d.sessions || {};
+  const pct = (a, b) => (b > 0 ? Math.round((a / b) * 100) + '%' : '—');
+
+  // Dashboard tiles: every tile, with where the dashboard sent people. Route
+  // pairs reach back to the first release; tile taps are exact from app 1.0.137.
+  const exits = d.dashboard_exits || [];
+  const exitBy = new Map(exits.map((e) => [e.screen, e]));
+  const tapBy = new Map((d.tile_taps || []).map((t) => [t.tile, t]));
+  const totalExits = exits.reduce((s, e) => s + e.moves, 0);
+  const maxExit = Math.max(1, ...exits.map((e) => e.moves));
+  const tileRows = [...DASHBOARD_TILES, ...exits.map((e) => e.screen).filter((s) => !DASHBOARD_TILES.includes(s))].map((route) => {
+    const e = exitBy.get(route) || { moves: 0, users: 0 };
+    return `
+      <tr>
+        <td>${esc(screenName(route))}</td>
+        <td class="num">${e.moves}</td>
+        <td class="num">${e.users}</td>
+        <td class="num">${pct(e.moves, totalExits)}</td>
+        <td style="width:24%;">${bar(Math.round((e.moves / maxExit) * 100))}</td>
+      </tr>`;
+  }).join('');
+
+  const tapRows = (d.tile_taps || []).map((t) => `<tr><td>${esc(t.tile)}</td><td class="num">${t.taps}</td><td class="num">${t.users}</td></tr>`).join('');
+
+  const insp = d.inspiration || {};
+  const inspTileRows = (insp.tiles || []).map((t) => {
+    const arrows = (insp.steps || []).filter((s) => s.tile === t.tile).reduce((sum, s) => sum + s.taps, 0);
+    return `<tr><td>${esc(t.tile || '(untitled)')}</td><td class="num">${t.taps}</td><td class="num">${t.users}</td><td class="num">${arrows}</td></tr>`;
+  }).join('');
+  const inspDestRows = (insp.destinations || []).map((t) =>
+    `<tr><td>${esc(t.name || t.code)}${t.name && t.code ? ` (${esc(t.code)})` : ''}</td><td>${esc(t.tile)}</td><td class="num">${t.taps}</td><td class="num">${t.users}</td></tr>`).join('');
+  const dashBlogRows = (insp.blogs_from_dashboard || []).map((t) =>
+    `<tr><td>${esc(t.name || t.code)}${t.name && t.code ? ` (${esc(t.code)})` : ''}</td><td class="num">${t.views}</td><td class="num">${t.users}</td></tr>`).join('');
+
+  const entryLabel = (k) => ({
+    dashboard: 'Dashboard inspiration', saved: 'Saved Destinations', together: 'Wander Together',
+    destination_results: 'Search results', unknown: '(not recorded)',
+  }[k] || k || '(not recorded)');
+  const entryRows = (d.blog_entry_points || []).map((t) => `<tr><td>${esc(entryLabel(t.entry))}</td><td class="num">${t.views}</td><td class="num">${t.users}</td></tr>`).join('');
+
+  const movesRows = (d.moves || []).map((m) =>
+    `<tr><td>${esc(screenName(m.from))}</td><td>${esc(screenName(m.to))}</td><td class="num">${m.moves}</td><td class="num">${m.users}</td></tr>`).join('');
+  const endRows = (d.session_ends || []).map((e) => `<tr><td>${esc(screenName(e.screen))}</td><td class="num">${e.sessions}</td><td class="num">${pct(e.sessions, sess.total)}</td></tr>`).join('');
+  const screenRows = (d.screens || []).map((s) => `<tr><td>${esc(screenName(s.screen))}</td><td class="num">${s.views}</td><td class="num">${s.users}</td></tr>`).join('');
+  const moduleRows = (d.modules || []).map((m) => `<tr><td>${esc(eventLabel(m.from))}</td><td>${esc(eventLabel(m.to))}</td><td class="num">${m.moves}</td><td class="num">${m.users}</td></tr>`).join('');
+
+  const topCards = `
+    <div class="adm-overview-grid">
+      ${card('Dashboard views', (d.dashboard && d.dashboard.views) || 0)}
+      ${card('People on the dashboard', (d.dashboard && d.dashboard.users) || 0)}
+      ${card('Sessions', sess.total || 0)}
+      ${card('Screens per session', sess.avg_screens || 0)}
+      ${card('Left after one screen', pct(sess.one_screen, sess.total))}
+      ${card('Started on the dashboard', pct(sess.start_on_dashboard, sess.total))}
+      ${card('Never left the dashboard', pct(sess.dashboard_only, sess.total))}
+    </div>`;
+
+  $('#analytics-root').innerHTML = `
+    <div class="adm-form-row" style="justify-content:space-between; align-items:center; margin-bottom:14px;">
+      <p class="acct-sub" style="margin:0;">Live from PostHog · refreshes every 60s</p>
+      ${controlsHtml()}
+    </div>
+    ${testAccountsNote(d)}
+    ${topCards}
+
+    <h2 class="adm-section-h">Dashboard</h2>
+    <p class="acct-sub" style="margin:-4px 0 16px;">What people do from the dashboard: the four tiles first, then the trip banner and anything else that leaves it.</p>
+    ${simpleTable('Where the dashboard sends people',
+      'Each time someone went from the dashboard to another screen. Counted from the screens people open, so it covers the whole period, not only recent app versions.',
+      th('Opens') + th('Times', true) + th('People', true) + th('Share', true) + '<th></th>', tileRows, 5, 'dashboard_exits', errors)}
+    ${simpleTable('Tile taps',
+      'The tile or banner that was tapped. Tracked from app 1.0.137, so this fills in as people update.',
+      th('Tile') + th('Taps', true) + th('People', true), tapRows, 3, 'tile_taps', errors)}
+
+    <h2 class="adm-section-h">Travel inspiration</h2>
+    <p class="acct-sub" style="margin:-4px 0 16px;">The destination carousels under the tiles on the dashboard.</p>
+    ${simpleTable('Inspiration rows',
+      'Taps on a destination, and taps on its arrows. Tracked from app 1.0.137.',
+      th('Row') + th('Destination taps', true) + th('People', true) + th('Arrow taps', true), inspTileRows, 4, 'inspiration_tiles', errors)}
+    <div class="adm-grid-2">
+      ${simpleTable('Destinations tapped', 'From app 1.0.137.',
+        th('Destination') + th('Row') + th('Taps', true) + th('People', true), inspDestRows, 4, 'inspiration_destinations', errors)}
+      ${simpleTable('Blogs opened from the dashboard', 'The whole period, any app version.',
+        th('Destination') + th('Opens', true) + th('People', true), dashBlogRows, 3, 'dashboard_blogs', errors)}
+    </div>
+
+    <h2 class="adm-section-h">How people move</h2>
+    ${simpleTable('Most common moves', 'Screen A, then screen B, in the same session.',
+      th('From') + th('To') + th('Times', true) + th('People', true), movesRows, 4, 'moves', errors)}
+    <div class="adm-grid-2">
+      ${simpleTable('Where sessions end', 'The last screen before someone left.',
+        th('Screen') + th('Sessions', true) + th('Share', true), endRows, 3, 'session_ends', errors)}
+      ${simpleTable('Where blogs are opened from', '',
+        th('Opened from') + th('Opens', true) + th('People', true), entryRows, 3, 'blog_entry_points', errors)}
+    </div>
+    <div class="adm-grid-2">
+      ${simpleTable('Most visited screens', '', th('Screen') + th('Views', true) + th('People', true), screenRows, 3, 'screens', errors)}
+      ${simpleTable('Switching between the four products', 'Discover, Explore, Together and Direct.',
+        th('From') + th('To') + th('Times', true) + th('People', true), moduleRows, 4, 'modules', errors)}
+    </div>`;
+
+  wireControls();
+}
+
 startAnalyticsPage({
   defaultChannel: 'app',
-  channelRenderers: { app: renderAppAnalytics, travel: renderTravelMetrics },
+  channelRenderers: { app: renderAppAnalytics, travel: renderTravelMetrics, flow: renderUserFlow },
 });
