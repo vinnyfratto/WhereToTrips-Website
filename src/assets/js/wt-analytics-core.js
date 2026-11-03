@@ -54,7 +54,7 @@ let pollTimer = null;
 let loadSeq = 0;
 const SEARCH_RANGES = [['7d', 'Last 7 days'], ['28d', 'Last 28 days'], ['90d', 'Last 3 months']];
 const RANGES = [
-  ['hour', 'Last hour'], ['6h', '6 hours'],
+  ['hour', 'Last hour'], ['6h', '6 hours'], ['24h', 'Rolling 24h'],
   ['today', 'Today'], ['week', 'Last 7 days'], ['30d', 'Last 30 days'],
 ];
 
@@ -387,7 +387,7 @@ export function wireControls() {
 }
 export function bucketCol() {
   if (currentRange === 'hour') return 'Time';
-  if (currentRange === '6h' || currentRange === 'today') return 'Hour';
+  if (currentRange === '6h' || currentRange === '24h' || currentRange === 'today') return 'Hour';
   if (currentRange === '30d') return 'Week';
   return 'Day';
 }
@@ -396,7 +396,7 @@ export function formatBucket(iso) {
   if (!iso) return '—';
   const d = new Date(iso);
   if (currentRange === 'hour') return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: DASH_TZ }) + ' CT';
-  if (currentRange === '6h' || currentRange === 'today') return d.toLocaleTimeString('en-US', { hour: 'numeric', timeZone: DASH_TZ }) + ' CT';
+  if (currentRange === '6h' || currentRange === '24h' || currentRange === 'today') return d.toLocaleTimeString('en-US', { hour: 'numeric', timeZone: DASH_TZ }) + ' CT';
   if (currentRange === '30d') return 'Week of ' + d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: DASH_TZ });
   return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: DASH_TZ });
 }
