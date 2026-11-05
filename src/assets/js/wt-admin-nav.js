@@ -57,6 +57,7 @@
       { items: [
         ['Site Analytics', '/analytics/'],
         ['App Analytics', '/app-analytics/'],
+        ['Search Research', '/admin/search_research/'],
         ['Site Submissions', '/admin-submissions/'],
       ] },
     ] },

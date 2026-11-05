@@ -1,0 +1,26 @@
+---
+layout: layouts/admin.njk
+permalink: /admin/search_research/index.html
+title: "Search Research — WhereTo"
+description: "Internal review page for the Google Search research and test plan."
+noindex: true
+eleventyExcludeFromCollections: true
+---
+<link rel="stylesheet" href="/assets/search-research.css?v={{ buildTime }}" />
+<main id="wt-admin-page">
+
+  {% include "partials/admin-gate.njk" %}
+
+  <div id="adm-root" class="dash pa-xwide" style="display:none;">
+    <div class="dash-head">
+      <div>
+        <p class="eyebrow">Internal · analytics</p>
+        <h1>Search Research</h1>
+        <p class="pa-lede" id="sr-scope">Loading…</p>
+      </div>
+    </div>
+    <div id="sr-msg" class="alert" role="status" aria-live="polite" style="display:none;"></div>
+    <div class="sr" id="sr-app"></div>
+  </div>
+</main>
+<script type="module" src="/assets/js/wt-search-research.js?v={{ buildTime }}"></script>
