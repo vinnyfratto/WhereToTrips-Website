@@ -171,6 +171,66 @@
     }
   </script>
   {% endif %}
+  {#- Google Ads tag (AW-18519711196, the VC Innovations Group Ads account's own
+      Google-only tag). Same gates as the Meta Pixel above: never on /admin*
+      pages, never in a browser marked internal, never when the visitor sent
+      Global Privacy Control or used "Do Not Sell or Share" (wt_ad_optout).
+      Fires one conversion, "Store badge click" (Outbound click category), when
+      a .store-badge link is clicked. It also copies the Google ad click's
+      gclid and utm_* values into the Google Play badge's `referrer`, so Play
+      Console and Google Ads can credit an Android install to the campaign. -#}
+  {% if site.analytics.googleAdsTagId %}
+  <script>
+    (function () {
+      var optOut = navigator.globalPrivacyControl === true;
+      try { if (localStorage.getItem('wt_ad_optout') === '1') optOut = true; } catch (e) { /* GPC alone decides */ }
+      if (optOut) {
+        ['_gcl_au', '_gcl_aw', '_gcl_dc'].forEach(function (c) {
+          document.cookie = c + '=; Max-Age=0; path=/';
+          document.cookie = c + '=; Max-Age=0; path=/; domain=.' + location.hostname.replace(/^www\./, '');
+        });
+      }
+      if (wtInternal || optOut || /^\/admin/.test(window.location.pathname)) return;
+
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://www.googletagmanager.com/gtag/js?id={{ site.analytics.googleAdsTagId }}';
+      document.head.appendChild(s);
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function () { dataLayer.push(arguments); };
+      gtag('js', new Date());
+      gtag('config', '{{ site.analytics.googleAdsTagId }}');
+
+      // Keep the ad click's parameters for this visit, across pages.
+      var keys = ['gclid', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
+      var q = new URLSearchParams(window.location.search), adParams = {};
+      try { adParams = JSON.parse(sessionStorage.getItem('wt_ad_params') || '{}'); } catch (e) { adParams = {}; }
+      if (q.get('gclid') || q.get('utm_source')) {
+        adParams = {};
+        keys.forEach(function (k) { if (q.get(k)) adParams[k] = q.get(k); });
+        try { sessionStorage.setItem('wt_ad_params', JSON.stringify(adParams)); } catch (e) { /* storage blocked */ }
+      }
+
+      document.addEventListener('click', function (e) {
+        var a = e.target && e.target.closest ? e.target.closest('a.store-badge') : null;
+        if (!a || a.hasAttribute('data-wt-no-track')) return;
+        var href = a.getAttribute('href') || '';
+        try {
+          if (/play\.google\.com/.test(href) && Object.keys(adParams).length && !/[?&]referrer=/.test(href)) {
+            var ref = Object.keys(adParams).map(function (k) { return k + '=' + adParams[k]; }).join('&');
+            a.setAttribute('href', href + (href.indexOf('?') >= 0 ? '&' : '?') + 'referrer=' + encodeURIComponent(ref));
+          }
+          gtag('event', 'conversion', {
+            send_to: '{{ site.analytics.googleAdsBadgeSendTo }}',
+            value: 1.0,
+            currency: 'USD',
+            transport_type: 'beacon'
+          });
+        } catch (err) { /* a tracking failure must never block the click */ }
+      }, true);
+    })();
+  </script>
+  {% endif %}
 </head>
 <body>
 {% include "partials/header.njk" %}

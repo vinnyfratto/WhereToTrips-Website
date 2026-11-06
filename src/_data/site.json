@@ -170,6 +170,8 @@
   "analytics": {
     "posthogHost": "https://us.i.posthog.com",
     "posthogKey": "phc_kFkCtGbaD92SVz895WwsRCr2gFn9ip6hqiR4X67EqkqL",
-    "metaPixelId": "1683896709825850"
+    "metaPixelId": "1683896709825850",
+    "googleAdsTagId": "AW-18519711196",
+    "googleAdsBadgeSendTo": "AW-18519711196/wdrlCJrHubMdENy78f5E"
   }
 }
