@@ -80,7 +80,7 @@ sections:
     steps:
       - title: Your trip, your budget
         body: Set how much you want to spend and when you can go. WhereTo honors your budget, so you see what fits before you fall in love with a place you can't afford.
-      - title: Pick your vibe
+      - title: Pick your vibes
         body: Over 12,000 individual interests (we call vibes) are mapped and scored across over 1,000 global destinations.
       - title: Your destinations
         body: The Vibe Engine will match you with destinations that meet your vibes. All scored, ranked, and bookable. All within budget.

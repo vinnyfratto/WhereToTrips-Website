@@ -488,6 +488,7 @@ Sitemap: https://wheretotrips.com/sitemap.xml
 
 ## 13. Changelog / progress log
 
+- **2026-11-07**: **Step 2 title, website 1.76.4.** "Pick your vibe" is now "Pick your vibes".
 - **2026-11-07**: **Step 3 copy, website 1.76.3.** "Your destinations" body ends with "All within budget."
 - **2026-11-07**: **Step 1 copy trim, website 1.76.2.** Dropped "and who's coming": now "Set how much you want to spend and when you can go. WhereTo honors your budget, so you see what fits before you fall in love with a place you can't afford."
 - **2026-11-07**: **How it works step 1 copy, website 1.76.1.** Home page `steps` (also shown on `/app/`): "Tell us what you know / Budget, dates, and who's coming." is now "Your trip, your budget / Set how much you want to spend, when you can go, and who's coming. WhereTo honors your budget, so you see what fits before you fall in love with a place you can't afford."
