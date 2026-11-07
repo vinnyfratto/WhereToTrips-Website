@@ -83,7 +83,7 @@ sections:
       - title: Pick your vibe
         body: Over 12,000 individual interests (we call vibes) are mapped and scored across over 1,000 global destinations.
       - title: Your destinations
-        body: The Vibe Engine will match you with destinations that meet your vibes. All scored, ranked, and bookable.
+        body: The Vibe Engine will match you with destinations that meet your vibes. All scored, ranked, and bookable. All within budget.
       - title: Book your trip package
         body: Each returned destination comes with suggested hotel and flights to match your budget. Change either as you see fit.
   - type: no_ads
