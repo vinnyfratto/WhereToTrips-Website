@@ -61,6 +61,18 @@ permalink: /app/
     <div class="app-art"><img src="/media/oniPhone_2.png" alt="The WhereTo app on a phone" width="400" /></div>
   </section>
 
+  {#- The home page's "How it works" steps, read from index.md so the two never drift. -#}
+  {%- for p in collections.all -%}
+    {%- if p.url == "/" -%}
+      {%- for section in p.data.sections -%}
+        {%- if section.type == "steps" -%}
+          {%- set s = section -%}
+          {% include "sections/steps.njk" %}
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endif -%}
+  {%- endfor %}
+
   <section class="noads">
     <div class="noads-in">
       <span class="eyebrow">Our promise</span>
