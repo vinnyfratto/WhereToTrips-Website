@@ -1003,8 +1003,6 @@ footer { background: var(--footer); padding: 72px 0 40px; }
   letter-spacing: 1.2px; text-transform: uppercase;
   color: var(--azure);
 }
-.dest-place-sep { color: var(--wg400); font-weight: 400; }
-.dest-place-region { color: var(--ink-muted); }
 
 /* ── Why it scored ────────────────────────────────────────────────── */
 .dest-reason {
