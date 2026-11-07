@@ -15,9 +15,6 @@ sections:
     primaryBtn:
       label: Get the App
       href: /app/
-    ghostBtn:
-      label: See how it works
-      href: /how-it-works/
     slides:
       - src: /media/WhereTo_Hero_Beach.jpg
         alt: Turquoise water lapping a wide tropical beach from above
