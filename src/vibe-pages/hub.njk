@@ -23,7 +23,7 @@ permalink: "/vibes/{{ hub.slug }}/"
     <h1>{{ title }}</h1>
     <p class="vibe-hero-region">{{ hub.placeCount }} places ranked across {{ hub.regions.length }} regions</p>
     <div class="cta">
-      <a class="btn btn-primary" href="#download">Get the App to See My Matches</a>
+      {% include "partials/store-buttons.njk" %}
       <a class="btn btn-ghost" href="#ranking">See the ranking</a>
     </div>
   </div>

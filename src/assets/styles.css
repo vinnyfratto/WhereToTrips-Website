@@ -725,6 +725,17 @@ a.card-photo:hover .card-photo-link span { transform: translateX(4px); }
 .store-badge:hover { transform: translateY(-2px); }
 .store-badge img { display: block; width: auto; max-width: none; height: 54px; }
 .store-badge-google img { height: 80px; margin: -13px; }
+.store-btns-sm { gap: 8px; }
+/* badges standing in for a button sit where the button would: start of the row */
+.cta .store-btns, .btns .store-btns, .nav-cta .store-btns { justify-content: flex-start; }
+/* phones: a little smaller so the two badges share one row */
+@media (max-width: 520px) {
+  .store-btns { gap: 10px; }
+  .store-btns .store-badge, .store-btns .store-badge img { height: 44px; }
+  .store-btns .store-badge-google img { height: 65px; margin: -10.5px; }
+}
+.store-btns-sm .store-badge, .store-btns-sm .store-badge img { height: 40px; }
+.store-btns-sm .store-badge-google img { height: 59px; margin: -9.5px; }
 
 /* ── Footer ─────────────────────────────── */
 footer { background: var(--footer); padding: 72px 0 40px; }

@@ -1,6 +1,6 @@
 {#- The official badges, kept as published in /StoreBadges/ (Apple SVG, Google Play PNG).
     Don't recolor, crop or restyle them: both stores' brand rules forbid it. -#}
-<div class="store-btns">
+<div class="store-btns{% if badgeSize %} store-btns-{{ badgeSize }}{% endif %}">
   <a href="{{ site.store.appleHref }}" class="store-badge store-badge-apple" aria-label="Download on the App Store">
     <img src="/StoreBadges/app-store-badge-black.svg" alt="Download on the App Store" height="54" />
   </a>

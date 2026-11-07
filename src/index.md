@@ -75,7 +75,7 @@ sections:
     lede: |-
       When you want to go on a trip, you usually know HOW MUCH you can spend, WHEN you can go, WHO's coming, and the VIBE you want.
 
-      WhereTo Tips is built on a Vibe Engine that it built to understand travelers wants and interests. Make a few easy selections and inputs, then browse through destinations that all match your criteria. All scored based on what you want to do and how much you want to spend.
+      WhereTo Trips is built on a Vibe Engine that it built to understand travelers wants and interests. Make a few easy selections and inputs, then browse through destinations that all match your criteria. All scored based on what you want to do and how much you want to spend.
     id: how
     steps:
       - title: Your trip, your budget

@@ -26,7 +26,7 @@ permalink: "/destinations/{{ dest.slug }}/"
     <h1>{{ dest.city }}{% if dest.country != dest.city %}<span class="vibe-hero-country">, {{ dest.country }}</span>{% endif %}</h1>
     <p class="vibe-hero-region">{{ dest.vibes.length }} travel vibes scored{% if dest.bestMonthsShort %} · best {{ dest.bestMonthsShort }}{% endif %}</p>
     <div class="cta">
-      <a class="btn btn-primary" href="#download">Get the App to See My Matches</a>
+      {% include "partials/store-buttons.njk" %}
       <a class="btn btn-ghost" href="#vibes">What it's best for</a>
     </div>
   </div>

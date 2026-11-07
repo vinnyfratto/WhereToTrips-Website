@@ -8,7 +8,7 @@ layout: layouts/base.njk
       <h1>{{ title }}</h1>
       {% if tagline %}<p class="lede">{{ tagline }}</p>{% endif %}
       <div class="cta">
-        <a class="btn btn-primary" href="#download">Get the App to See My Matches</a>
+        {% include "partials/store-buttons.njk" %}
         <a class="btn btn-ghost" href="/destinations/">All lists</a>
       </div>
     </div>

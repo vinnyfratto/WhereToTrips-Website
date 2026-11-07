@@ -35,7 +35,7 @@
           {% endfor %}
         </ul>
         {% endif %}
-        {% if s.cta %}<div class="cta" style="margin-top: 32px;"><a class="btn btn-primary" href="{{ s.cta.href }}">{{ s.cta.label }}</a></div>{% endif %}
+        {% if s.cta %}<div class="cta" style="margin-top: 32px;">{% if s.cta.href == "/app/" %}{% include "partials/store-buttons.njk" %}{% else %}<a class="btn btn-primary" href="{{ s.cta.href }}">{{ s.cta.label }}</a>{% endif %}</div>{% endif %}
       </div>
     </div>
   </div>

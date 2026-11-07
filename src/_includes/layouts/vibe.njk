@@ -8,7 +8,7 @@ layout: layouts/base.njk
       <h1>{{ title }}</h1>
       {% if tagline %}<p class="lede">{{ tagline }}</p>{% endif %}
       <div class="cta">
-        <a class="btn btn-primary" href="#download">{{ ctaLabel or ("Find My " + title + " Trip") }}</a>
+        {% include "partials/store-buttons.njk" %}
         <a class="btn btn-ghost" href="/travel-vibes/">All vibes</a>
       </div>
     </div>

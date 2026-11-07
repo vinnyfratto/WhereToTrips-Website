@@ -32,7 +32,7 @@
     </nav>
     <div class="nav-cta">
       <a class="btn btn-ghost" href="/account/login/" data-wt-account>Log In</a>
-      <a class="btn btn-primary" href="{{ navCta.href }}">{{ navCta.label }}</a>
+      {% if navCta.href == "/app/" %}{% set badgeSize = "sm" %}{% include "partials/store-buttons.njk" %}{% set badgeSize = "" %}{% else %}<a class="btn btn-primary" href="{{ navCta.href }}">{{ navCta.label }}</a>{% endif %}
     </div>
     <button class="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
       <span></span><span></span><span></span>
@@ -41,7 +41,7 @@
   <div class="mobile-menu" id="mobile-menu">
     <div class="mobile-menu-top">
       <a class="btn btn-ghost mobile-cta" href="/account/login/" data-wt-account>Log In</a>
-      <a class="btn btn-primary mobile-cta" href="{{ navCta.href }}">{{ navCta.label }}</a>
+      {% if navCta.href == "/app/" %}{% include "partials/store-buttons.njk" %}{% else %}<a class="btn btn-primary mobile-cta" href="{{ navCta.href }}">{{ navCta.label }}</a>{% endif %}
     </div>
     {%- for link in site.nav %}
     {%- if link.children %}
