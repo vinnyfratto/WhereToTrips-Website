@@ -39,6 +39,21 @@ permalink: /app/
     .app-art img { max-width: 260px; }
     .noads-pts { grid-template-columns: 1fr; gap: 22px; }
   }
+
+  /* Hero: three app screens fanned out */
+  .app-art.fan { position: relative; height: 560px; }
+  .app-art.fan::before { content: ""; position: absolute; inset: 8% 6% 4%; border-radius: 50%;
+    background: radial-gradient(circle at 50% 45%, var(--azure-tint) 0%, rgba(255,255,255,0) 70%); }
+  .fan img { position: absolute; top: 50%; left: 50%; width: 230px; max-width: none; height: auto;
+    filter: drop-shadow(0 24px 40px rgba(16, 40, 72, .22)); }
+  .fan .fan-c { width: 260px; transform: translate(-50%, -50%); z-index: 3; }
+  .fan .fan-l { transform: translate(-112%, -46%) rotate(-9deg); z-index: 2; }
+  .fan .fan-r { transform: translate(12%, -46%) rotate(9deg); z-index: 2; }
+  @media (max-width: 820px) {
+    .app-art.fan { height: 360px; }
+    .fan img { width: 132px; }
+    .fan .fan-c { width: 160px; }
+  }
 </style>
 
 <main>
@@ -58,7 +73,11 @@ permalink: /app/
         <a class="store-badge store-badge-google" data-store="google" href="{{ site.store.googleHref }}"><img src="/StoreBadges/google-play-badge.png" alt="Get it on Google Play" height="80" /></a>
       </div>
     </div>
-    <div class="app-art"><img src="/media/oniPhone_2.png" alt="The WhereTo app on a phone" width="400" /></div>
+    <div class="app-art fan">
+      <img class="fan-l" src="/media/app/step-destinations.webp" alt="Destinations scored to your vibes" width="560" height="1136" />
+      <img class="fan-r" src="/media/app/step-package.webp" alt="Flight and hotel within budget" width="560" height="1136" />
+      <img class="fan-c" src="/media/app/hero-dashboard.webp" alt="The WhereTo app home screen" width="560" height="1136" />
+    </div>
   </section>
 
   {#- The home page's "How it works" steps, read from index.md so the two never drift. -#}
@@ -67,6 +86,7 @@ permalink: /app/
       {%- for section in p.data.sections -%}
         {%- if section.type == "steps" -%}
           {%- set s = section -%}
+          {%- set hideLede = true -%}
           {% include "sections/steps.njk" %}
         {%- endif -%}
       {%- endfor -%}

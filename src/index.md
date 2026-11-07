@@ -79,12 +79,16 @@ sections:
     id: how
     steps:
       - title: Your trip, your budget
+        image: /media/app/step-budget.webp
         body: Set how much you want to spend and when you can go. WhereTo honors your budget, so you see what fits before you fall in love with a place you can't afford.
       - title: Pick your vibes
+        image: /media/app/step-vibes.webp
         body: Over 12,000 individual interests (we call vibes) are mapped and scored across over 1,000 global destinations.
       - title: Your destinations
+        image: /media/app/step-destinations.webp
         body: The Vibe Engine will match you with destinations that meet your vibes. All scored, ranked, and bookable. All within budget.
       - title: Book your trip package
+        image: /media/app/step-package.webp
         body: Each returned destination comes with suggested hotel and flights to match your budget. Change either as you see fit.
   - type: no_ads
     eyebrow: Our promise

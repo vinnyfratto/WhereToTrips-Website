@@ -488,6 +488,7 @@ Sitemap: https://wheretotrips.com/sitemap.xml
 
 ## 13. Changelog / progress log
 
+- **2026-11-07**: **App screens in How it works and the /app/ hero, website 1.77.0.** `sections/steps.njk` now has a second layout: when a step has an `image`, it renders `.hiw` (styles in `styles.css`): four full phone screens in a row with a dashed path through their middles, then a number badge with the title and the body under each; two per row on tablets; on phones the steps zigzag (phone left on odd steps, right on even). Steps without images (How It Works, Wander Together, Discover/Explore/Direct, etc.) keep the old cards. The home page steps carry `image: /media/app/step-*.webp`, so home and `/app/` show the same section; `/app/` hides the home lede with `hideLede`. The `/app/` hero replaces the single phone with three fanned screens (destinations, home screen, package). Screens come from `D:/_Apps/_Flights/_AppStore Images`, with the status-bar "SOS" painted out, cropped and saved as 560px WebP in `src/media/app/`.
 - **2026-11-07**: **Step 2 title, website 1.76.4.** "Pick your vibe" is now "Pick your vibes".
 - **2026-11-07**: **Step 3 copy, website 1.76.3.** "Your destinations" body ends with "All within budget."
 - **2026-11-07**: **Step 1 copy trim, website 1.76.2.** Dropped "and who's coming": now "Set how much you want to spend and when you can go. WhereTo honors your budget, so you see what fits before you fall in love with a place you can't afford."

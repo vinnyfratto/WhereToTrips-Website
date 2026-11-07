@@ -1,3 +1,25 @@
+{%- if s.steps[0].image -%}
+<section class="hiw"{% if s.id %} id="{{ s.id }}"{% endif %}>
+  <div class="hiw-in">
+    <div class="sec-head reveal">
+      {% if s.eyebrow %}<span class="eyebrow">{{ s.eyebrow }}</span>{% endif %}
+      {% if s.title %}<h2>{{ s.title.pre }} <span class="italic">{{ s.title.accent }}</span>{{ s.title.post }}</h2>{% endif %}
+      {% if s.lede and not hideLede %}<p class="lede">{{ s.lede }}</p>{% endif %}
+    </div>
+    <ol class="hiw-steps reveal reveal-delay-1">
+      {% for step in s.steps %}
+      <li class="hiw-step">
+        <div class="hiw-phone"><img src="{{ step.image }}" alt="{{ step.title }} in the WhereTo app" width="560" height="1136" loading="lazy" /></div>
+        <div class="hiw-txt">
+          <div class="hiw-label"><span class="hiw-num">{{ loop.index }}</span><h3>{{ step.title }}</h3></div>
+          <p>{{ step.body }}</p>
+        </div>
+      </li>
+      {% endfor %}
+    </ol>
+  </div>
+</section>
+{%- else -%}
 <section class="block{% if s.background %} tint{% endif %}"{% if s.id %} id="{{ s.id }}"{% endif %}>
   <div class="wrap">
     {% if s.eyebrow or s.title or s.lede %}
@@ -18,3 +40,4 @@
     </div>
   </div>
 </section>
+{%- endif %}
