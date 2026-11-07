@@ -78,8 +78,8 @@ sections:
       WhereTo Tips is built on a Vibe Engine that it built to understand travelers wants and interests. Make a few easy selections and inputs, then browse through destinations that all match your criteria. All scored based on what you want to do and how much you want to spend.
     id: how
     steps:
-      - title: Tell us what you know
-        body: Budget, dates, and who's coming.
+      - title: Your trip, your budget
+        body: Set how much you want to spend, when you can go, and who's coming. WhereTo honors your budget, so you see what fits before you fall in love with a place you can't afford.
       - title: Pick your vibe
         body: Over 12,000 individual interests (we call vibes) are mapped and scored across over 1,000 global destinations.
       - title: Your destinations
