@@ -2,7 +2,7 @@
 title: "The WhereTo Trips Partner Program: Founding Partners"
 description: "Earn 30% of what WhereTo Trips makes on every trip your followers book, for as long as you stay an active partner. No end date, vested from your first booking. Now recruiting Founding Partners."
 layout: layouts/base.njk
-permalink: "/TexasPartners/"
+permalink: "/partners/"
 ---
 {#- ══════════════════════════════════════════════════════════════════
     Texas Founding Partners — the partner flyer as a page of this site.
@@ -34,11 +34,10 @@ permalink: "/TexasPartners/"
     carries no Pixel and no PostHog. bookingSrc is Zoho Bookings' embed
     view: schedule.wheretotrips.com itself refuses to be framed
     (X-Frame-Options: SAMEORIGIN), /portal-embed is the version that allows
-    it. After a booking, Zoho redirects to /TexasPartners/booked/, which is
+    it. After a booking, Zoho redirects to /partners/booked/, which is
     where the "booked" event fires. -#}
 {%- set booking = "#book-a-call" -%}
 {%- set bookingSrc = "https://schedule.wheretotrips.com/portal-embed#/wheretotrips" -%}
-{%- set flyer = "/Partners/texas-partner-flyer.pdf" -%}
 
 {#- The flyer's copy for the four ways in. The photos and links come from
     appModes.json; the one-line descriptions are the flyer's own wording.
@@ -236,11 +235,6 @@ permalink: "/TexasPartners/"
     .tp-closing-band { container-type: inline-size; }
     .download-band .tp-email { font-size: clamp(13px, 5.9cqi, 44px); }
   }
-  .tp-flyer {
-    display: inline-block; margin-top: 16px; font-size: 14px; font-weight: 600;
-    color: rgba(255,255,255,0.86); text-decoration: underline; text-underline-offset: 3px;
-  }
-  .tp-flyer:hover { color: #fff; }
   .tp-fine {
     margin: 30px auto 0; max-width: 62ch; text-align: left;
     border-left: 2px solid var(--amber); padding-left: 16px;
@@ -380,17 +374,14 @@ permalink: "/TexasPartners/"
 </section>
 
 {# ═══ Apply ═════════════════════════════════════════════════════════
-   The same form /partners/ uses, by including the same partial
-   rather than copying its markup, so a change to partner_application.njk
-   reaches both pages at once. Both write into Zoho CRM Leads through
-   capture-submission; only the email subject names the pilot, so Chris can
-   tell them apart in an inbox. The subject is left as it was so any inbox
-   rule or CRM filter keyed on it keeps matching.
+   The shared partner_application.njk form. It writes into Zoho CRM Leads
+   through capture-submission. The subject still says "Texas Partner Pilot",
+   left as it was so any inbox rule or CRM filter keyed on it keeps matching.
    The sticky reply bar hides from here down (data-tp-cta), because from
    here on the thing it links to is already on screen.
    `background` is on: the terms section above is plain, so the form band
    reads as its own block. `short` drops metro, airports and the audience
-   box on this page only; /partners/ keeps them. #}
+   box; this is the only page that uses the form now. #}
 {%- set s = {
   "eyebrow": "Become a creator partner",
   "title": { "pre": "Let's make something", "accent": "together", "post": "." },
@@ -409,7 +400,7 @@ permalink: "/TexasPartners/"
 {# ═══ Book a short call ══════════════════════════════════════════════
    Every "Book a short call" on the page scrolls here. The calendar is
    Zoho Bookings, framed; a booking made in it redirects to
-   /TexasPartners/booked/ (set in Zoho), the one place a booked call is
+   /partners/booked/ (set in Zoho), the one place a booked call is
    counted. The link under the frame is for a browser that blocks the
    frame; data-wt-no-track keeps it from counting the same person's
    interest twice. #}
@@ -494,9 +485,8 @@ permalink: "/TexasPartners/"
     <div class="download-band tp-closing-band reveal">
       <span class="eyebrow">Questions? Email me directly</span>
       <h2 class="tp-email">Chris@WhereToTrips.com</h2>
-      <p>wheretotrips.com/TexasPartners</p>
-      <a class="btn btn-light tp-mail-btn" href="{{ mailto }}">Email Chris</a><br>
-      <a class="tp-flyer" href="{{ flyer }}" target="_blank" rel="noopener">Download the partner flyer (PDF)</a>
+      <p>wheretotrips.com/partners</p>
+      <a class="btn btn-light tp-mail-btn" href="{{ mailto }}">Email Chris</a>
 
       <div class="tp-fine">
         <h4>No code, no credit.</h4>

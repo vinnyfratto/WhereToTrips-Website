@@ -1,0 +1,29 @@
+---
+pagination:
+  data: legacyPartnerRedirects
+  size: 1
+  alias: r
+permalink: "{{ r.from }}index.html"
+eleventyExcludeFromCollections: true
+noindex: true
+---
+{#- The Texas pilot page moved to /partners/. GitHub Pages has no server
+    redirects, so each old address is a real page (HTTP 200, which ad
+    platforms need from a landing URL) that sends the visitor on and carries
+    the query string (gclid, fbclid, utm_*) and #hash with it. Zoho's
+    after-booking redirect still points at /TexasPartners/booked/ until it is
+    changed in Zoho, so that one must keep working, including inside the
+    calendar frame. Other spellings (/texaspartners/, /Partners/) are caught
+    by 404.njk. Data: src/_data/legacyPartnerRedirects.json. -#}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Moved to {{ r.to }}</title>
+  <meta name="robots" content="noindex" />
+  <link rel="canonical" href="{{ site.url }}{{ r.to }}" />
+  <meta http-equiv="refresh" content="0; url={{ r.to }}" />
+  <script>location.replace('{{ r.to }}' + location.search + location.hash);</script>
+</head>
+<body><p>This page moved to <a href="{{ r.to }}">{{ site.url }}{{ r.to }}</a>.</p></body>
+</html>

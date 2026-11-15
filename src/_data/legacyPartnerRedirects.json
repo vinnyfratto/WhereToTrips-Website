@@ -1,0 +1,4 @@
+[
+  { "from": "/TexasPartners/", "to": "/partners/" },
+  { "from": "/TexasPartners/booked/", "to": "/partners/booked/" }
+]

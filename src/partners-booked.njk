@@ -2,14 +2,14 @@
 title: "You're booked | WhereTo Trips Partner Program"
 description: "Your call with Chris is on the calendar."
 layout: layouts/base.njk
-permalink: /TexasPartners/booked/
+permalink: /partners/booked/
 eleventyExcludeFromCollections: true
 noindex: true
 ---
 {#- ══════════════════════════════════════════════════════════════════
     After-booking page. Zoho Bookings redirects here once a time is booked
-    on the calendar at the bottom of /TexasPartners/ (set in Zoho: redirect
-    after booking -> https://wheretotrips.com/TexasPartners/booked/).
+    on the calendar at the bottom of /partners/ (set in Zoho: redirect
+    after booking -> https://wheretotrips.com/partners/booked/).
     The calendar is framed, so the redirect can land inside the frame; the
     script below moves it up to the whole tab and counts it there, once.
     Landing here is the ONE signal that a call was actually booked, so
@@ -24,7 +24,6 @@ noindex: true
     base.njk's click listener). Clicks say interest; this page says booked.
 -#}
 {%- set mailto = "mailto:Chris@WhereToTrips.com?subject=Texas%20Partner%20Pilot" -%}
-{%- set flyer = "/Partners/texas-partner-flyer.pdf" -%}
 
 <style>
   .bt-wrap { max-width: 760px; margin: 0 auto; text-align: center; padding-top: clamp(28px, 6vw, 72px); }
@@ -49,14 +48,13 @@ noindex: true
         Need to change it? Use the link in that email.</p>
 
       <ul class="bt-steps">
-        <li><span class="bt-num">1</span><div><h3>Before the call</h3><p>Skim the partner flyer, and have a rough idea of where your audience lives and what they travel for.</p></div></li>
+        <li><span class="bt-num">1</span><div><h3>Before the call</h3><p>Have a rough idea of where your audience lives and what they travel for.</p></div></li>
         <li><span class="bt-num">2</span><div><h3>On the call</h3><p>We talk fit, walk through the Founding terms, and answer your questions.</p></div></li>
         <li><span class="bt-num">3</span><div><h3>After</h3><p>If it is a fit, you sign online and get your partner code the same week.</p></div></li>
       </ul>
 
       <div class="bt-links">
-        <a class="btn btn-primary" href="{{ flyer }}" target="_blank" rel="noopener">Download the partner flyer</a>
-        <a class="btn btn-ghost" href="/TexasPartners/">Back to the Founding terms</a>
+        <a class="btn btn-primary" href="/partners/">Back to the Founding terms</a>
       </div>
       <p class="bt-small">Questions before then? <a href="{{ mailto }}" data-wt-no-track>Chris@WhereToTrips.com</a></p>
     </div>
@@ -65,14 +63,14 @@ noindex: true
 
 <script>
   (function () {
-    // Inside the Zoho frame on /TexasPartners/: take over the whole tab, and
+    // Inside the Zoho frame on /partners/: take over the whole tab, and
     // let that load do the counting so the booking is counted once.
     if (window.top !== window.self) {
       try { window.top.location.replace(window.location.href); return; } catch (e) { /* cross-origin top: count here */ }
     }
     var KEY = 'wt_call_booked_sent';
     try { if (sessionStorage.getItem(KEY)) return; sessionStorage.setItem(KEY, '1'); } catch (e) { /* storage blocked: send once anyway */ }
-    var props = { content_name: 'Partner onboarding call', content_category: 'partner_call_booked', page: '/TexasPartners/' };
+    var props = { content_name: 'Partner onboarding call', content_category: 'partner_call_booked', page: '/partners/' };
     try { if (typeof fbq === 'function') fbq('track', 'Schedule', props); } catch (e) {}
     try { if (window.posthog && posthog.capture) posthog.capture('partner_call_booked', { source: 'zoho_bookings_redirect' }); } catch (e) {}
   })();

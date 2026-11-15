@@ -29,8 +29,14 @@ eleventyExcludeFromCollections: true
   // /StockImages/<region>/<subregion>/<destination> URL 404s on first load.
   // Redirect it to the real page with the rest of the path preserved in
   // ?p=, which that page's own router reads the same as a real path.
+  // The Texas pilot page is now /partners/. Real stubs cover the exact old paths;
+  // this covers every other spelling (/texaspartners/, /TEXASPARTNERS, /Partners).
+  var legacy = location.pathname.toLowerCase().replace(/\/+$/, '');
+  var legacyTo = { '/texaspartners': '/partners/', '/texaspartners/booked': '/partners/booked/', '/partners': '/partners/', '/partners/booked': '/partners/booked/' }[legacy];
   var stockMatch = /^\/StockImages\/(.+)$/i.exec(location.pathname);
-  if (stockMatch) {
+  if (legacyTo) {
+    location.replace(legacyTo + location.search + location.hash);
+  } else if (stockMatch) {
     location.replace('/StockImages/?p=' + encodeURIComponent(stockMatch[1].replace(/\/$/, '')) + location.search.replace(/^\?/, '&'));
   } else if (/^\/(?:promo|affiliate)\//i.test(location.pathname) && extractCode()) {
     document.getElementById('affil').style.display = 'block';
