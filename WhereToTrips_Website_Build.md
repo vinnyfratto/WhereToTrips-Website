@@ -488,6 +488,7 @@ Sitemap: https://wheretotrips.com/sitemap.xml
 
 ## 13. Changelog / progress log
 
+- **2026-11-15**: **Partner page goes nationwide, website 1.79.0.** The Texas pilot is retired and the Partner Program is open to everyone. Nav link "Texas Partners" is now "Partners Program". On `/TexasPartners/`: "Texas" removed from the hero eyebrow, hero lede, the "Who qualifies" cell (now "Launch partners only") and the page title and description; the application intro is the new no-cost, no-exclusivity paragraph; the call section is now "Have questions? Book a short call with Chris, pick a time." with the description paragraph, the three pills and the "Is it a fit / Founding terms / Next steps" list deleted (their CSS too). Left alone on purpose: the URL `/TexasPartners/` and `/TexasPartners/booked/` (Zoho redirect and ad conversions point at them), the email subjects "Texas Partner Pilot", and the PDF flyer.
 - **2026-11-07**: **Featured vibe cards, website 1.78.3.** US destinations drop ", USA": "Savannah, Georgia".
 - **2026-11-07**: **Featured vibe card eyebrows, website 1.78.2.** The home page Featured Travel Vibes cards now label the place the way a traveler says it ("Savannah, Georgia, USA", "Crete, Greece", "Bonaire, Caribbean") instead of "Georgia · US Southeast". The sub-region tag is gone from the card (still on the detail pages); `.dest-place-sep` and `.dest-place-region` removed.
 - **2026-11-07**: **Home hero, website 1.78.1.** Removed the "See how it works" button; the hero now shows only the store badges.
