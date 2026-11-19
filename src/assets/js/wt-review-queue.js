@@ -12,7 +12,11 @@
 //    call(action, params)  -> Promise<{ ok, ... }>  the partner-crm caller
 //    notify(type, text)    -> shows a message ('success' | 'error')
 //    onChange()            -> optional; runs after a decision is saved
+//
+//  Approving also picks the page the link opens (wt-landing-picker.js).
 // ───────────────────────────────────────────────────────────────────
+import { landingPickerHtml, readLandingPicker, wireLandingPicker } from './wt-landing-picker.js';
+
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => (
   { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const titleize = (s) => String(s ?? '').replace(/_/g, ' ').replace(/^\w/, (c) => c.toUpperCase());
@@ -87,6 +91,7 @@ export async function renderReviewQueue(host, { call, notify, onChange }) {
                 <label style="display:block;"><input type="checkbox" data-check="check_live_vs_planned" /> Anything planned is not presented as available</label>
                 <label style="display:block;"><input type="checkbox" data-check="check_marks_used_correctly" /> Logo, name and Marks follow the brand guidelines</label>
               </fieldset>
+              <div data-landing-wrap>${landingPickerHtml('lp-' + esc(r.id))}</div>
               <label class="field"><span>Note to the partner <span class="hint">(required to ask for changes or decline; they see this)</span></span>
                 <textarea data-instructions rows="2"></textarea></label>
               <label class="field"><span>Internal note <span class="hint">(never shown to the partner)</span></span>
@@ -108,6 +113,16 @@ export async function renderReviewQueue(host, { call, notify, onChange }) {
   host.querySelectorAll('[data-decide]').forEach((b) => b.addEventListener('click', () => {
     const row = host.querySelector(`[data-decide-row="${CSS.escape(b.dataset.decide)}"]`);
     row.hidden = !row.hidden;
+    if (!row.hidden && !row.dataset.landingWired) {
+      row.dataset.landingWired = '1';
+      wireLandingPicker(row.querySelector('[data-landing-wrap]'), null);
+      // The page only matters when approving.
+      const syncLanding = () => {
+        row.querySelector('[data-landing-wrap]').hidden = row.querySelector('input[type=radio]:checked').value !== 'approved';
+      };
+      row.querySelectorAll('input[type=radio]').forEach((x) => x.addEventListener('change', syncLanding));
+      syncLanding();
+    }
   }));
 
   host.querySelectorAll('[data-submit-decision]').forEach((b) => b.addEventListener('click', async () => {
@@ -120,12 +135,18 @@ export async function renderReviewQueue(host, { call, notify, onChange }) {
       reviewer_notes: row.querySelector('[data-internal]').value,
     };
     row.querySelectorAll('[data-check]').forEach((c) => { params[c.dataset.check] = c.checked; });
+    if (decision === 'approved') {
+      const picked = await readLandingPicker(row.querySelector('[data-landing-wrap]'));
+      if (!picked.ok) { notify('error', picked.error); return; }
+      params.landing_path = picked.path;
+    }
     b.disabled = true;
     const r = await call('review_submission', params);
     b.disabled = false;
     if (!r.ok) { notify('error', r.error || 'Could not save the decision'); return; }
     if (decision === 'approved' && r.asset) {
-      notify('success', `Approved. Tracking link issued: ${r.asset.tracking_url}${r.emailed ? ' (emailed to the partner)' : ''}`);
+      const opens = r.asset.landing_path ? `, opens ${r.asset.landing_path}` : '';
+      notify('success', `Approved. Tracking link issued: ${r.asset.tracking_url}${opens}${r.emailed ? ' (emailed to the partner)' : ''}`);
     } else {
       notify('success', (decision === 'declined' ? 'Declined' : 'Changes requested') + (r.emailed ? ' and the partner was told.' : '.'));
     }

@@ -16,6 +16,12 @@
 //  exactly as before — a failed or slow click call costs the per-post
 //  detail, never the partner's credit. That is the whole reason the link
 //  reads /promo/<partner>/<post> rather than naming only the post.
+//
+//  A per-post link can also name the page it opens: the reviewer picks it at
+//  approval (stored on the tracking asset, returned by track-click as
+//  landing_path). Then EVERY device goes to that page, with the cookies already
+//  set, so a sign-up from it still credits the partner. Without one, the
+//  default below: Get the App on a phone, sign-up on a computer.
 // ───────────────────────────────────────────────────────────────────
 const cfg = window.WT_SUPABASE || {};
 const REF_DAYS = 60;
@@ -49,6 +55,7 @@ export async function run() {
   const code = extractCode();
   const contentCode = extractContentCode();
   if (!code) { window.location.replace('/'); return; }
+  let landing = null;
 
   // The first segment IS the partner, so set the attribution cookie before
   // anything else (last-click wins). The credit then survives even if the
@@ -75,6 +82,7 @@ export async function run() {
     if (res.ok) {
       const json = await res.json().catch(() => ({}));
       if (json && json.click_id) setCookie('wt_ref_click', json.click_id, REF_DAYS);
+      if (json && json.valid !== false) landing = safeLanding(json.landing_path);
       // Unknown / inactive code, or a post that isn't approved: drop the
       // cookie so we don't mis-credit.
       if (json && json.valid === false) {
@@ -90,6 +98,15 @@ export async function run() {
   // A phone goes to /get-app/: store buttons that carry the partner through
   // the install (Play install referrer) or show the code to type in the app
   // (iPhone). A computer signs up on the web, where the cookie credits it.
+  if (landing) { window.location.replace(landing); return; }
   const onPhone = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent || '');
   window.location.replace(onPhone ? '/get-app/' : DEST);
+}
+
+// A path on this site, never anywhere else and never back into /promo/: the
+// server already checks it, and this is the last check before a redirect.
+function safeLanding(v) {
+  if (typeof v !== 'string' || !/^\/(?![/\\])[^\s\\]{0,299}$/.test(v)) return null;
+  if (/^\/(promo|affiliate)(\/|$|[?#])/i.test(v)) return null;
+  return v;
 }

@@ -13,10 +13,17 @@
 //  approve, a note the partner sees to request changes or reject, the tracking
 //  link issued and emailed on approval. Review covers brand accuracy only (it
 //  is not a compliance review).
+//
+//  Approving also picks the page the link opens ("Link opens"), and Approved
+//  Requests shows that page with a Change button (partner-crm
+//  set_asset_landing). The link itself never changes, only where it lands.
 // ───────────────────────────────────────────────────────────────────
 import {
   boot, callCrm, callPA, dataTable, debounce, esc, fmtDate, money, notify, num, partnerLink, pill, $, $$,
 } from './wt-padmin-core.js';
+import {
+  landingLabel, landingPickerHtml, loadPages, readLandingPicker, wireLandingPicker,
+} from './wt-landing-picker.js';
 
 const dash = '<span class="pa-dash">—</span>';
 const TABS = ['pending', 'approved', 'rejected', 'changes'];
@@ -24,6 +31,8 @@ let tab = 'pending';
 let table = null;
 let seq = 0;
 let pendingRows = [];
+let approvedRows = [];
+let pageList = [];
 
 const daysAgo = (s) => {
   if (!s) return '—';
@@ -78,6 +87,12 @@ const COLUMNS = {
   ],
   approved: [
     decidedCol('Date Approved'), nameCol, codeCol, channelCol,
+    { key: 'landing_path', label: 'Link Opens', value: (r) => landingLabel(r.landing_path, pageList),
+      render: (r) => r.asset_id
+        ? `${r.landing_path ? esc(landingLabel(r.landing_path, pageList)) : '<span class="pa-muted">Default (sign-up / Get the App)</span>'}${
+          r.landing_path ? `<br><span class="pa-muted pa-small">${esc(r.landing_path)}</span>` : ''}
+          <br><button type="button" class="pa-link-btn" data-landing="${esc(r.asset_id)}">Change</button>`
+        : dash },
     { key: 'downloads', label: 'Downloads', kind: 'num', num: true, render: (r) => num(r.downloads) },
     { key: 'reg_users', label: 'Registered Users', kind: 'num', num: true, render: (r) => num(r.reg_users) },
     { key: 'bookings', label: 'Bookings', kind: 'num', num: true, render: (r) => num(r.bookings) },
@@ -107,6 +122,36 @@ function wireFiles(host) {
     else { if (w) w.close(); notify('error', 'Could not open the file (' + (f.error || 'error') + ').'); }
   }));
   $$('[data-decide]', host).forEach((b) => b.addEventListener('click', () => openDecision(b.dataset.id, b.dataset.decide)));
+  $$('[data-landing]', host).forEach((b) => b.addEventListener('click', () => openLanding(b.dataset.landing)));
+}
+
+// ── Changing where an approved link goes ────────────────────────────
+async function openLanding(assetId) {
+  const r = approvedRows.find((x) => x.asset_id === assetId);
+  if (!r) return;
+  const host = $('#rv-decide');
+  host.innerHTML = `
+    <div class="adm-card" id="rv-card">
+      <div class="pa-card-h"><h3>Where this link goes: ${esc(r.title || 'this piece')} from ${esc(r.partner_name)}</h3><button type="button" class="btn btn-ghost btn-xs" id="rv-cancel">Cancel</button></div>
+      ${r.tracking_url ? `<p class="acct-sub" style="margin-top:0;">Link: <code>${esc(r.tracking_url)}</code>. The link itself stays the same; only the page it opens changes, from the next click on.</p>` : ''}
+      ${landingPickerHtml('rv-landing')}
+      <div><button type="button" class="btn btn-primary" id="rv-landing-save">Save page</button></div>
+    </div>`;
+  $('#rv-cancel').addEventListener('click', () => { host.innerHTML = ''; });
+  await wireLandingPicker(host, r.landing_path);
+  $('#rv-landing-save').addEventListener('click', async () => {
+    const picked = await readLandingPicker(host);
+    if (!picked.ok) { notify('error', picked.error); return; }
+    const btn = $('#rv-landing-save');
+    btn.disabled = true;
+    const res = await callCrm('set_asset_landing', { asset_id: assetId, landing_path: picked.path });
+    btn.disabled = false;
+    if (!res.ok) { notify('error', res.error || 'Could not save the page'); return; }
+    notify('success', `Saved. ${r.tracking_url || 'The link'} now opens ${picked.path ? landingLabel(picked.path, pageList) + ' (' + picked.path + ')' : 'the default page (sign-up on a computer, Get the App on a phone)'}.`);
+    host.innerHTML = '';
+    await load();
+  });
+  $('#rv-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 // ── The decision panel ──────────────────────────────────────────────
@@ -128,6 +173,7 @@ function openDecision(id, decision) {
         <label style="display:block;"><input type="checkbox" data-check="check_live_vs_planned" /> Anything planned is not presented as available</label>
         <label style="display:block;"><input type="checkbox" data-check="check_marks_used_correctly" /> Logo, name and Marks follow the brand guidelines</label>
       </fieldset>
+      <div id="rv-landing-wrap">${landingPickerHtml('rv-landing')}</div>
       <label class="field"><span>Note to the partner <span class="hint" id="rv-note-hint"></span></span>
         <textarea id="rv-note" rows="2"></textarea></label>
       <label class="field"><span>Internal note <span class="hint">(never shown to the partner)</span></span>
@@ -140,10 +186,12 @@ function openDecision(id, decision) {
     const d = current();
     $('#rv-card-h').textContent = `${VERB[d]}: ${r.title || 'this piece'} from ${r.partner_name}`;
     $('#rv-checks').hidden = d !== 'approved';
+    $('#rv-landing-wrap').hidden = d !== 'approved';
     $('#rv-note-hint').textContent = d === 'approved' ? '(optional; they see this in the approval email)' : '(required; they see this)';
   };
   host.querySelectorAll('input[name=rv-decision]').forEach((x) => x.addEventListener('change', sync));
   sync();
+  wireLandingPicker($('#rv-landing-wrap'), null);
   $('#rv-cancel').addEventListener('click', () => { host.innerHTML = ''; });
   $('#rv-save').addEventListener('click', () => saveDecision(r, current()));
   $('#rv-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -153,6 +201,11 @@ async function saveDecision(r, decision) {
   const note = $('#rv-note').value.trim();
   if (decision !== 'approved' && !note) { notify('error', 'Write the note the partner will see before you ' + (decision === 'declined' ? 'reject' : 'request changes on') + ' this piece.'); return; }
   const params = { submission_id: r.id, decision, revision_instructions: note, reviewer_notes: $('#rv-internal').value };
+  if (decision === 'approved') {
+    const picked = await readLandingPicker($('#rv-landing-wrap'));
+    if (!picked.ok) { notify('error', picked.error); return; }
+    params.landing_path = picked.path;
+  }
   $$('#rv-card [data-check]').forEach((c) => { params[c.dataset.check] = c.checked; });
 
   const btn = $('#rv-save');
@@ -161,7 +214,11 @@ async function saveDecision(r, decision) {
   btn.disabled = false;
   if (!res.ok) { notify('error', res.error || 'Could not save the decision'); return; }
 
-  if (decision === 'approved' && res.asset) notify('success', `Approved. Tracking link issued: ${res.asset.tracking_url}${res.emailed ? ' (emailed to the partner)' : ''}`);
+  if (decision === 'approved' && res.asset) {
+    const opens = res.asset.landing_path ? `, opens ${landingLabel(res.asset.landing_path, pageList)} (${res.asset.landing_path})` : '';
+    const missed = params.landing_path && !res.asset.landing_path ? ' The page could not be saved, so the link opens the default page: set it from Approved Requests.' : '';
+    notify(missed ? 'error' : 'success', `Approved. Tracking link issued: ${res.asset.tracking_url}${opens}${res.emailed ? ' (emailed to the partner)' : ''}.${missed}`);
+  }
   else notify('success', (decision === 'declined' ? 'Rejected' : 'Changes requested') + (res.emailed ? ' and the partner was told.' : '.'));
 
   $('#rv-decide').innerHTML = '';
@@ -184,7 +241,8 @@ async function load() {
   if (mine !== seq) return;                         // a newer request is on its way
   if (!r.ok) { host.innerHTML = `<p class="acct-sub">Could not load this list (${esc(r.error || 'error')}).</p>`; return; }
 
-  if (tab === 'pending') pendingRows = r.rows;
+  if (tab === 'pending') { pendingRows = r.rows; pageList = await loadPages(); if (mine !== seq) return; }
+  if (tab === 'approved') { approvedRows = r.rows; pageList = await loadPages(); if (mine !== seq) return; }
   table = dataTable(host, {
     columns: COLUMNS[tab],
     // The queue's own order (live events by urgency, then the SLA clock) until a header is clicked;

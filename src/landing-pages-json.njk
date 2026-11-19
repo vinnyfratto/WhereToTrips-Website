@@ -1,0 +1,22 @@
+---
+permalink: /assets/data/landing-pages.json
+eleventyExcludeFromCollections: true
+---
+{#- The pages a partner's tracking link may open, for the reviewer's picker
+    (wt-landing-picker.js). Every public page is the sitemap's own list
+    (lib/seo.js sitemapItems), so a page added to the site shows up here on the
+    next build with nothing to maintain. Sign-up and Get the App are not in the
+    sitemap (noindex) but are the two most common places to send someone, so
+    they are added by hand. The Help Center is Zoho, not this site, so it can
+    never appear. -#}
+{%- set pages = [] -%}
+{%- for item in collections.all | sitemapItems(crawl) -%}
+  {%- set pages = (pages.push({ url: item.url, title: item.data.title or item.url }), pages) -%}
+{%- endfor -%}
+{
+  "extra": [
+    { "url": "/account/signup/", "title": "Create your WhereTo account" },
+    { "url": "/get-app/", "title": "Get the WhereTo app (store buttons that carry the partner)" }
+  ],
+  "pages": {{ pages | dump | safe }}
+}

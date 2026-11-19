@@ -610,15 +610,16 @@ function paintAssets() {
         already attributed keep their full three-year term and keep being paid on (Agreement §3.7).
       </p>
       <table class="adm-table">
-        <thead><tr><th>Code</th><th>URL</th><th>Status</th><th>Issued</th><th>First attribution</th></tr></thead>
+        <thead><tr><th>Code</th><th>URL</th><th>Opens</th><th>Status</th><th>Issued</th><th>First attribution</th></tr></thead>
         <tbody>${(D.tracking_assets ?? []).map((a) => `
           <tr>
             <td><code>${esc(a.tracking_code)}</code></td>
             <td><a href="${esc(a.tracking_url)}" target="_blank" rel="noopener noreferrer">${esc(a.tracking_url)}</a></td>
+            <td>${a.landing_path ? `<code>${esc(a.landing_path)}</code>` : '<span class="acct-sub">Default (sign-up / Get the App)</span>'}</td>
             <td>${esc(titleize(a.status))}</td>
             <td>${esc(date(a.issued_at))}</td>
             <td>${esc(date(a.first_attribution_at))}</td>
-          </tr>`).join('') || `<tr><td colspan="5" class="acct-sub">No assets issued.
+          </tr>`).join('') || `<tr><td colspan="6" class="acct-sub">No assets issued.
             Issuance requires the platform mint operation, which is Phase 1d.</td></tr>`}
       </tbody></table>
     </div>`;
