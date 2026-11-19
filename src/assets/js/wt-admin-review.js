@@ -17,6 +17,13 @@
 //  Approving also picks the page the link opens ("Link opens"), and Approved
 //  Requests shows that page with a Change button (partner-crm
 //  set_asset_landing). The link itself never changes, only where it lands.
+//
+//  "View all" on any row (and Approve / Request changes / Reject on a pending
+//  one) opens one card with everything: the piece exactly as the partner
+//  filled in the submit form, the file shown right there, their notes, the
+//  review history, and who the partner is (wt-review-detail.js, from
+//  partner-admin review_detail). On a pending piece the decision is made at the
+//  bottom of that same card.
 // ───────────────────────────────────────────────────────────────────
 import {
   boot, callCrm, callPA, dataTable, debounce, esc, fmtDate, money, notify, num, partnerLink, pill, $, $$,
@@ -24,14 +31,15 @@ import {
 import {
   landingLabel, landingPickerHtml, loadPages, readLandingPicker, wireLandingPicker,
 } from './wt-landing-picker.js';
+import { detailHtml } from './wt-review-detail.js';
 
 const dash = '<span class="pa-dash">—</span>';
 const TABS = ['pending', 'approved', 'rejected', 'changes'];
 let tab = 'pending';
 let table = null;
 let seq = 0;
-let pendingRows = [];
 let approvedRows = [];
+let detailSeq = 0;
 let pageList = [];
 
 const daysAgo = (s) => {
@@ -59,8 +67,11 @@ function assetCell(r, withSize = false) {
   return dash;
 }
 
+const viewBtn = (r, label = 'View all') => `<button type="button" class="btn btn-ghost btn-xs" data-view="${esc(r.id)}">${label}</button>`;
+const titleBtn = (r) => `<button type="button" class="pa-link-btn" data-view="${esc(r.id)}">${esc(r.title || 'Untitled')}</button>`;
+
 function channelCell(r) {
-  return `${r.channel ? esc(r.channel) : dash}${r.title ? `<br><span class="pa-muted pa-small">${esc(r.title)}</span>` : ''}${r.note ? `<br><span class="pa-muted pa-small pa-clamp" title="${esc(r.note)}">${esc(r.note)}</span>` : ''}`;
+  return `${r.channel ? esc(r.channel) : dash}<br>${titleBtn(r)}${r.note ? `<br><span class="pa-muted pa-small pa-clamp" title="${esc(r.note)}">${esc(r.note)}</span>` : ''}`;
 }
 
 const nameCol = { key: 'partner_name', label: 'Partner Name', render: (r) => r.partner_id ? partnerLink(r) : `<a class="pa-link" href="/admin-crm-prospect/?id=${encodeURIComponent(r.prospect_id)}">${esc(r.partner_name)}</a>` };
@@ -68,11 +79,12 @@ const codeCol = { key: 'code', label: 'Code', mono: true, render: (r) => r.code 
 const channelCol = { key: 'channel', label: 'Media Channel', render: channelCell };
 const assetCol = { key: 'asset', label: 'Link to Asset', sortable: false, render: (r) => assetCell(r) };
 const decidedCol = (label) => ({ key: 'decided_at', label, kind: 'date', nowrap: true, render: (r) => fmtDate(r.decided_at) });
+const viewCol = { key: 'view', label: '', sortable: false, render: (r) => viewBtn(r) };
 
 const COLUMNS = {
   pending: [
     { key: 'partner_name', label: 'Partner', render: nameCol.render },
-    { key: 'title', label: 'Title', render: (r) => esc(r.title || '—') + (r.resubmitted ? ' ' + pill('Resubmitted', 'blue') : '') },
+    { key: 'title', label: 'Title', render: (r) => titleBtn(r) + (r.resubmitted ? ' ' + pill('Resubmitted', 'blue') : '') },
     { key: 'platform', label: 'Platform' },
     { key: 'kind', label: 'Kind' },
     { key: 'file', label: 'File', sortable: false, render: (r) => assetCell(r, true) },
@@ -80,6 +92,7 @@ const COLUMNS = {
     { key: 'sla_state', label: 'SLA', kind: 'num', value: (r) => SLA_RANK[r.sla_state] ?? 3, render: (r) => slaPill(r.sla_state) },
     { key: 'event_at', label: 'Event', kind: 'date', nowrap: true, render: (r) => r.event_at ? `${esc(fmtDate(r.event_at))}${r.event_venue ? ' · ' + esc(r.event_venue) : ''}${r.urgent ? ' ' + pill('urgent', 'amber') : ''}` : dash },
     { key: 'actions', label: '', sortable: false, render: (r) => `<div class="pa-actions">
+        ${viewBtn(r)}
         <button type="button" class="btn btn-primary btn-xs" data-decide="approved" data-id="${esc(r.id)}">Approve</button>
         <button type="button" class="btn btn-ghost btn-xs" data-decide="revisions_requested" data-id="${esc(r.id)}">Request changes</button>
         <button type="button" class="btn btn-ghost btn-xs" data-decide="declined" data-id="${esc(r.id)}">Reject</button>
@@ -97,12 +110,13 @@ const COLUMNS = {
     { key: 'reg_users', label: 'Registered Users', kind: 'num', num: true, render: (r) => num(r.reg_users) },
     { key: 'bookings', label: 'Bookings', kind: 'num', num: true, render: (r) => num(r.bookings) },
     { key: 'est_revenue', label: 'Est. Revenue', kind: 'num', num: true, render: (r) => money(r.est_revenue) },
-    assetCol,
+    assetCol, viewCol,
   ],
-  rejected: [decidedCol('Date Rejected'), nameCol, codeCol, channelCol, assetCol],
+  rejected: [decidedCol('Date Rejected'), nameCol, codeCol, channelCol, assetCol, viewCol],
   changes: [
     decidedCol('Date Changes Requested'), nameCol, codeCol, channelCol, assetCol,
     { key: 'resubmitted_at', label: 'Date Resubmitted', kind: 'date', nowrap: true, render: (r) => r.resubmitted_at ? fmtDate(r.resubmitted_at) : pill('Waiting on partner', 'amber') },
+    viewCol,
   ],
 };
 
@@ -121,14 +135,17 @@ function wireFiles(host) {
     if (f.ok && w) { w.opener = null; w.location.href = f.url; }
     else { if (w) w.close(); notify('error', 'Could not open the file (' + (f.error || 'error') + ').'); }
   }));
-  $$('[data-decide]', host).forEach((b) => b.addEventListener('click', () => openDecision(b.dataset.id, b.dataset.decide)));
+  $$('[data-decide]', host).forEach((b) => b.addEventListener('click', () => openDetail(b.dataset.id, b.dataset.decide)));
+  $$('[data-view]', host).forEach((b) => b.addEventListener('click', () => openDetail(b.dataset.view)));
   $$('[data-landing]', host).forEach((b) => b.addEventListener('click', () => openLanding(b.dataset.landing)));
 }
 
 // ── Changing where an approved link goes ────────────────────────────
-async function openLanding(assetId) {
-  const r = approvedRows.find((x) => x.asset_id === assetId);
+// `info` comes from the details card; from the Approved table it is looked up.
+async function openLanding(assetId, info = null) {
+  const r = info || approvedRows.find((x) => x.asset_id === assetId);
   if (!r) return;
+  detailSeq++;
   const host = $('#rv-decide');
   host.innerHTML = `
     <div class="adm-card" id="rv-card">
@@ -154,56 +171,89 @@ async function openLanding(assetId) {
   $('#rv-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
-// ── The decision panel ──────────────────────────────────────────────
+// ── Everything about one piece, and the decision under it ───────────
 const VERB = { approved: 'Approve', revisions_requested: 'Request changes', declined: 'Reject' };
 
-function openDecision(id, decision) {
-  const r = pendingRows.find((x) => x.id === id);
-  if (!r) return;
+async function openDetail(id, decision = null) {
+  const mine = ++detailSeq;
   const host = $('#rv-decide');
+  host.innerHTML = '<div class="adm-card rv-detail" id="rv-card"><p class="acct-sub" role="status" style="margin:0;">Loading everything for this piece…</p></div>';
+  $('#rv-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const d = await callPA('review_detail', { submission_id: id });
+  if (mine !== detailSeq) return;                   // another card was opened meanwhile
+  if (!d.ok) {
+    host.innerHTML = `<div class="adm-card" id="rv-card"><div class="pa-card-h"><h3>Could not load this piece</h3><button type="button" class="btn btn-ghost btn-xs" id="rv-cancel">Close</button></div><p class="acct-sub" style="margin:0;">${esc(d.error || 'error')}</p></div>`;
+    $('#rv-cancel').addEventListener('click', () => { host.innerHTML = ''; });
+    return;
+  }
+  const s = d.submission;
+  const r = { id: s.id, title: s.title, partner_name: d.partner.display_name };
+  const canDecide = s.bucket === 'pending';
+
   host.innerHTML = `
-    <div class="adm-card" id="rv-card">
-      <div class="pa-card-h"><h3 id="rv-card-h"></h3><button type="button" class="btn btn-ghost btn-xs" id="rv-cancel">Cancel</button></div>
-      <div role="radiogroup" aria-label="Decision" style="display:flex; gap:18px; flex-wrap:wrap; margin-bottom:12px;">
-        ${Object.entries(VERB).map(([v, label]) => `<label><input type="radio" name="rv-decision" value="${v}"${v === decision ? ' checked' : ''} /> ${label}</label>`).join('')}
-      </div>
-      <fieldset id="rv-checks" style="border:0; padding:0; margin:0 0 12px;">
-        <legend class="acct-sub" style="padding:0;">Approval needs all three (brand accuracy only):</legend>
-        <label style="display:block;"><input type="checkbox" data-check="check_description_accurate" /> WhereTo and what it does are described accurately</label>
-        <label style="display:block;"><input type="checkbox" data-check="check_live_vs_planned" /> Anything planned is not presented as available</label>
-        <label style="display:block;"><input type="checkbox" data-check="check_marks_used_correctly" /> Logo, name and Marks follow the brand guidelines</label>
-      </fieldset>
-      <div id="rv-landing-wrap">${landingPickerHtml('rv-landing')}</div>
-      <label class="field"><span>Note to the partner <span class="hint" id="rv-note-hint"></span></span>
-        <textarea id="rv-note" rows="2"></textarea></label>
-      <label class="field"><span>Internal note <span class="hint">(never shown to the partner)</span></span>
-        <textarea id="rv-internal" rows="2"></textarea></label>
-      <div><button type="button" class="btn btn-primary" id="rv-save">Save decision</button></div>
+    <div class="adm-card rv-detail" id="rv-card">
+      <div class="pa-card-h"><h3>${esc(s.title || 'Untitled')} <span class="rv-from">from ${esc(r.partner_name)}</span></h3>
+        <button type="button" class="btn btn-ghost btn-xs" id="rv-cancel">Close</button></div>
+      ${detailHtml(d)}
+      ${canDecide ? `
+      <section class="rv-decision" aria-labelledby="rv-card-h">
+        <h4 id="rv-card-h">Your decision</h4>
+        <div role="radiogroup" aria-label="Decision" style="display:flex; gap:18px; flex-wrap:wrap; margin-bottom:12px;">
+          ${Object.entries(VERB).map(([v, label]) => `<label><input type="radio" name="rv-decision" value="${v}"${v === decision ? ' checked' : ''} /> ${label}</label>`).join('')}
+        </div>
+        <fieldset id="rv-checks" style="border:0; padding:0; margin:0 0 12px;">
+          <legend class="acct-sub" style="padding:0;">Approval needs all three (brand accuracy only):</legend>
+          <label style="display:block;"><input type="checkbox" data-check="check_description_accurate" /> WhereTo and what it does are described accurately</label>
+          <label style="display:block;"><input type="checkbox" data-check="check_live_vs_planned" /> Anything planned is not presented as available</label>
+          <label style="display:block;"><input type="checkbox" data-check="check_marks_used_correctly" /> Logo, name and Marks follow the brand guidelines</label>
+        </fieldset>
+        <div id="rv-landing-wrap">${landingPickerHtml('rv-landing')}</div>
+        <label class="field"><span>Note to the partner <span class="hint" id="rv-note-hint"></span></span>
+          <textarea id="rv-note" rows="2"></textarea></label>
+        <label class="field"><span>Internal note <span class="hint">(never shown to the partner)</span></span>
+          <textarea id="rv-internal" rows="2"></textarea></label>
+        <p class="alert" id="rv-form-msg" role="alert"></p>
+        <div><button type="button" class="btn btn-primary" id="rv-save">Save decision</button></div>
+      </section>` : ''}
     </div>`;
 
-  const current = () => host.querySelector('input[name=rv-decision]:checked').value;
+  $('#rv-cancel').addEventListener('click', () => { detailSeq++; host.innerHTML = ''; });
+  $$('[data-rv-open]', host).forEach((b) => b.addEventListener('click', () => openDetail(b.dataset.rvOpen)));
+  $$('[data-rv-landing]', host).forEach((b) => b.addEventListener('click', () => openLanding(b.dataset.rvLanding, {
+    title: s.title, partner_name: r.partner_name, tracking_url: d.asset?.tracking_url, landing_path: d.asset?.landing_path,
+  })));
+  if (!canDecide) return;
+
+  const current = () => host.querySelector('input[name=rv-decision]:checked')?.value || null;
   const sync = () => {
-    const d = current();
-    $('#rv-card-h').textContent = `${VERB[d]}: ${r.title || 'this piece'} from ${r.partner_name}`;
-    $('#rv-checks').hidden = d !== 'approved';
-    $('#rv-landing-wrap').hidden = d !== 'approved';
-    $('#rv-note-hint').textContent = d === 'approved' ? '(optional; they see this in the approval email)' : '(required; they see this)';
+    const v = current();
+    $('#rv-card-h').textContent = v ? `Your decision: ${VERB[v]}` : 'Your decision';
+    $('#rv-checks').hidden = v !== 'approved';
+    $('#rv-landing-wrap').hidden = v !== 'approved';
+    $('#rv-note-hint').textContent = v === 'approved' ? '(optional; they see this in the approval email)' : '(required to request changes or reject; they see this)';
   };
   host.querySelectorAll('input[name=rv-decision]').forEach((x) => x.addEventListener('change', sync));
   sync();
   wireLandingPicker($('#rv-landing-wrap'), null);
-  $('#rv-cancel').addEventListener('click', () => { host.innerHTML = ''; });
   $('#rv-save').addEventListener('click', () => saveDecision(r, current()));
-  $('#rv-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// A problem with the decision shows next to the Save button (the card is long,
+// so the page's own message at the top would be out of sight) and at the top.
+function formError(text) {
+  const m = $('#rv-form-msg');
+  if (m) { m.className = 'alert show alert-error'; m.textContent = text; }
+  notify('error', text);
 }
 
 async function saveDecision(r, decision) {
+  if (!decision) { formError('Choose Approve, Request changes or Reject first.'); return; }
   const note = $('#rv-note').value.trim();
-  if (decision !== 'approved' && !note) { notify('error', 'Write the note the partner will see before you ' + (decision === 'declined' ? 'reject' : 'request changes on') + ' this piece.'); return; }
+  if (decision !== 'approved' && !note) { formError('Write the note the partner will see before you ' + (decision === 'declined' ? 'reject' : 'request changes on') + ' this piece.'); return; }
   const params = { submission_id: r.id, decision, revision_instructions: note, reviewer_notes: $('#rv-internal').value };
   if (decision === 'approved') {
     const picked = await readLandingPicker($('#rv-landing-wrap'));
-    if (!picked.ok) { notify('error', picked.error); return; }
+    if (!picked.ok) { formError(picked.error); return; }
     params.landing_path = picked.path;
   }
   $$('#rv-card [data-check]').forEach((c) => { params[c.dataset.check] = c.checked; });
@@ -212,7 +262,7 @@ async function saveDecision(r, decision) {
   btn.disabled = true;
   const res = await callCrm('review_submission', params);
   btn.disabled = false;
-  if (!res.ok) { notify('error', res.error || 'Could not save the decision'); return; }
+  if (!res.ok) { formError(res.error || 'Could not save the decision'); return; }
 
   if (decision === 'approved' && res.asset) {
     const opens = res.asset.landing_path ? `, opens ${landingLabel(res.asset.landing_path, pageList)} (${res.asset.landing_path})` : '';
@@ -241,7 +291,7 @@ async function load() {
   if (mine !== seq) return;                         // a newer request is on its way
   if (!r.ok) { host.innerHTML = `<p class="acct-sub">Could not load this list (${esc(r.error || 'error')}).</p>`; return; }
 
-  if (tab === 'pending') { pendingRows = r.rows; pageList = await loadPages(); if (mine !== seq) return; }
+  if (tab === 'pending') { pageList = await loadPages(); if (mine !== seq) return; }
   if (tab === 'approved') { approvedRows = r.rows; pageList = await loadPages(); if (mine !== seq) return; }
   table = dataTable(host, {
     columns: COLUMNS[tab],
@@ -262,7 +312,8 @@ function showTab(next, { fromHash = false } = {}) {
   $('#rv-controls').hidden = pending;
   const intro = $('#rv-intro');
   intro.hidden = !pending;
-  if (pending) intro.innerHTML = '<span><strong>Brand accuracy and correct use of the Marks only.</strong> This is not a compliance review. Do not decline on tone, angle, style, or favorability (Agreement §5.6(a), T&amp;C §12.6). Approving issues the partner a tracking link and code for that piece and emails it to them. Files are private: <em>Open file</em> gives you a link that expires in five minutes.</span>';
+  if (pending) intro.innerHTML = '<span><strong>Brand accuracy and correct use of the Marks only.</strong> This is not a compliance review. Do not decline on tone, angle, style, or favorability (Agreement §5.6(a), T&amp;C §12.6). Approving issues the partner a tracking link and code for that piece and emails it to them. <em>View all</em> (or a piece's title) shows everything the partner sent, the file itself and who they are, with the decision at the bottom. Files are private: their links expire after a few minutes.</span>';
+  detailSeq++;
   $('#rv-decide').innerHTML = '';
   if (!fromHash) history.replaceState(null, '', location.pathname + '#' + tab);
   return load();
