@@ -22,8 +22,9 @@
 //  one) opens one card with everything: the piece exactly as the partner
 //  filled in the submit form, the file shown right there, their notes, the
 //  review history, and who the partner is (wt-review-detail.js, from
-//  partner-admin review_detail). On a pending piece the decision is made at the
-//  bottom of that same card.
+//  partner-admin review_detail). On a pending piece the decision is made beside
+//  the file, with "Link opens" showing until another choice is picked; on an
+//  approved piece the page its link opens is changed right on the card.
 // ───────────────────────────────────────────────────────────────────
 import {
   boot, callCrm, callPA, dataTable, debounce, esc, fmtDate, money, notify, num, partnerLink, pill, $, $$,
@@ -190,52 +191,73 @@ async function openDetail(id, decision = null) {
   const r = { id: s.id, title: s.title, partner_name: d.partner.display_name };
   const canDecide = s.bucket === 'pending';
 
-  host.innerHTML = `
-    <div class="adm-card rv-detail" id="rv-card">
-      <div class="pa-card-h"><h3>${esc(s.title || 'Untitled')} <span class="rv-from">from ${esc(r.partner_name)}</span></h3>
-        <button type="button" class="btn btn-ghost btn-xs" id="rv-cancel">Close</button></div>
-      ${detailHtml(d)}
-      ${canDecide ? `
+  // The decision sits beside the file. "Link opens" and the three checks are
+  // what approving needs, so they show until another choice is made.
+  const decisionForm = canDecide ? `
       <section class="rv-decision" aria-labelledby="rv-card-h">
         <h4 id="rv-card-h">Your decision</h4>
-        <div role="radiogroup" aria-label="Decision" style="display:flex; gap:18px; flex-wrap:wrap; margin-bottom:12px;">
-          ${Object.entries(VERB).map(([v, label]) => `<label><input type="radio" name="rv-decision" value="${v}"${v === decision ? ' checked' : ''} /> ${label}</label>`).join('')}
+        <div class="rv-choice" role="radiogroup" aria-label="Decision">
+          ${Object.entries(VERB).map(([v, label]) => `<label><input type="radio" name="rv-decision" value="${v}"${v === decision ? ' checked' : ''} /><span>${label}</span></label>`).join('')}
         </div>
-        <fieldset id="rv-checks" style="border:0; padding:0; margin:0 0 12px;">
-          <legend class="acct-sub" style="padding:0;">Approval needs all three (brand accuracy only):</legend>
-          <label style="display:block;"><input type="checkbox" data-check="check_description_accurate" /> WhereTo and what it does are described accurately</label>
-          <label style="display:block;"><input type="checkbox" data-check="check_live_vs_planned" /> Anything planned is not presented as available</label>
-          <label style="display:block;"><input type="checkbox" data-check="check_marks_used_correctly" /> Logo, name and Marks follow the brand guidelines</label>
+        <fieldset id="rv-checks" class="rv-checkset">
+          <legend>To approve, confirm all three (brand accuracy only):</legend>
+          <label><input type="checkbox" data-check="check_description_accurate" /> WhereTo and what it does are described accurately</label>
+          <label><input type="checkbox" data-check="check_live_vs_planned" /> Anything planned is not presented as available</label>
+          <label><input type="checkbox" data-check="check_marks_used_correctly" /> Logo, name and Marks follow the brand guidelines</label>
         </fieldset>
-        <div id="rv-landing-wrap">${landingPickerHtml('rv-landing')}</div>
+        <div id="rv-landing-wrap">${landingPickerHtml('rv-landing', { label: 'Link opens', hint: 'the page the tracking link issued on approval sends a visitor to' })}</div>
         <label class="field"><span>Note to the partner <span class="hint" id="rv-note-hint"></span></span>
-          <textarea id="rv-note" rows="2"></textarea></label>
+          <textarea id="rv-note" rows="3"></textarea></label>
         <label class="field"><span>Internal note <span class="hint">(never shown to the partner)</span></span>
           <textarea id="rv-internal" rows="2"></textarea></label>
         <p class="alert" id="rv-form-msg" role="alert"></p>
-        <div><button type="button" class="btn btn-primary" id="rv-save">Save decision</button></div>
-      </section>` : ''}
-    </div>`;
+        <button type="button" class="btn btn-primary rv-save" id="rv-save">Save decision</button>
+      </section>` : '';
+
+  host.innerHTML = `<div class="adm-card rv-detail" id="rv-card">${detailHtml(d, { decision: decisionForm })}</div>`;
 
   $('#rv-cancel').addEventListener('click', () => { detailSeq++; host.innerHTML = ''; });
   $$('[data-rv-open]', host).forEach((b) => b.addEventListener('click', () => openDetail(b.dataset.rvOpen)));
-  $$('[data-rv-landing]', host).forEach((b) => b.addEventListener('click', () => openLanding(b.dataset.rvLanding, {
-    title: s.title, partner_name: r.partner_name, tracking_url: d.asset?.tracking_url, landing_path: d.asset?.landing_path,
-  })));
+  wireAssetLanding(host, d);
   if (!canDecide) return;
 
   const current = () => host.querySelector('input[name=rv-decision]:checked')?.value || null;
   const sync = () => {
     const v = current();
+    const approving = v !== 'revisions_requested' && v !== 'declined';
     $('#rv-card-h').textContent = v ? `Your decision: ${VERB[v]}` : 'Your decision';
-    $('#rv-checks').hidden = v !== 'approved';
-    $('#rv-landing-wrap').hidden = v !== 'approved';
-    $('#rv-note-hint').textContent = v === 'approved' ? '(optional; they see this in the approval email)' : '(required to request changes or reject; they see this)';
+    $('#rv-checks').hidden = !approving;
+    $('#rv-landing-wrap').hidden = !approving;
+    $('#rv-note-hint').textContent = v === 'approved' ? '(optional; they see this in the approval email)'
+      : v ? '(required; they see this)' : '(required to request changes or reject; they see this)';
   };
   host.querySelectorAll('input[name=rv-decision]').forEach((x) => x.addEventListener('change', sync));
   sync();
   wireLandingPicker($('#rv-landing-wrap'), null);
   $('#rv-save').addEventListener('click', () => saveDecision(r, current()));
+}
+
+// An approved piece's card sets the page its link opens in place.
+async function wireAssetLanding(host, d) {
+  const box = host.querySelector('[data-rv-landing-box]');
+  if (!box || !d.asset) return;
+  const mine = detailSeq;
+  await wireLandingPicker(box, d.asset.landing_path || null);
+  if (mine !== detailSeq) return;
+  const btn = box.querySelector('[data-rv-landing-save]');
+  btn.addEventListener('click', async () => {
+    const picked = await readLandingPicker(box);
+    if (!picked.ok) { notify('error', picked.error); return; }
+    if ((picked.path || null) === (d.asset.landing_path || null)) { notify('success', 'That is already the page this link opens.'); return; }
+    btn.disabled = true;
+    const res = await callCrm('set_asset_landing', { asset_id: d.asset.id, landing_path: picked.path });
+    btn.disabled = false;
+    if (!res.ok) { notify('error', res.error || 'Could not save the page'); return; }
+    d.asset.landing_path = picked.path;
+    if (!pageList.length) pageList = await loadPages();
+    notify('success', `Saved. ${d.asset.tracking_url || 'The link'} now opens ${picked.path ? landingLabel(picked.path, pageList) + ' (' + picked.path + ')' : 'the default page (sign-up on a computer, Get the App on a phone)'}.`);
+    if (tab === 'approved') load();                 // the table's Link Opens column
+  });
 }
 
 // A problem with the decision shows next to the Save button (the card is long,
@@ -312,7 +334,7 @@ function showTab(next, { fromHash = false } = {}) {
   $('#rv-controls').hidden = pending;
   const intro = $('#rv-intro');
   intro.hidden = !pending;
-  if (pending) intro.innerHTML = '<span><strong>Brand accuracy and correct use of the Marks only.</strong> This is not a compliance review. Do not decline on tone, angle, style, or favorability (Agreement §5.6(a), T&amp;C §12.6). Approving issues the partner a tracking link and code for that piece and emails it to them. <em>View all</em> (or a piece&rsquo;s title) shows everything the partner sent, the file itself and who they are, with the decision at the bottom. Files are private: their links expire after a few minutes.</span>';
+  if (pending) intro.innerHTML = '<span><strong>Brand accuracy and correct use of the Marks only.</strong> This is not a compliance review. Do not decline on tone, angle, style, or favorability (Agreement §5.6(a), T&amp;C §12.6). Approving issues the partner a tracking link and code for that piece and emails it to them. <em>View all</em> (or a piece&rsquo;s title) shows everything the partner sent, the file itself and who they are, with the decision beside it. Files are private: their links expire after a few minutes.</span>';
   detailSeq++;
   $('#rv-decide').innerHTML = '';
   if (!fromHash) history.replaceState(null, '', location.pathname + '#' + tab);
