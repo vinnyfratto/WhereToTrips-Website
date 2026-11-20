@@ -312,7 +312,7 @@ function showTab(next, { fromHash = false } = {}) {
   $('#rv-controls').hidden = pending;
   const intro = $('#rv-intro');
   intro.hidden = !pending;
-  if (pending) intro.innerHTML = '<span><strong>Brand accuracy and correct use of the Marks only.</strong> This is not a compliance review. Do not decline on tone, angle, style, or favorability (Agreement §5.6(a), T&amp;C §12.6). Approving issues the partner a tracking link and code for that piece and emails it to them. <em>View all</em> (or a piece's title) shows everything the partner sent, the file itself and who they are, with the decision at the bottom. Files are private: their links expire after a few minutes.</span>';
+  if (pending) intro.innerHTML = '<span><strong>Brand accuracy and correct use of the Marks only.</strong> This is not a compliance review. Do not decline on tone, angle, style, or favorability (Agreement §5.6(a), T&amp;C §12.6). Approving issues the partner a tracking link and code for that piece and emails it to them. <em>View all</em> (or a piece&rsquo;s title) shows everything the partner sent, the file itself and who they are, with the decision at the bottom. Files are private: their links expire after a few minutes.</span>';
   detailSeq++;
   $('#rv-decide').innerHTML = '';
   if (!fromHash) history.replaceState(null, '', location.pathname + '#' + tab);
