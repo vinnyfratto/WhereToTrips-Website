@@ -75,6 +75,7 @@
     ] },
     { label: 'Content', groups: [
       { items: [
+        ['Our Content', '/admin-content/', ['/admin-content-item/']],
         ['Site CMS', '/admin/'],
       ] },
     ] },

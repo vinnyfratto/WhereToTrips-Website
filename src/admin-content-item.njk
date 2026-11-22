@@ -1,0 +1,18 @@
+---
+layout: layouts/admin.njk
+permalink: /admin-content-item/index.html
+title: "Content Summary — WhereTo"
+description: "One of our own posts: its tracking link and everything it brought in."
+eleventyExcludeFromCollections: true
+---
+<main id="wt-admin-page">
+
+  {% include "partials/admin-gate.njk" %}
+
+  <div id="adm-root" class="dash pa-xwide" style="display:none;">
+    <p class="oc-back"><a class="pa-link" href="/admin-content/">&larr; Our Content</a></p>
+    <div id="adm-msg" class="alert" role="status" aria-live="polite"></div>
+    <div id="oc-item"><p class="acct-sub" role="status">Loading…</p></div>
+  </div>
+</main>
+<script type="module" src="/assets/js/wt-admin-content-item.js?v={{ buildTime }}"></script>

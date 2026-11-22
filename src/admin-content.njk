@@ -1,0 +1,46 @@
+---
+layout: layouts/admin.njk
+permalink: /admin-content/index.html
+title: "Our Content — WhereTo"
+description: "Tracking links for what WhereTo posts itself, and how each one performs."
+eleventyExcludeFromCollections: true
+---
+<main id="wt-admin-page">
+
+  {% include "partials/admin-gate.njk" %}
+
+  <div id="adm-root" class="dash pa-xwide" style="display:none;">
+    <div class="dash-head">
+      <div>
+        <p class="eyebrow">Content</p>
+        <h1>Our Content</h1>
+        <p class="pa-lede">What we post ourselves. Give each post its own tracking link, then see the clicks, downloads, installs, sign-ups and bookings it brings in, counted the same way as a partner's. Nothing here needs approval and nothing here pays anyone.</p>
+      </div>
+      <div><button type="button" class="btn btn-primary" id="oc-new">New content</button></div>
+    </div>
+
+    <div id="adm-msg" class="alert" role="status" aria-live="polite"></div>
+
+    <div id="oc-form"></div>
+
+    <div class="pa-controls">
+      <div class="field">
+        <label for="oc-q">Search</label>
+        <input id="oc-q" type="search" placeholder="Title, platform or code" autocomplete="off" />
+      </div>
+      <div class="field">
+        <label for="oc-status">Show</label>
+        <select id="oc-status">
+          <option value="active">Live links</option>
+          <option value="deactivated">Turned off</option>
+          <option value="">All</option>
+        </select>
+      </div>
+      <span class="pa-spacer"></span>
+      <span class="pa-count" id="oc-count" aria-live="polite"></span>
+    </div>
+
+    <div id="oc-table"></div>
+  </div>
+</main>
+<script type="module" src="/assets/js/wt-admin-content.js?v={{ buildTime }}"></script>
