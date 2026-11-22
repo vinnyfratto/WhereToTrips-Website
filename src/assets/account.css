@@ -1170,3 +1170,6 @@ input.is-masked { -webkit-text-security: disc; text-security: disc; }
 
 .tv-group-label { margin: 26px 0 0; }
 .tv-group-label { color: var(--amber); }
+/* Inside a panel the first thing sits at its top edge, whatever its own margin. */
+.pv-group > :first-child { margin-top: 0; }
+.pv-group > :last-child { margin-bottom: 0; }

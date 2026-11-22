@@ -98,6 +98,12 @@ function readGrid(pairs) {
 
 function emptyNote(text) { return '<p class="pv-empty">' + esc(text) + '</p>'; }
 
+/** One tinted panel, optionally headed. Every section's read view is made of
+ *  these, so My Profile, Preferences, Notifications and the rest look alike. */
+function panel(title, html) {
+  return '<div class="pv-group">' + (title ? '<h3 class="pv-sub-head">' + esc(title) + '</h3>' : '') + html + '</div>';
+}
+
 // ── Hidden until asked ──────────────────────────────────────────────
 // Passport, ID, Known Traveler and Redress numbers show as **** with an eye
 // to reveal them, read or edit. A profile gets opened on shared screens and
@@ -277,9 +283,8 @@ function loyaltyReadRow(lp) {
 /** Read view for the two rewards groups, shown under the Preferences grid. */
 function rewardsRead(p) {
   const list = readLoyaltyPrograms({ loyalty_programs: p.loyalty_programs });
-  const group = (label, rows, empty) =>
-    '<h3 class="pv-sub-head">' + esc(label) + '</h3>' +
-    (rows.length
+  const group = (label, rows, empty) => panel(label,
+    rows.length
       ? '<ul class="loy-saved-list">' + rows.map(loyaltyReadRow).join('') + '</ul>'
       : emptyNote(empty));
   return group('Flight Rewards', list.filter((lp) => lp.type !== 'hotel'), 'No frequent flyer programs saved.') +
@@ -594,18 +599,19 @@ const SECTIONS = {
   // Airlines, Preferred Hotel Brands, Travel Rewards, How Far You'll Stretch.
   flight: {
     title: 'Preferences',
+    grouped: true,
     blurb: 'When set, these prioritize your results. Override anytime in the search form.',
     read: (p) => {
       const fp = p.flight_prefs || {};
       const airlines = Array.isArray(fp.preferredAirlines) ? fp.preferredAirlines : [];
       const chains = Array.isArray(fp.preferredHotelChains) ? fp.preferredHotelChains : [];
-      return readGrid([
+      return panel('Search Preferences', readGrid([
         { label: 'Home Airport', value: fp.nearestAirport },
         { label: 'How far you\'ll stretch', value: labelOf(BUDGET_FLEX, fp.budgetFlexibility) },
         { label: 'Preferred Airlines', wide: true, value: airlines.map((c) => AIRLINE_NAMES[c] || c).join(', ') },
         { label: 'Preferred Hotel Brands', wide: true,
           value: chains.map((slug) => (HOTEL_CHAINS.find((c) => c.slug === slug) || {}).name || slug).join(', ') },
-      ]) + rewardsRead(p);
+      ])) + rewardsRead(p);
     },
     edit: (p) => {
       const fp = p.flight_prefs || {};
@@ -652,8 +658,8 @@ const SECTIONS = {
   // their columns.
   profile: {
     title: 'My Profile',
-    read: (p, user) => PROFILE_PARTS.map((k) =>
-      '<div class="pv-group"><h3 class="pv-sub-head">' + esc(SECTIONS[k].title) + '</h3>' + SECTIONS[k].read(p, user) + '</div>').join(''),
+    read: (p, user) => PROFILE_PARTS.map((k) => panel(SECTIONS[k].title, SECTIONS[k].read(p, user))).join(''),
+    grouped: true,
     edit: (p) => PROFILE_PARTS.map((k, i) =>
       (i ? '<h3 class="pv-sub-head">' + esc(SECTIONS[k].title) + '</h3>' : '') + SECTIONS[k].edit(p)).join(''),
     validate: (v) => {
@@ -1023,7 +1029,9 @@ export async function initProfileForm(supabase, user, opts = {}) {
             '<button type="submit" class="btn btn-primary">Save</button>' +
             '<button type="button" class="btn btn-ghost" data-cancel="' + key + '">Cancel</button>' +
           '</div></form>'
-        : '<div class="pv-read">' + s.read(p, user) + '</div>') +
+        // A section that does not lay out its own panels gets one around the
+        // whole read view, so every section reads the same way.
+        : '<div class="pv-read">' + (s.grouped ? s.read(p, user) : panel('', s.read(p, user))) + '</div>') +
       '</section>';
   }
 
