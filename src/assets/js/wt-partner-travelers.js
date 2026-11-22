@@ -13,7 +13,6 @@ const $ = (id) => document.getElementById(id);
 const COLS = [
   { k: 'reg', label: 'Registered' },
   { k: 'id', label: 'Traveler', text: true },
-  { k: 'via', label: 'Signed up from', text: true },
   { k: 'end', label: 'Guarantee ends' },
   { k: 'statusF', label: 'Status', text: true },
   { k: 'trips', label: 'Trips completed', right: true },
@@ -90,12 +89,11 @@ function draw(j) {
     ? j.rows.map((r) => `<tr>
         <td class="pp-num nw">${esc(fmtDate(r.registered_on))}</td>
         <td class="nw pp-strong">${esc(r.traveler_ref_masked)}</td>
-        <td class="via">${esc(r.registered_via && r.registered_via.name)}</td>
         <td class="nw"><div class="pp-num pp-strong">${esc(fmtDate(r.guarantee_ends_on))}</div><div class="pp-sub">${esc(endNote(r))}</div></td>
         <td>${tag(TONE[r.status] || 'quiet', LABEL[r.status] || r.status_label || r.status)}</td>
         <td class="r pp-num">${int(r.trips_completed)}</td>
         <td class="r pp-num pp-strong nw">${money(r.est_earnings_cents)}</td></tr>`).join('')
-    : '<tr><td colspan="7" class="pp-empty-row">No travelers match this filter.</td></tr>';
+    : '<tr><td colspan="6" class="pp-empty-row">No travelers match this filter.</td></tr>';
 
   drawPager($('pager'), j.counts, (p) => { state.page = p; load(); });
 }
