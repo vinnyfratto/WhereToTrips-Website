@@ -272,20 +272,34 @@ export function describeStatus(s) {
 }
 
 /** Fills (or hides) the strip under the header from a `status` object. */
+// The strip opens with the partner's own name, so every page reads as theirs,
+// then their tier and window. The name and the status arrive separately; the
+// strip shows as soon as either is known, and only stays hidden when neither is.
+let stripStatus = null, stripName = '';
 export function drawStrip(status) {
+  stripStatus = status || null;
+  paintStrip();
+}
+export function setStripName(name) {
+  stripName = String(name || '').trim();
+  paintStrip();
+}
+function paintStrip() {
   const el = document.getElementById('pp-strip');
   if (!el) return;
-  const m = describeStatus(status);
-  if (!m) { el.hidden = true; el.innerHTML = ''; el.dataset.sig = ''; return; }
-  const sig = JSON.stringify(m.strip);
+  const m = stripStatus ? describeStatus(stripStatus) : null;
+  if (!m && !stripName) { el.hidden = true; el.innerHTML = ''; el.dataset.sig = ''; return; }
+  const sig = JSON.stringify([stripName, m && m.strip]);
   if (el.dataset.sig === sig && !el.hidden) return;           // nothing changed: leave the DOM (and focus) alone
   el.dataset.sig = sig;
-  const s = m.strip;
+  const s = m && m.strip;
   el.innerHTML = `<div class="wrap pp-strip-in">
+      ${stripName ? `<span class="pp-strip-name">${esc(stripName)}</span>` : ''}
+      ${s ? `${stripName ? '<span class="pp-strip-rule" aria-hidden="true"></span>' : ''}
       <span class="pp-chip pp-chip--deep">${esc(s.tier)}</span>
       <span class="pp-strip-rate">${esc(s.rate)}</span>
       <span class="pp-strip-rule" aria-hidden="true"></span>
-      <span class="pp-strip-text${s.warn ? ' is-warn' : ''}">${esc(s.text)}</span>
+      <span class="pp-strip-text${s.warn ? ' is-warn' : ''}">${esc(s.text)}</span>` : ''}
       <a class="pp-strip-link" href="/partner-dashboard/">View status</a>
     </div>`;
   el.hidden = false;

@@ -147,6 +147,7 @@ body > main { flex: 1 0 auto; }
 .pp-strip[hidden] { display: none; }
 .pp-strip-in { max-width: var(--pp-max); display: flex; flex-wrap: wrap; align-items: center; gap: 6px 18px; min-height: 48px; padding-top: 6px; padding-bottom: 6px; font-size: 14px; line-height: 1.4; color: var(--pp-text); }
 .pp-strip-rate, .pp-strip-text { font-weight: 600; }
+.pp-strip-name { font-weight: 700; font-size: 15px; color: var(--pp-text); }
 .pp-strip-rule { width: 1px; height: 18px; background: var(--pp-strip-rule); }
 .pp-strip-text.is-warn { color: var(--pp-warn-text); }
 .pp-strip-link { margin: -4px 0 -4px auto; display: inline-flex; align-items: center; min-height: 44px; font-size: 13px; font-weight: 600; color: var(--pp-blue-hover); text-decoration: underline; white-space: nowrap; }

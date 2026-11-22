@@ -145,25 +145,34 @@ export function portalGate(j) {
   return true;
 }
 
-// The signed-in partner's first name, as they set it on their own profile, so a
-// page can greet them by name. Null when there is none; the page then keeps its
-// plain heading. One read per page load, shared by every caller.
-let firstNamePromise = null;
-export function partnerFirstName() {
-  if (!firstNamePromise) {
-    firstNamePromise = (async () => {
+// The signed-in partner's name, as they set it on their own profile:
+// { first, full }. The status strip shows the full name on every portal page;
+// Summary and Revenue greet them by first name. Null when there is none.
+// One read per page load, shared by every caller.
+let namePromise = null;
+export function partnerName() {
+  if (!namePromise) {
+    namePromise = (async () => {
       const { data: sess } = await supabase.auth.getSession();
       const user = sess && sess.session && sess.session.user;
       if (!user) return null;
-      let name = '';
+      let first = '', last = '';
       try {
-        const { data } = await supabase.from('profiles').select('first_name').eq('id', user.id).maybeSingle();
-        name = (data && data.first_name) || '';
+        const { data } = await supabase.from('profiles').select('first_name, last_name').eq('id', user.id).maybeSingle();
+        first = (data && data.first_name) || '';
+        last = (data && data.last_name) || '';
       } catch (_e) { /* fall back to the sign-up name below */ }
       const meta = user.user_metadata || {};
-      name = String(name || meta.first_name || String(meta.full_name || meta.name || '').split(' ')[0] || '').trim();
-      return name || null;
+      const metaFull = String(meta.full_name || meta.name || '').trim();
+      first = String(first || meta.first_name || metaFull.split(' ')[0] || '').trim();
+      last = String(last || meta.last_name || (first && metaFull.startsWith(first + ' ') ? metaFull.slice(first.length + 1) : '') || '').trim();
+      if (!first) return null;
+      return { first, full: [first, last].filter(Boolean).join(' ') };
     })().catch(() => null);
   }
-  return firstNamePromise;
+  return namePromise;
+}
+
+export function partnerFirstName() {
+  return partnerName().then((n) => (n ? n.first : null));
 }
