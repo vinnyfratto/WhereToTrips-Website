@@ -82,6 +82,14 @@ export async function run() {
     if (res.ok) {
       const json = await res.json().catch(() => ({}));
       if (json && json.click_id) setCookie('wt_ref_click', json.click_id, REF_DAYS);
+      // The server names who gets the credit. It is the code in the link,
+      // except for a post moved to Our Content (WhereTo's own): that link
+      // still carries the partner it was posted under, and the credit is
+      // WhereTo's. Sign-up and the app install read this cookie.
+      if (json && json.valid !== false && typeof json.affiliate_code === 'string'
+        && /^[A-Za-z0-9_-]{1,40}$/.test(json.affiliate_code) && json.affiliate_code !== code) {
+        setCookie('wt_ref', json.affiliate_code, REF_DAYS);
+      }
       if (json && json.valid !== false) landing = safeLanding(json.landing_path);
       // Unknown / inactive code, or a post that isn't approved: drop the
       // cookie so we don't mis-credit.

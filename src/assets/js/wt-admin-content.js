@@ -25,6 +25,7 @@ const itemHref = (r) => `/admin-content-item/?id=${encodeURIComponent(r.id)}`;
 const COLUMNS = [
   { key: 'created_at', label: 'Created', kind: 'date', nowrap: true, render: (r) => esc(fmtDate(r.created_at)) },
   { key: 'title', label: 'Content', render: (r) => `<a class="pa-link oc-title" href="${itemHref(r)}">${esc(r.title)}</a>${r.status !== 'active' ? ' ' + pill('Turned off') : ''}` },
+  { key: 'created_by', label: 'Created By', nowrap: true, value: (r) => r.created_by || '', render: (r) => r.created_by ? esc(r.created_by) : '<span class="pa-muted">—</span>' },
   { key: 'platform', label: 'Platform', value: (r) => platformLabel(r.platform), render: (r) => esc(platformLabel(r.platform)) },
   { key: 'tracking_url', label: 'Tracking link', sortable: false, render: (r) => `<span class="oc-url">${esc(r.tracking_url.replace(/^https?:\/\//, '')).split('/').join('/<wbr>')}</span> ${copyButton(r.tracking_url)}` },
   { key: 'landing_path', label: 'Opens', value: (r) => landingLabel(r.landing_path, pageList), render: (r) => esc(landingLabel(r.landing_path, pageList)) },
@@ -40,7 +41,7 @@ function filtered() {
   const q = $('#oc-q').value.trim().toLowerCase();
   const st = $('#oc-status').value;
   return rows.filter((r) => (!st || r.status === st)
-    && (!q || [r.title, platformLabel(r.platform), r.tracking_code, r.notes].some((v) => String(v || '').toLowerCase().includes(q))));
+    && (!q || [r.title, platformLabel(r.platform), r.tracking_code, r.notes, r.created_by].some((v) => String(v || '').toLowerCase().includes(q))));
 }
 
 function draw() {
@@ -49,7 +50,7 @@ function draw() {
     for (const k of ['clicks', 'downloads', 'installs', 'sign_ups', 'bookings', 'revenue']) a[k] += Number(r[k]) || 0;
     return a;
   }, { clicks: 0, downloads: 0, installs: 0, sign_ups: 0, bookings: 0, revenue: 0 });
-  table.set(list, list.length ? `<tr><td colspan="5"><strong>Total</strong></td><td class="num">${num(t.clicks)}</td><td class="num">${num(t.downloads)}</td><td class="num">${num(t.installs)}</td><td class="num">${num(t.sign_ups)}</td><td class="num">${num(t.bookings)}</td><td class="num">${money(t.revenue)}</td></tr>` : '');
+  table.set(list, list.length ? `<tr><td colspan="6"><strong>Total</strong></td><td class="num">${num(t.clicks)}</td><td class="num">${num(t.downloads)}</td><td class="num">${num(t.installs)}</td><td class="num">${num(t.sign_ups)}</td><td class="num">${num(t.bookings)}</td><td class="num">${money(t.revenue)}</td></tr>` : '');
   $('#oc-count').textContent = `${list.length} ${list.length === 1 ? 'post' : 'posts'}`;
 }
 
