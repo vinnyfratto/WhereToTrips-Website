@@ -1,22 +1,23 @@
 {#- Partner portal header, intentionally separate from partials/header.njk
     (the marketing site nav). Same logo, own nav.
 
-    Six tabs, in this fixed order, each a real URL: Summary, Content performance,
-    Travelers, Bookings, Revenue, Submit content. The page's front matter
-    `navActive` marks the current one with aria-current="page". My Submissions is
-    a child of Submit content (it has no tab of its own), so it lights that tab.
+    Five tabs, in this fixed order, each a real URL: Summary, Content performance,
+    Bookings, Revenue, Submit content. The page's front matter `navActive` marks
+    the current one with aria-current="page". My Submissions is a child of Submit
+    content (it has no tab of its own), so it lights that tab. Travelers is a
+    child of Summary, reached from its guarantee card ("See your travelers"):
+    the guarantee it tracks runs for years, so it is not a page to check daily.
 
     Assets (the Asset Library) and Profile are pages, not tabs: plain links at the
     right. There is no Log out button here; sign-out is on Profile. -#}
 {%- set tabs = [
   { key: 'summary', label: 'Summary', href: '/partner-dashboard/' },
   { key: 'content-performance', label: 'Content performance', href: '/partner-dashboard/content-performance/' },
-  { key: 'travelers', label: 'Travelers', href: '/partner-dashboard/travelers/' },
   { key: 'bookings', label: 'Bookings', href: '/partner-dashboard/bookings/' },
   { key: 'revenue', label: 'Revenue', href: '/partner-dashboard/revenue/' },
   { key: 'content', label: 'Submit content', href: '/partner-dashboard/content/' }
 ] -%}
-{%- set currentTab = 'content' if navActive == 'submissions' else navActive -%}
+{%- set currentTab = 'content' if navActive == 'submissions' else ('summary' if navActive == 'travelers' else navActive) -%}
 <header class="pnr-header">
   <div class="wrap pnr-nav">
     <div class="pnr-brand">

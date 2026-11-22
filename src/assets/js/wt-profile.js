@@ -653,7 +653,7 @@ const SECTIONS = {
   profile: {
     title: 'My Profile',
     read: (p, user) => PROFILE_PARTS.map((k) =>
-      '<h3 class="pv-sub-head">' + esc(SECTIONS[k].title) + '</h3>' + SECTIONS[k].read(p, user)).join(''),
+      '<div class="pv-group"><h3 class="pv-sub-head">' + esc(SECTIONS[k].title) + '</h3>' + SECTIONS[k].read(p, user) + '</div>').join(''),
     edit: (p) => PROFILE_PARTS.map((k, i) =>
       (i ? '<h3 class="pv-sub-head">' + esc(SECTIONS[k].title) + '</h3>' : '') + SECTIONS[k].edit(p)).join(''),
     validate: (v) => {

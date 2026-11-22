@@ -901,10 +901,13 @@
 .pv-sec-title { font-family: var(--serif); color: var(--navy); font-size: 1.45rem; line-height: 1.2; margin: 0; }
 .pv-sec-blurb { color: var(--wg600); font-size: 0.9rem; line-height: 1.55; margin: 6px 0 0; max-width: 62ch; }
 .pv-edit {
-  flex: 0 0 auto; background: none; border: 0; padding: 4px 2px; cursor: pointer;
-  font-family: var(--sans); font-weight: 600; font-size: 0.92rem; color: var(--rust);
+  flex: 0 0 auto; background: var(--rust); border: 0; border-radius: 999px;
+  padding: 8px 22px; cursor: pointer; box-shadow: 0 1px 3px rgba(20, 30, 50, .18);
+  font-family: var(--sans); font-weight: 700; font-size: 0.9rem; color: #fff;
+  transition: filter .15s;
 }
-.pv-edit:hover { text-decoration: underline; }
+.pv-edit:hover { filter: brightness(.92); }
+.pv-edit:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
 
 /* Read view — label above value, two to a row. Empty values say so rather
    than collapsing, so what is still worth filling in is obvious. */
@@ -912,8 +915,17 @@
 .pv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px 32px; }
 @media (max-width: 560px) { .pv-grid { grid-template-columns: 1fr; gap: 18px; } }
 .pv-item--wide { grid-column: 1 / -1; }
-.pv-label { font-size: 0.82rem; font-weight: 600; color: var(--wg600); margin: 0 0 4px; }
-.pv-value { color: var(--navy); font-size: 1rem; line-height: 1.5; margin: 0; overflow-wrap: anywhere; }
+.pv-label { font-size: 0.8rem; font-weight: 600; color: var(--wg500); margin: 0 0 3px; }
+.pv-value { color: var(--navy); font-size: 1rem; font-weight: 500; line-height: 1.5; margin: 0; overflow-wrap: anywhere; }
+.pv-value.is-empty { font-weight: 400; }
+/* My Profile's five parts each sit on their own tinted panel, so Basic,
+   Contact, Emergency contact, Travel document and Airport security read as
+   separate groups instead of one long run of labels. */
+.pv-group { background: var(--wg100); border-radius: 12px; padding: 18px 22px 20px; }
+.pv-group + .pv-group { margin-top: 14px; }
+.pv-group > .pv-sub-head { margin: 0 0 14px; color: var(--navy); }
+.pv-group .pv-avatar--initials { background: #fff; }
+@media (max-width: 560px) { .pv-group { padding: 16px; } }
 .pv-value.is-empty { color: var(--wg500); }
 .pv-empty { color: var(--wg500); font-size: 0.95rem; margin: 22px 0 0; }
 
@@ -1134,6 +1146,9 @@ button.vibe-chip:hover { border-color: var(--rust); }
   background: linear-gradient(to top, var(--cream) 70%, transparent);
 }
 .tv-tray .btn { width: 100%; justify-content: center; }
+/* On a computer the page scrolls normally, so the tray sits after the list
+   rather than floating over it. */
+@media (min-width: 720px) { .tv-tray { position: static; background: none; padding-bottom: 0; } }
 
 /* ── ID numbers hidden until asked (wt-profile.js secretHtml / secretInput) ── */
 .pv-secret { display: inline-flex; align-items: center; gap: 8px; }

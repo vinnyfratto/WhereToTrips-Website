@@ -144,3 +144,26 @@ export function portalGate(j) {
   if (root) root.style.display = 'block';
   return true;
 }
+
+// The signed-in partner's first name, as they set it on their own profile, so a
+// page can greet them by name. Null when there is none; the page then keeps its
+// plain heading. One read per page load, shared by every caller.
+let firstNamePromise = null;
+export function partnerFirstName() {
+  if (!firstNamePromise) {
+    firstNamePromise = (async () => {
+      const { data: sess } = await supabase.auth.getSession();
+      const user = sess && sess.session && sess.session.user;
+      if (!user) return null;
+      let name = '';
+      try {
+        const { data } = await supabase.from('profiles').select('first_name').eq('id', user.id).maybeSingle();
+        name = (data && data.first_name) || '';
+      } catch (_e) { /* fall back to the sign-up name below */ }
+      const meta = user.user_metadata || {};
+      name = String(name || meta.first_name || String(meta.full_name || meta.name || '').split(' ')[0] || '').trim();
+      return name || null;
+    })().catch(() => null);
+  }
+  return firstNamePromise;
+}

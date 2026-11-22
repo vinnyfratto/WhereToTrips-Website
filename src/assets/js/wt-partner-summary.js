@@ -8,7 +8,7 @@
 //  performance. The `summary` answer carries `status`, so this page draws the
 //  status strip itself and never asks for it a second time.
 // ───────────────────────────────────────────────────────────────────
-import { portal, portalGate } from './wt-partner-shared.js';
+import { portal, portalGate, partnerFirstName } from './wt-partner-shared.js';
 import { esc, int, money, fmtDate, plural, renderSeg } from './wt-portal-ui.js';
 import { describeStatus, drawStrip } from './wt-partner-status.js';
 
@@ -65,7 +65,8 @@ function activityCard(m) {
       ${a.bar ? bar(a.bar.label, a.bar.max, a.bar.now, a.bar.max ? Math.round((a.bar.now / a.bar.max) * 100) : 0, a.bar.warn) : ''}
       <div class="pp-sub">${esc(a.line)}</div>
       ${a.extra ? `<div class="pp-extra">${esc(a.extra)}</div>` : ''}
-      <div class="pp-scard-foot"><button type="button" class="pp-outbtn pp-sm" data-open="activity" data-opener="activity" aria-expanded="${String(openPanel === 'activity')}" aria-controls="panel-activity" aria-describedby="act-h">Details</button></div>
+      <div class="pp-scard-foot"><button type="button" class="pp-outbtn pp-sm" data-open="activity" data-opener="activity" aria-expanded="${String(openPanel === 'activity')}" aria-controls="panel-activity" aria-describedby="act-h">Details</button>
+        <a class="pp-linkbtn pp-scard-link" href="/partner-dashboard/travelers/">See your travelers</a></div>
     </section>`;
 }
 
@@ -232,6 +233,8 @@ $('wt-dash-root').addEventListener('click', (e) => {
 });
 
 function init() {
+  // Their own name on the page, so it reads as theirs.
+  partnerFirstName().then((n) => { if (n) $('hello').textContent = `${n}, here's your status and performance`; });
   drawPeriod();
   load();
 }

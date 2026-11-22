@@ -201,7 +201,8 @@ textarea.pp-inp { min-height: 110px; resize: vertical; }
 .pp-scard-name { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
 .pp-scard-name .pp-serif { font-size: 36px; line-height: 1.1; }
 .pp-scard-name + .pp-sub { font-size: 14px; }
-.pp-scard-foot { margin-top: auto; padding-top: 10px; }
+.pp-scard-foot { margin-top: auto; padding-top: 10px; display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.pp-scard-link { display: inline-flex; align-items: center; font-size: 14px; }
 .pp-pending { font-size: 13px; font-weight: 600; color: var(--pp-warn-text); }
 .pp-bar { height: 10px; border-radius: 999px; background: var(--pp-track); overflow: hidden; margin-top: 4px; }
 .pp-bar > i { display: block; height: 100%; border-radius: 999px; background: var(--pp-blue); }
@@ -294,6 +295,12 @@ table.pp-t { width: 100%; border-collapse: collapse; min-width: 780px; font-size
 table.pp-t.pp-t--content { min-width: 940px; }
 /* nine columns: tighter cells, and a heading may wrap to two lines, so Est. earnings is not pushed off the card */
 table.pp-t--content .nm { min-width: 136px; }
+table.pp-t--content td.url { min-width: 150px; max-width: 200px; overflow-wrap: anywhere; }
+/* A long table scrolls inside a box no taller than the window, so its sideways
+   scrollbar is on screen instead of below the last row. */
+.pp-scroll--tall { max-height: calc(100vh - 120px); overflow: auto; }
+.pp-scroll--tall thead { position: sticky; top: 0; z-index: 2; }
+.pp-scroll--tall:focus-visible { outline: 2px solid var(--pp-blue-hover); outline-offset: 2px; }
 table.pp-t--content td { padding-left: 10px; padding-right: 10px; }
 table.pp-t--content th { white-space: normal; }
 table.pp-t--content .pp-thbtn { padding: 8px 10px; white-space: normal; text-align: left; line-height: 1.25; }
@@ -331,6 +338,11 @@ table.pp-t tr.frow td { padding: 6px 14px 12px; background: var(--pp-th-bg); bor
 .pp-empty-row { text-align: center; color: var(--pp-muted); padding: 32px !important; }
 .pp-pager { display: flex; align-items: center; justify-content: flex-end; gap: 12px; padding: 12px 16px; border-top: 1px solid var(--pp-border); font-size: 14px; color: var(--pp-muted); }
 .pp-footnote { margin: 14px 0 0; font-size: 13px; color: var(--pp-muted); }
+/* Travelers: what the column and each status mean, under the table. */
+.pp-legend { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px 18px; margin: 18px 0 0; padding: 16px 18px; background: var(--pp-card); border: 1px solid var(--pp-border); border-radius: 12px; font-size: 14px; }
+.pp-legend dt { font-weight: 600; color: var(--pp-text); }
+.pp-legend dd { margin: 0; color: var(--pp-text-soft); }
+@media (max-width: 640px) { .pp-legend { grid-template-columns: minmax(0, 1fr); gap: 2px; } .pp-legend dd { margin-bottom: 8px; } }
 
 /* ── Bookings filter bar ──────────────────────────────────────────────── */
 .pp-filters { padding: 16px 20px; margin-bottom: 16px; display: flex; flex-wrap: wrap; align-items: flex-end; gap: 16px 24px; }
@@ -493,3 +505,17 @@ dialog.pp-dlg::backdrop { background: rgba(20, 30, 40, .62); }
 .pp-al-meta { margin: 0; font-size: 12px; color: var(--pp-muted); }
 .pp-al-dl { align-self: flex-start; }
 @media (max-width: 760px) { .pp-al-q { max-width: none; width: 100%; } .pp-al-grid { grid-template-columns: 1fr; } }
+
+/* Profile: each section (My Profile, Saved Travelers, Saved destinations,
+   Preferences, Notifications) is its own card, so one ends visibly before the
+   next begins instead of everything running together on one sheet. */
+#profile.acct-card { background: none; border: 0; box-shadow: none; padding: 0; max-width: none; }
+#profile .pv-sec,
+#profile .pv-sec:first-of-type,
+#profile .pv-sec:last-of-type {
+  background: var(--pp-card, #fff); border: 1px solid var(--pp-border); border-radius: 16px;
+  padding: 26px 28px 28px; margin: 0 0 18px; box-shadow: 0 1px 2px rgba(20, 30, 50, .04);
+}
+@media (max-width: 560px) {
+  #profile .pv-sec, #profile .pv-sec:first-of-type, #profile .pv-sec:last-of-type { padding: 20px 16px; }
+}

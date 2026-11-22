@@ -28,10 +28,12 @@ navActive: content-performance
       <div>
         <p class="pp-eyebrow">Content performance</p>
         <h1>Every piece, one row</h1>
-        <p class="pp-lede">Newest request first. Select a column heading to sort, and use the filters under Date requested and Channel to narrow the list.</p>
+        <p class="pp-lede">Newest request first. Select a column heading to sort, and use the filters under Date requested and Channel to narrow the list. The table scrolls up and down and side to side inside its box.</p>
       </div>
     </div>
-    <div class="pp-card pp-scroll">
+    {# Scrolls inside its own box, both ways, with the headings and filters held
+       at the top, so the sideways scrollbar is always on screen. #}
+    <div class="pp-card pp-scroll pp-scroll--tall" tabindex="0" aria-label="Content table (scrolls)">
       <table class="pp-t pp-t--content">
         <caption class="pp-sr">Content assets with clicks, downloads, new accounts and earnings</caption>
         <thead>

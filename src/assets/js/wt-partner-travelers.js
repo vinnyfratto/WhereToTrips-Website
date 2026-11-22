@@ -13,14 +13,16 @@ const $ = (id) => document.getElementById(id);
 const COLS = [
   { k: 'reg', label: 'Registered' },
   { k: 'id', label: 'Traveler', text: true },
-  { k: 'via', label: 'Registered via', text: true },
+  { k: 'via', label: 'Signed up from', text: true },
   { k: 'end', label: 'Guarantee ends' },
   { k: 'statusF', label: 'Status', text: true },
   { k: 'trips', label: 'Trips completed', right: true },
   { k: 'earn', label: 'Est. earnings', right: true },
 ];
 const TONE = { guarantee: 'info', ongoing: 'ok', paused: 'warn' };
-const LABEL = { guarantee: 'In guarantee', ongoing: 'Ongoing', paused: 'Paused' };
+// Said in full here rather than the server's short "Ongoing" / "Paused", which
+// left a partner guessing what each meant. The filter menu uses the same words.
+const LABEL = { guarantee: 'In guarantee', ongoing: 'Past guarantee, still earning', paused: 'Past guarantee, paused' };
 const state = { sort: 'reg', dir: 'desc', status: '', page: 1 };
 let optionsFor = '', seq = 0, founding = false, last = null;
 
@@ -42,10 +44,13 @@ function endNote(r) {
   return d === 0 ? 'Ends today' : `${plural(d, 'day', 'days')} left`;
 }
 
+// Plain words first: who these people are and what they earn you. The
+// guarantee is the reassurance, not the headline.
 function drawIntro(gm) {
-  $('intro').textContent = `Every traveler earns you revenue share for at least ${gm} months from their registration`
-    + (founding ? ' (the Founding Partner guarantee)' : '')
-    + '. After that, you keep earning on them for as long as you stay active.';
+  $('intro').textContent = 'Everyone who created a WhereTo account from one of your links. You earn revenue share on their trips. '
+    + `For the first ${gm} months after each one signs up, that is guaranteed`
+    + (founding ? ' as part of being a Founding Partner' : '')
+    + ', so there is nothing to keep an eye on until then.';
 }
 
 function draw(j) {
@@ -76,7 +81,7 @@ function draw(j) {
   // The filter list is rebuilt only when what it offers changes, so a menu is never reset under the user.
   const sig = JSON.stringify(j.filter_options.statuses);
   if (sig !== optionsFor) {
-    $('f-status').innerHTML = options(j.filter_options.statuses.map((s) => [s.value, s.label]), 'All statuses');
+    $('f-status').innerHTML = options(j.filter_options.statuses.map((s) => [s.value, LABEL[s.value] || s.label]), 'All statuses');
     optionsFor = sig;
   }
   $('f-status').value = state.status;
@@ -87,7 +92,7 @@ function draw(j) {
         <td class="nw pp-strong">${esc(r.traveler_ref_masked)}</td>
         <td class="via">${esc(r.registered_via && r.registered_via.name)}</td>
         <td class="nw"><div class="pp-num pp-strong">${esc(fmtDate(r.guarantee_ends_on))}</div><div class="pp-sub">${esc(endNote(r))}</div></td>
-        <td>${tag(TONE[r.status] || 'quiet', r.status_label || LABEL[r.status] || r.status)}</td>
+        <td>${tag(TONE[r.status] || 'quiet', LABEL[r.status] || r.status_label || r.status)}</td>
         <td class="r pp-num">${int(r.trips_completed)}</td>
         <td class="r pp-num pp-strong nw">${money(r.est_earnings_cents)}</td></tr>`).join('')
     : '<tr><td colspan="7" class="pp-empty-row">No travelers match this filter.</td></tr>';

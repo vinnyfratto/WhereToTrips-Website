@@ -4,7 +4,7 @@
 //  toggle the list below. The API always returns all three card figures so
 //  they stay right whichever list is open.
 // ───────────────────────────────────────────────────────────────────
-import { portal, portalGate } from './wt-partner-shared.js';
+import { portal, portalGate, partnerFirstName } from './wt-partner-shared.js';
 import { esc, fmtDate, money, renderHead, refCell } from './wt-portal-ui.js';
 
 const $ = (id) => document.getElementById(id);
@@ -59,6 +59,9 @@ function draw(j) {
     : '<tr><td colspan="6" class="pp-empty-row">Nothing here yet.</td></tr>';
   $('foot').innerHTML = `<td colspan="5">${L.total}</td><td class="r pp-num">${money(j.total_cents)}</td>`;
 }
+
+// Their own name on the page, so it reads as theirs.
+partnerFirstName().then((n) => { if (n) $('hello').textContent = `${n}, here's what you've earned and what's coming`; });
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', load);
 else load();

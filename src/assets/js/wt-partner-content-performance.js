@@ -17,6 +17,10 @@ const COLS = [
 const state = { sort: 'date', dir: 'desc', month: '', channel: '' };
 let optionsLoaded = false, seq = 0;
 
+// A tracking link wraps after each slash, like the Content column wraps, so the
+// table is no wider than it needs to be.
+const breakable = (u) => esc(u).split('/').join('/<wbr>');
+
 async function load() {
   const mine = ++seq;
   const j = await portal('content', { sort: state.sort, dir: state.dir, month: state.month, channel: state.channel });
@@ -46,7 +50,7 @@ function draw(j) {
         <td class="pp-num nw">${esc(fmtDate(r.date_requested))}</td>
         <td class="nm">${esc(r.name)}</td>
         <td>${esc(r.channel)}</td>
-        <td><a href="${esc(r.tracking_url)}" rel="noopener">${esc(String(r.tracking_url).replace(/^https?:\/\//, ''))}</a></td>
+        <td class="url"><a href="${esc(r.tracking_url)}" rel="noopener">${breakable(String(r.tracking_url).replace(/^https?:\/\//, ''))}</a></td>
         <td class="r pp-num">${int(r.clicks)}</td>
         <td class="r pp-num">${int(r.downloads)}</td>
         <td class="r pp-num">${int(r.new_accounts)}</td>
