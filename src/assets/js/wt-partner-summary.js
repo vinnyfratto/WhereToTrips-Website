@@ -66,7 +66,7 @@ function activityCard(m) {
       <div class="pp-sub">${esc(a.line)}</div>
       ${a.extra ? `<div class="pp-extra">${esc(a.extra)}</div>` : ''}
       <div class="pp-scard-foot"><button type="button" class="pp-outbtn pp-sm" data-open="activity" data-opener="activity" aria-expanded="${String(openPanel === 'activity')}" aria-controls="panel-activity" aria-describedby="act-h">Details</button>
-        <a class="pp-linkbtn pp-scard-link" href="/partner-dashboard/travelers/">See your travelers</a></div>
+        <a class="pp-primary pp-scard-link" href="/partner-dashboard/travelers/">See your travelers</a></div>
     </section>`;
 }
 

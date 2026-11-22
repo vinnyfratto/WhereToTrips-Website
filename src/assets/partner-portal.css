@@ -202,7 +202,9 @@ textarea.pp-inp { min-height: 110px; resize: vertical; }
 .pp-scard-name .pp-serif { font-size: 36px; line-height: 1.1; }
 .pp-scard-name + .pp-sub { font-size: 14px; }
 .pp-scard-foot { margin-top: auto; padding-top: 10px; display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
-.pp-scard-link { display: inline-flex; align-items: center; font-size: 14px; }
+/* Summary card: "See your travelers", a blue button at the right of the card foot. */
+.pp-scard-link { margin-left: auto; min-height: 44px; padding: 0 16px; font-size: 14px; }
+.pp-scard-link:focus-visible { outline: 2px solid var(--pp-blue); outline-offset: 2px; }
 .pp-pending { font-size: 13px; font-weight: 600; color: var(--pp-warn-text); }
 .pp-bar { height: 10px; border-radius: 999px; background: var(--pp-track); overflow: hidden; margin-top: 4px; }
 .pp-bar > i { display: block; height: 100%; border-radius: 999px; background: var(--pp-blue); }
