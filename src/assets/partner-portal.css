@@ -299,6 +299,11 @@ table.pp-t.pp-t--content { min-width: 940px; }
 /* nine columns: tighter cells, and a heading may wrap to two lines, so Est. earnings is not pushed off the card */
 table.pp-t--content .nm { min-width: 136px; }
 table.pp-t--content td.url { min-width: 150px; max-width: 200px; overflow-wrap: anywhere; }
+/* Links in tables stay on one line (.pp-t a); a tracking link is the exception, it wraps after each slash. */
+table.pp-t--content td.url a { white-space: normal; }
+/* A preview opens the piece itself in a new tab. */
+a.pp-tile-link { display: inline-block; border-radius: 8px; line-height: 0; }
+a.pp-tile-link:hover .pp-tile, a.pp-tile-link:focus-visible .pp-tile { outline: 2px solid var(--pp-blue); outline-offset: 2px; }
 /* A long table scrolls inside a box no taller than the window, so its sideways
    scrollbar is on screen instead of below the last row. */
 .pp-scroll--tall { max-height: calc(100vh - 120px); overflow: auto; }

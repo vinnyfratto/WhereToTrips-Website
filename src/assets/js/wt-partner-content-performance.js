@@ -17,6 +17,15 @@ const COLS = [
 const state = { sort: 'date', dir: 'desc', month: '', channel: '' };
 let optionsLoaded = false, seq = 0;
 
+// The preview opens the piece itself (the file they sent, or the live post) in a
+// new tab. A piece with neither has nothing to open, so its tile is not a link.
+function previewCell(r) {
+  const tile = previewTile(r.channel, r.preview && r.preview.image_url);
+  const href = r.preview && r.preview.open_url;
+  if (!href || !/^https:\/\//i.test(href)) return tile;
+  return `<a class="pp-tile-link" href="${esc(href)}" target="_blank" rel="noopener noreferrer" title="Open ${esc(r.name)}" aria-label="Open ${esc(r.name)} in a new tab">${tile}</a>`;
+}
+
 // A tracking link wraps after each slash, like the Content column wraps, so the
 // table is no wider than it needs to be.
 const breakable = (u) => esc(u).split('/').join('/<wbr>');
@@ -55,7 +64,7 @@ function draw(j) {
         <td class="r pp-num">${int(r.downloads)}</td>
         <td class="r pp-num">${int(r.new_accounts)}</td>
         <td class="r pp-num pp-strong nw">${money(r.est_earnings_cents)}</td>
-        <td>${previewTile(r.channel, r.preview && r.preview.image_url)}</td></tr>`).join('');
+        <td>${previewCell(r)}</td></tr>`).join('');
 
   const t = j.totals;
   $('foot').innerHTML = `<td colspan="4">Total</td><td class="r pp-num">${int(t.clicks)}</td><td class="r pp-num">${int(t.downloads)}</td><td class="r pp-num">${int(t.new_accounts)}</td><td class="r pp-num">${money(t.est_earnings_cents)}</td><td></td>`;
