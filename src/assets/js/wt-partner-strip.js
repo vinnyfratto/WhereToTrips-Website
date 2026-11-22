@@ -1,7 +1,8 @@
 // ───────────────────────────────────────────────────────────────────
 //  wt-partner-strip.js — fills the status strip under the header on every
-//  portal page (the partner's name, tier, revenue share rate, activity
-//  window, "View status"). The name shows even when the status cannot load.
+//  portal page (the partner's name and activity window on the left,
+//  revenue share and the tier pill at the right). The name
+//  shows even when the status cannot load.
 //
 //  Loaded by layouts/partner.njk, so no page script has to remember it. The
 //  Summary page already receives `status` inside its own `summary` response and

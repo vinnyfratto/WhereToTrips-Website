@@ -293,14 +293,16 @@ function paintStrip() {
   if (el.dataset.sig === sig && !el.hidden) return;           // nothing changed: leave the DOM (and focus) alone
   el.dataset.sig = sig;
   const s = m && m.strip;
+  // Name and window on the left; revenue share and the tier pill on the
+  // right, the pill last.
   el.innerHTML = `<div class="wrap pp-strip-in">
       ${stripName ? `<span class="pp-strip-name">${esc(stripName)}</span>` : ''}
       ${s ? `${stripName ? '<span class="pp-strip-rule" aria-hidden="true"></span>' : ''}
-      <span class="pp-chip pp-chip--deep">${esc(s.tier)}</span>
-      <span class="pp-strip-rate">${esc(s.rate)}</span>
-      <span class="pp-strip-rule" aria-hidden="true"></span>
-      <span class="pp-strip-text${s.warn ? ' is-warn' : ''}">${esc(s.text)}</span>` : ''}
-      <a class="pp-strip-link" href="/partner-dashboard/">View status</a>
+      <span class="pp-strip-text${s.warn ? ' is-warn' : ''}">${esc(s.text)}</span>
+      <span class="pp-strip-end">
+        <span class="pp-strip-rate">${esc(s.rate)}</span>
+        <span class="pp-chip pp-chip--deep">${esc(s.tier)}</span>
+      </span>` : ''}
     </div>`;
   el.hidden = false;
 }

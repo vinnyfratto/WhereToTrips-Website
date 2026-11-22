@@ -307,3 +307,16 @@ dialog.pa-dlg::backdrop { background: rgba(20, 30, 40, .62); }
 .oc-bar { display: inline-block; height: 10px; border-radius: 5px; background: var(--azure); vertical-align: middle; max-width: calc(100% - 44px); }
 .oc-bar-n { margin-left: 8px; font-variant-numeric: tabular-nums; }
 .oc-card label.field > span:first-child { display: block; font-weight: 600; font-size: 0.85rem; color: var(--navy); margin-bottom: 6px; }
+/* Our Content previews: the piece's image, else a platform tile; a link when there is something to open. */
+.oc-tile { width: 68px; height: 46px; border-radius: 8px; display: flex; align-items: center; justify-content: center; object-fit: cover; font-weight: 700; font-size: 13px; letter-spacing: .04em; background: var(--wg100); color: var(--ink-muted); }
+.oc-tile--lg { width: 132px; height: 88px; font-size: 18px; }
+.oc-tile--instagram { background: #fde8ef; color: #9b2453; }
+.oc-tile--facebook { background: #e7effd; color: #1d4e9e; }
+.oc-tile--tiktok { background: #e8edf2; color: #1b2430; }
+.oc-tile--youtube { background: #fdebe5; color: #9a3412; }
+.oc-tile--pinterest { background: #fde8e8; color: #9b1c1c; }
+.oc-tile--linkedin { background: #e5f0fa; color: #0a5a96; }
+a.oc-tile-link, .oc-tile-wrap { display: inline-block; border-radius: 8px; line-height: 0; }
+a.oc-tile-link:hover .oc-tile, a.oc-tile-link:focus-visible .oc-tile { outline: 2px solid var(--azure); outline-offset: 2px; }
+.oc-head { gap: 20px; justify-content: flex-start; align-items: center; }
+.oc-head-preview { flex: none; }

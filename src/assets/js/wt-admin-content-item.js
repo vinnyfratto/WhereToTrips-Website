@@ -10,7 +10,7 @@
 // ───────────────────────────────────────────────────────────────────
 import { boot, callPA, esc, fmtDate, fmtDateTime, money, notify, num, pill, $ } from './wt-padmin-core.js';
 import { landingLabel, landingPickerHtml, loadPages, readLandingPicker, wireLandingPicker } from './wt-landing-picker.js';
-import { PLATFORMS, platformLabel, copyButton, wireCopy } from './wt-admin-content-shared.js';
+import { PLATFORMS, platformLabel, copyButton, wireCopy, previewHtml } from './wt-admin-content-shared.js';
 
 const id = new URLSearchParams(location.search).get('id') || '';
 let pageList = [];
@@ -63,6 +63,7 @@ function render() {
   const on = it.status === 'active';
   $('#oc-item').innerHTML = `
     <div class="dash-head oc-head">
+      <div class="oc-head-preview">${previewHtml(it, 'lg')}</div>
       <div>
         <p class="eyebrow">Our Content · ${esc(platformLabel(it.platform))}</p>
         <h1>${esc(it.title)}</h1>

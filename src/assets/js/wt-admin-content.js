@@ -13,7 +13,7 @@
 // ───────────────────────────────────────────────────────────────────
 import { boot, callPA, dataTable, debounce, esc, fmtDate, money, notify, num, pill, $ } from './wt-padmin-core.js';
 import { landingLabel, landingPickerHtml, loadPages, readLandingPicker, wireLandingPicker } from './wt-landing-picker.js';
-import { PLATFORMS, platformLabel, copyButton, wireCopy } from './wt-admin-content-shared.js';
+import { PLATFORMS, platformLabel, copyButton, wireCopy, previewHtml } from './wt-admin-content-shared.js';
 
 let table = null;
 let rows = [];
@@ -23,6 +23,7 @@ let seq = 0;
 const itemHref = (r) => `/admin-content-item/?id=${encodeURIComponent(r.id)}`;
 
 const COLUMNS = [
+  { key: 'preview', label: 'Preview', sortable: false, render: (r) => previewHtml(r) },
   { key: 'created_at', label: 'Created', kind: 'date', nowrap: true, render: (r) => esc(fmtDate(r.created_at)) },
   { key: 'title', label: 'Content', render: (r) => `<a class="pa-link oc-title" href="${itemHref(r)}">${esc(r.title)}</a>${r.status !== 'active' ? ' ' + pill('Turned off') : ''}` },
   { key: 'created_by', label: 'Created By', nowrap: true, value: (r) => r.created_by || '', render: (r) => r.created_by ? esc(r.created_by) : '<span class="pa-muted">—</span>' },
@@ -50,7 +51,7 @@ function draw() {
     for (const k of ['clicks', 'downloads', 'installs', 'sign_ups', 'bookings', 'revenue']) a[k] += Number(r[k]) || 0;
     return a;
   }, { clicks: 0, downloads: 0, installs: 0, sign_ups: 0, bookings: 0, revenue: 0 });
-  table.set(list, list.length ? `<tr><td colspan="6"><strong>Total</strong></td><td class="num">${num(t.clicks)}</td><td class="num">${num(t.downloads)}</td><td class="num">${num(t.installs)}</td><td class="num">${num(t.sign_ups)}</td><td class="num">${num(t.bookings)}</td><td class="num">${money(t.revenue)}</td></tr>` : '');
+  table.set(list, list.length ? `<tr><td colspan="7"><strong>Total</strong></td><td class="num">${num(t.clicks)}</td><td class="num">${num(t.downloads)}</td><td class="num">${num(t.installs)}</td><td class="num">${num(t.sign_ups)}</td><td class="num">${num(t.bookings)}</td><td class="num">${money(t.revenue)}</td></tr>` : '');
   $('#oc-count').textContent = `${list.length} ${list.length === 1 ? 'post' : 'posts'}`;
 }
 

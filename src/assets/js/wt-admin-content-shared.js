@@ -33,3 +33,20 @@ export function wireCopy(host) {
     });
   });
 }
+
+const TILE = { instagram: 'IG', facebook: 'FB', tiktok: 'TT', youtube: 'YT', pinterest: 'PI', x: 'X', linkedin: 'IN', newsletter: 'NL', podcast: 'PC', blog: 'BL', other: '?' };
+
+/**
+ * A post's preview: its image when the piece came with one, else a platform
+ * tile. It opens the piece itself (the file sent with it, else where it is
+ * posted) in a new tab; with neither, there is nothing to open and it is not a link.
+ */
+export function previewHtml(r, size = '') {
+  const p = r.preview || {};
+  const img = p.image_url
+    ? `<img class="oc-tile${size ? ' oc-tile--' + size : ''}" src="${esc(p.image_url)}" alt="" loading="lazy">`
+    : `<span class="oc-tile oc-tile--${esc(r.platform || 'other')}${size ? ' oc-tile--' + size : ''}" aria-hidden="true">${esc(TILE[r.platform] || '?')}</span>`;
+  const href = p.open_url;
+  if (!href || !/^https:\/\//i.test(href)) return `<span class="oc-tile-wrap" title="Nothing to open yet: add where it is posted">${img}</span>`;
+  return `<a class="oc-tile-link" href="${esc(href)}" target="_blank" rel="noopener noreferrer" title="Open ${esc(r.title)}" aria-label="Open ${esc(r.title)} in a new tab">${img}</a>`;
+}
