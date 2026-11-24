@@ -1,0 +1,24 @@
+---
+permalink: /auth/callback-dev/index.html
+eleventyExcludeFromCollections: true
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Opening WhereTo (Dev)</title>
+</head>
+<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;text-align:center;margin-top:48px;color:#313131;">
+  <p>Opening WhereTo (Dev)...</p>
+  <p style="font-size:14px;color:#464B53;">If nothing happens, open the WhereTo (Dev) test app on this phone.</p>
+  <script>
+    // The same relay as /auth/callback/, for the Metro test app. That app has
+    // its own app ID and link scheme (whereto-dev) so it installs next to the
+    // store app, and a password reset asked for in it must open IT, not the
+    // store app. App repo: APP_VARIANTS.md.
+    window.location.replace('whereto-dev://auth/callback' + window.location.search + window.location.hash);
+  </script>
+</body>
+</html>
